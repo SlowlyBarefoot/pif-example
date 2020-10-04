@@ -1,35 +1,58 @@
-// Do not remove the include below
-#include "pifTask.h"
+/**
+ * LED를 깜박이게 하는 Task 3개를 생성한다. 각 Task의 Ratio를 다르게 설정한다.
+ *
+ * Produce three tasks that make the LED flash. Set the Ratio for each task differently.
+ */
 
+// Do not remove the include below
 #include "exTask2.h"
 
-
-#define PIN_DUE_LED				13
-
-#define TASK_COUNT              5
+#include "pifTask.h"
 
 
-static int s_nTaskNo = 0;
-static int s_nTaskCount = 0;
-static PIF_stTask *s_pstTask[TASK_COUNT] = { NULL, NULL, NULL, NULL, NULL };
+#define PIN_LED_RED				23
+#define PIN_LED_YELLOW			25
+#define PIN_LED_GREEN			27
 
-static void led_toggle(PIF_stTask *pstTask)
+#define TASK_COUNT              3
+
+
+static void led_red_toggle(PIF_stTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
 
     if (!nCount) {
-		digitalWrite(PIN_DUE_LED, sw);
+		digitalWrite(PIN_LED_RED, sw);
 		sw ^= 1;
 
-		s_nTaskCount++;
-		if (s_nTaskCount >= 10) {
-			s_nTaskCount = 0;
-		    pifTask_Pause(s_pstTask[s_nTaskNo]);
-		    s_nTaskNo++;
-		    if (s_nTaskNo >= TASK_COUNT) s_nTaskNo = 0;
-		    pifTask_Restart(s_pstTask[s_nTaskNo]);
-		}
+		nCount = 9999;
+    }
+    else nCount--;
+}
+
+static void led_yellow_toggle(PIF_stTask *pstTask)
+{
+	static int nCount = 0;
+	static BOOL sw = LOW;
+
+    if (!nCount) {
+		digitalWrite(PIN_LED_YELLOW, sw);
+		sw ^= 1;
+
+		nCount = 9999;
+    }
+    else nCount--;
+}
+
+static void led_green_toggle(PIF_stTask *pstTask)
+{
+	static int nCount = 0;
+	static BOOL sw = LOW;
+
+    if (!nCount) {
+		digitalWrite(PIN_LED_GREEN, sw);
+		sw ^= 1;
 
 		nCount = 9999;
     }
@@ -39,37 +62,21 @@ static void led_toggle(PIF_stTask *pstTask)
 //The setup function is called once at startup of the sketch
 void setup()
 {
-// Add your initialization code here
-	pinMode(PIN_DUE_LED, OUTPUT);
+	pinMode(PIN_LED_RED, OUTPUT);
+	pinMode(PIN_LED_YELLOW, OUTPUT);
+	pinMode(PIN_LED_GREEN, OUTPUT);
 
 	pif_Init();
 
     if (!pifTask_Init(TASK_COUNT)) return;
-
-    s_pstTask[0] = pifTask_Add(20, led_toggle, NULL);
-    if (!s_pstTask[0]) return;
-
-    s_pstTask[1] = pifTask_Add(40, led_toggle, NULL);
-    if (!s_pstTask[1]) return;
-    pifTask_Pause(s_pstTask[1]);
-
-    s_pstTask[2] = pifTask_Add(60, led_toggle, NULL);
-    if (!s_pstTask[2]) return;
-    pifTask_Pause(s_pstTask[2]);
-
-    s_pstTask[3] = pifTask_Add(80, led_toggle, NULL);
-    if (!s_pstTask[3]) return;
-    pifTask_Pause(s_pstTask[3]);
-
-    s_pstTask[4] = pifTask_Add(100, led_toggle, NULL);
-    if (!s_pstTask[4]) return;
-    pifTask_Pause(s_pstTask[4]);
+    if (!pifTask_Add(30, led_red_toggle, NULL)) return;
+    if (!pifTask_Add(60, led_yellow_toggle, NULL)) return;
+    if (!pifTask_Add(100, led_green_toggle, NULL)) return;
 }
 
 // The loop function is called in an endless loop
 void loop()
 {
-//Add your repeated code here
     pif_Loop();
 
     pifTask_Loop();

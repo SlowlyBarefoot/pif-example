@@ -1,7 +1,13 @@
-// Do not remove the include below
-#include "pifPulse.h"
+/**
+ * Pulse 1개를 생성후 이를 1ms Timer에 연결한다. 500ms마다 이벤트를 발생시키고 이벤트에서 LED를 깜박가리게 한다.
+ *
+ * Create one pulse and connect it to the 1ms timer. Generate an event every 500ms and flash the LED in the event.
+ */
 
+// Do not remove the include below
 #include "exTimer1.h"
+
+#include "pifPulse.h"
 
 
 #define PIN_DUE_LED				13
@@ -36,8 +42,7 @@ static void led_toggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
-// Add your initialization code here
-	PIF_unPulseIndex unTimer1msIndex;
+	PIF_unPulseItemIndex unTimer1msIndex;
 
 	pinMode(PIN_DUE_LED, OUTPUT);
 
@@ -59,7 +64,6 @@ void setup()
 // The loop function is called in an endless loop
 void loop()
 {
-//Add your repeated code here
     pif_Loop();
 
     pifTask_Loop();

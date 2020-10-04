@@ -82,54 +82,9 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>core/include/pifPulse.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifPulse.h</locationURI>
-		</link>
-		<link>
-			<name>core/include/pifTask.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTask.h</locationURI>
-		</link>
-		<link>
-			<name>core/source/pif.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
-		</link>
-		<link>
-			<name>core/source/pifPulse.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifPulse.c</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/FETCH_HEAD</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/FETCH_HEAD</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/HEAD</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/HEAD</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/config</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/config</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/description</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/description</locationURI>
-		</link>
-		<link>
 			<name>pif/.git/hooks</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/index</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/index</locationURI>
 		</link>
 		<link>
 			<name>pif/.git/info</name>
@@ -162,21 +117,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/.git/hooks/README.sample</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/hooks/README.sample</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/info/exclude</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/info/exclude</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/logs/HEAD</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/logs/HEAD</locationURI>
-		</link>
-		<link>
 			<name>pif/.git/logs/refs</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -204,17 +144,17 @@
 		<link>
 			<name>pif/core/include/pifPulse.h</name>
 			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifPulse.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifPulse.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifTask.h</name>
 			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifTask.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTask.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pif.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pif.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifPulse.c</name>
@@ -235,26 +175,6 @@
 			<name>pif/.git/logs/refs/remotes</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/objects/pack/pack-e47299dbdedc38330d629a090b1b971f54d4502f.idx</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/objects/pack/pack-e47299dbdedc38330d629a090b1b971f54d4502f.idx</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/objects/pack/pack-e47299dbdedc38330d629a090b1b971f54d4502f.pack</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/objects/pack/pack-e47299dbdedc38330d629a090b1b971f54d4502f.pack</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/refs/heads/main</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/refs/heads/main</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/logs/refs/heads/main</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.git/logs/refs/heads/main</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
