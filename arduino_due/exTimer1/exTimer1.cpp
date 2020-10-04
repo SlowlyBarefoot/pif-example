@@ -42,7 +42,7 @@ static void led_toggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unPulseItemIndex unTimer1msIndex;
+	PIF_stPulseItem *pstTimer1ms;
 
 	pinMode(PIN_DUE_LED, OUTPUT);
 
@@ -55,10 +55,10 @@ void setup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_Add(100, pifPulse_LoopAll, NULL)) return;
 
-    unTimer1msIndex = pifPulse_AddItem(g_pstTimer1ms, TT_enRepeat);
-    if (unTimer1msIndex == PIF_PULSE_INDEX_NULL) return;
-    pifPulse_AttachEvtFinish(g_pstTimer1ms, unTimer1msIndex, led_toggle, NULL);
-    pifPulse_StartItem(g_pstTimer1ms, unTimer1msIndex, 500);	// 500ms = 0.5sec
+    pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, TT_enRepeat);
+    if (!pstTimer1ms) return;
+    pifPulse_AttachEvtFinish(pstTimer1ms, led_toggle, NULL);
+    pifPulse_StartItem(pstTimer1ms, 500);	// 500ms = 0.5sec
 }
 
 // The loop function is called in an endless loop

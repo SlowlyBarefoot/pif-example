@@ -65,8 +65,8 @@ static void led_yellow_toggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unPulseItemIndex unTimer1msIndex;
-	PIF_unPulseItemIndex unTimer100usIndex;
+	PIF_stPulseItem *pstTimer1ms;
+	PIF_stPulseItem *pstTimer100us;
 
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
@@ -84,15 +84,15 @@ void setup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_Add(100, pifPulse_LoopAll, NULL)) return;
 
-    unTimer1msIndex = pifPulse_AddItem(g_pstTimer1ms, TT_enRepeat);
-    if (unTimer1msIndex == PIF_PULSE_INDEX_NULL) return;
-    pifPulse_AttachEvtFinish(g_pstTimer1ms, unTimer1msIndex, led_red_toggle, NULL);
-    if (!pifPulse_StartItem(g_pstTimer1ms, unTimer1msIndex, 500)) return;			// unPulse : 500ms = 0.5sec
+    pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, TT_enRepeat);
+    if (!pstTimer1ms) return;
+    pifPulse_AttachEvtFinish(pstTimer1ms, led_red_toggle, NULL);
+    if (!pifPulse_StartItem(pstTimer1ms, 500)) return;			// unPulse : 500ms = 0.5sec
 
-    unTimer100usIndex = pifPulse_AddItem(g_pstTimer100us, TT_enRepeat);
-    if (unTimer100usIndex == PIF_PULSE_INDEX_NULL) return;
-    pifPulse_AttachEvtFinish(g_pstTimer100us, unTimer100usIndex, led_yellow_toggle, NULL);
-    if (!pifPulse_StartItem(g_pstTimer100us, unTimer100usIndex, 500000)) return;	// unPulse : 500000us = 0.5sec
+    pstTimer100us = pifPulse_AddItem(g_pstTimer100us, TT_enRepeat);
+    if (!pstTimer100us) return;
+    pifPulse_AttachEvtFinish(pstTimer100us, led_yellow_toggle, NULL);
+    if (!pifPulse_StartItem(pstTimer100us, 500000)) return;	// unPulse : 500000us = 0.5sec
 }
 
 // The loop function is called in an endless loop
