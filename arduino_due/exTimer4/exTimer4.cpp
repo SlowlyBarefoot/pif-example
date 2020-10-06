@@ -1,3 +1,15 @@
+/**
+ * Pulse 1개를 생성후 이를 1ms Timer에 연결한다.
+ * 이 Pulse로 200ms마다 적색 LED를 10번 깜박이고 500ms마다 노란색 LED를 10회 깜박이고
+ * 1000ms마다 녹색 LED를 10회 깜박이는 이 과정을 반복한다.
+ * 여기서 Pulse의 시작과 종료 함수 사용법과 이벤트 함수의 매개변수 사용법을 알 수 있다.
+ *
+ * Create one pulse and connect it to the 1 ms timer.
+ * Repeat this process of flashing red LED 10 times every 200 ms, flashing yellow LED 10 times every 500 ms and
+ * green LED 10 times every 1000 ms with this pulse.
+ * Here you can see how to use the start and end functions of Pulse and how to use parameters of the event function.
+ */
+
 // Do not remove the include below
 #include "exTimer4.h"
 
@@ -98,16 +110,16 @@ void setup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_Add(100, pifPulse_LoopAll, NULL)) return;
 
-    pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, TT_enRepeat);
+    pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1msRed) return;
     pifPulse_AttachEvtFinish(pstTimer1msRed, led_red_toggle, pstTimer1msRed);
     pifPulse_StartItem(pstTimer1msRed, 200);	// 200ms = 0.2sec
 
-    pstTimer1msYellow = pifPulse_AddItem(g_pstTimer1ms, TT_enRepeat);
+    pstTimer1msYellow = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1msYellow) return;
     pifPulse_AttachEvtFinish(pstTimer1msYellow, led_yellow_toggle, pstTimer1msYellow);
 
-    pstTimer1msGreen = pifPulse_AddItem(g_pstTimer1ms, TT_enRepeat);
+    pstTimer1msGreen = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1msGreen) return;
     pifPulse_AttachEvtFinish(pstTimer1msGreen, led_green_toggle, pstTimer1msGreen);
 }

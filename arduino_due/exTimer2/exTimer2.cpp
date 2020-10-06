@@ -84,12 +84,12 @@ void setup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_Add(100, pifPulse_LoopAll, NULL)) return;
 
-    pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, TT_enRepeat);
+    pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1ms) return;
     pifPulse_AttachEvtFinish(pstTimer1ms, led_red_toggle, NULL);
     if (!pifPulse_StartItem(pstTimer1ms, 500)) return;			// unPulse : 500ms = 0.5sec
 
-    pstTimer100us = pifPulse_AddItem(g_pstTimer100us, TT_enRepeat);
+    pstTimer100us = pifPulse_AddItem(g_pstTimer100us, PT_enRepeat);
     if (!pstTimer100us) return;
     pifPulse_AttachEvtFinish(pstTimer100us, led_yellow_toggle, NULL);
     if (!pifPulse_StartItem(pstTimer100us, 500000)) return;	// unPulse : 500000us = 0.5sec
