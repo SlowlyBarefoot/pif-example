@@ -1,11 +1,5 @@
-/**
- * exTimer1과 동일하나 LED 깜박일때마다 Log를 출력한다.
- *
- * It is the same as exTimer1, but outputs Log whenever LED flashes.
- */
-
 // Do not remove the include below
-#include "exLogPrint.h"
+#include "exLogBuffer.h"
 
 #include "pifLog.h"
 #include "pifPulse.h"
@@ -18,9 +12,10 @@
 #define PULSE_ITEM_COUNT    	1
 #define TASK_COUNT              1
 
+#define LOG_BUFFER_SIZE			0x200
 
 static PIF_stPulse *g_pstTimer1ms = NULL;
-
+static char s_acLog[LOG_BUFFER_SIZE];
 
 extern "C" {
 	void sysTickHook()
@@ -39,6 +34,7 @@ static void log_print(char *pcString)
 static void led_toggle(void *pvIssuer)
 {
 	static BOOL sw = LOW;
+	static int count = 9;
 
 	(void)pvIssuer;
 
@@ -46,6 +42,12 @@ static void led_toggle(void *pvIssuer)
 	sw ^= 1;
 
 	pifLog_Printf(LT_enInfo, "%d", sw);
+
+	if (count) count--;
+	else {
+	    pifLog_PrintInBuffer();
+	    count = 9;
+	}
 }
 
 //The setup function is called once at startup of the sketch
@@ -61,6 +63,7 @@ void setup()
 
 	pifLog_Init();
 	pifLog_AttachActPrint(log_print);
+    pifLog_InitBufferShare(LOG_BUFFER_SIZE, s_acLog);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PULSE_ITEM_COUNT, 1);
@@ -73,6 +76,8 @@ void setup()
     if (!pstTimer1ms) return;
     pifPulse_AttachEvtFinish(pstTimer1ms, led_toggle, NULL);
     pifPulse_StartItem(pstTimer1ms, 1000);	// 1000ms = 1sec
+
+    pifLog_Disable();
 }
 
 // The loop function is called in an endless loop

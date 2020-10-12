@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 
     pif_Init();
 
+    pifLog_Init();
     pifLog_AttachActPrint(log_print);
 
     if (!pifPulse_Init(PULSE_COUNT)) goto fail;
@@ -70,6 +71,7 @@ int main(int argc, char **argv)
 fail:
     pifTask_Exit();
     pifPulse_Exit();
+    pifLog_Exit();
 
     stop_timer();
 

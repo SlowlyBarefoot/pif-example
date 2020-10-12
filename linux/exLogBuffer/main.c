@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 
     pif_Init();
 
+    pifLog_Init();
     pifLog_InitBufferAlloc(0x200);
     pifLog_AttachActPrint(log_print);
 
@@ -77,6 +78,7 @@ int main(int argc, char **argv)
 fail:
     pifTask_Exit();
     pifPulse_Exit();
+    pifLog_Exit();
 
     stop_timer();
 
