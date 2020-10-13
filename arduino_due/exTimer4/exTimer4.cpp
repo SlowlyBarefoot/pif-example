@@ -54,7 +54,7 @@ static void led_red_toggle(void *pvIssuer)
 	if (count >= 10) {
 		count = 0;
 		pifPulse_StopItem((PIF_stPulseItem *)pvIssuer);
-		pifPulse_StartItem(pstTimer1msYellow, 500);	// 500ms = 0.5sec
+		pifPulse_StartItem(pstTimer1msYellow, 500);	// 500 * 1ms = 0.5sec
 	}
 }
 
@@ -72,7 +72,7 @@ static void led_yellow_toggle(void *pvIssuer)
 	if (count >= 10) {
 		count = 0;
 		pifPulse_StopItem((PIF_stPulseItem *)pvIssuer);
-		pifPulse_StartItem(pstTimer1msGreen, 1000);	// 1000ms = 1sec
+		pifPulse_StartItem(pstTimer1msGreen, 1000);	// 1000 * 1ms = 1sec
 	}
 }
 
@@ -90,7 +90,7 @@ static void led_green_toggle(void *pvIssuer)
 	if (count >= 10) {
 		count = 0;
 		pifPulse_StopItem((PIF_stPulseItem *)pvIssuer);
-		pifPulse_StartItem(pstTimer1msRed, 200);	// 200ms = 0.2sec
+		pifPulse_StartItem(pstTimer1msRed, 200);	// 200 * 1ms = 0.2sec
 	}
 }
 
@@ -104,7 +104,7 @@ void setup()
 	pif_Init();
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PULSE_ITEM_COUNT, 1);
+    g_pstTimer1ms = pifPulse_Add(PULSE_ITEM_COUNT);
     if (!g_pstTimer1ms) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
@@ -113,7 +113,7 @@ void setup()
     pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1msRed) return;
     pifPulse_AttachEvtFinish(pstTimer1msRed, led_red_toggle, pstTimer1msRed);
-    pifPulse_StartItem(pstTimer1msRed, 200);	// 200ms = 0.2sec
+    pifPulse_StartItem(pstTimer1msRed, 200);	// 200 * 1ms = 0.2sec
 
     pstTimer1msYellow = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1msYellow) return;

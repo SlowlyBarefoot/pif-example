@@ -1,1 +1,4 @@
 /.metadata/
+*.d
+*.prefs
+*.xml
