@@ -33,13 +33,11 @@ static PIF_stPulseItem *pstTimer1msYellow = NULL;
 static PIF_stPulseItem *pstTimer1msGreen = NULL;
 
 
-extern "C" {
-	void sysTickHook()
-	{
-		pif_sigTimer1ms();
+void sysTickHook()
+{
+	pif_sigTimer1ms();
 
-		pifPulse_sigTick(g_pstTimer1ms);
-	}
+	pifPulse_sigTick(g_pstTimer1ms);
 }
 
 static void led_red_toggle(void *pvIssuer)

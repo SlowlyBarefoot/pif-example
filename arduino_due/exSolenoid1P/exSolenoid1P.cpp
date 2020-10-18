@@ -44,31 +44,24 @@ static void _SolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir)
 static void _SolenoidEvent(void *pvParam)
 {
 	ST_SolenoidTest *pstParam = (ST_SolenoidTest *)pvParam;
+	static BOOL sw = LOW;
 
 	pifSolenoid_ActionOn(pstParam->pstSolenoid, 0);
 
 	pifPulse_StartItem(pstParam->pstTimerItem, 1000);	// 1000 * 1ms = 1sec
 
 	pifLog_Printf(LT_enInfo, "_SolenoidEvent()");
+
+	digitalWrite(PIN_DUE_LED, sw);
+	sw ^= 1;
 }
 
 extern "C" {
 	void sysTickHook()
 	{
-		static int nCount = 0;
-		static BOOL sw = LOW;
-
 		pif_sigTimer1ms();
 
 		pifPulse_sigTick(g_pstTimer);
-
-		if (!nCount) {
-			digitalWrite(PIN_DUE_LED, sw);
-			sw ^= 1;
-
-			nCount = 999;
-		}
-		else nCount--;
 	}
 }
 

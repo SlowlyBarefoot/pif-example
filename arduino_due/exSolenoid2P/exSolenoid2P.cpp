@@ -63,6 +63,7 @@ static void _SolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir)
 static void _SolenoidEvent(void *pvParam)
 {
 	ST_SolenoidTest *pstParam = (ST_SolenoidTest *)pvParam;
+	static BOOL sw = LOW;
 
     pifSolenoid_ActionOnDir(pstParam->pstSolenoid, 0, pstParam->enDir);
 
@@ -71,25 +72,17 @@ static void _SolenoidEvent(void *pvParam)
 	pifLog_Printf(LT_enInfo, "_SolenoidEvent(%d)", pstParam->enDir);
 
 	pstParam->enDir = pstParam->enDir == SD_enRight ? SD_enLeft : SD_enRight;
+
+	digitalWrite(PIN_DUE_LED, sw);
+	sw ^= 1;
 }
 
 extern "C" {
 	void sysTickHook()
 	{
-		static int nCount = 0;
-		static BOOL sw = LOW;
-
 		pif_sigTimer1ms();
 
 		pifPulse_sigTick(g_pstTimer);
-
-		if (!nCount) {
-			digitalWrite(PIN_DUE_LED, sw);
-			sw ^= 1;
-
-			nCount = 999;
-		}
-		else nCount--;
 	}
 }
 
