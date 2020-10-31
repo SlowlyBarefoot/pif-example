@@ -25,8 +25,8 @@
 #define PIN_15	33
 #define PIN_16	31
 
-#define TIMER_COUNT         	1
-#define TIMER_ITEM_COUNT    	10
+#define PULSE_COUNT         	1
+#define PULSE_ITEM_COUNT    	10
 #define TASK_COUNT              5
 
 
@@ -213,8 +213,8 @@ void setup()
     pifLog_Init();
 	pifLog_AttachActPrint(_LogPrint);
 
-    if (!pifPulse_Init(TIMER_COUNT)) return;
-    s_pstTimer = pifPulse_Add(TIMER_ITEM_COUNT);
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    s_pstTimer = pifPulse_Add(PULSE_ITEM_COUNT);
     if (!s_pstTimer) return;
 
     if (!pifDotMatrix_Init(s_pstTimer, 1)) return;
