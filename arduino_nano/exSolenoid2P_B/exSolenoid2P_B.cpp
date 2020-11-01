@@ -110,7 +110,7 @@ void setup()
     if (!g_pstTimer) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_Add(100, pifPulse_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
 
     if (!pifSolenoid_Init(g_pstTimer, SOLENOID_COUNT)) return;
     s_stSolenoidTest.pstSolenoid = pifSolenoid_Add(0, ST_en2Point, 30, _SolenoidOrder);	// 30 * 1ms = 30ms

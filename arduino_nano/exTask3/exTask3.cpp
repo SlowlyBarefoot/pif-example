@@ -94,14 +94,14 @@ void setup()
 
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    s_pstTask[0] = pifTask_Add(30, led_red_toggle, NULL);
+    s_pstTask[0] = pifTask_AddRatio(30, led_red_toggle, NULL);
     if (!s_pstTask[0]) return;
 
-    s_pstTask[1] = pifTask_Add(60, led_yellow_toggle, NULL);
+    s_pstTask[1] = pifTask_AddRatio(60, led_yellow_toggle, NULL);
     if (!s_pstTask[1]) return;
     pifTask_Pause(s_pstTask[1]);
 
-    s_pstTask[2] = pifTask_Add(100, led_green_toggle, NULL);
+    s_pstTask[2] = pifTask_AddRatio(100, led_green_toggle, NULL);
     if (!s_pstTask[2]) return;
     pifTask_Pause(s_pstTask[2]);
 }

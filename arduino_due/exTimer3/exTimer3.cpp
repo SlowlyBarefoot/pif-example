@@ -91,7 +91,7 @@ void setup()
     if (!g_pstTimer1ms) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_Add(100, pifPulse_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
 
     pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
     if (!pstTimer1msRed) return;

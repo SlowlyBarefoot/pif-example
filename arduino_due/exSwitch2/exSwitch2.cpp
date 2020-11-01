@@ -91,8 +91,8 @@ void setup()
 	s_pstTiltSwitch->evtChange = _TiltSwitchChange;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_Add(100, pifPulse_LoopAll, NULL)) return;
-    if (!pifTask_Add(3, pifSwitch_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(3, pifSwitch_LoopAll, NULL)) return;
 
     pifPulse_StartItem(pstTimerSwitch, 20);		// 20 * 1ms = 20ms
 }

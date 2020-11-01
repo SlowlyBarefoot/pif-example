@@ -133,8 +133,8 @@ void setup()
     if (!s_pstFnd) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_Add(100, pifPulse_LoopAll, NULL)) return;
-    if (!pifTask_Add(5, pifFnd_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(5, pifFnd_LoopAll, NULL)) return;
 
     pifFnd_Start(s_pstFnd);
 
