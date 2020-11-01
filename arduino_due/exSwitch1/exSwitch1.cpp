@@ -24,7 +24,7 @@ static void _LogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-static SWITCH _PushSwitchReceive(PIF_stSwitch *pstOwner)
+static SWITCH _PushSwitchAcquire(PIF_stSwitch *pstOwner)
 {
 	(void)pstOwner;
 
@@ -36,7 +36,7 @@ static void _PushSwitchChange(PIF_stSwitch *pstOwner)
 	digitalWrite(PIN_LED_RED, pstOwner->swCurrState);
 }
 
-static SWITCH _TiltSwitchReceive(PIF_stSwitch *pstOwner)
+static SWITCH _TiltSwitchAcquire(PIF_stSwitch *pstOwner)
 {
 	(void)pstOwner;
 
@@ -68,12 +68,12 @@ void setup()
     s_pstPushSwitch = pifSwitch_Add(1, 0);
     if (!s_pstPushSwitch) return;
     s_pstPushSwitch->bStateReverse = TRUE;
-    s_pstPushSwitch->actReceive = _PushSwitchReceive;
+    s_pstPushSwitch->actAcquire = _PushSwitchAcquire;
     s_pstPushSwitch->evtChange = _PushSwitchChange;
 
     s_pstTiltSwitch = pifSwitch_Add(2, 0);
 	if (!s_pstTiltSwitch) return;
-	s_pstTiltSwitch->actReceive = _TiltSwitchReceive;
+	s_pstTiltSwitch->actAcquire = _TiltSwitchAcquire;
 	s_pstTiltSwitch->evtChange = _TiltSwitchChange;
 
     if (!pifTask_Init(TASK_COUNT)) return;

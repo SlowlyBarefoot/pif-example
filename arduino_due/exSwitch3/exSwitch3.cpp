@@ -29,7 +29,7 @@ static void _LogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-static void _SwitchReceive(void *pvIssuer)
+static void _SwitchAcquire(void *pvIssuer)
 {
 	(void)pvIssuer;
 
@@ -79,7 +79,7 @@ void setup()
 
     pstTimerSwitch = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimerSwitch) return;
-    pifPulse_AttachEvtFinish(pstTimerSwitch, _SwitchReceive, NULL);
+    pifPulse_AttachEvtFinish(pstTimerSwitch, _SwitchAcquire, NULL);
 
     if (!pifSwitch_Init(SWITCH_COUNT)) return;
 
