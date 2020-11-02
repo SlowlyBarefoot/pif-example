@@ -24,28 +24,32 @@ static void _LogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-static SWITCH _PushSwitchAcquire(PIF_stSwitch *pstOwner)
+static SWITCH _PushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 {
-	(void)pstOwner;
+	(void)unDeviceCode;
 
 	return digitalRead(PIN_PUSH_SWITCH);
 }
 
-static void _PushSwitchChange(PIF_stSwitch *pstOwner)
+static void _PushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 {
-	digitalWrite(PIN_LED_RED, pstOwner->swCurrState);
+	(void)unDeviceCode;
+
+	digitalWrite(PIN_LED_RED, swState);
 }
 
-static SWITCH _TiltSwitchAcquire(PIF_stSwitch *pstOwner)
+static SWITCH _TiltSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 {
-	(void)pstOwner;
+	(void)unDeviceCode;
 
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-static void _TiltSwitchChange(PIF_stSwitch *pstOwner)
+static void _TiltSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 {
-	digitalWrite(PIN_LED_YELLOW, pstOwner->swCurrState);
+	(void)unDeviceCode;
+
+	digitalWrite(PIN_LED_YELLOW, swState);
 }
 
 //The setup function is called once at startup of the sketch
