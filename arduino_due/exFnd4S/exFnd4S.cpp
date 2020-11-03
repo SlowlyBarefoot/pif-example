@@ -53,14 +53,14 @@ static void _Fnd1Display(uint8_t ucSegment, uint8_t ucDigit, uint8_t ucColor)
 	}
 }
 
-static void _FndTest(void *pvIssuer)
+static void _FndTest(PIF_stTask *pstTask)
 {
 	static int nBlink = 0;
 	static BOOL swLed = LOW;
 	static BOOL swBlink = FALSE;
 	static BOOL swFloat = FALSE;
 
-	(void)pvIssuer;
+	(void)pstTask;
 
 	if (swFloat) {
 		pifFnd_SetSubNumericDigits(s_pstFnd, 0);
@@ -110,8 +110,6 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_stPulseItem *pstTimer1ms;
-
 	pinMode(PIN_DUE_LED, OUTPUT);
 
 	for (int i = 0; i < 8; i++) {
@@ -133,19 +131,15 @@ void setup()
     if (!s_pstTimer) return;
 
     if (!pifFnd_Init(s_pstTimer, 4)) return;
-    s_pstFnd = pifFnd_AddSingle(1, 4, 8, _Fnd1Display);
+    s_pstFnd = pifFnd_Add(1, 4, 8, _Fnd1Display);
     if (!s_pstFnd) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
     if (!pifTask_AddRatio(5, pifFnd_LoopAll, NULL)) return;
+    if (!pifTask_AddPeriod(1000, _FndTest, NULL)) return;	// 1000 * 1ms = 1sec
 
     pifFnd_Start(s_pstFnd);
-
-    pstTimer1ms = pifPulse_AddItem(s_pstTimer, PT_enRepeat);
-    if (!pstTimer1ms) return;
-    pifPulse_AttachEvtFinish(pstTimer1ms, _FndTest, NULL);
-    pifPulse_StartItem(pstTimer1ms, 1000);	// 1000 * 1ms = 1sec
 }
 
 // The loop function is called in an endless loop
