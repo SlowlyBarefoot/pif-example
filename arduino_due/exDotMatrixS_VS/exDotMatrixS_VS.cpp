@@ -6,24 +6,25 @@
 #include "pifTask.h"
 
 
-#define PIN_DUE_LED				13
+#define PIN_LED_L				13
 
-#define PIN_1	30
-#define PIN_2	32
-#define PIN_3	34
-#define PIN_4	36
-#define PIN_5	38
-#define PIN_6	40
-#define PIN_7	42
-#define PIN_8	44
-#define PIN_9	45
-#define PIN_10	43
-#define PIN_11	41
-#define PIN_12	39
-#define PIN_13	37
-#define PIN_14	35
-#define PIN_15	33
-#define PIN_16	31
+#define PIN_1	44
+#define PIN_2	42
+#define PIN_3	40
+#define PIN_4	38
+#define PIN_5	36
+#define PIN_6	34
+#define PIN_7	32
+#define PIN_8	30
+#define PIN_9	31
+#define PIN_10	33
+#define PIN_11	35
+#define PIN_12	37
+#define PIN_13	39
+#define PIN_14	41
+#define PIN_15	43
+#define PIN_16	44
+
 
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
@@ -136,7 +137,7 @@ static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stDotMatrix *s_pstDotMatrix = NULL;
 
 
-static void _LogPrint(char *pcString)
+static void _actLogPrint(char *pcString)
 {
 	Serial.print(pcString);
 }
@@ -157,18 +158,18 @@ static void _DotMatrixDisplay(uint8_t ucCol, uint8_t ucRow, uint8_t ucData, uint
 	row = ucRow;
 }
 
-static void _DotMatrixEventShiftFinish(PIF_stDotMatrix *pstOwner)
+static void _evtDotMatrixShiftFinish(PIF_stDotMatrix *pstOwner)
 {
 	pifLog_Printf(LT_enInfo, "_DotMatrixEventShiftFinish(%d, %xh)", pstOwner->unDeviceCode, pstOwner->enShift);
 }
 
-static void _DotMatrixTest(void *pvIssuer)
+static void _DotMatrixTest(PIF_stTask *pstTask)
 {
 	static BOOL swLed = LOW;
 	static int nShift = 0;
 	static int index = 0;
 
-	(void)pvIssuer;
+	(void)pstTask;
 
 	pifDotMatrix_SelectPattern(s_pstDotMatrix, index);
 	index++;
@@ -202,7 +203,7 @@ static void _DotMatrixTest(void *pvIssuer)
 		break;
 	}
 
-	digitalWrite(PIN_DUE_LED, swLed);
+	digitalWrite(PIN_LED_L, swLed);
 	swLed ^= 1;
 }
 
@@ -218,12 +219,11 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_stPulseItem *pstTimer1ms;
 	char cPattern[] = "123456789";
 	static uint8_t ucPattern[9 * 8];
 	int n;
 
-	pinMode(PIN_DUE_LED, OUTPUT);
+	pinMode(PIN_LED_L, OUTPUT);
 
 	for (int i = 0; i < 8; i++) {
 		pinMode(c_ucPinDotMatrixCol[i], OUTPUT);
@@ -235,7 +235,7 @@ void setup()
     pif_Init();
 
     pifLog_Init();
-	pifLog_AttachActPrint(_LogPrint);
+	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     s_pstTimer = pifPulse_Add(PULSE_ITEM_COUNT);
@@ -251,22 +251,18 @@ void setup()
 		}
 	}
 
-    s_pstDotMatrix = pifDotMatrix_AddSingle(1, 8, 8, 1, _DotMatrixDisplay);
+    s_pstDotMatrix = pifDotMatrix_Add(1, 8, 8, 1, _DotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-    pifDotMatrix_AttachEvtShiftFinish(s_pstDotMatrix, _DotMatrixEventShiftFinish);
+    pifDotMatrix_AttachEvtShiftFinish(s_pstDotMatrix, _evtDotMatrixShiftFinish);
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;
    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 9 * 8, ucPattern)) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
 	if (!pifTask_AddRatio(5, pifDotMatrix_LoopAll, NULL)) return;
+	if (!pifTask_AddPeriod(1000, _DotMatrixTest, NULL)) return;		// 1000 * 1ms = 1sec
 
 	pifDotMatrix_Start(s_pstDotMatrix);
-
-    pstTimer1ms = pifPulse_AddItem(s_pstTimer, PT_enRepeat);
-    if (!pstTimer1ms) return;
-    pifPulse_AttachEvtFinish(pstTimer1ms, _DotMatrixTest, NULL);
-    pifPulse_StartItem(pstTimer1ms, 1000);	// 1000 * 1ms = 1sec
 }
 
 // The loop function is called in an endless loop
