@@ -24,28 +24,32 @@ static void _LogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-static SWITCH _PushSwitchReceive(PIF_stSwitch *pstOwner)
+static SWITCH _PushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 {
-	(void)pstOwner;
+	(void)unDeviceCode;
 
 	return digitalRead(PIN_PUSH_SWITCH);
 }
 
-static void _PushSwitchChange(PIF_stSwitch *pstOwner)
+static void _PushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 {
-	digitalWrite(PIN_LED_RED, pstOwner->swCurrState);
+	(void)unDeviceCode;
+
+	digitalWrite(PIN_LED_RED, swState);
 }
 
-static SWITCH _TiltSwitchReceive(PIF_stSwitch *pstOwner)
+static SWITCH _TiltSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 {
-	(void)pstOwner;
+	(void)unDeviceCode;
 
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-static void _TiltSwitchChange(PIF_stSwitch *pstOwner)
+static void _TiltSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 {
-	digitalWrite(PIN_LED_YELLOW, pstOwner->swCurrState);
+	(void)unDeviceCode;
+
+	digitalWrite(PIN_LED_YELLOW, swState);
 }
 
 //The setup function is called once at startup of the sketch
@@ -68,16 +72,16 @@ void setup()
     s_pstPushSwitch = pifSwitch_Add(1, 0);
     if (!s_pstPushSwitch) return;
     s_pstPushSwitch->bStateReverse = TRUE;
-    s_pstPushSwitch->actReceive = _PushSwitchReceive;
+    s_pstPushSwitch->actAcquire = _PushSwitchAcquire;
     s_pstPushSwitch->evtChange = _PushSwitchChange;
 
     s_pstTiltSwitch = pifSwitch_Add(2, 0);
 	if (!s_pstTiltSwitch) return;
-	s_pstTiltSwitch->actReceive = _TiltSwitchReceive;
+	s_pstTiltSwitch->actAcquire = _TiltSwitchAcquire;
 	s_pstTiltSwitch->evtChange = _TiltSwitchChange;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(3, pifSwitch_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;
 }
 
 // The loop function is called in an endless loop

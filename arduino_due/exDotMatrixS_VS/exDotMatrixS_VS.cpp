@@ -258,8 +258,9 @@ void setup()
    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 9 * 8, ucPattern)) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
-	if (!pifTask_AddRatio(5, pifDotMatrix_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
+	if (!pifTask_AddRatio(5, pifDotMatrix_taskAll, NULL)) return;
+
 	if (!pifTask_AddPeriod(1000, _DotMatrixTest, NULL)) return;		// 1000 * 1ms = 1sec
 
 	pifDotMatrix_Start(s_pstDotMatrix);

@@ -12,7 +12,7 @@
 #include "pifTask.h"
 
 
-#define PIN_DUE_LED				13
+#define PIN_LED_L				13
 
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	1
@@ -42,7 +42,7 @@ static void led_toggle(void *pvIssuer)
 
 	(void)pvIssuer;
 
-	digitalWrite(PIN_DUE_LED, sw);
+	digitalWrite(PIN_LED_L, sw);
 	sw ^= 1;
 
 	pifLog_Printf(LT_enInfo, "%d", sw);
@@ -53,7 +53,7 @@ void setup()
 {
 	PIF_stPulseItem *pstTimer1ms;
 
-	pinMode(PIN_DUE_LED, OUTPUT);
+	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200);
 
@@ -67,7 +67,7 @@ void setup()
     if (!g_pstTimer1ms) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
 
     pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1ms) return;

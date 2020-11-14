@@ -6,7 +6,7 @@
 #include "pifTask.h"
 
 
-#define PIN_DUE_LED				13
+#define PIN_LED_L				13
 
 #define PIN_74HC595_DATA		46
 #define PIN_74HC595_LATCH		44
@@ -85,7 +85,7 @@ static void _FndTest(PIF_stTask *pstTask)
 		swBlink ^= 1;
 	}
 
-	digitalWrite(PIN_DUE_LED, swLed);
+	digitalWrite(PIN_LED_L, swLed);
 	swLed ^= 1;
 
 	pifLog_Printf(LT_enInfo, "Blink:%d Float:%d", swBlink, swFloat);
@@ -103,7 +103,7 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	pinMode(PIN_DUE_LED, OUTPUT);
+	pinMode(PIN_LED_L, OUTPUT);
 
 	pinMode(PIN_74HC595_DATA, OUTPUT);
 	pinMode(PIN_74HC595_LATCH, OUTPUT);
@@ -128,8 +128,9 @@ void setup()
     if (!s_pstFnd) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
-    if (!pifTask_AddRatio(5, pifFnd_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
+    if (!pifTask_AddRatio(5, pifFnd_taskAll, NULL)) return;
+
     if (!pifTask_AddPeriod(1000, _FndTest, NULL)) return;	// 1000 * 1ms = 1sec
 
     pifFnd_Start(s_pstFnd);

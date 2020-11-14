@@ -6,7 +6,7 @@
 #include "pifTask.h"
 
 
-#define PIN_DUE_LED				13
+#define PIN_LED_L				13
 
 #define PIN_L298N_ENB_PWM		2
 #define PIN_L298N_IN3			44
@@ -73,7 +73,7 @@ static void _SolenoidEvent(void *pvParam)
 
 	pstParam->enDir = pstParam->enDir == SD_enRight ? SD_enLeft : SD_enRight;
 
-	digitalWrite(PIN_DUE_LED, sw);
+	digitalWrite(PIN_LED_L, sw);
 	sw ^= 1;
 }
 
@@ -89,7 +89,7 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	pinMode(PIN_DUE_LED, OUTPUT);
+	pinMode(PIN_LED_L, OUTPUT);
 
 	pinMode(PIN_L298N_ENB_PWM, OUTPUT);
 	pinMode(PIN_L298N_IN3, OUTPUT);
@@ -107,7 +107,7 @@ void setup()
     if (!g_pstTimer) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
 
     if (!pifSolenoid_Init(g_pstTimer, SOLENOID_COUNT)) return;
     s_stSolenoidTest.pstSolenoid = pifSolenoid_Add(0, ST_en2Point, 30, _SolenoidOrder);	// 30 * 1ms = 30ms

@@ -10,7 +10,7 @@
 #include "pifTask.h"
 
 
-#define PIN_NANO_LED			13
+#define PIN_LED_L				13
 
 #define TASK_COUNT              1
 
@@ -21,7 +21,7 @@ static void led_toggle(PIF_stTask *pstTask)
 	static BOOL sw = LOW;
 
     if (!nCount) {
-		digitalWrite(PIN_NANO_LED, sw);
+		digitalWrite(PIN_LED_L, sw);
 		sw ^= 1;
 
 		nCount = 9999;
@@ -32,7 +32,7 @@ static void led_toggle(PIF_stTask *pstTask)
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	pinMode(PIN_NANO_LED, OUTPUT);
+	pinMode(PIN_LED_L, OUTPUT);
 
 	pif_Init();
 

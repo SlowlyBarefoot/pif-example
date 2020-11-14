@@ -123,7 +123,8 @@ void setup()
     pstKeypad->evtDoublePressed = _evtKeypadDoublePressed;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddPeriod(10, pifKeypad_LoopAll, NULL)) return;	// 10ms
+    if (!pifTask_AddPeriod(10, pifKeypad_taskAll, NULL)) return;	// 10ms
+
     if (!pifTask_AddPeriod(500, _actLedToggle, NULL)) return;		// 500ms
 }
 

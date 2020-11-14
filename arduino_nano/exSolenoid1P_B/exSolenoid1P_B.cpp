@@ -8,7 +8,7 @@
 #include "pifTask.h"
 
 
-#define PIN_NANO_LED			13
+#define PIN_LED_L				13
 
 #define PIN_RELAY_1CH			5
 
@@ -54,7 +54,7 @@ static void _SolenoidEvent(void *pvParam)
 
 	pifLog_Printf(LT_enInfo, "_SolenoidEvent()");
 
-	digitalWrite(PIN_NANO_LED, sw);
+	digitalWrite(PIN_LED_L, sw);
 	sw ^= 1;
 }
 
@@ -68,7 +68,7 @@ void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	pinMode(PIN_NANO_LED, OUTPUT);
+	pinMode(PIN_LED_L, OUTPUT);
 
 	pinMode(PIN_RELAY_1CH, OUTPUT);
 
@@ -87,7 +87,7 @@ void setup()
     if (!g_pstTimer) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
 
     if (!pifSolenoid_Init(g_pstTimer, SOLENOID_COUNT)) return;
     s_stSolenoidTest.pstSolenoid = pifSolenoid_Add(0, ST_en1Point, 300, _SolenoidOrder);	// 300 * 1ms = 300ms

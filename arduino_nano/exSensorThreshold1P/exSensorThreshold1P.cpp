@@ -90,8 +90,8 @@ void setup()
     pifSensor_SetEventThreshold1P(s_pstSensor, 150, _SensorThreshold);
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;		// 100%
-    if (!pifTask_AddPeriod(100, pifSensor_LoopAll, NULL)) return;	// 100ms
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
+    if (!pifTask_AddPeriod(100, pifSensor_taskAll, NULL)) return;	// 100ms
 
     if (!pifTask_AddPeriod(500, _LedToggle, NULL)) return;			// 500ms
     if (!pifTask_AddPeriod(100, _SensorAcquisition, NULL)) return;	// 100ms

@@ -98,8 +98,8 @@ void setup()
     if (!pifSwitch_AttachFilter(s_pstTiltSwitch, PIF_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_LoopAll, NULL)) return;
-    if (!pifTask_AddRatio(3, pifSwitch_LoopAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
+    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;
 
     pifPulse_StartItem(pstTimerSwitch, 20);		// 20 * 1ms = 20ms
 }
