@@ -46,12 +46,12 @@ static void _Fnd1Display(uint8_t ucSegment, uint8_t ucDigit, uint8_t ucColor)
 {
 	(void)ucColor;
 
-	for (int j = 0; j < 8; j++) {
-		digitalWrite(c_unPinFnd[j], (ucSegment >> j) & 1);
+	for (int j = 0; j < 4; j++) {
+		digitalWrite(c_unPinCom[j], j != ucDigit);
 	}
 
-	for (int j = 0; j < 4; j++) {
-		digitalWrite(c_unPinCom[j], !((ucDigit >> j) & 1));
+	for (int j = 0; j < 8; j++) {
+		digitalWrite(c_unPinFnd[j], (ucSegment >> j) & 1);
 	}
 }
 
@@ -76,11 +76,15 @@ static void _FndTest(PIF_stTask *pstTask)
 		else {
 			pifFnd_SetString(s_pstFnd, (char *)"OVER");
 		}
+
+		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
 	}
 	else {
 		pifFnd_SetSubNumericDigits(s_pstFnd, 1);
 		double dValue = (rand() % 11000 - 1000) / 10.0;
 		pifFnd_SetFloat(s_pstFnd, dValue);
+
+		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%1f", swBlink, swFloat, dValue);
 	}
 	swFloat ^= 1;
 	nBlink = (nBlink + 1) % 20;
@@ -96,8 +100,6 @@ static void _FndTest(PIF_stTask *pstTask)
 
 	digitalWrite(PIN_LED_L, swLed);
 	swLed ^= 1;
-
-	pifLog_Printf(LT_enInfo, "Blink:%d Float:%d", swBlink, swFloat);
 }
 
 void sysTickHook()
