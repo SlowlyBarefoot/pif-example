@@ -1,5 +1,5 @@
 // Do not remove the include below
-#include "exDotMatrixS_HS.h"
+#include "exDotMatrixS_SR.h"
 
 #include "pifDotMatrix.h"
 #include "pifLog.h"
@@ -8,31 +8,14 @@
 
 #define PIN_LED_L				13
 
-#define PIN_1	23
-#define PIN_2	25
-#define PIN_3	27
-#define PIN_4	29
-#define PIN_5	31
-#define PIN_6	33
-#define PIN_7	35
-#define PIN_8	37
-#define PIN_9	39
-#define PIN_10	41
-#define PIN_11	43
-#define PIN_12	45
-#define PIN_13	47
-#define PIN_14	49
-#define PIN_15	51
-#define PIN_16	53
-
+#define PIN_74HC595_DATA		48
+#define PIN_74HC595_LATCH		50
+#define PIN_74HC595_SHIFT		52
 
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
 #define TASK_COUNT              5
 
-
-const uint8_t c_ucPinDotMatrixCol[] = { PIN_13, PIN_3, PIN_4, PIN_10, PIN_6, PIN_11, PIN_15, PIN_16 };
-const uint8_t c_ucPinDotMatrixRow[] = { PIN_9, PIN_14, PIN_8, PIN_12, PIN_1, PIN_7, PIN_2, PIN_5 };
 
 const uint8_t font8x8_basic[96][8] = {
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},   // U+0020 (space)
@@ -144,26 +127,16 @@ static void _actLogPrint(char *pcString)
 
 static void _actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 {
-	static int row = -1;
-
-	if (row >= 0) digitalWrite(c_ucPinDotMatrixRow[row], LOW);
-
-	digitalWrite(c_ucPinDotMatrixRow[ucRow], HIGH);
-	for (int col = 0; col < 8; col++) {
-		digitalWrite(c_ucPinDotMatrixCol[col], !((*pucData >> col) & 1));
-	}
-	row = ucRow;
-}
-
-static void _evtDotMatrixShiftFinish(PIF_stDotMatrix *pstOwner)
-{
-	pifLog_Printf(LT_enInfo, "_DotMatrixEventShiftFinish(%d, %xh)", pstOwner->unDeviceCode, pstOwner->enShift);
+	digitalWrite(PIN_74HC595_LATCH, LOW);
+	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, 1 << ucRow);
+	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ~(*pucData));
+	digitalWrite(PIN_74HC595_LATCH, HIGH);
 }
 
 static void _taskDotMatrixTest(PIF_stTask *pstTask)
 {
 	static BOOL swLed = LOW;
-	static int nShift = 0;
+	static int nBlink = 0;
 	static int index = 0;
 
 	(void)pstTask;
@@ -172,32 +145,16 @@ static void _taskDotMatrixTest(PIF_stTask *pstTask)
 	index++;
 	if (index >= 96) index = 0;
 
-	nShift++;
-	switch (nShift) {
-	case 2:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enLeft), 200, 3);
-		break;
-
-	case 4:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enRight), 200, 3);
-		break;
-
+	nBlink++;
+	switch (nBlink) {
 	case 10:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enLeft | DMS_enRepeatHor), 200, 0);
-		break;
+	    pifDotMatrix_BlinkOn(s_pstDotMatrix, 200);
+	    break;
 
 	case 20:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enRight | DMS_enRepeatHor), 200, 0);
-		break;
-
-	case 30:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enLeft | DMS_enPingPongHor), 200, 0);
-		break;
-
-	case 50:
-		pifDotMatrix_ShiftOff(s_pstDotMatrix);
-		nShift = 0;
-		break;
+	    pifDotMatrix_BlinkOff(s_pstDotMatrix);
+	    nBlink = 0;
+	    break;
 	}
 
 	digitalWrite(PIN_LED_L, swLed);
@@ -216,16 +173,11 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	char cPattern[] = "Hello";
-	static uint8_t ucPattern[5 * 8];
-	int n;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
-	for (int i = 0; i < 8; i++) {
-		pinMode(c_ucPinDotMatrixCol[i], OUTPUT);
-		pinMode(c_ucPinDotMatrixRow[i], OUTPUT);
-	}
+	pinMode(PIN_74HC595_DATA, OUTPUT);
+	pinMode(PIN_74HC595_LATCH, OUTPUT);
+	pinMode(PIN_74HC595_SHIFT, OUTPUT);
 
 	Serial.begin(115200); //Doesn't matter speed
 
@@ -240,19 +192,12 @@ void setup()
 
     if (!pifDotMatrix_Init(s_pstTimer, 1)) return;
 
-	n = 0;
-	for (int k = 0; k < 8; k++) {
-		for (int i = 0; i < 5; i++) {
-			ucPattern[n] = font8x8_basic[cPattern[i] - 0x20][k];
-			n++;
-		}
-	}
-
     s_pstDotMatrix = pifDotMatrix_Add(1, 8, 8, _actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-    pifDotMatrix_AttachEvtShiftFinish(s_pstDotMatrix, _evtDotMatrixShiftFinish);
-    if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;
-   	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 5 * 8, 8, ucPattern)) return;
+    if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 96)) return;
+    for (int i = 0; i < 96; i++) {
+    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 8, (uint8_t *)font8x8_basic[i])) return;
+    }
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;

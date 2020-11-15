@@ -8,22 +8,22 @@
 
 #define PIN_LED_L				13
 
-#define PIN_1	44
-#define PIN_2	42
-#define PIN_3	40
-#define PIN_4	38
-#define PIN_5	36
-#define PIN_6	34
-#define PIN_7	32
-#define PIN_8	30
-#define PIN_9	31
-#define PIN_10	33
-#define PIN_11	35
-#define PIN_12	37
-#define PIN_13	39
-#define PIN_14	41
-#define PIN_15	43
-#define PIN_16	44
+#define PIN_1	23
+#define PIN_2	25
+#define PIN_3	27
+#define PIN_4	29
+#define PIN_5	31
+#define PIN_6	33
+#define PIN_7	35
+#define PIN_8	37
+#define PIN_9	39
+#define PIN_10	41
+#define PIN_11	43
+#define PIN_12	45
+#define PIN_13	47
+#define PIN_14	49
+#define PIN_15	51
+#define PIN_16	53
 
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
@@ -141,23 +141,20 @@ static void _actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-static void _DotMatrixDisplay(uint8_t ucCol, uint8_t ucRow, uint8_t ucData, uint8_t ucColor)
+static void _actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 {
 	static int row = -1;
-
-	(void)ucCol;
-	(void)ucColor;
 
 	if (row >= 0) digitalWrite(c_ucPinDotMatrixRow[row], LOW);
 
 	digitalWrite(c_ucPinDotMatrixRow[ucRow], HIGH);
 	for (int col = 0; col < 8; col++) {
-		digitalWrite(c_ucPinDotMatrixCol[col], !((ucData >> col) & 1));
+		digitalWrite(c_ucPinDotMatrixCol[col], !((*pucData >> col) & 1));
 	}
 	row = ucRow;
 }
 
-static void _DotMatrixTest(PIF_stTask *pstTask)
+static void _taskDotMatrixTest(PIF_stTask *pstTask)
 {
 	static BOOL swLed = LOW;
 	static int nBlink = 0;
@@ -217,7 +214,7 @@ void setup()
 
     if (!pifDotMatrix_Init(s_pstTimer, 1)) return;
 
-    s_pstDotMatrix = pifDotMatrix_Add(1, 8, 8, 1, _DotMatrixDisplay);
+    s_pstDotMatrix = pifDotMatrix_Add(1, 8, 8, _actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 96)) return;
     for (int i = 0; i < 96; i++) {
@@ -228,7 +225,7 @@ void setup()
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
 	if (!pifTask_AddRatio(5, pifDotMatrix_taskAll, NULL)) return;
 
-	if (!pifTask_AddPeriod(1000, _DotMatrixTest, NULL)) return;		// 1000 * 1ms = 1sec
+	if (!pifTask_AddPeriod(1000, _taskDotMatrixTest, NULL)) return;		// 1000 * 1ms = 1sec
 
 	pifDotMatrix_Start(s_pstDotMatrix);
 }
