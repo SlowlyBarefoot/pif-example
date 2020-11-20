@@ -1,7 +1,7 @@
 // Do not remove the include below
 #include <MsTimer2.h>
 
-#include "exFnd4S.h"
+#include "exFnd4S_SR2.h"
 
 #include "pifFnd.h"
 #include "pifLog.h"
@@ -9,6 +9,10 @@
 
 
 #define PIN_LED_L				13
+
+#define PIN_74HC595_DATA		5
+#define PIN_74HC595_LATCH		7
+#define PIN_74HC595_SHIFT		8
 
 #define FND_COUNT         		1
 #define PULSE_COUNT         	1
@@ -19,24 +23,6 @@
 static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stFnd *s_pstFnd = NULL;
 
-const uint8_t c_unPinFnd[] = {
-		6,		// a
-		10,		// b
-		11,		// c
-		3, 		// d
-		2, 		// e
-		7, 		// f
-		12,	 	// g
-		4 		// dp
-};
-
-const uint8_t c_unPinCom[] = {
-		5,		// COM1
-		8,		// COM2
-		9,		// COM3
-		13		// COM4
-};
-
 
 static void _actLogPrint(char *pcString)
 {
@@ -45,13 +31,10 @@ static void _actLogPrint(char *pcString)
 
 static void _actFnd1Display(uint8_t ucSegment, uint8_t ucDigit)
 {
-	for (int j = 0; j < 4; j++) {
-		digitalWrite(c_unPinCom[j], j != ucDigit);
-	}
-
-	for (int j = 0; j < 8; j++) {
-		digitalWrite(c_unPinFnd[j], (ucSegment >> j) & 1);
-	}
+	digitalWrite(PIN_74HC595_LATCH, LOW);
+	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ~(1 << ucDigit));
+	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ucSegment);
+	digitalWrite(PIN_74HC595_LATCH, HIGH);
 }
 
 static void _taskFndTest(PIF_stTask *pstTask)
@@ -113,12 +96,9 @@ void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
 
-	for (int i = 0; i < 8; i++) {
-		pinMode(c_unPinFnd[i], OUTPUT);
-	}
-	for (int i = 0; i < 4; i++) {
-		pinMode(c_unPinCom[i], OUTPUT);
-	}
+	pinMode(PIN_74HC595_DATA, OUTPUT);
+	pinMode(PIN_74HC595_LATCH, OUTPUT);
+	pinMode(PIN_74HC595_SHIFT, OUTPUT);
 
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
@@ -142,7 +122,7 @@ void setup()
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;	// 100%
     if (!pifTask_AddRatio(5, pifFnd_taskAll, NULL)) return;		// 5%
 
-    if (!pifTask_AddPeriod(1000, _taskFndTest, NULL)) return;	// 1000 * 1ms = 1sec
+    if (!pifTask_AddPeriod(3000, _taskFndTest, NULL)) return;	// 3000 * 1ms = 3sec
 
     pifFnd_Start(s_pstFnd);
 }

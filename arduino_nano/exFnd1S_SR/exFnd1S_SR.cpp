@@ -14,6 +14,7 @@
 #define PIN_74HC595_LATCH		3
 #define PIN_74HC595_SHIFT		4
 
+#define FND_COUNT         		1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
 #define TASK_COUNT              5
@@ -23,22 +24,21 @@ static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stFnd *s_pstFnd = NULL;
 
 
-static void _LogPrint(char *pcString)
+static void _actLogPrint(char *pcString)
 {
 	Serial.print(pcString);
 }
 
-static void _Fnd1Display(uint8_t ucSegment, uint8_t ucDigit, uint8_t ucColor)
+static void _actFnd1Display(uint8_t ucSegment, uint8_t ucDigit)
 {
 	(void)ucDigit;
-	(void)ucColor;
 
 	digitalWrite(PIN_74HC595_LATCH, LOW);
 	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ucSegment);
 	digitalWrite(PIN_74HC595_LATCH, HIGH);
 }
 
-static void _FndTest(PIF_stTask *pstTask)
+static void _taskFndTest(PIF_stTask *pstTask)
 {
 	static int i = 0;
 	static BOOL swLed = LOW;
@@ -94,21 +94,21 @@ void setup()
     pif_Init();
 
     pifLog_Init();
-	pifLog_AttachActPrint(_LogPrint);
+	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     s_pstTimer = pifPulse_Add(PULSE_ITEM_COUNT);
     if (!s_pstTimer) return;
 
-    if (!pifFnd_Init(s_pstTimer, 4)) return;
-    s_pstFnd = pifFnd_Add(1, 1, 8, _Fnd1Display);
+    if (!pifFnd_Init(s_pstTimer, FND_COUNT)) return;
+    s_pstFnd = pifFnd_Add(1, 1, _actFnd1Display);
     if (!s_pstFnd) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
-    if (!pifTask_AddRatio(5, pifFnd_taskAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;	// 100%
+    if (!pifTask_AddRatio(5, pifFnd_taskAll, NULL)) return;		// 5%
 
-    if (!pifTask_AddPeriod(1000, _FndTest, NULL)) return;	// 1000 * 1ms = 1sec
+    if (!pifTask_AddPeriod(1000, _taskFndTest, NULL)) return;	// 1000 * 1ms = 1sec
 
     pifFnd_Start(s_pstFnd);
 }

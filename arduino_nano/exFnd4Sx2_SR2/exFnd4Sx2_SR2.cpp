@@ -1,7 +1,7 @@
 // Do not remove the include below
 #include <MsTimer2.h>
 
-#include "exFnd4S.h"
+#include "exFnd4Sx2_SR2.h"
 
 #include "pifFnd.h"
 #include "pifLog.h"
@@ -9,6 +9,10 @@
 
 
 #define PIN_LED_L				13
+
+#define PIN_74HC595_DATA		5
+#define PIN_74HC595_LATCH		7
+#define PIN_74HC595_SHIFT		8
 
 #define FND_COUNT         		1
 #define PULSE_COUNT         	1
@@ -19,24 +23,6 @@
 static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stFnd *s_pstFnd = NULL;
 
-const uint8_t c_unPinFnd[] = {
-		6,		// a
-		10,		// b
-		11,		// c
-		3, 		// d
-		2, 		// e
-		7, 		// f
-		12,	 	// g
-		4 		// dp
-};
-
-const uint8_t c_unPinCom[] = {
-		5,		// COM1
-		8,		// COM2
-		9,		// COM3
-		13		// COM4
-};
-
 
 static void _actLogPrint(char *pcString)
 {
@@ -45,13 +31,10 @@ static void _actLogPrint(char *pcString)
 
 static void _actFnd1Display(uint8_t ucSegment, uint8_t ucDigit)
 {
-	for (int j = 0; j < 4; j++) {
-		digitalWrite(c_unPinCom[j], j != ucDigit);
-	}
-
-	for (int j = 0; j < 8; j++) {
-		digitalWrite(c_unPinFnd[j], (ucSegment >> j) & 1);
-	}
+	digitalWrite(PIN_74HC595_LATCH, LOW);
+	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ~(1 << ucDigit));
+	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ucSegment);
+	digitalWrite(PIN_74HC595_LATCH, HIGH);
 }
 
 static void _taskFndTest(PIF_stTask *pstTask)
@@ -65,25 +48,25 @@ static void _taskFndTest(PIF_stTask *pstTask)
 
 	if (swFloat) {
 		pifFnd_SetSubNumericDigits(s_pstFnd, 0);
-		int32_t nValue = rand() % 14000 - 2000;
-		if (nValue <= -1000) {
-			pifFnd_SetString(s_pstFnd, (char *)"UDER");
+		int32_t nValue = rand() % 140000 - 20000;
+		if (nValue <= -10000) {
+			pifFnd_SetString(s_pstFnd, (char *)" UNDER");
 		}
-		else if (nValue < 10000) {
+		else if (nValue < 100000) {
 			pifFnd_SetInterger(s_pstFnd, nValue);
 		}
 		else {
-			pifFnd_SetString(s_pstFnd, (char *)"OVER");
+			pifFnd_SetString(s_pstFnd, (char *)"  OVER");
 		}
 
 		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
 	}
 	else {
-		pifFnd_SetSubNumericDigits(s_pstFnd, 1);
-		double dValue = (rand() % 11000 - 1000) / 10.0;
+		pifFnd_SetSubNumericDigits(s_pstFnd, 2);
+		double dValue = (rand() % 110000 - 10000) / 100.0;
 		pifFnd_SetFloat(s_pstFnd, dValue);
 
-		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%1f", swBlink, swFloat, dValue);
+		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%2f", swBlink, swFloat, dValue);
 	}
 	swFloat ^= 1;
 	nBlink = (nBlink + 1) % 20;
@@ -113,12 +96,9 @@ void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
 
-	for (int i = 0; i < 8; i++) {
-		pinMode(c_unPinFnd[i], OUTPUT);
-	}
-	for (int i = 0; i < 4; i++) {
-		pinMode(c_unPinCom[i], OUTPUT);
-	}
+	pinMode(PIN_74HC595_DATA, OUTPUT);
+	pinMode(PIN_74HC595_LATCH, OUTPUT);
+	pinMode(PIN_74HC595_SHIFT, OUTPUT);
 
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
@@ -135,14 +115,15 @@ void setup()
     if (!s_pstTimer) return;
 
     if (!pifFnd_Init(s_pstTimer, FND_COUNT)) return;
-    s_pstFnd = pifFnd_Add(1, 4, _actFnd1Display);
+    s_pstFnd = pifFnd_Add(1, 8, _actFnd1Display);
     if (!s_pstFnd) return;
+    pifFnd_SetControlPeriod(s_pstFnd, 16);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;	// 100%
     if (!pifTask_AddRatio(5, pifFnd_taskAll, NULL)) return;		// 5%
 
-    if (!pifTask_AddPeriod(1000, _taskFndTest, NULL)) return;	// 1000 * 1ms = 1sec
+    if (!pifTask_AddPeriod(3000, _taskFndTest, NULL)) return;	// 3000 * 1ms = 3sec
 
     pifFnd_Start(s_pstFnd);
 }
