@@ -155,9 +155,9 @@ static void _actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 	row = ucRow;
 }
 
-static void _evtDotMatrixShiftFinish(PIF_stDotMatrix *pstOwner)
+static void _evtDotMatrixShiftFinish(PIF_unDeviceCode unDeviceCode)
 {
-	pifLog_Printf(LT_enInfo, "_DotMatrixEventShiftFinish(%d, %xh)", pstOwner->unDeviceCode, pstOwner->enShift);
+	pifLog_Printf(LT_enInfo, "_DotMatrixEventShiftFinish(%d)", unDeviceCode);
 }
 
 static void _taskDotMatrixTest(PIF_stTask *pstTask)
@@ -250,7 +250,7 @@ void setup()
 
     s_pstDotMatrix = pifDotMatrix_Add(1, 8, 8, _actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-    pifDotMatrix_AttachEvtShiftFinish(s_pstDotMatrix, _evtDotMatrixShiftFinish);
+    s_pstDotMatrix->evtShiftFinish = _evtDotMatrixShiftFinish;
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;
    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 9 * 8, ucPattern)) return;
 
