@@ -37,14 +37,18 @@ static void _SwitchReceive(void *pvIssuer)
 	pifSwitch_sigData(s_pstTiltSwitch, digitalRead(PIN_TILT_SWITCH));
 }
 
-static void _PushSwitchChange(PIF_stSwitch *pstOwner)
+static void _PushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 {
-	digitalWrite(PIN_LED_RED, pstOwner->swCurrState);
+	(void)unDeviceCode;
+
+	digitalWrite(PIN_LED_RED, swState);
 }
 
-static void _TiltSwitchChange(PIF_stSwitch *pstOwner)
+static void _TiltSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 {
-	digitalWrite(PIN_LED_YELLOW, pstOwner->swCurrState);
+	(void)unDeviceCode;
+
+	digitalWrite(PIN_LED_YELLOW, swState);
 }
 
 void sysTickHook()
