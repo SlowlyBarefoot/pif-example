@@ -45,7 +45,7 @@ static void _taskFndTest(PIF_stTask *pstTask)
 	(void)pstTask;
 
 	if (swFloat) {
-		pifFnd_SetSubNumericDigits(s_pstFnd, 0);
+		s_pstFnd->ucSubNumericDigits = 0;
 		int32_t nValue = rand() % 14000 - 2000;
 		if (nValue <= -1000) {
 			pifFnd_SetString(s_pstFnd, (char *)"UDER");
@@ -60,7 +60,7 @@ static void _taskFndTest(PIF_stTask *pstTask)
 		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
 	}
 	else {
-		pifFnd_SetSubNumericDigits(s_pstFnd, 1);
+		s_pstFnd->ucSubNumericDigits = 1;
 		double dValue = (rand() % 11000 - 1000) / 10.0;
 		pifFnd_SetFloat(s_pstFnd, dValue);
 
