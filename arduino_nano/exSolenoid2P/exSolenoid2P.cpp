@@ -89,6 +89,8 @@ void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PIF_unDeviceCode unDeviceCode = 1;
+
 	pinMode(PIN_LED_L, OUTPUT);
 
 	pinMode(PIN_L298N_ENB_PWM, OUTPUT);
@@ -106,14 +108,14 @@ void setup()
 	pifLog_AttachActPrint(_LogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer = pifPulse_Add(PULSE_ITEM_COUNT);
+    g_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!g_pstTimer) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
 
     if (!pifSolenoid_Init(g_pstTimer, SOLENOID_COUNT)) return;
-    s_stSolenoidTest.pstSolenoid = pifSolenoid_Add(0, ST_en2Point, 30, _SolenoidOrder);	// 30 * 1ms = 30ms
+    s_stSolenoidTest.pstSolenoid = pifSolenoid_Add(unDeviceCode++, ST_en2Point, 30, _SolenoidOrder);	// 30 * 1ms = 30ms
     if (!s_stSolenoidTest.pstSolenoid) return;
 
     s_stSolenoidTest.pstTimerItem = pifPulse_AddItem(g_pstTimer, PT_enOnce);

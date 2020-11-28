@@ -216,6 +216,7 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PIF_unDeviceCode unDeviceCode = 1;
 	char cPattern[] = "123456789";
 	static uint8_t ucPattern[9 * 8];
 	int n;
@@ -235,7 +236,7 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(PULSE_ITEM_COUNT);
+    s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!s_pstTimer) return;
 
     if (!pifDotMatrix_Init(s_pstTimer, 1)) return;
@@ -248,7 +249,7 @@ void setup()
 		}
 	}
 
-    s_pstDotMatrix = pifDotMatrix_Add(1, 8, 8, _actDotMatrixDisplay);
+    s_pstDotMatrix = pifDotMatrix_Add(unDeviceCode++, 8, 8, _actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
     s_pstDotMatrix->evtShiftFinish = _evtDotMatrixShiftFinish;
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;

@@ -94,6 +94,8 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PIF_unDeviceCode unDeviceCode = 1;
+
 	pinMode(PIN_LED_L, OUTPUT);
 
 	pinMode(PIN_74HC595_DATA, OUTPUT);
@@ -111,11 +113,11 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(PULSE_ITEM_COUNT);
+    s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!s_pstTimer) return;
 
     if (!pifFnd_Init(s_pstTimer, FND_COUNT)) return;
-    s_pstFnd = pifFnd_Add(1, 8, _actFnd1Display);
+    s_pstFnd = pifFnd_Add(unDeviceCode++, 8, _actFnd1Display);
     if (!s_pstFnd) return;
     pifFnd_SetControlPeriod(s_pstFnd, 16);
 

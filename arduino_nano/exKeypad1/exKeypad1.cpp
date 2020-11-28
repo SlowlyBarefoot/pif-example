@@ -95,6 +95,7 @@ void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PIF_unDeviceCode unDeviceCode = 1;
 	int r;
 	PIF_stKeypad *pstKeypad;
 
@@ -114,7 +115,7 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PULSE_ITEM_COUNT);
+    g_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!g_pstTimer1ms) return;
 
     pstKeypad = pifKeypad_Init(keys, ROWS, COLS);

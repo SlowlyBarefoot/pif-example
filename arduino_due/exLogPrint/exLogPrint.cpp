@@ -51,6 +51,7 @@ static void led_toggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PIF_unDeviceCode unDeviceCode = 1;
 	PIF_stPulseItem *pstTimer1ms;
 
 	pinMode(PIN_LED_L, OUTPUT);
@@ -63,7 +64,7 @@ void setup()
 	pifLog_AttachActPrint(log_print);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PULSE_ITEM_COUNT);
+    g_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!g_pstTimer1ms) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;

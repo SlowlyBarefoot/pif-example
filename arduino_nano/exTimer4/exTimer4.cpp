@@ -97,6 +97,8 @@ static void led_green_toggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PIF_unDeviceCode unDeviceCode = 1;
+
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_LED_GREEN, OUTPUT);
@@ -107,7 +109,7 @@ void setup()
 	pif_Init();
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PULSE_ITEM_COUNT);
+    g_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!g_pstTimer1ms) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;

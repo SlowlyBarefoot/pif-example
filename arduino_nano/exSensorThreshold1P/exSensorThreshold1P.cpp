@@ -64,6 +64,8 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PIF_unDeviceCode unDeviceCode = 1;
+
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_CDS, INPUT);
 
@@ -78,11 +80,11 @@ void setup()
 	pifLog_AttachActPrint(_LogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PULSE_ITEM_COUNT);
+    s_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!s_pstTimer1ms) return;
 
     if (!pifSensor_Init(s_pstTimer1ms, SENSOR_COUNT)) return;
-    s_pstSensor = pifSensor_Add(1);
+    s_pstSensor = pifSensor_Add(unDeviceCode++);
     if (!s_pstSensor) return;
 #if USE_FILTER_AVERAGE
     pifSensor_AttachFilter(s_pstSensor, PIF_SENSOR_FILTER_AVERAGE, 7, &s_stFilter, TRUE);

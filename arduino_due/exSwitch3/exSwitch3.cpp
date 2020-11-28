@@ -63,6 +63,7 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PIF_unDeviceCode unDeviceCode = 1;
 	PIF_stPulseItem *pstTimerSwitch;
 
 	pinMode(PIN_LED_RED, OUTPUT);
@@ -78,7 +79,7 @@ void setup()
 	pifLog_AttachActPrint(_LogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PULSE_ITEM_COUNT);
+    g_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!g_pstTimer1ms) return;
 
     pstTimerSwitch = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
@@ -87,13 +88,13 @@ void setup()
 
     if (!pifSwitch_Init(SWITCH_COUNT)) return;
 
-    s_pstPushSwitch = pifSwitch_Add(1, 0);
+    s_pstPushSwitch = pifSwitch_Add(unDeviceCode++, 0);
     if (!s_pstPushSwitch) return;
     s_pstPushSwitch->bStateReverse = TRUE;
     s_pstPushSwitch->evtChange = _PushSwitchChange;
     if (!pifSwitch_AttachFilter(s_pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 5, &s_stPushSwitchFilter)) return;
 
-    s_pstTiltSwitch = pifSwitch_Add(2, 0);
+    s_pstTiltSwitch = pifSwitch_Add(unDeviceCode++, 0);
 	if (!s_pstTiltSwitch) return;
 	s_pstTiltSwitch->evtChange = _TiltSwitchChange;
     if (!pifSwitch_AttachFilter(s_pstTiltSwitch, PIF_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
