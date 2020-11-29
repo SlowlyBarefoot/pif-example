@@ -1,4 +1,6 @@
 // Do not remove the include below
+#include <MsTimer2.h>
+
 #include "exSequence1.h"
 
 #include "pifLog.h"
@@ -162,13 +164,11 @@ static void _taskSequence(PIF_stTask *pstTask)
 	}
 }
 
-extern "C" {
-	void sysTickHook()
-	{
-		pif_sigTimer1ms();
+static void sysTickHook()
+{
+	pif_sigTimer1ms();
 
-		pifPulse_sigTick(s_pstTimer1ms);
-	}
+	pifPulse_sigTick(s_pstTimer1ms);
 }
 
 //The setup function is called once at startup of the sketch
@@ -177,6 +177,9 @@ void setup()
 	PIF_unDeviceCode unDeviceCode = 1;
 
 	pinMode(PIN_LED_L, OUTPUT);
+
+	MsTimer2::set(1, sysTickHook);
+	MsTimer2::start();
 
 	Serial.begin(115200); //Doesn't matter speed
 
