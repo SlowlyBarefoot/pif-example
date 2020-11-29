@@ -118,7 +118,7 @@ void setup()
     g_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!g_pstTimer1ms) return;
 
-    pstKeypad = pifKeypad_Init(keys, ROWS, COLS);
+    pstKeypad = pifKeypad_Init(unDeviceCode++, ROWS, COLS, keys);
     if (!pstKeypad) return;
     pstKeypad->actAcquire = _actKeypadAcquire;
     pstKeypad->evtPressed = _evtKeypadPressed;
