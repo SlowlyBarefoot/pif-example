@@ -19,8 +19,6 @@
 
 static PIF_stComm *s_pstComm = NULL;
 
-static PIF_stTerminal *s_pstTerminal = NULL;
-
 const PIF_stTermCmdEntry c_psCmdTable[] = {
 	{ "ver", pifTerminal_PrintVersion, "\nPrint Version" },
 	{ "status", pifTerminal_SetStatus, "\nSet Status" },
@@ -82,11 +80,10 @@ void setup()
 	s_pstComm = pifComm_Add(0);
 	if (!s_pstComm) return;
 
-	s_pstTerminal = pifTerminal_Init(c_psCmdTable, "\nDebug");
-    if (!s_pstTerminal) return;
+    if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
 	pifTerminal_AttachComm(s_pstComm);
 
-    pifLog_AttachTerminal(s_pstTerminal);
+    pifLog_UseTerminal(TRUE);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddPeriod(10, pifComm_taskAll, NULL)) return;		// 10ms
