@@ -117,6 +117,8 @@ static PIF_enSequenceResult _fnSequence3(PIF_stSequence *pstOwner)
 
 static void _evtSequenceError(PIF_stSequence *pstOwner)
 {
+	(void)pstOwner;
+
 	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_enError);
 }
 
