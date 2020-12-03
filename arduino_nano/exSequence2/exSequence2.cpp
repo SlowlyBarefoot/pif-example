@@ -21,6 +21,9 @@
 #define SWITCH_COUNT            2
 #define TASK_COUNT              3
 
+#define DEVICECODE_SWITCH		10
+#define DEVICECODE_2_INDEX(dc)	((dc) - DEVICECODE_SWITCH)
+
 
 static PIF_stPulse *s_pstTimer1ms = NULL;
 
@@ -35,17 +38,16 @@ const PIF_stSequencePhase s_astSequencePhaseList[] = {
 };
 
 static struct {
-	PIF_stSwitch *pstPushSwitch;
-	PIF_stSequence *pstSequence;
-	PIF_unDeviceCode unDeviceCode;
-	BOOL bSequenceParam;
 	uint8_t ucPinSwitch;
 	uint8_t ucPinLed;
+	PIF_stSwitch *pstPushSwitch;
+	PIF_stSequence *pstSequence;
+	BOOL bSequenceParam;
 } s_stSequenceTest[SEQUENCE_COUNT] = {
-		{ NULL, NULL, 0, FALSE, PIN_PUSH_SWITCH_1, PIN_LED_RED },
-		{ NULL, NULL, 0, FALSE, PIN_PUSH_SWITCH_2, PIN_LED_YELLOW },
+		{ PIN_PUSH_SWITCH_1, PIN_LED_RED, NULL, NULL, FALSE },
+		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL, NULL, FALSE }
 };
-static uint8_t s_ucDeviceCodeIndex[5];
+
 
 static void _actLogPrint(char *pcString)
 {
@@ -54,12 +56,12 @@ static void _actLogPrint(char *pcString)
 
 static SWITCH _actPushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 {
-	return digitalRead(s_stSequenceTest[s_ucDeviceCodeIndex[unDeviceCode]].ucPinSwitch);
+	return digitalRead(s_stSequenceTest[DEVICECODE_2_INDEX(unDeviceCode)].ucPinSwitch);
 }
 
 static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 {
-	uint8_t index = s_ucDeviceCodeIndex[unDeviceCode];
+	uint8_t index = DEVICECODE_2_INDEX(unDeviceCode);
 
 	if (swState) {
 		pifSequence_Start(s_stSequenceTest[index].pstSequence);
@@ -76,7 +78,7 @@ static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
 
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
-		index = s_ucDeviceCodeIndex[pstOwner->ucId];
+		index = DEVICECODE_2_INDEX(pstOwner->ucId);
 		digitalWrite(s_stSequenceTest[index].ucPinLed, ON);
 		s_stSequenceTest[index].bSequenceParam = FALSE;
 		return SR_enNext;
@@ -104,7 +106,7 @@ static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
 
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
-		index = s_ucDeviceCodeIndex[pstOwner->ucId];
+		index = DEVICECODE_2_INDEX(pstOwner->ucId);
 		digitalWrite(s_stSequenceTest[index].ucPinLed, OFF);
 		return SR_enNext;
 
@@ -160,15 +162,13 @@ void setup()
     if (!pifSequence_Init(s_pstTimer1ms, SEQUENCE_COUNT)) return;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-		s_ucDeviceCodeIndex[unDeviceCode] = i;
-
-    	s_stSequenceTest[i].pstPushSwitch = pifSwitch_Add(unDeviceCode++, 0);
+    	s_stSequenceTest[i].pstPushSwitch = pifSwitch_Add(DEVICECODE_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
 		s_stSequenceTest[i].pstPushSwitch->bStateReverse = TRUE;
 		s_stSequenceTest[i].pstPushSwitch->actAcquire = _actPushSwitchAcquire;
 		s_stSequenceTest[i].pstPushSwitch->evtChange = _evtPushSwitchChange;
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Add(s_stSequenceTest[i].pstPushSwitch->unDeviceCode, s_astSequencePhaseList,
+		s_stSequenceTest[i].pstSequence = pifSequence_Add(DEVICECODE_SWITCH + i, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
 	    s_stSequenceTest[i].pstSequence->evtError = _evtSequenceError;
