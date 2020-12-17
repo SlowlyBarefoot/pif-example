@@ -5,6 +5,7 @@
  */
 #include <fcntl.h>
 #include <signal.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
 #include <termios.h>
@@ -30,84 +31,75 @@ static int s_fd;
 static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
-static PIF_stPulseItem *s_pstDelay[2] = { NULL, NULL };
+static PIF_stPulseItem *s_pstDelay[3] = { NULL, NULL };
 
-static void _fnProtocolFinish30(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolFinish31(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolFinish20(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolFinish21(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolQuestion31(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolQuestion32(PIF_stProtocolPacket *pstPacket);
 
-const PIF_stProtocolResponse stProtocolResponseTable[] = {
-		{ 0x30, PF_enType_Response | PF_enLogPrint_Yes, _fnProtocolFinish30 },
-		{ 0x31, PF_enType_Response | PF_enLogPrint_Yes, _fnProtocolFinish31 },
+static void _fnProtocolResponse20(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket);
+
+const PIF_stProtocolQuestion stProtocolQuestions[] = {
+		{ 0x30, PF_enLogPrint_Yes, _fnProtocolQuestion30 },
+		{ 0x31, PF_enLogPrint_Yes, _fnProtocolQuestion31 },
+		{ 0x32, PF_enLogPrint_Yes, _fnProtocolQuestion32 },
 		{ 0, PF_enDefault, NULL }
 };
 
 const PIF_stProtocolRequest stProtocolRequestTable[] = {
-		{ 0x20, PF_enType_Request | PF_enResponse_Yes, _fnProtocolFinish20, 3, 300 },
-		{ 0x21, PF_enType_Request | PF_enResponse_Yes, _fnProtocolFinish21, 3, 300 },
+		{ 0x20, PF_enResponse_Yes, _fnProtocolResponse20, 3, 300 },
+		{ 0x21, PF_enResponse_Ack, _fnProtocolResponse21, 3, 300 },
+		{ 0x22, PF_enResponse_No, NULL, 3, 300 },
 		{ 0, PF_enDefault, NULL, 0, 0 }
 };
 
 
-static void _fnProtocolFinish30(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, char *pcName)
 {
-	if (!pifProtocol_MakeResponse(s_pstProtocol, pstPacket->ucCommand, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "eventFinish30: Error=%d", pif_enError);
+	pifLog_Printf(LT_enInfo, "%s: DC=%u", pcName, pstPacket->usDataCount);
+	if (pstPacket->usDataCount) {
+		pifLog_Printf(LT_enNone, "\nData:");
+		for (int i = 0; i < pstPacket->usDataCount; i++) {
+			pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
+		}
+		pifLog_Printf(LT_enNone, "\n");
+	}
+}
+
+static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket)
+{
+	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
+		pifLog_Printf(LT_enInfo, "Question30: Error=%d", pif_enError);
 	}
 	else {
-		pifLog_Printf(LT_enInfo, "eventFinish30: DC=%u", pstPacket->usDataCount);
-		if (pstPacket->usDataCount) {
-			pifLog_Printf(LT_enNone, "\nData:");
-			for (int i = 0; i < pstPacket->usDataCount; i++) {
-				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
-			}
-			pifLog_Printf(LT_enNone, "\n");
-		}
+		_fnProtocolPrint(pstPacket, "Question30");
 		pifPulse_StartItem(s_pstDelay[0], 500);
 	}
 }
 
-static void _fnProtocolFinish31(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolQuestion31(PIF_stProtocolPacket *pstPacket)
 {
-	if (!pifProtocol_MakeResponse(s_pstProtocol, pstPacket->ucCommand, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "eventFinish31: Error=%d", pif_enError);
-	}
-	else {
-		pifLog_Printf(LT_enInfo, "eventFinish31: DC=%u", pstPacket->usDataCount);
-		if (pstPacket->usDataCount) {
-			pifLog_Printf(LT_enNone, "\nData:");
-			for (int i = 0; i < pstPacket->usDataCount; i++) {
-				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
-			}
-			pifLog_Printf(LT_enNone, "\n");
-		}
-		pifPulse_StartItem(s_pstDelay[1], 500);
-	}
+	_fnProtocolPrint(pstPacket, "Question31");
+	pifPulse_StartItem(s_pstDelay[1], 500);
 }
 
-static void _fnProtocolFinish20(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolQuestion32(PIF_stProtocolPacket *pstPacket)
 {
-	pifLog_Printf(LT_enInfo, "eventFinish20: DC=%u", pstPacket->usDataCount);
-	if (pstPacket->usDataCount) {
-		pifLog_Printf(LT_enNone, "\nData:");
-		for (int i = 0; i < pstPacket->usDataCount; i++) {
-			pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
-		}
-		pifLog_Printf(LT_enNone, "\n");
-	}
+	_fnProtocolPrint(pstPacket, "Question32");
+	pifPulse_StartItem(s_pstDelay[1], 500);
 }
 
-static void _fnProtocolFinish21(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolResponse20(PIF_stProtocolPacket *pstPacket)
 {
-	pifLog_Printf(LT_enInfo, "eventFinish21: DC=%u", pstPacket->usDataCount);
-	if (pstPacket->usDataCount) {
-		pifLog_Printf(LT_enNone, "\nData:");
-		for (int i = 0; i < pstPacket->usDataCount; i++) {
-			pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
-		}
-		pifLog_Printf(LT_enNone, "\n");
-	}
+	_fnProtocolPrint(pstPacket, "Response20");
+}
+
+static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
+{
+	(void)pstPacket;
+
+	pifLog_Printf(LT_enInfo, "Response21: ACK");
 }
 
 static void _actLogPrint(char *cString)
@@ -129,10 +121,10 @@ static void _evtDelay(void *pvIssuer)
 		return;
 	}
 
-	PIF_stProtocolRequest *pstOwner = (PIF_stProtocolRequest *)pvIssuer;
+	const PIF_stProtocolRequest *pstOwner = (PIF_stProtocolRequest *)pvIssuer;
 
 	for (int i = 0; i < 4; i++) ucData[i] = rand() & 0xFF;
-	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner->ucCommand, NULL, 0)) {
+	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, ucData, 4)) {
 		pifLog_Printf(LT_enError, "Delay: DC=%d E=%d", s_pstProtocol->unDeviceCode, pif_enError);
 	}
 	else {
@@ -147,17 +139,22 @@ static void _evtDelay(void *pvIssuer)
 static void _taskProtocolTest(PIF_stTask *pstTask)
 {
 	uint8_t txData;
-	int rxData;
+	uint8_t rxData[8];
+	uint16_t size;
 
 	(void)pstTask;
 
-    if (pifComm_SendData(s_pstSerial, &txData)) {
+    while (pifComm_SendData(s_pstSerial, &txData)) {
         write(s_fd, &txData, 1);
     }
 
-    if (read(s_fd, &rxData, 1)) {
-    	pifComm_ReceiveData(s_pstSerial, rxData);
-    }
+    size = pifComm_GetRemainSizeOfRxBuffer(s_pstSerial);
+	if (size) {
+		size = read(s_fd, rxData, size);
+		if (size) {
+			pifComm_ReceiveDatas(s_pstSerial, rxData, size);
+		}
+	}
 }
 
 static void _TimerHandler()
@@ -171,7 +168,7 @@ int main(int argc, char **argv)
 {
 	int i;
     struct termios newtio;
-    const char *port[3] = { "/dev/ttyACM1", "/dev/ttyACM2", "/dev/ttyACM3" };
+    char port[16];
 	PIF_unDeviceCode unDeviceCode = 1;
 
     if (start_timer(1, &_TimerHandler)) {     // 1ms
@@ -179,8 +176,9 @@ int main(int argc, char **argv)
         return(1);
     }
 
-    for (i = 0; i < 3; i++) {
-		s_fd = open( port[i], O_RDWR | O_NOCTTY );
+    for (i = 1; i < 10; i++) {
+    	sprintf(port, "/dev/ttyACM%d", i);
+		s_fd = open( port, O_RDWR | O_NOCTTY );
 		if (s_fd >= 0) break;
     }
 	if (s_fd < 0) {
@@ -188,7 +186,7 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 	else {
-		printf("%s port opened.\n", port[i]);
+		printf("%s port opened.\n", port);
 	}
 
     memset( &newtio, 0, sizeof(newtio) );
@@ -222,15 +220,15 @@ int main(int argc, char **argv)
 	if (!s_pstSerial) goto fail;
 
     if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) goto fail;
-    s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enSimple, stProtocolRequestTable, stProtocolResponseTable);
+    s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) goto fail;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
 		s_pstDelay[i] = pifPulse_AddItem(s_pstTimer, PT_enOnce);
 		if (!s_pstDelay[i]) goto fail;
-		pifPulse_AttachEvtFinish(s_pstDelay[i], _evtDelay, &stProtocolRequestTable[i]);
+		pifPulse_AttachEvtFinish(s_pstDelay[i], _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
     if (!pifTask_Init(TASK_COUNT)) goto fail;

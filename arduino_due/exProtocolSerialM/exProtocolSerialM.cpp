@@ -10,14 +10,16 @@
 #define PIN_LED_L				13
 #define PIN_LED_RED				23
 #define PIN_LED_YELLOW			25
+#define PIN_LED_GREEN			27
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
+#define PIN_PUSH_SWITCH_3		33
 
 #define COMM_COUNT         		1
 #define PROTOCOL_COUNT          1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	5
-#define SWITCH_COUNT            2
+#define SWITCH_COUNT            3
 #define TASK_COUNT              5
 
 #define DEVICECODE_SWITCH		10
@@ -28,21 +30,24 @@ static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
-static void _fnProtocolFinish20(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolFinish21(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolQuestion21(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolQuestion22(PIF_stProtocolPacket *pstPacket);
 
-static void _fnProtocolFinish30(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolFinish31(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolResponse30(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket);
 
-const PIF_stProtocolResponse stProtocolResponseTable[] = {
-		{ 0x20, PF_enType_Response | PF_enLogPrint_Yes, _fnProtocolFinish20 },
-		{ 0x21, PF_enType_Response | PF_enLogPrint_Yes, _fnProtocolFinish21 },
+const PIF_stProtocolQuestion stProtocolQuestions[] = {
+		{ 0x20, PF_enLogPrint_Yes, _fnProtocolQuestion20 },
+		{ 0x21, PF_enLogPrint_Yes, _fnProtocolQuestion21 },
+		{ 0x22, PF_enLogPrint_Yes, _fnProtocolQuestion22 },
 		{ 0, PF_enDefault, NULL }
 };
 
-const PIF_stProtocolRequest stProtocolRequestTable[] = {
-		{ 0x30, PF_enType_Request | PF_enResponse_Yes | PF_enLogPrint_Yes, _fnProtocolFinish30, 3, 300 },
-		{ 0x31, PF_enType_Request | PF_enResponse_Yes | PF_enLogPrint_Yes, _fnProtocolFinish31, 3, 300 },
+const PIF_stProtocolRequest stProtocolRequests[] = {
+		{ 0x30, PF_enResponse_Yes | PF_enLogPrint_Yes, _fnProtocolResponse30, 3, 300 },
+		{ 0x31, PF_enResponse_Ack | PF_enLogPrint_Yes, _fnProtocolResponse31, 3, 300 },
+		{ 0x32, PF_enResponse_No | PF_enLogPrint_Yes, NULL, 3, 300 },
 		{ 0, PF_enDefault, NULL, 0, 0 }
 };
 
@@ -53,45 +58,14 @@ static struct {
 	PIF_stSwitchFilter stPushSwitchFilter;
 } s_stProtocolTest[SWITCH_COUNT] = {
 		{ PIN_PUSH_SWITCH_1, PIN_LED_RED, NULL },
-		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL }
+		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL },
+		{ PIN_PUSH_SWITCH_3, PIN_LED_GREEN, NULL }
 };
 
 
-static void _fnProtocolFinish20(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, char *pcName)
 {
-	if (!pifProtocol_MakeResponse(s_pstProtocol, pstPacket->ucCommand, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "ProtocolFinish20: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
-	}
-	else {
-		pifLog_Printf(LT_enInfo, "ProtocolFinish20: PID=%d DC=%u", pstPacket->ucPacketId, pstPacket->usDataCount);
-		if (pstPacket->usDataCount) {
-			pifLog_Printf(LT_enNone, "\nData:");
-			for (int i = 0; i < pstPacket->usDataCount; i++) {
-				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
-			}
-		}
-	}
-}
-
-static void _fnProtocolFinish21(PIF_stProtocolPacket *pstPacket)
-{
-	if (!pifProtocol_MakeResponse(s_pstProtocol, pstPacket->ucCommand, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "ProtocolFinish21: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
-	}
-	else {
-		pifLog_Printf(LT_enInfo, "ProtocolFinish21: PID=%d DC=%u", pstPacket->ucPacketId, pstPacket->usDataCount);
-		if (pstPacket->usDataCount) {
-			pifLog_Printf(LT_enNone, "\nData:");
-			for (int i = 0; i < pstPacket->usDataCount; i++) {
-				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
-			}
-		}
-	}
-}
-
-static void _fnProtocolFinish30(PIF_stProtocolPacket *pstPacket)
-{
-	pifLog_Printf(LT_enInfo, "ProtocolFinish30: PID=%d DC=%u", pstPacket->ucPacketId, pstPacket->usDataCount);
+	pifLog_Printf(LT_enInfo, "%s: PID=%d DC=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
 	if (pstPacket->usDataCount) {
 		pifLog_Printf(LT_enNone, "\nData:");
 		for (int i = 0; i < pstPacket->usDataCount; i++) {
@@ -100,15 +74,36 @@ static void _fnProtocolFinish30(PIF_stProtocolPacket *pstPacket)
 	}
 }
 
-static void _fnProtocolFinish31(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket)
 {
-	pifLog_Printf(LT_enInfo, "ProtocolFinish31: PID=%d DC=%u", pstPacket->ucPacketId, pstPacket->usDataCount);
-	if (pstPacket->usDataCount) {
-		pifLog_Printf(LT_enNone, "\nData:");
-		for (int i = 0; i < pstPacket->usDataCount; i++) {
-			pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
-		}
+	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
+		pifLog_Printf(LT_enInfo, "Question20: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
 	}
+	else {
+		_fnProtocolPrint(pstPacket, "Question20");
+	}
+}
+
+static void _fnProtocolQuestion21(PIF_stProtocolPacket *pstPacket)
+{
+	_fnProtocolPrint(pstPacket, "Question21");
+}
+
+static void _fnProtocolQuestion22(PIF_stProtocolPacket *pstPacket)
+{
+	_fnProtocolPrint(pstPacket, "Question22");
+}
+
+static void _fnProtocolResponse30(PIF_stProtocolPacket *pstPacket)
+{
+	_fnProtocolPrint(pstPacket, "Response30");
+}
+
+static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket)
+{
+	(void)pstPacket;
+
+	pifLog_Printf(LT_enInfo, "Response31: ACK");
 }
 
 static void _actLogPrint(char *pcString)
@@ -128,7 +123,7 @@ static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 
 	if (swState) {
 		for (int i = 0; i < 8; i++) ucData[i] = rand() & 0xFF;
-		if (!pifProtocol_MakeRequest(s_pstProtocol, stProtocolRequestTable[index].ucCommand, ucData, 8)) {
+		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], ucData, 8)) {
 			pifLog_Printf(LT_enError, "PushSwitchChange: DC=%d IDX=%d E=%d", s_pstProtocol->unDeviceCode, index, pif_enError);
 		}
 		else {
@@ -153,13 +148,16 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
 
 	(void)pstTask;
 
-    if (pifComm_SendData(s_pstSerial, &txData)) {
+    while (pifComm_SendData(s_pstSerial, &txData)) {
     	SerialUSB.print((char)txData);
     }
 
-	rxData = SerialUSB.read();
-    if (rxData >= 0) {
-    	pifComm_ReceiveData(s_pstSerial, rxData);
+    while (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
+		rxData = SerialUSB.read();
+		if (rxData >= 0) {
+			pifComm_ReceiveData(s_pstSerial, rxData);
+		}
+		else break;
     }
 }
 
@@ -191,8 +189,10 @@ void setup()
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
+	pinMode(PIN_LED_GREEN, OUTPUT);
 	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
 	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
+	pinMode(PIN_PUSH_SWITCH_3, INPUT_PULLUP);
 
 	Serial.begin(115200);
 	SerialUSB.begin(115200);
@@ -223,7 +223,7 @@ void setup()
 	if (!s_pstSerial) return;
 
     if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) return;
-    s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enMedium, stProtocolRequestTable, stProtocolResponseTable);
+    s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
