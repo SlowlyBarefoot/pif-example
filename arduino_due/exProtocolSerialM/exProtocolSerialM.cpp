@@ -10,16 +10,14 @@
 #define PIN_LED_L				13
 #define PIN_LED_RED				23
 #define PIN_LED_YELLOW			25
-#define PIN_LED_GREEN			27
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
-#define PIN_PUSH_SWITCH_3		33
 
 #define COMM_COUNT         		1
 #define PROTOCOL_COUNT          1
 #define PULSE_COUNT         	1
-#define PULSE_ITEM_COUNT    	5
-#define SWITCH_COUNT            3
+#define PULSE_ITEM_COUNT    	10
+#define SWITCH_COUNT            2
 #define TASK_COUNT              5
 
 #define DEVICECODE_SWITCH		10
@@ -32,7 +30,6 @@ static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket);
 static void _fnProtocolQuestion21(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolQuestion22(PIF_stProtocolPacket *pstPacket);
 
 static void _fnProtocolResponse30(PIF_stProtocolPacket *pstPacket);
 static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket);
@@ -40,14 +37,12 @@ static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket);
 const PIF_stProtocolQuestion stProtocolQuestions[] = {
 		{ 0x20, PF_enLogPrint_Yes, _fnProtocolQuestion20 },
 		{ 0x21, PF_enLogPrint_Yes, _fnProtocolQuestion21 },
-		{ 0x22, PF_enLogPrint_Yes, _fnProtocolQuestion22 },
 		{ 0, PF_enDefault, NULL }
 };
 
 const PIF_stProtocolRequest stProtocolRequests[] = {
 		{ 0x30, PF_enResponse_Yes | PF_enLogPrint_Yes, _fnProtocolResponse30, 3, 300 },
 		{ 0x31, PF_enResponse_Ack | PF_enLogPrint_Yes, _fnProtocolResponse31, 3, 300 },
-		{ 0x32, PF_enResponse_No | PF_enLogPrint_Yes, NULL, 3, 300 },
 		{ 0, PF_enDefault, NULL, 0, 0 }
 };
 
@@ -55,17 +50,18 @@ static struct {
 	uint8_t ucPinSwitch;
 	uint8_t ucPinLed;
 	PIF_stSwitch *pstPushSwitch;
+	uint8_t ucDataCount;
+	uint8_t ucData[8];
 	PIF_stSwitchFilter stPushSwitchFilter;
 } s_stProtocolTest[SWITCH_COUNT] = {
-		{ PIN_PUSH_SWITCH_1, PIN_LED_RED, NULL },
-		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL },
-		{ PIN_PUSH_SWITCH_3, PIN_LED_GREEN, NULL }
+		{ PIN_PUSH_SWITCH_1, PIN_LED_RED, NULL, 0 },
+		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL, 0 }
 };
 
 
 static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, char *pcName)
 {
-	pifLog_Printf(LT_enInfo, "%s: PID=%d DC=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
+	pifLog_Printf(LT_enInfo, "%s: PID=%d CNT=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
 	if (pstPacket->usDataCount) {
 		pifLog_Printf(LT_enNone, "\nData:");
 		for (int i = 0; i < pstPacket->usDataCount; i++) {
@@ -74,24 +70,40 @@ static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, char *pcName)
 	}
 }
 
-static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket)
+static void _fnCompareData(PIF_stProtocolPacket *pstPacket, uint8_t ucIndex)
 {
-	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "Question20: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
+	uint16_t i;
+
+	if (pstPacket->usDataCount == s_stProtocolTest[ucIndex].ucDataCount) {
+		for (i = 0; i < pstPacket->usDataCount; i++) {
+			if (pstPacket->pucData[i] != s_stProtocolTest[ucIndex].ucData[i]) break;
+		}
+		if (i < pstPacket->usDataCount) {
+			pifLog_Printf(LT_enInfo, "Different data");
+		}
+		else {
+			pifLog_Printf(LT_enInfo, "Same data");
+		}
 	}
 	else {
-		_fnProtocolPrint(pstPacket, "Question20");
+		pifLog_Printf(LT_enError, "Different count: %u != %u", s_stProtocolTest[ucIndex].ucDataCount, pstPacket->usDataCount);
+	}
+}
+
+static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket)
+{
+	_fnCompareData(pstPacket, 0);
+	_fnProtocolPrint(pstPacket, "Question20");
+
+	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
+		pifLog_Printf(LT_enInfo, "Question20: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
 	}
 }
 
 static void _fnProtocolQuestion21(PIF_stProtocolPacket *pstPacket)
 {
+	_fnCompareData(pstPacket, 1);
 	_fnProtocolPrint(pstPacket, "Question21");
-}
-
-static void _fnProtocolQuestion22(PIF_stProtocolPacket *pstPacket)
-{
-	_fnProtocolPrint(pstPacket, "Question22");
 }
 
 static void _fnProtocolResponse30(PIF_stProtocolPacket *pstPacket)
@@ -119,18 +131,20 @@ static SWITCH _actPushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 {
 	uint8_t index = DEVICECODE_2_INDEX(unDeviceCode);
-	uint8_t ucData[8];
 
 	if (swState) {
-		for (int i = 0; i < 8; i++) ucData[i] = rand() & 0xFF;
-		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], ucData, 8)) {
-			pifLog_Printf(LT_enError, "PushSwitchChange: DC=%d IDX=%d E=%d", s_pstProtocol->unDeviceCode, index, pif_enError);
+		s_stProtocolTest[index].ucDataCount = rand() % 8;
+		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
+		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
+			pifLog_Printf(LT_enError, "PushSwitchChange(%d): DC=%d E=%d", index, s_pstProtocol->unDeviceCode, pif_enError);
 		}
 		else {
-			pifLog_Printf(LT_enInfo, "PushSwitchChange: DC=%d IDX=%d", s_pstProtocol->unDeviceCode, index);
-			pifLog_Printf(LT_enNone, "\nData:");
-			for (int i = 0; i < 8; i++) {
-				pifLog_Printf(LT_enNone, " %u", ucData[i]);
+			pifLog_Printf(LT_enInfo, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_pstProtocol->unDeviceCode, s_stProtocolTest[index].ucDataCount);
+			if (s_stProtocolTest[index].ucDataCount) {
+				pifLog_Printf(LT_enNone, "\nData:");
+				for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
+					pifLog_Printf(LT_enNone, " %u", s_stProtocolTest[index].ucData[i]);
+				}
 			}
 		}
 	}
@@ -189,10 +203,8 @@ void setup()
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
-	pinMode(PIN_LED_GREEN, OUTPUT);
 	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
 	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
-	pinMode(PIN_PUSH_SWITCH_3, INPUT_PULLUP);
 
 	Serial.begin(115200);
 	SerialUSB.begin(115200);
