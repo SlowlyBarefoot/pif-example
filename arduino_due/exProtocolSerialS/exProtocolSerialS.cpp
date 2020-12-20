@@ -54,12 +54,12 @@ static struct {
 	uint8_t ucData[8];
 	PIF_stSwitchFilter stPushSwitchFilter;
 } s_stProtocolTest[SWITCH_COUNT] = {
-		{ PIN_PUSH_SWITCH_1, PIN_LED_RED, NULL, 0 },
-		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL, 0 }
+		{ PIN_PUSH_SWITCH_1, PIN_LED_RED, NULL, 0, },
+		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL, 0, }
 };
 
 
-static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, char *pcName)
+static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName)
 {
 	pifLog_Printf(LT_enInfo, "%s: CNT=%u", pcName, pstPacket->usDataCount);
 	if (pstPacket->usDataCount) {
@@ -118,6 +118,11 @@ static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket)
 	pifLog_Printf(LT_enInfo, "Response31: ACK");
 }
 
+static void _evtProtocolError(PIF_unDeviceCode unDeviceCode)
+{
+	pifLog_Printf(LT_enError, "ProtocolError DC=%d", unDeviceCode);
+}
+
 static void _actLogPrint(char *pcString)
 {
 	Serial.print(pcString);
@@ -148,11 +153,6 @@ static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 			}
 		}
 	}
-}
-
-static void _evtProtocolError(PIF_unDeviceCode unDeviceCode)
-{
-	pifLog_Printf(LT_enError, "ProtocolError DC=%d", unDeviceCode);
 }
 
 static void _taskProtocolTest(PIF_stTask *pstTask)

@@ -45,8 +45,8 @@ const PIF_stProtocolQuestion stProtocolQuestions[] = {
 };
 
 const PIF_stProtocolRequest stProtocolRequestTable[] = {
-		{ 0x20, PF_enResponse_Yes, _fnProtocolResponse20, 3, 300 },
-		{ 0x21, PF_enResponse_Ack, _fnProtocolResponse21, 3, 300 },
+		{ 0x20, PF_enResponse_Yes | PF_enLogPrint_Yes, _fnProtocolResponse20, 3, 300 },
+		{ 0x21, PF_enResponse_Ack | PF_enLogPrint_Yes, _fnProtocolResponse21, 3, 300 },
 		{ 0, PF_enDefault, NULL, 0, 0 }
 };
 
@@ -55,12 +55,12 @@ static struct {
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 } s_stProtocolTest[2] = {
-		{ NULL, 0 },
-		{ NULL, 0 }
+		{ NULL, 0, },
+		{ NULL, 0, }
 };
 
 
-static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, char *pcName)
+static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName)
 {
 	pifLog_Printf(LT_enInfo, "%s: PID=%d CNT=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
 	if (pstPacket->usDataCount) {
@@ -110,14 +110,14 @@ static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
 	pifLog_Printf(LT_enInfo, "Response21: ACK");
 }
 
-static void _actLogPrint(char *cString)
-{
-	printf("%s", cString);
-}
-
 static void _evtProtocolError(PIF_unDeviceCode unDeviceCode)
 {
 	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", unDeviceCode);
+}
+
+static void _actLogPrint(char *cString)
+{
+	printf("%s", cString);
 }
 
 static void _evtDelay(void *pvIssuer)

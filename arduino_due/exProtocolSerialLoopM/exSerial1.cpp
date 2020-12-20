@@ -1,5 +1,4 @@
-// Do not remove the include below
-#include "exProtocolSerialM.h"
+#include "exProtocolSerialLoopM.h"
 
 #include "pifComm.h"
 #include "pifLog.h"
@@ -7,24 +6,17 @@
 #include "pifSwitch.h"
 
 
-#define PIN_LED_L				13
 #define PIN_LED_RED				23
 #define PIN_LED_YELLOW			25
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
 
-#define COMM_COUNT         		1
-#define PROTOCOL_COUNT          1
-#define PULSE_COUNT         	1
-#define PULSE_ITEM_COUNT    	10
 #define SWITCH_COUNT            2
-#define TASK_COUNT              5
 
 #define DEVICECODE_SWITCH		10
 #define DEVICECODE_2_INDEX(dc)	((dc) - DEVICECODE_SWITCH)
 
 
-static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
@@ -123,11 +115,6 @@ static void _evtProtocolError(PIF_unDeviceCode unDeviceCode)
 	pifLog_Printf(LT_enError, "ProtocolError DC=%d", unDeviceCode);
 }
 
-static void _actLogPrint(char *pcString)
-{
-	Serial.print(pcString);
-}
-
 static SWITCH _actPushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 {
 	return digitalRead(s_stProtocolTest[DEVICECODE_2_INDEX(unDeviceCode)].ucPinSwitch);
@@ -163,11 +150,11 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
 	(void)pstTask;
 
     while (pifComm_SendData(s_pstSerial, &txData)) {
-    	SerialUSB.print((char)txData);
+    	Serial1.print((char)txData);
     }
 
     while (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
-		rxData = SerialUSB.read();
+		rxData = Serial1.read();
 		if (rxData >= 0) {
 			pifComm_ReceiveData(s_pstSerial, rxData);
 		}
@@ -175,84 +162,38 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
     }
 }
 
-static void _taskLedToggle(PIF_stTask *pstTask)
+PIF_unDeviceCode exSerial1_Setup(PIF_unDeviceCode unDeviceCode)
 {
-	static BOOL sw = LOW;
-
-	(void)pstTask;
-
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
-}
-
-extern "C" {
-	void sysTickHook()
-	{
-		pif_sigTimer1ms();
-
-		pifPulse_sigTick(s_pstTimer);
-	}
-}
-
-//The setup function is called once at startup of the sketch
-void setup()
-{
-	PIF_unDeviceCode unDeviceCode = 1;
 	int i;
 
-	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
 	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
 
-	Serial.begin(115200);
-	SerialUSB.begin(115200);
+	Serial1.begin(115200);
 
-    pif_Init();
-
-    pifLog_Init();
-	pifLog_AttachActPrint(_actLogPrint);
-
-    if (!pifComm_Init(COMM_COUNT)) return;
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
-    if (!s_pstTimer) return;
-
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifSwitch_Init(SWITCH_COUNT)) return 0;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_stProtocolTest[i].pstPushSwitch = pifSwitch_Add(DEVICECODE_SWITCH + i, 0);
-		if (!s_stProtocolTest[i].pstPushSwitch) return;
+		if (!s_stProtocolTest[i].pstPushSwitch) return 0;
 		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
 		s_stProtocolTest[i].pstPushSwitch->actAcquire = _actPushSwitchAcquire;
 		s_stProtocolTest[i].pstPushSwitch->evtChange = _evtPushSwitchChange;
-	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
+	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return 0;
     }
 
     s_pstSerial = pifComm_Add(unDeviceCode++);
-	if (!s_pstSerial) return;
+	if (!s_pstSerial) return 0;
 
-    if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) return;
     s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enMedium, stProtocolQuestions);
-    if (!s_pstProtocol) return;
+    if (!s_pstProtocol) return 0;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
 
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%
-    if (!pifTask_AddRatio(3, pifComm_taskAll, NULL)) return;		// 3%
+    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return 0;		// 3%
+    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return 0;		// 3%
 
-    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return;		// 3%
-    if (!pifTask_AddPeriod(500, _taskLedToggle, NULL)) return;		// 500ms
-}
-
-// The loop function is called in an endless loop
-void loop()
-{
-    pif_Loop();
-
-    pifTask_Loop();
+    return unDeviceCode;
 }
