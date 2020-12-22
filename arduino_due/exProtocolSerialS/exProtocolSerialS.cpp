@@ -23,6 +23,9 @@
 #define DEVICECODE_SWITCH		10
 #define DEVICECODE_2_INDEX(dc)	((dc) - DEVICECODE_SWITCH)
 
+//#define USE_SERIAL_USB		// Linux or Windows
+#define USE_SERIAL_3			// Other Anduino
+
 
 static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stComm *s_pstSerial = NULL;
@@ -163,15 +166,27 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
 	(void)pstTask;
 
     while (pifComm_SendData(s_pstSerial, &txData)) {
+#ifdef USE_SERIAL_USB
     	SerialUSB.print((char)txData);
+#endif
+#ifdef USE_SERIAL_3
+    	Serial3.print((char)txData);
+#endif
     }
 
     while (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
-		rxData = SerialUSB.read();
-		if (rxData >= 0) {
-			pifComm_ReceiveData(s_pstSerial, rxData);
+#ifdef USE_SERIAL_USB
+		if (SerialUSB.available()) {
+			pifComm_ReceiveData(s_pstSerial, SerialUSB.read());
 		}
 		else break;
+#endif
+#ifdef USE_SERIAL_3
+		if (Serial3.available()) {
+			pifComm_ReceiveData(s_pstSerial, Serial3.read());
+		}
+		else break;
+#endif
     }
 }
 
@@ -207,7 +222,12 @@ void setup()
 	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
 
 	Serial.begin(115200);
+#ifdef USE_SERIAL_USB
 	SerialUSB.begin(115200);
+#endif
+#ifdef USE_SERIAL_3
+	Serial3.begin(28800);
+#endif
 
     pif_Init();
 

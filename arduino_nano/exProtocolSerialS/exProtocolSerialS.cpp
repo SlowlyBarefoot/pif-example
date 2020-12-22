@@ -1,32 +1,24 @@
-/**
- * 1초마다 log를 출력한다.
- *
- * Output log every second.
- */
-#include <fcntl.h>
-#include <signal.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/time.h>
-#include <termios.h>
-#include <time.h>
-#include <unistd.h>
+// Do not remove the include below
+#include <MsTimer2.h>
+#include <SoftwareSerial.h>
 
-#include "timer.h"
+#include "exProtocolSerialS.h"
 
 #include "pifComm.h"
 #include "pifLog.h"
 #include "pifProtocol.h"
 
 
+#define PIN_LED_L				13
+
 #define COMM_COUNT         		1
 #define PROTOCOL_COUNT          1
 #define PULSE_COUNT         	1
-#define PULSE_ITEM_COUNT    	10
+#define PULSE_ITEM_COUNT    	8
 #define TASK_COUNT              4
 
 
-static int s_fd;
+static SoftwareSerial SwSerial(10, 11);
 
 static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stComm *s_pstSerial = NULL;
@@ -39,14 +31,14 @@ static void _fnProtocolResponse20(PIF_stProtocolPacket *pstPacket);
 static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket);
 
 const PIF_stProtocolQuestion stProtocolQuestions[] = {
-		{ 0x30, PF_enLogPrint_Yes, _fnProtocolQuestion30 },
-		{ 0x31, PF_enLogPrint_Yes, _fnProtocolQuestion31 },
+		{ 0x30, PF_enDefault, _fnProtocolQuestion30 },
+		{ 0x31, PF_enDefault, _fnProtocolQuestion31 },
 		{ 0, PF_enDefault, NULL }
 };
 
 const PIF_stProtocolRequest stProtocolRequestTable[] = {
-		{ 0x20, PF_enResponse_Yes | PF_enLogPrint_Yes, _fnProtocolResponse20, 3, 300 },
-		{ 0x21, PF_enResponse_Ack | PF_enLogPrint_Yes, _fnProtocolResponse21, 3, 300 },
+		{ 0x20, PF_enResponse_Yes, _fnProtocolResponse20, 3, 300 },
+		{ 0x21, PF_enResponse_Ack, _fnProtocolResponse21, 3, 300 },
 		{ 0, PF_enDefault, NULL, 0, 0 }
 };
 
@@ -117,7 +109,7 @@ static void _evtProtocolError(PIF_unDeviceCode unDeviceCode)
 
 static void _actLogPrint(char *pcString)
 {
-	printf("%s", pcString);
+	Serial.print(pcString);
 }
 
 static void _evtDelay(void *pvIssuer)
@@ -147,114 +139,91 @@ static void _evtDelay(void *pvIssuer)
 static void _taskProtocolTest(PIF_stTask *pstTask)
 {
 	uint8_t txData;
-	uint8_t rxData[8];
-	uint16_t size;
+	uint8_t rxData;
 
 	(void)pstTask;
 
     while (pifComm_SendData(s_pstSerial, &txData)) {
-        write(s_fd, &txData, 1);
+    	SwSerial.write((char)txData);
     }
 
-    size = pifComm_GetRemainSizeOfRxBuffer(s_pstSerial);
-	if (size) {
-		size = read(s_fd, rxData, size);
-		if (size) {
-			pifComm_ReceiveDatas(s_pstSerial, rxData, size);
+    while (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
+    	if (SwSerial.available()) {
+			rxData = SwSerial.read();
+			pifComm_ReceiveData(s_pstSerial, rxData);
 		}
-	}
+		else break;
+    }
 }
 
-static void _TimerHandler()
+static void _LedToggle(PIF_stTask *pstTask)
+{
+	static BOOL sw = LOW;
+
+	(void)pstTask;
+
+	digitalWrite(PIN_LED_L, sw);
+	sw ^= 1;
+}
+
+static void sysTickHook()
 {
     pif_sigTimer1ms();
 
 	pifPulse_sigTick(s_pstTimer);
 }
 
-int main(int argc, char **argv)
+//The setup function is called once at startup of the sketch
+void setup()
 {
-	int i;
-    struct termios newtio;
-    char port[16];
 	PIF_unDeviceCode unDeviceCode = 1;
 
-    if (start_timer(1, &_TimerHandler)) {     // 1ms
-        printf("\nstart_timer error\n");
-        return(1);
-    }
+	pinMode(PIN_LED_L, OUTPUT);
 
-    for (i = 1; i < 10; i++) {
-    	sprintf(port, "/dev/ttyACM%d", i);
-		s_fd = open( port, O_RDWR | O_NOCTTY );
-		if (s_fd >= 0) break;
-    }
-	if (s_fd < 0) {
-		fprintf(stderr, "All port open failed.\n");
-		exit(-1);
-	}
-	else {
-		printf("%s port opened.\n", port);
-	}
+	Serial.begin(115200); //Doesn't matter speed
+	SwSerial.begin(28800);
 
-    memset( &newtio, 0, sizeof(newtio) );
-
-    newtio.c_cflag = B115200;
-    newtio.c_cflag |= CS8;
-    newtio.c_cflag |= CLOCAL;
-    newtio.c_cflag |= CREAD;
-    newtio.c_iflag = IGNPAR;
- //   newtio.c_iflag = ICRNL;
-    newtio.c_oflag = 0;
-    newtio.c_lflag = 0;
-    newtio.c_cc[VTIME] = 0;
-    newtio.c_cc[VMIN] = 0;
-
-    tcflush(s_fd, TCIFLUSH);
-    tcsetattr(s_fd, TCSANOW, &newtio);
+	MsTimer2::set(1, sysTickHook);
+	MsTimer2::start();
 
     pif_Init();
 
     pifLog_Init();
     pifLog_AttachActPrint(_actLogPrint);
 
-    if (!pifComm_Init(COMM_COUNT)) goto fail;
+    if (!pifComm_Init(COMM_COUNT)) return;
 
-    if (!pifPulse_Init(PULSE_COUNT)) goto fail;
+    if (!pifPulse_Init(PULSE_COUNT)) return;
     s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
-    if (!s_pstTimer) goto fail;
+    if (!s_pstTimer) return;
 
     s_pstSerial = pifComm_Add(unDeviceCode++);
-	if (!s_pstSerial) goto fail;
+	if (!s_pstSerial) return;
 
-    if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) goto fail;
+    if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) return;
     s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enSmall, stProtocolQuestions);
-    if (!s_pstProtocol) goto fail;
+    if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
     	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(s_pstTimer, PT_enOnce);
-		if (!s_stProtocolTest[i].pstDelay) goto fail;
+		if (!s_stProtocolTest[i].pstDelay) return;
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
-    if (!pifTask_Init(TASK_COUNT)) goto fail;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) goto fail;		// 100%
-    if (!pifTask_AddRatio(3, pifComm_taskAll, NULL)) goto fail;			// 3%
+    if (!pifTask_Init(TASK_COUNT)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
+    if (!pifTask_AddRatio(3, pifComm_taskAll, NULL)) return;		// 3%
 
-    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) goto fail;		// 3%
+    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return;		// 3%
+    if (!pifTask_AddPeriod(500, _LedToggle, NULL)) return;			// 500ms
+}
 
-    while (1) {
-        pif_Loop();
+// The loop function is called in an endless loop
+void loop()
+{
+    pif_Loop();
 
-        pifTask_Loop();
-    }
-
-fail:
-    pifLog_Exit();
-
-    stop_timer();
-
-	return pif_enError;
+    pifTask_Loop();
 }
