@@ -64,12 +64,17 @@ static struct {
 
 static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName)
 {
-	pifLog_Printf(LT_enInfo, "%s: CNT=%u", pcName, pstPacket->usDataCount);
-	if (pstPacket->usDataCount) {
-		pifLog_Printf(LT_enNone, "\nData:");
-		for (int i = 0; i < pstPacket->usDataCount; i++) {
-			pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
+	if (pstPacket) {
+		pifLog_Printf(LT_enInfo, "%s: CNT=%u", pcName, pstPacket->usDataCount);
+		if (pstPacket->usDataCount) {
+			pifLog_Printf(LT_enNone, "\nData:");
+			for (int i = 0; i < pstPacket->usDataCount; i++) {
+				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
+			}
 		}
+	}
+	else {
+		pifLog_Printf(LT_enInfo, pcName);
 	}
 }
 
@@ -161,7 +166,6 @@ static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
 static void _taskProtocolTest(PIF_stTask *pstTask)
 {
 	uint8_t txData;
-	int rxData;
 
 	(void)pstTask;
 
