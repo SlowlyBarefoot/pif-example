@@ -37,7 +37,7 @@ void setup()
 	pif_Init();
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(50, led_toggle, NULL)) return;
+    if (!pifTask_AddRatio(50, led_toggle, NULL)) return;		// 50%
 }
 
 // The loop function is called in an endless loop

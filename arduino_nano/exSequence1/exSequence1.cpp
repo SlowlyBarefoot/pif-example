@@ -198,10 +198,10 @@ void setup()
     s_pstSequence->evtError = _evtSequenceError;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddPeriod(10, pifSequence_taskAll, NULL)) return;	// 10ms
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
+    if (!pifTask_AddPeriodMs(10, pifSequence_taskAll, NULL)) return;	// 10ms
 
-    if (!pifTask_AddPeriod(500, _taskSequence, NULL)) return;		// 500ms
+    if (!pifTask_AddPeriodMs(500, _taskSequence, NULL)) return;			// 500ms
 
     pifSequence_Start(s_pstSequence);
 }

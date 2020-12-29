@@ -96,10 +96,10 @@ void setup()
 	s_pstTiltSwitch->evtChange = _TiltSwitchChange;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
+    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%
 
-    pifPulse_StartItem(pstTimerSwitch, 20);		// 20 * 1ms = 20ms
+    pifPulse_StartItem(pstTimerSwitch, 20);							// 20ms
 }
 
 // The loop function is called in an endless loop

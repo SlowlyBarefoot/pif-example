@@ -121,7 +121,7 @@ void setup()
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;	// 100%
     if (!pifTask_AddRatio(5, pifFnd_taskAll, NULL)) return;		// 5%
 
-    if (!pifTask_AddPeriod(3000, _taskFndTest, NULL)) return;	// 3000 * 1ms = 3sec
+    if (!pifTask_AddPeriodMs(3000, _taskFndTest, NULL)) return;	// 3000ms
 
     pifFnd_Start(s_pstFnd);
 }

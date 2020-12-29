@@ -93,12 +93,12 @@ void setup()
     if (!g_pstTimer1ms) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
 
     pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
     if (!pstTimer1msRed) return;
     pifPulse_AttachEvtFinish(pstTimer1msRed, led_red_toggle, NULL);
-    pifPulse_StartItem(pstTimer1msRed, 200);	// 200 * 1ms = 0.2sec
+    pifPulse_StartItem(pstTimer1msRed, 200);						// 200ms
 
     pstTimer1msYellow = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
     if (!pstTimer1msYellow) return;

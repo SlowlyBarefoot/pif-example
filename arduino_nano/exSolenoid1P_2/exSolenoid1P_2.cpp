@@ -97,7 +97,7 @@ void setup()
     if (!g_pstTimer) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
 
     if (!pifSolenoid_Init(g_pstTimer, SOLENOID_COUNT)) return;
     s_stSolenoidTest.pstSolenoid = pifSolenoid_Add(unDeviceCode++, ST_en1Point, 0, _SolenoidOrder);
@@ -106,7 +106,7 @@ void setup()
     s_stSolenoidTest.pstTimerItem = pifPulse_AddItem(g_pstTimer, PT_enOnce);
     if (!s_stSolenoidTest.pstTimerItem) return;
     pifPulse_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _SolenoidEvent, &s_stSolenoidTest);
-    pifPulse_StartItem(s_stSolenoidTest.pstTimerItem, 1000);		// 1000 * 1ms = 1sec
+    pifPulse_StartItem(s_stSolenoidTest.pstTimerItem, 1000);		// 1000ms
 }
 
 // The loop function is called in an endless loop

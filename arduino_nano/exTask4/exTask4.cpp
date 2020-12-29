@@ -7,17 +7,39 @@
 
 
 #define PIN_LED_L				13
+#define PIN_LED_RED				2
+#define PIN_LED_YELLOW			3
 
-#define TASK_COUNT              1
+#define TASK_COUNT              3
 
 
-static void _LedToggle(PIF_stTask *pstTask)
+static void _taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
 	(void)pstTask;
 
 	digitalWrite(PIN_LED_L, sw);
+	sw ^= 1;
+}
+
+static void _taskLedRedToggle(PIF_stTask *pstTask)
+{
+	static BOOL sw = LOW;
+
+	(void)pstTask;
+
+	digitalWrite(PIN_LED_RED, sw);
+	sw ^= 1;
+}
+
+static void _taskLedYellowToggle(PIF_stTask *pstTask)
+{
+	static BOOL sw = LOW;
+
+	(void)pstTask;
+
+	digitalWrite(PIN_LED_YELLOW, sw);
 	sw ^= 1;
 }
 
@@ -30,6 +52,8 @@ void sysTickHook()
 void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
+	pinMode(PIN_LED_RED, OUTPUT);
+	pinMode(PIN_LED_YELLOW, OUTPUT);
 
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
@@ -37,7 +61,9 @@ void setup()
 	pif_Init();
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddPeriod(500, _LedToggle, NULL)) return;	// 500ms
+    if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;		// 500ms
+    if (!pifTask_AddRatio(100, _taskLedRedToggle, NULL)) return;		// 100%
+    if (!pifTask_AddPeriodUs(500, _taskLedYellowToggle, NULL)) return;	// 500us
 }
 
 // The loop function is called in an endless loop

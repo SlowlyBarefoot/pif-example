@@ -91,8 +91,8 @@ void setup()
     pifLog_UseTerminal(TRUE);
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddPeriod(10, pifComm_taskAll, NULL)) return;		// 10ms
-    if (!pifTask_AddPeriod(10, _taskTerminal, NULL)) return;		// 10ms
+    if (!pifTask_AddPeriodMs(10, pifComm_taskAll, NULL)) return;	// 10ms
+    if (!pifTask_AddPeriodMs(10, _taskTerminal, NULL)) return;		// 10ms
 }
 
 // The loop function is called in an endless loop
