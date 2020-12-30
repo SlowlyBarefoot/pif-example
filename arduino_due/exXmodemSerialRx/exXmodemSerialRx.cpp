@@ -97,7 +97,7 @@ void setup()
 
 	Serial.begin(115200);
 #ifdef USE_SERIAL_USB
-	SerialUSB.begin(115200);
+	SerialUSB.begin(9600);
 #endif
 #ifdef USE_SERIAL_3
 	Serial3.begin(115200);

@@ -18,7 +18,7 @@
 #define TASK_COUNT              4
 
 
-static SoftwareSerial SwSerial(10, 11);
+static SoftwareSerial SwSerial(7, 8);
 
 static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stComm *s_pstSerial = NULL;
@@ -186,7 +186,7 @@ void setup()
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200); //Doesn't matter speed
-	SwSerial.begin(28800);
+	SwSerial.begin(38400);
 
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
@@ -219,9 +219,9 @@ void setup()
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddRatio(3, pifComm_taskAll, NULL)) return;		// 3%
+    if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return;	// 300us
 
-    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return;		// 3%
+    if (!pifTask_AddPeriodUs(300, _taskProtocolTest, NULL)) return;	// 300us
     if (!pifTask_AddPeriodMs(500, _LedToggle, NULL)) return;		// 500ms
 }
 

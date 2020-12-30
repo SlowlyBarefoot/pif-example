@@ -230,7 +230,7 @@ void setup()
 	SerialUSB.begin(115200);
 #endif
 #ifdef USE_SERIAL_3
-	Serial3.begin(28800);
+	Serial3.begin(38400);
 #endif
 
     pif_Init();
@@ -267,9 +267,9 @@ void setup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
     if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%
-    if (!pifTask_AddRatio(3, pifComm_taskAll, NULL)) return;		// 3%
+    if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return;	// 300us
 
-    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return;		// 3%
+    if (!pifTask_AddPeriodUs(300, _taskProtocolTest, NULL)) return;	// 300us
     if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;	// 500ms
 }
 
