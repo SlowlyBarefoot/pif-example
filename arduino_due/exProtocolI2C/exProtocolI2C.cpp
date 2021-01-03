@@ -241,8 +241,8 @@ void setup()
     	s_stProtocolTest[i].pstPushSwitch = pifSwitch_Add(DEVICECODE_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return;
 		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
-		s_stProtocolTest[i].pstPushSwitch->actAcquire = _actPushSwitchAcquire;
-		s_stProtocolTest[i].pstPushSwitch->evtChange = _evtPushSwitchChange;
+		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, _actPushSwitchAcquire);
+		pifSwitch_AttachEvent(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange);
 	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
     }
 
@@ -253,7 +253,7 @@ void setup()
     s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enSmall, NULL);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstI2C);
-    s_pstProtocol->evtError = _evtProtocolError;
+    pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%

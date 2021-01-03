@@ -236,7 +236,7 @@ int main(int argc, char **argv)
     s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) goto fail;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-    s_pstProtocol->evtError = _evtProtocolError;
+    pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
 
     for (int i = 0; i < 2; i++) {
     	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(s_pstTimer, PT_enOnce);

@@ -194,7 +194,7 @@ void setup()
     if (!pifSequence_Init(s_pstTimer1ms, SEQUENCE_COUNT)) return;
     s_pstSequence = pifSequence_Add(1, s_astSequencePhaseList, NULL);
     if (!s_pstSequence) return;
-    s_pstSequence->evtError = _evtSequenceError;
+    pifSequence_AttachEvent(s_pstSequence, _evtSequenceError);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%

@@ -158,7 +158,7 @@ void setup()
 
     if (!pifXmodem_Init(s_pstTimer, XT_CRC)) return;
     pifXmodem_AttachComm(s_pstSerial);
-    pifXmodem_AttachEvtTxReceive(_evtXmodemTxReceive);
+    pifXmodem_AttachEvent(_evtXmodemTxReceive, NULL);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%

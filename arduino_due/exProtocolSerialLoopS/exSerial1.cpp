@@ -184,8 +184,8 @@ PIF_unDeviceCode exSerial1_Setup(PIF_unDeviceCode unDeviceCode)
     	s_stProtocolTest[i].pstPushSwitch = pifSwitch_Add(DEVICECODE_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return 0;
 		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
-		s_stProtocolTest[i].pstPushSwitch->actAcquire = _actPushSwitchAcquire;
-		s_stProtocolTest[i].pstPushSwitch->evtChange = _evtPushSwitchChange;
+		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, _actPushSwitchAcquire);
+		pifSwitch_AttachEvent(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange);
 	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return 0;
     }
 
@@ -195,7 +195,7 @@ PIF_unDeviceCode exSerial1_Setup(PIF_unDeviceCode unDeviceCode)
     s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return 0;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-    s_pstProtocol->evtError = _evtProtocolError;
+    pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
 
     if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return 0;		// 3%
     if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return 0;		// 3%

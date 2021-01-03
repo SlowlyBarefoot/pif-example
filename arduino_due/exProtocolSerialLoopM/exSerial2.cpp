@@ -150,7 +150,7 @@ PIF_unDeviceCode exSerial2_Setup(PIF_unDeviceCode unDeviceCode)
     s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return 0;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-    s_pstProtocol->evtError = _evtProtocolError;
+    pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
 
     for (int i = 0; i < 2; i++) {
     	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer, PT_enOnce);

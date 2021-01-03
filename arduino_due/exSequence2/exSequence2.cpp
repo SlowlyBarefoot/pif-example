@@ -162,13 +162,13 @@ void setup()
     	s_stSequenceTest[i].pstPushSwitch = pifSwitch_Add(DEVICECODE_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
 		s_stSequenceTest[i].pstPushSwitch->bStateReverse = TRUE;
-		s_stSequenceTest[i].pstPushSwitch->actAcquire = _actPushSwitchAcquire;
-		s_stSequenceTest[i].pstPushSwitch->evtChange = _evtPushSwitchChange;
+		pifSwitch_AttachAction(s_stSequenceTest[i].pstPushSwitch, _actPushSwitchAcquire);
+		pifSwitch_AttachEvent(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange);
 
 		s_stSequenceTest[i].pstSequence = pifSequence_Add(DEVICECODE_SWITCH + i, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
-	    s_stSequenceTest[i].pstSequence->evtError = _evtSequenceError;
+	    pifSequence_AttachEvent(s_stSequenceTest[i].pstSequence, _evtSequenceError);
     }
 
     if (!pifTask_Init(TASK_COUNT)) return;

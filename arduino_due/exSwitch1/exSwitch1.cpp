@@ -72,13 +72,13 @@ void setup()
     s_pstPushSwitch = pifSwitch_Add(1, 0);
     if (!s_pstPushSwitch) return;
     s_pstPushSwitch->bStateReverse = TRUE;
-    s_pstPushSwitch->actAcquire = _PushSwitchAcquire;
-    s_pstPushSwitch->evtChange = _PushSwitchChange;
+    pifSwitch_AttachAction(s_pstPushSwitch, _PushSwitchAcquire);
+    pifSwitch_AttachEvent(s_pstPushSwitch, _PushSwitchChange);
 
     s_pstTiltSwitch = pifSwitch_Add(2, 0);
 	if (!s_pstTiltSwitch) return;
-	s_pstTiltSwitch->actAcquire = _TiltSwitchAcquire;
-	s_pstTiltSwitch->evtChange = _TiltSwitchChange;
+	pifSwitch_AttachAction(s_pstTiltSwitch, _TiltSwitchAcquire);
+	pifSwitch_AttachEvent(s_pstTiltSwitch, _TiltSwitchChange);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%

@@ -92,11 +92,11 @@ void setup()
     s_pstPushSwitch = pifSwitch_Add(unDeviceCode++, 0);
     if (!s_pstPushSwitch) return;
     s_pstPushSwitch->bStateReverse = TRUE;
-    s_pstPushSwitch->evtChange = _PushSwitchChange;
+    pifSwitch_AttachEvent(s_pstPushSwitch, _PushSwitchChange);
 
     s_pstTiltSwitch = pifSwitch_Add(unDeviceCode++, 0);
 	if (!s_pstTiltSwitch) return;
-	s_pstTiltSwitch->evtChange = _TiltSwitchChange;
+	pifSwitch_AttachEvent(s_pstTiltSwitch, _TiltSwitchChange);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
