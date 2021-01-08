@@ -59,9 +59,11 @@ static SWITCH _actPushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 	return digitalRead(s_stSequenceTest[DEVICECODE_2_INDEX(unDeviceCode)].ucPinSwitch);
 }
 
-static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
+static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState, void *pvIssuer)
 {
 	uint8_t index = DEVICECODE_2_INDEX(unDeviceCode);
+
+	(void)pvIssuer;
 
 	if (swState) {
 		pifSequence_Start(s_stSequenceTest[index].pstSequence);
@@ -166,7 +168,7 @@ void setup()
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
 		s_stSequenceTest[i].pstPushSwitch->bStateReverse = TRUE;
 		pifSwitch_AttachAction(s_stSequenceTest[i].pstPushSwitch, _actPushSwitchAcquire);
-		pifSwitch_AttachEvent(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange);
+		pifSwitch_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
 		s_stSequenceTest[i].pstSequence = pifSequence_Add(DEVICECODE_SWITCH + i, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);

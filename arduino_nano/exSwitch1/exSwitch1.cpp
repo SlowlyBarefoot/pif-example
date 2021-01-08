@@ -31,9 +31,10 @@ static SWITCH _PushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 	return digitalRead(PIN_PUSH_SWITCH);
 }
 
-static void _PushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
+static void _PushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState, void *pvIssuer)
 {
 	(void)unDeviceCode;
+	(void)pvIssuer;
 
 	digitalWrite(PIN_LED_RED, swState);
 }
@@ -45,9 +46,10 @@ static SWITCH _TiltSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-static void _TiltSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
+static void _TiltSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState, void *pvIssuer)
 {
 	(void)unDeviceCode;
+	(void)pvIssuer;
 
 	digitalWrite(PIN_LED_YELLOW, swState);
 }
@@ -73,12 +75,12 @@ void setup()
     if (!s_pstPushSwitch) return;
     s_pstPushSwitch->bStateReverse = TRUE;
     pifSwitch_AttachAction(s_pstPushSwitch, _PushSwitchAcquire);
-    pifSwitch_AttachEvent(s_pstPushSwitch, _PushSwitchChange);
+    pifSwitch_AttachEvtChange(s_pstPushSwitch, _PushSwitchChange, NULL);
 
     s_pstTiltSwitch = pifSwitch_Add(2, 0);
 	if (!s_pstTiltSwitch) return;
 	pifSwitch_AttachAction(s_pstTiltSwitch, _TiltSwitchAcquire);
-	pifSwitch_AttachEvent(s_pstTiltSwitch, _TiltSwitchChange);
+	pifSwitch_AttachEvtChange(s_pstTiltSwitch, _TiltSwitchChange, NULL);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%

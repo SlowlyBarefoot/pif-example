@@ -125,9 +125,11 @@ static SWITCH _actPushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
 	return digitalRead(s_stProtocolTest[DEVICECODE_2_INDEX(unDeviceCode)].ucPinSwitch);
 }
 
-static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState)
+static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState, void *pvIssuer)
 {
 	uint8_t index = DEVICECODE_2_INDEX(unDeviceCode);
+
+	(void)pvIssuer;
 
 	if (swState) {
 		s_stProtocolTest[index].ucDataCount = rand() % 8;
@@ -185,7 +187,7 @@ PIF_unDeviceCode exSerial1_Setup(PIF_unDeviceCode unDeviceCode)
 		if (!s_stProtocolTest[i].pstPushSwitch) return 0;
 		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
 		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, _actPushSwitchAcquire);
-		pifSwitch_AttachEvent(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange);
+		pifSwitch_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return 0;
     }
 

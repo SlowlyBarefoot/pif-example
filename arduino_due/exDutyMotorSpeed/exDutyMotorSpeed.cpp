@@ -12,17 +12,21 @@
 #define PIN_L298N_ENB_PWM		2
 #define PIN_L298N_IN1			30
 #define PIN_L298N_IN2			32
+#define PIN_PHOTO_INTERRUPT_1	35
+#define PIN_PHOTO_INTERRUPT_2	37
+#define PIN_PHOTO_INTERRUPT_3	39
 
 #define COMM_COUNT				1
 #define MOTOR_COUNT				1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	20
-#define TASK_COUNT              4
+#define SWITCH_COUNT         	3
+#define TASK_COUNT              5
 
 
 static PIF_stPulse *s_pstTimer1ms = NULL;
-
 static PIF_stComm *s_pstSerial = NULL;
+static PIF_stSwitch *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
 
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
@@ -38,31 +42,36 @@ const PIF_stTermCmdEntry c_psCmdTable[] = {
 
 const PIF_stDutyMotorSpeedStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 		{
-				MM_enDefault,
+				MM_D_enCW | MM_CIAS_enYes | MM_CFPS_enYes,
+				&s_pstSwitch[0], &s_pstSwitch[1], &s_pstSwitch[2],
 				48, 16,
 				200, 0,
 				32, 16, 1000
 		},
 		{
-				MM_D_enCCW | MM_NR_enNo,
+				MM_D_enCCW | MM_CIAS_enYes | MM_CFPS_enYes,
+				&s_pstSwitch[2], &s_pstSwitch[1], &s_pstSwitch[0],
 				64, 16,
 				200, 500,
 				32, 16, 1000
 		},
 		{
-				MM_enDefault,
+				MM_D_enCW,
+				NULL, NULL, NULL,
 				0, 0,
 				200, 0,
 				32, 16, 1000
 		},
 		{
-				MM_D_enCCW | MM_NR_enNo,
+				MM_D_enCCW,
+				NULL, NULL, NULL,
 				64, 16,
 				200, 0,
 				0, 0, 0
 		},
 		{
-				MM_enDefault,
+				MM_D_enCW,
+				NULL, NULL, NULL,
 				64, 16,
 				200, 0,
 				0, 0, 2000
@@ -145,6 +154,21 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 		return PIF_TERM_CMD_INVALID_ARG;
 	}
 	return PIF_TERM_CMD_TOO_FEW_ARGS;
+}
+
+static SWITCH _PhotoInterruptAcquire(PIF_unDeviceCode unDeviceCode)
+{
+	switch (unDeviceCode) {
+	case 2:
+		return digitalRead(PIN_PHOTO_INTERRUPT_1);
+
+	case 3:
+		return digitalRead(PIN_PHOTO_INTERRUPT_2);
+
+	case 4:
+		return digitalRead(PIN_PHOTO_INTERRUPT_3);
+	}
+	return OFF;
 }
 
 static void _actSetDuty(uint16_t usDuty)
@@ -230,6 +254,9 @@ void setup()
 	pinMode(PIN_L298N_ENB_PWM, OUTPUT);
 	pinMode(PIN_L298N_IN1, OUTPUT);
 	pinMode(PIN_L298N_IN2, OUTPUT);
+	pinMode(PIN_PHOTO_INTERRUPT_1, INPUT_PULLUP);
+	pinMode(PIN_PHOTO_INTERRUPT_2, INPUT_PULLUP);
+	pinMode(PIN_PHOTO_INTERRUPT_3, INPUT_PULLUP);
 
 	Serial.begin(115200);
 	SerialUSB.begin(115200);
@@ -247,6 +274,14 @@ void setup()
 	pifLog_DetachActPrint();
     pifLog_UseTerminal(TRUE);
 
+    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+
+    for (int i = 0; i < SWITCH_COUNT; i++) {
+		s_pstSwitch[i] = pifSwitch_Add(unDeviceCode++, 0);
+		if (!s_pstSwitch[i]) return;
+	    pifSwitch_AttachAction(s_pstSwitch[i], _PhotoInterruptAcquire);
+    }
+
     if (!pifPulse_Init(PULSE_COUNT)) return;
     s_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
     if (!s_pstTimer1ms) return;
@@ -260,6 +295,7 @@ void setup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
     if (!pifTask_AddPeriodMs(5, pifComm_taskAll, NULL)) return;		// 5ms
+    if (!pifTask_AddPeriodMs(1, pifSwitch_taskAll, NULL)) return;	// 1ms
 
     if (!pifTask_AddPeriodMs(5, _taskTerminal, NULL)) return;		// 5ms
     if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;	// 500ms
