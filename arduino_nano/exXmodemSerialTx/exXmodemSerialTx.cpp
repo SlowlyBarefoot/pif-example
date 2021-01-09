@@ -15,12 +15,14 @@
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
 #define TASK_COUNT              4
+#define XMODEM_COUNT       		1
 
 
 static SoftwareSerial SwSerial(7, 8);
 
 static PIF_stPulse *s_pstTimer = NULL;
 static PIF_stComm *s_pstSerial = NULL;
+static PIF_stXmodem *s_pstXmodem = NULL;
 
 static struct {
 	uint8_t step;
@@ -46,7 +48,7 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 		s_stXmodemTest.usPos = 0;
 		s_stXmodemTest.usLength = 128;
 		for (i = 0; i < s_stXmodemTest.usLength; i++) s_stXmodemTest.aucData[i] = rand() & 0xFF;
-		pifXmodem_SendData(1, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
+		pifXmodem_SendData(s_pstXmodem, 1, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
 		break;
 
 	case ASCII_ACK:
@@ -57,18 +59,18 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 				s_stXmodemTest.usLength = s_stXmodemTest.usTotal - s_stXmodemTest.usPos;
 				if (s_stXmodemTest.usLength > 128) s_stXmodemTest.usLength = 128;
 				for (i = 0; i < s_stXmodemTest.usLength; i++) s_stXmodemTest.aucData[i] = rand() & 0xFF;
-				pifXmodem_SendData(ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
+				pifXmodem_SendData(s_pstXmodem, ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
 			}
 			else {
-				pifXmodem_SendEot();
+				pifXmodem_SendEot(s_pstXmodem);
 				s_stXmodemTest.step = 0;
 			}
 		}
 		break;
 
 	case ASCII_NAK:
-		pifXmodem_SendData(ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
-//		pifXmodem_SendCancel();
+		pifXmodem_SendData(s_pstXmodem, ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
+//		pifXmodem_SendCancel(s_pstXmodem);
 		break;
 
 	case ASCII_CAN:
@@ -138,9 +140,11 @@ void setup()
     s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
 
-    if (!pifXmodem_Init(s_pstTimer, XT_CRC)) return;
-    pifXmodem_AttachComm(s_pstSerial);
-    pifXmodem_AttachEvent(_evtXmodemTxReceive, NULL);
+    if (!pifXmodem_Init(s_pstTimer, XMODEM_COUNT)) return;
+    s_pstXmodem = pifXmodem_Add(PIF_ID_AUTO, XT_CRC);
+    if (!s_pstXmodem) return;
+    pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
+    pifXmodem_AttachEvent(s_pstXmodem, _evtXmodemTxReceive, NULL);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
