@@ -21,8 +21,8 @@
 #define SWITCH_COUNT            2
 #define TASK_COUNT              3
 
-#define DEVICECODE_SWITCH		10
-#define DEVICECODE_2_INDEX(dc)	((dc) - DEVICECODE_SWITCH)
+#define PIF_ID_SWITCH			0x100
+#define PIF_ID_2_INDEX(id)		((id) - PIF_ID_SWITCH)
 
 
 static PIF_stPulse *s_pstTimer1ms = NULL;
@@ -54,14 +54,14 @@ static void _actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-static SWITCH _actPushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
+static SWITCH _actPushSwitchAcquire(PIF_usId usPifId)
 {
-	return digitalRead(s_stSequenceTest[DEVICECODE_2_INDEX(unDeviceCode)].ucPinSwitch);
+	return digitalRead(s_stSequenceTest[PIF_ID_2_INDEX(usPifId)].ucPinSwitch);
 }
 
-static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState, void *pvIssuer)
+static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 {
-	uint8_t index = DEVICECODE_2_INDEX(unDeviceCode);
+	uint8_t index = PIF_ID_2_INDEX(usPifId);
 
 	(void)pvIssuer;
 
@@ -71,7 +71,7 @@ static void _evtPushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState, 
 	else {
 		s_stSequenceTest[index].bSequenceParam = TRUE;
 	}
-	pifLog_Printf(LT_enInfo, "Switch(%d): %d", unDeviceCode, swState);
+	pifLog_Printf(LT_enInfo, "Switch(%d): %d", usPifId, swState);
 }
 
 static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
@@ -80,7 +80,7 @@ static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
 
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
-		index = DEVICECODE_2_INDEX(pstOwner->ucId);
+		index = PIF_ID_2_INDEX(pstOwner->usPifId);
 		digitalWrite(s_stSequenceTest[index].ucPinLed, ON);
 		s_stSequenceTest[index].bSequenceParam = FALSE;
 		return SR_enNext;
@@ -108,7 +108,7 @@ static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
 
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
-		index = DEVICECODE_2_INDEX(pstOwner->ucId);
+		index = PIF_ID_2_INDEX(pstOwner->usPifId);
 		digitalWrite(s_stSequenceTest[index].ucPinLed, OFF);
 		return SR_enNext;
 
@@ -137,7 +137,6 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
 	int i;
 
 	pinMode(PIN_LED_L, OUTPUT);
@@ -157,20 +156,20 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
 	if (!pifPulse_Init(PULSE_COUNT)) return;
-	s_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+	s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer1ms) return;
 
     if (!pifSwitch_Init(SWITCH_COUNT)) return;
     if (!pifSequence_Init(s_pstTimer1ms, SEQUENCE_COUNT)) return;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-    	s_stSequenceTest[i].pstPushSwitch = pifSwitch_Add(DEVICECODE_SWITCH + i, 0);
+    	s_stSequenceTest[i].pstPushSwitch = pifSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
 		s_stSequenceTest[i].pstPushSwitch->bStateReverse = TRUE;
 		pifSwitch_AttachAction(s_stSequenceTest[i].pstPushSwitch, _actPushSwitchAcquire);
 		pifSwitch_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Add(DEVICECODE_SWITCH + i, s_astSequencePhaseList,
+		s_stSequenceTest[i].pstSequence = pifSequence_Add(PIF_ID_SWITCH + i, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
 	    pifSequence_AttachEvent(s_stSequenceTest[i].pstSequence, _evtSequenceError);

@@ -24,31 +24,31 @@ static void _LogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-static SWITCH _PushSwitchAcquire(PIF_unDeviceCode unDeviceCode)
+static SWITCH _PushSwitchAcquire(PIF_usId usPifId)
 {
-	(void)unDeviceCode;
+	(void)usPifId;
 
 	return digitalRead(PIN_PUSH_SWITCH);
 }
 
-static void _PushSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState, void *pvIssuer)
+static void _PushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 {
-	(void)unDeviceCode;
+	(void)usPifId;
 	(void)pvIssuer;
 
 	digitalWrite(PIN_LED_RED, swState);
 }
 
-static SWITCH _TiltSwitchAcquire(PIF_unDeviceCode unDeviceCode)
+static SWITCH _TiltSwitchAcquire(PIF_usId usPifId)
 {
-	(void)unDeviceCode;
+	(void)usPifId;
 
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-static void _TiltSwitchChange(PIF_unDeviceCode unDeviceCode, SWITCH swState, void *pvIssuer)
+static void _TiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 {
-	(void)unDeviceCode;
+	(void)usPifId;
 	(void)pvIssuer;
 
 	digitalWrite(PIN_LED_YELLOW, swState);
@@ -71,13 +71,13 @@ void setup()
 
     if (!pifSwitch_Init(SWITCH_COUNT)) return;
 
-    s_pstPushSwitch = pifSwitch_Add(1, 0);
+    s_pstPushSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
     if (!s_pstPushSwitch) return;
     s_pstPushSwitch->bStateReverse = TRUE;
     pifSwitch_AttachAction(s_pstPushSwitch, _PushSwitchAcquire);
     pifSwitch_AttachEvtChange(s_pstPushSwitch, _PushSwitchChange, NULL);
 
-    s_pstTiltSwitch = pifSwitch_Add(2, 0);
+    s_pstTiltSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
 	if (!s_pstTiltSwitch) return;
 	pifSwitch_AttachAction(s_pstTiltSwitch, _TiltSwitchAcquire);
 	pifSwitch_AttachEvtChange(s_pstTiltSwitch, _TiltSwitchChange, NULL);

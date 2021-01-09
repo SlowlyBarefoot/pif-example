@@ -173,8 +173,6 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
 	pinMode(PIN_74HC595_DATA, OUTPUT);
@@ -189,12 +187,12 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer) return;
 
     if (!pifDotMatrix_Init(s_pstTimer, 1)) return;
 
-    s_pstDotMatrix = pifDotMatrix_Add(unDeviceCode++, 8, 8, _actDotMatrixDisplay);
+    s_pstDotMatrix = pifDotMatrix_Add(PIF_ID_AUTO, 8, 8, _actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 96)) return;
     for (int i = 0; i < 96; i++) {

@@ -2,7 +2,7 @@
 #define EXSERIAL1_H_
 
 
-PIF_unDeviceCode exSerial1_Setup(PIF_unDeviceCode unDeviceCode);
+BOOL exSerial1_Setup();
 
 
 #endif /* EXSERIAL1_H_ */

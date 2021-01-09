@@ -155,9 +155,9 @@ static void _actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 	row = ucRow;
 }
 
-static void _evtDotMatrixShiftFinish(PIF_unDeviceCode unDeviceCode)
+static void _evtDotMatrixShiftFinish(PIF_usId usPifId)
 {
-	pifLog_Printf(LT_enInfo, "_DotMatrixEventShiftFinish(%d)", unDeviceCode);
+	pifLog_Printf(LT_enInfo, "_DotMatrixEventShiftFinish(%d)", usPifId);
 }
 
 static void _taskDotMatrixTest(PIF_stTask *pstTask)
@@ -216,7 +216,6 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
 	char cPattern[] = "Hello";
 	static uint8_t ucPattern[5 * 8];
 	int n;
@@ -236,7 +235,7 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer) return;
 
     if (!pifDotMatrix_Init(s_pstTimer, 1)) return;
@@ -249,7 +248,7 @@ void setup()
 		}
 	}
 
-    s_pstDotMatrix = pifDotMatrix_Add(unDeviceCode++, 8, 8, _actDotMatrixDisplay);
+    s_pstDotMatrix = pifDotMatrix_Add(PIF_ID_AUTO, 8, 8, _actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
     pifDotMatrix_AttachEvent(s_pstDotMatrix, _evtDotMatrixShiftFinish);
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;

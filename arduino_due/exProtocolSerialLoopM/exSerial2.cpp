@@ -91,9 +91,9 @@ static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
 	pifLog_Printf(LT_enInfo, "Response21: ACK");
 }
 
-static void _evtProtocolError(PIF_unDeviceCode unDeviceCode)
+static void _evtProtocolError(PIF_usId usPifId)
 {
-	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", unDeviceCode);
+	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", usPifId);
 }
 
 static void _evtDelay(void *pvIssuer)
@@ -107,10 +107,10 @@ static void _evtDelay(void *pvIssuer)
 	int index = pstOwner->ucCommand & 0x0F;
 
 	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->unDeviceCode, pif_enError);
+		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->usPifId, pif_enError);
 	}
 	else {
-		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->unDeviceCode, s_stProtocolTest[index].ucDataCount);
+		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->usPifId, s_stProtocolTest[index].ucDataCount);
 		if (s_stProtocolTest[index].ucDataCount) {
 			pifLog_Printf(LT_enNone, "\nData:");
 			for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
@@ -140,25 +140,25 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
 	}
 }
 
-PIF_unDeviceCode exSerial2_Setup(PIF_unDeviceCode unDeviceCode)
+BOOL exSerial2_Setup()
 {
 	Serial2.begin(115200);
 
-    s_pstSerial = pifComm_Add(unDeviceCode++);
-	if (!s_pstSerial) return 0;
+    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
+	if (!s_pstSerial) return FALSE;
 
-    s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enMedium, stProtocolQuestions);
-    if (!s_pstProtocol) return 0;
+    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
+    if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
 
     for (int i = 0; i < 2; i++) {
     	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer, PT_enOnce);
-		if (!s_stProtocolTest[i].pstDelay) return 0;
+		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
-    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return 0;		// 3%
+    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return FALSE;		// 3%
 
-    return unDeviceCode;
+    return TRUE;
 }

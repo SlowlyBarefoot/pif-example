@@ -78,9 +78,9 @@ static void _fnProtocolQuestion31(PIF_stProtocolPacket *pstPacket)
 	}
 }
 
-static void _evtProtocolError(PIF_unDeviceCode unDeviceCode)
+static void _evtProtocolError(PIF_usId usPifId)
 {
-	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", unDeviceCode);
+	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", usPifId);
 }
 
 static void _actLogPrint(char *pcString)
@@ -132,8 +132,6 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200); //Doesn't matter speed
@@ -153,14 +151,14 @@ void setup()
     if (!pifComm_Init(COMM_COUNT)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer) return;
 
-    s_pstI2C = pifComm_Add(unDeviceCode++);
+    s_pstI2C = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstI2C) return;
 
     if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) return;
-    s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enSmall, stProtocolQuestions);
+    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstI2C);
     pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);

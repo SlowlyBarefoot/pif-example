@@ -65,7 +65,6 @@ static void led_yellow_toggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
 	PIF_stPulseItem *pstTimer1ms;
 	PIF_stPulseItem *pstTimer100us;
 
@@ -77,9 +76,9 @@ void setup()
     pif_Init();
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!g_pstTimer1ms) return;
-    g_pstTimer100us = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    g_pstTimer100us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!g_pstTimer100us) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;

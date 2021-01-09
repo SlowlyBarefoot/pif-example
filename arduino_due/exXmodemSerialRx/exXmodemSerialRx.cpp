@@ -91,8 +91,6 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200);
@@ -111,10 +109,10 @@ void setup()
     if (!pifComm_Init(COMM_COUNT)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer) return;
 
-    s_pstSerial = pifComm_Add(unDeviceCode++);
+    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
 
     if (!pifXmodem_Init(s_pstTimer, XT_CRC)) return;

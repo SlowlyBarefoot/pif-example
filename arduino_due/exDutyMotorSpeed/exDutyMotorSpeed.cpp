@@ -23,6 +23,8 @@
 #define SWITCH_COUNT         	3
 #define TASK_COUNT              5
 
+#define PIF_ID_SWITCH(n)		(0x100 + (n))
+
 
 static PIF_stPulse *s_pstTimer1ms = NULL;
 static PIF_stComm *s_pstSerial = NULL;
@@ -156,16 +158,16 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 	return PIF_TERM_CMD_TOO_FEW_ARGS;
 }
 
-static SWITCH _PhotoInterruptAcquire(PIF_unDeviceCode unDeviceCode)
+static SWITCH _PhotoInterruptAcquire(PIF_usId usPifId)
 {
-	switch (unDeviceCode) {
-	case 2:
+	switch (usPifId) {
+	case PIF_ID_SWITCH(0):
 		return digitalRead(PIN_PHOTO_INTERRUPT_1);
 
-	case 3:
+	case PIF_ID_SWITCH(1):
 		return digitalRead(PIN_PHOTO_INTERRUPT_2);
 
-	case 4:
+	case PIF_ID_SWITCH(2):
 		return digitalRead(PIN_PHOTO_INTERRUPT_3);
 	}
 	return OFF;
@@ -207,7 +209,7 @@ static void _evtStable(PIF_stDutyMotor *pstParent, void *pvInfo)
 {
 	(void)pvInfo;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d)", pstParent->unDeviceCode);
+	pifLog_Printf(LT_enInfo, "EventStable(%d)", pstParent->usPifId);
 }
 
 static void _evtStop(PIF_stDutyMotor *pstParent, void *pvInfo)
@@ -215,7 +217,7 @@ static void _evtStop(PIF_stDutyMotor *pstParent, void *pvInfo)
 	(void)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d)", pstParent->unDeviceCode);
+	pifLog_Printf(LT_enInfo, "EventStop(%d)", pstParent->usPifId);
 }
 
 static void _evtError(PIF_stDutyMotor *pstParent, void *pvInfo)
@@ -223,7 +225,7 @@ static void _evtError(PIF_stDutyMotor *pstParent, void *pvInfo)
 	(void)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d)", pstParent->unDeviceCode);
+	pifLog_Printf(LT_enInfo, "EventError(%d)", pstParent->usPifId);
 }
 
 static void _taskLedToggle(PIF_stTask *pstTask)
@@ -248,8 +250,6 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
-
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_L298N_ENB_PWM, OUTPUT);
 	pinMode(PIN_L298N_IN1, OUTPUT);
@@ -265,7 +265,7 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
-    s_pstSerial = pifComm_Add(unDeviceCode++);
+    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
 
     if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
@@ -277,17 +277,17 @@ void setup()
     if (!pifSwitch_Init(SWITCH_COUNT)) return;
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-		s_pstSwitch[i] = pifSwitch_Add(unDeviceCode++, 0);
+		s_pstSwitch[i] = pifSwitch_Add(PIF_ID_SWITCH(i), 0);
 		if (!s_pstSwitch[i]) return;
 	    pifSwitch_AttachAction(s_pstSwitch[i], _PhotoInterruptAcquire);
     }
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer1ms) return;
 
     if (!pifDutyMotor_Init(s_pstTimer1ms, MOTOR_COUNT)) return;
-    s_stDutyMotorTest.pstMotor = pifDutyMotorSpeed_Add(unDeviceCode++, 255, 100);
+    s_stDutyMotorTest.pstMotor = pifDutyMotorSpeed_Add(PIF_ID_AUTO, 255, 100);
     pifDutyMotorSpeed_AddStages(s_stDutyMotorTest.pstMotor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
     pifDutyMotor_AttachAction(s_stDutyMotorTest.pstMotor, _actSetDuty, _actSetDirection, _actOperateBreak);
     pifDutyMotor_AttachEvent(s_stDutyMotorTest.pstMotor, _evtStable, _evtStop, _evtError);

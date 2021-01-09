@@ -163,8 +163,6 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
-
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_L298N_ENB_PWM, OUTPUT);
 	pinMode(PIN_L298N_IN1, OUTPUT);
@@ -177,7 +175,7 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
-    s_pstSerial = pifComm_Add(unDeviceCode++);
+    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
 
     if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
@@ -187,11 +185,11 @@ void setup()
     pifLog_UseTerminal(TRUE);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer1ms) return;
 
     if (!pifDutyMotor_Init(s_pstTimer1ms, MOTOR_COUNT)) return;
-    s_stDutyMotorTest.pstMotor = pifDutyMotor_Add(unDeviceCode++, 255);
+    s_stDutyMotorTest.pstMotor = pifDutyMotor_Add(PIF_ID_AUTO, 255);
     if (!s_stDutyMotorTest.pstMotor) return;
     pifDutyMotor_AttachAction(s_stDutyMotorTest.pstMotor, _actSetDuty, _actSetDirection, _actOperateBreak);
 

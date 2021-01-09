@@ -48,8 +48,6 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200);
@@ -60,7 +58,7 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    g_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!g_pstTimer) return;
 
     if (!pifComm_Init(COMM_COUNT)) return;
@@ -73,11 +71,8 @@ void setup()
 
     if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;	// 500ms
 
-    unDeviceCode = exSerial1_Setup(unDeviceCode);
-    if (!unDeviceCode) return;
-
-    unDeviceCode = exSerial2_Setup(unDeviceCode);
-    if (!unDeviceCode) return;
+    if (!exSerial1_Setup()) return;
+    if (!exSerial2_Setup()) return;
 }
 
 // The loop function is called in an endless loop

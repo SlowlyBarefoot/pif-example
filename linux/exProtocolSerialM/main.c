@@ -115,9 +115,9 @@ static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
 	pifLog_Printf(LT_enInfo, "Response21: ACK");
 }
 
-static void _evtProtocolError(PIF_unDeviceCode unDeviceCode)
+static void _evtProtocolError(PIF_usId usPifId)
 {
-	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", unDeviceCode);
+	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", usPifId);
 }
 
 static void _actLogPrint(char *cString)
@@ -136,10 +136,10 @@ static void _evtDelay(void *pvIssuer)
 	int index = pstOwner->ucCommand & 0x0F;
 
 	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->unDeviceCode, pif_enError);
+		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->usPifId, pif_enError);
 	}
 	else {
-		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->unDeviceCode, s_stProtocolTest[index].ucDataCount);
+		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->usPifId, s_stProtocolTest[index].ucDataCount);
 		if (s_stProtocolTest[index].ucDataCount) {
 			pifLog_Printf(LT_enNone, "\nData:");
 			for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
@@ -182,7 +182,6 @@ int main(int argc, char **argv)
 	int i;
     struct termios newtio;
     char port[16];
-	PIF_unDeviceCode unDeviceCode = 1;
 
     if (start_timer(1, &_TimerHandler)) {     // 1ms
         printf("\nstart_timer error\n");
@@ -226,14 +225,14 @@ int main(int argc, char **argv)
     if (!pifComm_Init(COMM_COUNT)) goto fail;
 
     if (!pifPulse_Init(PULSE_COUNT)) goto fail;
-    s_pstTimer = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer) goto fail;
 
-    s_pstSerial = pifComm_Add(unDeviceCode++);
+    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) goto fail;
 
     if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) goto fail;
-    s_pstProtocol = pifProtocol_Add(unDeviceCode++, PT_enMedium, stProtocolQuestions);
+    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) goto fail;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);

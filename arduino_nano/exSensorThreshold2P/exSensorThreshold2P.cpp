@@ -49,9 +49,9 @@ static void _SensorAcquisition(PIF_stTask *pstTask)
 	pifSensor_sigData(s_pstSensor, analogRead(PIN_CDS));
 }
 
-static void _SensorThreshold(PIF_unDeviceCode unDeviceCode, SWITCH swState)
+static void _SensorThreshold(PIF_usId usPifId, SWITCH swState)
 {
-	pifLog_Printf(LT_enInfo, "Sensor: DC:%u SW:%u", unDeviceCode, swState);
+	pifLog_Printf(LT_enInfo, "Sensor: DC:%u SW:%u", usPifId, swState);
 }
 
 static void sysTickHook()
@@ -64,8 +64,6 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_unDeviceCode unDeviceCode = 1;
-
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_CDS, INPUT);
 
@@ -80,11 +78,11 @@ void setup()
 	pifLog_AttachActPrint(_LogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(unDeviceCode++, PULSE_ITEM_COUNT);
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer1ms) return;
 
     if (!pifSensor_Init(s_pstTimer1ms, SENSOR_COUNT)) return;
-    s_pstSensor = pifSensor_Add(unDeviceCode++);
+    s_pstSensor = pifSensor_Add(PIF_ID_AUTO);
     if (!s_pstSensor) return;
 #if USE_FILTER_AVERAGE
     pifSensor_AttachFilter(s_pstSensor, PIF_SENSOR_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
