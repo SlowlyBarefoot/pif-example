@@ -65,9 +65,8 @@ void setup()
 
 	pif_Init();
 
-	pifLog_Init();
+	if (!pifLog_InitStatic(LOG_BUFFER_SIZE, s_acLog)) return;
 	pifLog_AttachActPrint(log_print);
-    pifLog_InitBufferShare(LOG_BUFFER_SIZE, s_acLog);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);

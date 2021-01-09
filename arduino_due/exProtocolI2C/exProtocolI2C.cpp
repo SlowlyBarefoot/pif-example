@@ -68,26 +68,6 @@ static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName
 	}
 }
 
-static void _fnCompareData(PIF_stProtocolPacket *pstPacket, uint8_t ucIndex)
-{
-	uint16_t i;
-
-	if (pstPacket->usDataCount == s_stProtocolTest[ucIndex].ucDataCount) {
-		for (i = 0; i < pstPacket->usDataCount; i++) {
-			if (pstPacket->pucData[i] != s_stProtocolTest[ucIndex].ucData[i]) break;
-		}
-		if (i < pstPacket->usDataCount) {
-			pifLog_Printf(LT_enInfo, "Different data");
-		}
-		else {
-			pifLog_Printf(LT_enInfo, "Same data");
-		}
-	}
-	else {
-		pifLog_Printf(LT_enError, "Different count: %u != %u", s_stProtocolTest[ucIndex].ucDataCount, pstPacket->usDataCount);
-	}
-}
-
 static void _fnProtocolResponse30(PIF_stProtocolPacket *pstPacket)
 {
 	_fnProtocolPrint(pstPacket, "Response30");

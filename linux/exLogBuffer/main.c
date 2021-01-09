@@ -41,8 +41,7 @@ int main(int argc, char **argv)
 
     pif_Init();
 
-    pifLog_Init();
-    pifLog_InitBufferAlloc(0x200);
+    if (!pifLog_InitHeap(0x200)) goto fail;
     pifLog_AttachActPrint(_LogPrint);
 
 	pifLog_Printf(LT_enInfo, "Start");
