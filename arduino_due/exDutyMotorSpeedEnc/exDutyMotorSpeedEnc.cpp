@@ -60,14 +60,14 @@ const PIF_stDutyMotorSpeedEncStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] =
 				0, 0, 100
 		},
 		{
-				MM_D_enCW | MM_CIAS_enYes | MM_CFPS_enYes,
+				MM_D_enCW | MM_SC_enYES | MM_CIAS_enYes | MM_CFPS_enYes,
 				&s_pstSwitch[0], &s_pstSwitch[1], &s_pstSwitch[2],
 				95, 48, 16, 5000,
 				2300, 230, 0, 3000, 90, 110,
 				50, 16, 1000
 		},
 		{
-				MM_D_enCCW | MM_CIAS_enYes | MM_CFPS_enYes,
+				MM_D_enCCW | MM_SC_enYES | MM_CIAS_enYes | MM_CFPS_enYes,
 				&s_pstSwitch[2], &s_pstSwitch[1], &s_pstSwitch[0],
 				95, 48, 16, 5000,
 				2300, 230, 0, 3000, 90, 110,
