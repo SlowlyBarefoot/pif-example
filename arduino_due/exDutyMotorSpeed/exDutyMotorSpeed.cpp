@@ -348,17 +348,16 @@ void setup()
 	pifLog_DetachActPrint();
     pifLog_UseTerminal(TRUE);
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
+    if (!s_pstTimer1ms) return;
 
+    if (!pifSwitch_Init(SWITCH_COUNT)) return;
     for (int i = 0; i < SWITCH_COUNT; i++) {
 		s_pstSwitch[i] = pifSwitch_Add(PIF_ID_SWITCH(i), 0);
 		if (!s_pstSwitch[i]) return;
 	    pifSwitch_AttachAction(s_pstSwitch[i], _PhotoInterruptAcquire);
     }
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!s_pstTimer1ms) return;
 
     if (!pifDutyMotor_Init(s_pstTimer1ms, MOTOR_COUNT)) return;
     s_pstMotor = pifDutyMotorSpeed_Add(PIF_ID_AUTO, 255, 100);

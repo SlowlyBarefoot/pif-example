@@ -20,9 +20,9 @@
 #define TASK_COUNT              4
 
 
-static PIF_stPulse *s_pstTimer1ms = NULL;
-
 static PIF_stComm *s_pstSerial = NULL;
+static PIF_stDutyMotor *s_pstMotor = NULL;
+static PIF_stPulse *s_pstTimer1ms = NULL;
 
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
@@ -36,10 +36,9 @@ const PIF_stTermCmdEntry c_psCmdTable[] = {
 
 typedef struct {
 	uint16_t usDuty;
-    PIF_stDutyMotor *pstMotor;
 } ST_DutyMotorTest;
 
-static ST_DutyMotorTest s_stDutyMotorTest = { 128, NULL };
+static ST_DutyMotorTest s_stDutyMotorTest = { 128 };
 
 
 static void _actLogPrint(char *pcString)
@@ -70,22 +69,22 @@ static void _taskTerminal(PIF_stTask *pstTask)
 static int CmdDutyMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Duty: %d", s_stDutyMotorTest.pstMotor->usCurrentDuty);
-		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_stDutyMotorTest.pstMotor->ucDirection);
+		pifLog_Printf(LT_enNone, "\n  Duty: %d", s_pstMotor->usCurrentDuty);
+		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->ucDirection);
 		return PIF_TERM_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
 		if (!strcmp(argv[1], "duty")) {
 			int value = atoi(argv[2]);
 			if (value > 0 && value < 256) {
-				pifDutyMotor_SetDuty(s_stDutyMotorTest.pstMotor, value);
+				pifDutyMotor_SetDuty(s_pstMotor, value);
 				return PIF_TERM_CMD_NO_ERROR;
 			}
 		}
 		else if (!strcmp(argv[1], "dir")) {
 			int value = atoi(argv[2]);
 			if (value == 0 || value == 1) {
-				pifDutyMotor_SetDirection(s_stDutyMotorTest.pstMotor, value);
+				pifDutyMotor_SetDirection(s_pstMotor, value);
 				return PIF_TERM_CMD_NO_ERROR;
 			}
 		}
@@ -93,15 +92,15 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 	}
 	else if (argc > 1) {
 		if (!strcmp(argv[1], "stop")) {
-			pifDutyMotor_BreakRelease(s_stDutyMotorTest.pstMotor, 0);
+			pifDutyMotor_BreakRelease(s_pstMotor, 0);
 			return PIF_TERM_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[1], "break")) {
-			pifDutyMotor_BreakRelease(s_stDutyMotorTest.pstMotor, 1000);
+			pifDutyMotor_BreakRelease(s_pstMotor, 1000);
 			return PIF_TERM_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[1], "start")) {
-			pifDutyMotor_Start(s_stDutyMotorTest.pstMotor, s_stDutyMotorTest.usDuty);
+			pifDutyMotor_Start(s_pstMotor, s_stDutyMotorTest.usDuty);
 			return PIF_TERM_CMD_NO_ERROR;
 		}
 		return PIF_TERM_CMD_INVALID_ARG;
@@ -189,9 +188,9 @@ void setup()
     if (!s_pstTimer1ms) return;
 
     if (!pifDutyMotor_Init(s_pstTimer1ms, MOTOR_COUNT)) return;
-    s_stDutyMotorTest.pstMotor = pifDutyMotor_Add(PIF_ID_AUTO, 255);
-    if (!s_stDutyMotorTest.pstMotor) return;
-    pifDutyMotor_AttachAction(s_stDutyMotorTest.pstMotor, _actSetDuty, _actSetDirection, _actOperateBreak);
+    s_pstMotor = pifDutyMotor_Add(PIF_ID_AUTO, 255);
+    if (!s_pstMotor) return;
+    pifDutyMotor_AttachAction(s_pstMotor, _actSetDuty, _actSetDirection, _actOperateBreak);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%

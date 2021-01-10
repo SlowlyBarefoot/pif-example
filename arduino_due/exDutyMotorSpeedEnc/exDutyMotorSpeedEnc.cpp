@@ -20,7 +20,7 @@
 #define COMM_COUNT				1
 #define MOTOR_COUNT				1
 #define PULSE_COUNT         	1
-#define PULSE_ITEM_COUNT    	30
+#define PULSE_ITEM_COUNT    	20
 #define SWITCH_COUNT         	3
 #define TASK_COUNT              6
 
@@ -60,14 +60,14 @@ const PIF_stDutyMotorSpeedEncStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] =
 				0, 0, 100
 		},
 		{
-				MM_D_enCW | MM_SC_enYES | MM_CIAS_enYes | MM_CFPS_enYes,
+				MM_D_enCW | MM_SC_enYES | MM_CIAS_enYes,
 				&s_pstSwitch[0], &s_pstSwitch[1], &s_pstSwitch[2],
 				95, 48, 16, 5000,
 				2300, 230, 0, 3000, 90, 110,
 				50, 16, 1000
 		},
 		{
-				MM_D_enCCW | MM_SC_enYES | MM_CIAS_enYes | MM_CFPS_enYes,
+				MM_D_enCCW | MM_SC_enYES | MM_CIAS_enYes,
 				&s_pstSwitch[2], &s_pstSwitch[1], &s_pstSwitch[0],
 				95, 48, 16, 5000,
 				2300, 230, 0, 3000, 90, 110,
@@ -338,17 +338,16 @@ void setup()
 	pifLog_DetachActPrint();
     pifLog_UseTerminal(TRUE);
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
+    if (!s_pstTimer1ms) return;
 
+    if (!pifSwitch_Init(SWITCH_COUNT)) return;
     for (int i = 0; i < SWITCH_COUNT; i++) {
 		s_pstSwitch[i] = pifSwitch_Add(PIF_ID_SWITCH(i), 0);
 		if (!s_pstSwitch[i]) return;
 	    pifSwitch_AttachAction(s_pstSwitch[i], _PhotoInterruptAcquire);
     }
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!s_pstTimer1ms) return;
 
     if (!pifDutyMotor_Init(s_pstTimer1ms, MOTOR_COUNT)) return;
     s_pstMotor = pifDutyMotorSpeedEnc_Add(PIF_ID_AUTO, 255, 100);
