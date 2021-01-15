@@ -43,11 +43,11 @@ const PIF_stTermCmdEntry c_psCmdTable[] = {
 
 typedef struct {
 	int nMode;
-	uint32_t unStepCount;
 	uint16_t usBreakTime;
+	uint32_t unStepCount;
 } ST_StepMotorTest;
 
-static ST_StepMotorTest s_stStepMotorTest = { 0, 200, 1000 };
+static ST_StepMotorTest s_stStepMotorTest = { 0, 1000, 200 };
 
 
 static void _actLogPrint(char *pcString)
@@ -81,7 +81,8 @@ static int CmdStepMotorTest(int argc, char *argv[])
 		pifLog_Printf(LT_enNone, "\n  Method: %d", s_pstMotor->enMethod);
 		pifLog_Printf(LT_enNone, "\n  Operation: %d", s_pstMotor->enOperation);
 		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->ucDirection);
-		pifLog_Printf(LT_enNone, "\n  RPM: %2f", s_pstMotor->fCurrentRpm);
+		pifLog_Printf(LT_enNone, "\n  P/S: %u", s_pstMotor->usCurrentPps);
+		pifLog_Printf(LT_enNone, "\n  R/M: %2f", pifStepMotor_GetRpm(s_pstMotor));
 		pifLog_Printf(LT_enNone, "\n  Step Count: %d", s_stStepMotorTest.unStepCount);
 		pifLog_Printf(LT_enNone, "\n  Break Time: %d", s_stStepMotorTest.usBreakTime);
 		return PIF_TERM_CMD_NO_ERROR;
@@ -100,6 +101,15 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			int value = atoi(argv[2]);
 			if (value >= SMO_en4P_UP_1Phase && value <= SMO_en4P_UP_12Phase) {
 				pifStepMotor_SetOperation(s_pstMotor, (PIF_enStepMotorOperation)value);
+				return PIF_TERM_CMD_NO_ERROR;
+			}
+		}
+		else if (!strcmp(argv[1], "pps")) {
+			float value = atof(argv[2]);
+			if (value > 0) {
+				if (!pifStepMotor_SetPps(s_pstMotor, value)) {
+					pifLog_Printf(LT_enError, "\n  Invalid Parameter: %d", value);
+				}
 				return PIF_TERM_CMD_NO_ERROR;
 			}
 		}
@@ -168,6 +178,14 @@ static void _actSetStep(uint16_t usPhase)
 	digitalWrite(PIN_STEP_MOTOR_4, (usPhase >> 3) & 1);
 }
 
+void _evtStop(PIF_stStepMotor *pstOwner, void *pvInfo)
+{
+	(void)pvInfo;
+
+	s_stStepMotorTest.nMode = 0;
+	pifStepMotor_BreakRelease(pstOwner, s_stStepMotorTest.usBreakTime);
+}
+
 static void _taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
@@ -187,7 +205,7 @@ extern "C" {
 	}
 }
 
-static void _sigTimer100us()
+static void _sigTimer200us()
 {
 	pifPulse_sigTick(g_pstTimer200us);
 }
@@ -203,7 +221,7 @@ void setup()
 	pinMode(PIN_STEP_MOTOR_3, OUTPUT);
 	pinMode(PIN_STEP_MOTOR_4, OUTPUT);
 
-	Timer3.attachInterrupt(_sigTimer100us).start(200);
+	Timer3.attachInterrupt(_sigTimer200us).start(200);
 
 	Serial.begin(115200);
 	SerialUSB.begin(115200);
@@ -231,8 +249,9 @@ void setup()
     s_pstMotor = pifStepMotor_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en4P_UP_1Phase);
     if (!s_pstMotor) return;
     pifStepMotor_AttachAction(s_pstMotor, _actSetStep);
+    pifStepMotor_AttachEvent(s_pstMotor, NULL, _evtStop, NULL);
 	s_pstMotor->ucReductionGearRatio = STEP_MOTOR_REDUCTION_GEAR_RATIO;
-	pifStepMotor_SetRpm(s_pstMotor, 120);
+	pifStepMotor_SetPps(s_pstMotor, 200);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
