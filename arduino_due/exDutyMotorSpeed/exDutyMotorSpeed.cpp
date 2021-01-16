@@ -226,27 +226,27 @@ static void _actOperateBreak(uint8_t ucState)
 	pifLog_Printf(LT_enInfo, "OperateBreak(%d)", ucState);
 }
 
-static void _evtStable(PIF_stDutyMotor *pstParent, void *pvInfo)
+static void _evtStable(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
 	(void)pvInfo;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d)", pstParent->usPifId);
+	pifLog_Printf(LT_enInfo, "EventStable(%d)", pstOwner->usPifId);
 }
 
-static void _evtStop(PIF_stDutyMotor *pstParent, void *pvInfo)
+static void _evtStop(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
 	(void)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d)", pstParent->usPifId);
+	pifLog_Printf(LT_enInfo, "EventStop(%d)", pstOwner->usPifId);
 }
 
-static void _evtError(PIF_stDutyMotor *pstParent, void *pvInfo)
+static void _evtError(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
 	(void)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d)", pstParent->usPifId);
+	pifLog_Printf(LT_enInfo, "EventError(%d)", pstOwner->usPifId);
 }
 
 static void _taskInitPos(PIF_stTask *pstTask)
