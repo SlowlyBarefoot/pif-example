@@ -71,7 +71,7 @@ const PIF_stStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 				MM_D_enCW | MM_PC_enYes,
 				NULL, NULL, NULL,
 				100, 100,
-				600, 800,
+				600, 750,
 				100, 100, 100,
 				1000
 		},
@@ -79,7 +79,7 @@ const PIF_stStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 				MM_D_enCCW | MM_PC_enYes,
 				NULL, NULL, NULL,
 				100, 100,
-				600, 800,
+				600, 750,
 				100, 100, 100,
 				1000
 		},
