@@ -24,7 +24,7 @@
 #define PULSE_COUNT         	2
 #define PULSE_ITEM_COUNT    	20
 #define SWITCH_COUNT         	3
-#define TASK_COUNT              7
+#define TASK_COUNT              8
 
 #define PIF_ID_SWITCH(n)		(0x100 + (n))
 
@@ -70,17 +70,17 @@ const PIF_stStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		{
 				MM_D_enCW | MM_PC_enYes,
 				NULL, NULL, NULL,
-				100, 25,
-				500, 800,
-				100, 50, 100,
+				100, 100,
+				600, 800,
+				100, 100, 100,
 				1000
 		},
 		{
 				MM_D_enCCW | MM_PC_enYes,
 				NULL, NULL, NULL,
-				100, 25,
-				500, 800,
-				100, 50, 100,
+				100, 100,
+				600, 800,
+				100, 100, 100,
 				1000
 		},
 		{
@@ -96,9 +96,11 @@ const PIF_stStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 typedef struct {
 	uint8_t ucStage;
     uint8_t ucInitPos;
+    uint8_t ucRepeat;
+    uint8_t ucRepeatStop;
 } ST_StepMotorTest;
 
-static ST_StepMotorTest s_stStepMotorTest = { 0, 0 };
+static ST_StepMotorTest s_stStepMotorTest = { 0, 0, 0, 0 };
 
 
 static void _actLogPrint(char *pcString)
@@ -166,6 +168,19 @@ static int CmdStepMotorTest(int argc, char *argv[])
 				else {
 					pifLog_Printf(LT_enNone, "\nError: Stage=%d", s_stStepMotorTest.ucStage);
 				}
+				return PIF_TERM_CMD_NO_ERROR;
+			}
+		}
+		else if (!strcmp(argv[1], "repeat")) {
+			int value = atoi(argv[2]);
+			switch (value) {
+			case 0:
+			    s_stStepMotorTest.ucRepeatStop = 1;
+				return PIF_TERM_CMD_NO_ERROR;
+
+			case 1:
+			    s_stStepMotorTest.ucRepeat = 1;
+			    s_stStepMotorTest.ucRepeatStop = 0;
 				return PIF_TERM_CMD_NO_ERROR;
 			}
 		}
@@ -290,6 +305,61 @@ static void _taskInitPos(PIF_stTask *pstTask)
 	}
 }
 
+static void _taskRepeat(PIF_stTask *pstTask)
+{
+	(void)pstTask;
+
+	switch (s_stStepMotorTest.ucRepeat) {
+	case 1:
+		s_stStepMotorTest.ucStage = 0;
+		s_stStepMotorTest.ucRepeat = 2;
+		pifLog_Printf(LT_enInfo, "Repeat: Start");
+		break;
+
+	case 2:
+		if (!s_stStepMotorTest.ucStage) {
+			if (s_stStepMotorTest.ucRepeatStop) {
+				s_stStepMotorTest.ucRepeat = 5;
+			}
+			else if (pifStepMotorPos_Start(s_pstMotor, 2, 0)) {
+				s_stStepMotorTest.ucStage = 3;
+				s_stStepMotorTest.ucRepeat = 3;
+			}
+			else {
+				s_stStepMotorTest.ucRepeat = 4;
+			}
+		}
+		break;
+
+	case 3:
+		if (!s_stStepMotorTest.ucStage) {
+			if (s_stStepMotorTest.ucRepeatStop) {
+				s_stStepMotorTest.ucRepeat = 5;
+			}
+			if (pifStepMotorPos_Start(s_pstMotor, 3, 0)) {
+				s_stStepMotorTest.ucStage = 2;
+				s_stStepMotorTest.ucRepeat = 2;
+			}
+			else {
+				s_stStepMotorTest.ucRepeat = 4;
+			}
+		}
+		break;
+
+	case 4:
+		pifLog_Printf(LT_enError, "Repeat: Error");
+		s_stStepMotorTest.ucRepeat = 0;
+		s_stStepMotorTest.ucRepeatStop = 0;
+		break;
+
+	case 5:
+		pifLog_Printf(LT_enError, "Repeat: Stop");
+		s_stStepMotorTest.ucRepeat = 0;
+		s_stStepMotorTest.ucRepeatStop = 0;
+		break;
+	}
+}
+
 static void _taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
@@ -377,6 +447,7 @@ void setup()
 
     if (!pifTask_AddPeriodMs(10, _taskTerminal, NULL)) return;			// 10ms
     if (!pifTask_AddPeriodMs(10, _taskInitPos, NULL)) return;			// 10ms
+    if (!pifTask_AddPeriodMs(10, _taskRepeat, NULL)) return;			// 10ms
     if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;		// 500ms
 }
 
