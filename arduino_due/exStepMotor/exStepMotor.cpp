@@ -28,7 +28,7 @@
 
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stPulse *s_pstTimer1ms = NULL;
-static PIF_stPulse *g_pstTimer200us = NULL;
+static PIF_stPulse *s_pstTimer200us = NULL;
 static PIF_stStepMotor *s_pstMotor = NULL;
 
 static int CmdStepMotorTest(int argc, char *argv[]);
@@ -207,7 +207,7 @@ extern "C" {
 
 static void _sigTimer200us()
 {
-	pifPulse_sigTick(g_pstTimer200us);
+	pifPulse_sigTick(s_pstTimer200us);
 }
 
 //The setup function is called once at startup of the sketch
@@ -242,10 +242,10 @@ void setup()
     if (!pifPulse_Init(PULSE_COUNT)) return;
     s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
     if (!s_pstTimer1ms) return;
-    g_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!g_pstTimer200us) return;
+    s_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
+    if (!s_pstTimer200us) return;
 
-    if (!pifStepMotor_Init(g_pstTimer200us, 200, MOTOR_COUNT)) return;
+    if (!pifStepMotor_Init(s_pstTimer200us, 200, MOTOR_COUNT)) return;
     s_pstMotor = pifStepMotor_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S);
     if (!s_pstMotor) return;
     pifStepMotor_AttachAction(s_pstMotor, _actSetStep);

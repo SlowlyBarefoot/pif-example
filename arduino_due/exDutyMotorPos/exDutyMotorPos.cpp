@@ -62,7 +62,7 @@ const PIF_stDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 				0
 		},
 		{
-				MM_D_enCW | MM_PC_enYES | MM_CIAS_enYes,
+				MM_D_enCW | MM_PC_enYes | MM_CIAS_enYes,
 				&s_pstSwitch[0], &s_pstSwitch[1], &s_pstSwitch[2],
 				50, 50,
 				200, 50000,
@@ -70,7 +70,7 @@ const PIF_stDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 				70000
 		},
 		{
-				MM_D_enCCW | MM_PC_enYES | MM_CIAS_enYes,
+				MM_D_enCCW | MM_PC_enYes | MM_CIAS_enYes,
 				&s_pstSwitch[2], &s_pstSwitch[1], &s_pstSwitch[0],
 				50, 50,
 				200, 50000,
@@ -210,27 +210,27 @@ static void _actOperateBreak(uint8_t ucState)
 	pifLog_Printf(LT_enInfo, "OperateBreak(%d)", ucState);
 }
 
-static void _evtStable(PIF_stDutyMotor *pstParent, void *pvInfo)
+static void _evtStable(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
 	PIF_stDutyMotorPosInfo *pstInfo = (PIF_stDutyMotorPosInfo *)pvInfo;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d) : P=%u", pstParent->usPifId, pstInfo->unCurrentPulse);
+	pifLog_Printf(LT_enInfo, "EventStable(%d) : P=%u", pstOwner->usPifId, pstInfo->unCurrentPulse);
 }
 
-static void _evtStop(PIF_stDutyMotor *pstParent, void *pvInfo)
+static void _evtStop(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
 	PIF_stDutyMotorPosInfo *pstInfo = (PIF_stDutyMotorPosInfo *)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d) : P=%u", pstParent->usPifId, pstInfo->unCurrentPulse);
+	pifLog_Printf(LT_enInfo, "EventStop(%d) : P=%u", pstOwner->usPifId, pstInfo->unCurrentPulse);
 }
 
-static void _evtError(PIF_stDutyMotor *pstParent, void *pvInfo)
+static void _evtError(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
 	(void)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d)", pstParent->usPifId);
+	pifLog_Printf(LT_enInfo, "EventError(%d)", pstOwner->usPifId);
 }
 
 static void _taskInitPos(PIF_stTask *pstTask)

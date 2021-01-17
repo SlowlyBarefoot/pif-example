@@ -1,11 +1,11 @@
 // Do not remove the include below
 #include <DueTimer.h>
 
-#include "exStepMotorSpeed.h"
+#include "exStepMotorPos.h"
 
 #include "pifLog.h"
 #include "pifPulse.h"
-#include "pifStepMotorSpeed.h"
+#include "pifStepMotorPos.h"
 #include "pifTask.h"
 #include "pifTerminal.h"
 
@@ -48,36 +48,48 @@ const PIF_stTermCmdEntry c_psCmdTable[] = {
 	{ NULL, NULL, NULL }
 };
 
-#define STEP_MOTOR_STAGE_COUNT	4
+#define STEP_MOTOR_STAGE_COUNT	5
 
-const PIF_stStepMotorSpeedStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
+const PIF_stStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		{
 				MM_D_enCCW | MM_RT_enTime | MM_CFPS_enYes,
 				NULL, NULL, &s_pstSwitch[0],
 				0, 0,
 				50, 0,
-				0, 0, 100
+				0, 0, 100,
+				0
 		},
 		{
 				MM_D_enCW | MM_RT_enTime | MM_CFPS_enYes,
 				NULL, NULL, &s_pstSwitch[2],
 				0, 0,
 				50, 0,
-				0, 0, 100
+				0, 0, 100,
+				0
 		},
 		{
-				MM_D_enCW,
-				NULL, &s_pstSwitch[1], NULL,
+				MM_D_enCW | MM_PC_enYes,
+				NULL, NULL, NULL,
 				100, 25,
-				500, 0,
-				100, 50, 100
+				500, 800,
+				100, 50, 100,
+				1000
 		},
 		{
-				MM_D_enCCW,
-				NULL, &s_pstSwitch[1], NULL,
-				100, 50,
-				500, 0,
-				100, 25, 100
+				MM_D_enCCW | MM_PC_enYes,
+				NULL, NULL, NULL,
+				100, 25,
+				500, 800,
+				100, 50, 100,
+				1000
+		},
+		{
+				MM_D_enCCW | MM_PC_enYes | MM_NR_enYes,
+				NULL, NULL, NULL,
+				100, 25,
+				500, 800,
+				100, 50, 100,
+				1000
 		}
 };
 
@@ -143,13 +155,13 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			int value = atoi(argv[2]);
 			if (!value) {
 				s_stStepMotorTest.ucStage = 0;
-				pifStepMotorSpeed_Stop(s_pstMotor);
+				pifStepMotorPos_Stop(s_pstMotor);
 				return PIF_TERM_CMD_NO_ERROR;
 			}
 			else if (value <= STEP_MOTOR_STAGE_COUNT) {
 				if (!s_stStepMotorTest.ucStage) {
 					s_stStepMotorTest.ucStage = value;
-					pifStepMotorSpeed_Start(s_pstMotor, s_stStepMotorTest.ucStage - 1, 2000);
+					pifStepMotorPos_Start(s_pstMotor, s_stStepMotorTest.ucStage - 1, 2000);
 				}
 				else {
 					pifLog_Printf(LT_enNone, "\nError: Stage=%d", s_stStepMotorTest.ucStage);
@@ -162,12 +174,12 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	else if (argc > 1) {
 		if (!strcmp(argv[1], "off")) {
 			s_stStepMotorTest.ucStage = 0;
-			pifStepMotorSpeed_Stop(s_pstMotor);
+			pifStepMotorPos_Stop(s_pstMotor);
 			return PIF_TERM_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[1], "em")) {
 			s_stStepMotorTest.ucStage = 0;
-			pifStepMotorSpeed_Emergency(s_pstMotor);
+			pifStepMotorPos_Emergency(s_pstMotor);
 		}
 		else if (!strcmp(argv[1], "init")) {
 			pifLog_Printf(LT_enInfo, "Init Pos");
@@ -206,7 +218,7 @@ static void _evtStable(PIF_stStepMotor *pstOwner, void *pvInfo)
 {
 	(void)pvInfo;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d)", pstOwner->usPifId);
+	pifLog_Printf(LT_enInfo, "EventStable(%d) : P=%u", pstOwner->usPifId, pstOwner->unCurrentPulse);
 }
 
 static void _evtStop(PIF_stStepMotor *pstOwner, void *pvInfo)
@@ -214,7 +226,7 @@ static void _evtStop(PIF_stStepMotor *pstOwner, void *pvInfo)
 	(void)pvInfo;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d)", pstOwner->usPifId);
+	pifLog_Printf(LT_enInfo, "EventStop(%d) : P=%u", pstOwner->usPifId, pstOwner->unCurrentPulse);
 }
 
 static void _evtError(PIF_stStepMotor *pstOwner, void *pvInfo)
@@ -246,7 +258,7 @@ static void _taskInitPos(PIF_stTask *pstTask)
 				s_stStepMotorTest.ucInitPos = 0;
 			}
 			else {
-				if (pifStepMotorSpeed_Start(s_pstMotor, 0, unTime)) {
+				if (pifStepMotorPos_Start(s_pstMotor, 0, unTime)) {
 					s_stStepMotorTest.ucStage = 1;
 					s_stStepMotorTest.ucInitPos = 3;
 					unTime += 500;
@@ -260,7 +272,7 @@ static void _taskInitPos(PIF_stTask *pstTask)
 
 	case 3:
 		if (!s_stStepMotorTest.ucStage) {
-			if (pifStepMotorSpeed_Start(s_pstMotor, 1, unTime)) {
+			if (pifStepMotorPos_Start(s_pstMotor, 1, unTime)) {
 				s_stStepMotorTest.ucStage = 2;
 				s_stStepMotorTest.ucInitPos = 2;
 				unTime += 500;
@@ -348,12 +360,12 @@ void setup()
     }
 
     if (!pifStepMotor_Init(s_pstTimer200us, 200, MOTOR_COUNT)) return;
-    s_pstMotor = pifStepMotorSpeed_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S, 100);	// 100ms
+    s_pstMotor = pifStepMotorPos_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S, 100);	// 20ms
     if (!s_pstMotor) return;
     pifStepMotor_AttachAction(s_pstMotor, _actSetStep);
     pifStepMotor_AttachEvent(s_pstMotor, _evtStable, _evtStop, _evtError);
 	s_pstMotor->ucReductionGearRatio = STEP_MOTOR_REDUCTION_GEAR_RATIO;
-    pifStepMotorSpeed_AddStages(s_pstMotor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
+    pifStepMotorPos_AddStages(s_pstMotor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
