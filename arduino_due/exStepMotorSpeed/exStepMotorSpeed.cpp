@@ -204,25 +204,25 @@ static void _actSetStep(uint16_t usPhase)
 
 static void _evtStable(PIF_stStepMotor *pstOwner, void *pvInfo)
 {
-	(void)pvInfo;
+	PIF_stStepMotorSpeed *pstInfo = (PIF_stStepMotorSpeed *)pvInfo;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d)", pstOwner->usPifId);
+	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u P=%u", pstOwner->usPifId, pstInfo->ucStageIndex, pstOwner->unCurrentPulse);
 }
 
 static void _evtStop(PIF_stStepMotor *pstOwner, void *pvInfo)
 {
-	(void)pvInfo;
+	PIF_stStepMotorSpeed *pstInfo = (PIF_stStepMotorSpeed *)pvInfo;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d)", pstOwner->usPifId);
+	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u P=%u", pstOwner->usPifId, pstInfo->ucStageIndex, pstOwner->unCurrentPulse);
 }
 
 static void _evtError(PIF_stStepMotor *pstOwner, void *pvInfo)
 {
-	(void)pvInfo;
+	PIF_stStepMotorSpeed *pstInfo = (PIF_stStepMotorSpeed *)pvInfo;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d)", pstOwner->usPifId);
+	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u P=%u", pstOwner->usPifId, pstInfo->ucStageIndex, pstOwner->unCurrentPulse);
 }
 
 static void _taskInitPos(PIF_stTask *pstTask)

@@ -208,25 +208,25 @@ static void _actOperateBreak(uint8_t ucState)
 
 static void _evtStable(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
-	(void)pvInfo;
+	PIF_stDutyMotorSpeedEnc *pstInfo = (PIF_stDutyMotorSpeedEnc *)pvInfo;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d)", pstOwner->usPifId);
+	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u", pstOwner->usPifId, pstInfo->ucStageIndex);
 }
 
 static void _evtStop(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
-	(void)pvInfo;
+	PIF_stDutyMotorSpeedEnc *pstInfo = (PIF_stDutyMotorSpeedEnc *)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d)", pstOwner->usPifId);
+	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u", pstOwner->usPifId, pstInfo->ucStageIndex);
 }
 
 static void _evtError(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
-	(void)pvInfo;
+	PIF_stDutyMotorSpeedEnc *pstInfo = (PIF_stDutyMotorSpeedEnc *)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d)", pstOwner->usPifId);
+	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u", pstOwner->usPifId, pstInfo->ucStageIndex);
 }
 
 static void _taskInitPos(PIF_stTask *pstTask)
