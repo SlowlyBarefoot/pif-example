@@ -18,7 +18,7 @@
 #define TASK_COUNT              6
 
 
-PIF_stPulse *g_pstTimer = NULL;
+PIF_stPulse *g_pstTimer1ms = NULL;
 
 
 static void _actLogPrint(char *pcString)
@@ -41,7 +41,7 @@ extern "C" {
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(g_pstTimer);
+		pifPulse_sigTick(g_pstTimer1ms);
 	}
 }
 
@@ -58,12 +58,12 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!g_pstTimer) return;
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!g_pstTimer1ms) return;
 
     if (!pifComm_Init(COMM_COUNT)) return;
 
-    if (!pifProtocol_Init(g_pstTimer, PROTOCOL_COUNT)) return;
+    if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%

@@ -20,7 +20,7 @@
 
 static SoftwareSerial SwSerial(7, 8);
 
-static PIF_stPulse *s_pstTimer = NULL;
+static PIF_stPulse *s_pstTimer1ms = NULL;
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
@@ -175,7 +175,7 @@ static void sysTickHook()
 {
     pif_sigTimer1ms();
 
-	pifPulse_sigTick(s_pstTimer);
+	pifPulse_sigTick(s_pstTimer1ms);
 }
 
 //The setup function is called once at startup of the sketch
@@ -197,20 +197,20 @@ void setup()
     if (!pifComm_Init(COMM_COUNT)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!s_pstTimer) return;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!s_pstTimer1ms) return;
 
     s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
 
-    if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) return;
+    if (!pifProtocol_Init(s_pstTimer1ms, PROTOCOL_COUNT)) return;
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
 
     for (int i = 0; i < 2; i++) {
-    	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(s_pstTimer, PT_enOnce);
+    	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(s_pstTimer1ms, PT_enOnce);
 		if (!s_stProtocolTest[i].pstDelay) return;
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }

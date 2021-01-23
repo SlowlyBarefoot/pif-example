@@ -25,6 +25,8 @@ static void _taskLedRedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
+	(void)pstTask;
+
 	digitalWrite(PIN_LED_RED, sw);
 	sw ^= 1;
 }
@@ -32,6 +34,8 @@ static void _taskLedRedToggle(PIF_stTask *pstTask)
 static void _taskLedYellowToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
+
+	(void)pstTask;
 
 	digitalWrite(PIN_LED_YELLOW, sw);
 	sw ^= 1;

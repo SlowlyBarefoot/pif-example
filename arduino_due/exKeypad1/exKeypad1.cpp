@@ -13,7 +13,7 @@
 #define TASK_COUNT              2
 
 
-static PIF_stPulse *g_pstTimer1ms = NULL;
+static PIF_stPulse *s_pstTimer1ms = NULL;
 
 const uint8_t ROWS = 4;    // 행(rows) 개수
 const uint8_t COLS = 4;    // 열(columns) 개수
@@ -88,7 +88,7 @@ extern "C" {
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(g_pstTimer1ms);
+		pifPulse_sigTick(s_pstTimer1ms);
 	}
 }
 
@@ -111,8 +111,8 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!g_pstTimer1ms) return;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!s_pstTimer1ms) return;
 
     pstKeypad = pifKeypad_Init(PIF_ID_AUTO, ROWS, COLS, keys);
     if (!pstKeypad) return;

@@ -12,6 +12,7 @@
 #define PIN_74HC595_LATCH		50
 #define PIN_74HC595_SHIFT		52
 
+#define DOT_MATRIX_COUNT        1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
 #define TASK_COUNT              5
@@ -116,7 +117,7 @@ const uint8_t font8x8_basic[96][8] = {
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}    // U+007F
 };
 
-static PIF_stPulse *s_pstTimer = NULL;
+static PIF_stPulse *s_pstTimer1ms = NULL;
 static PIF_stDotMatrix *s_pstDotMatrix = NULL;
 
 
@@ -166,7 +167,7 @@ extern "C" {
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(s_pstTimer);
+		pifPulse_sigTick(s_pstTimer1ms);
 	}
 }
 
@@ -187,10 +188,10 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!s_pstTimer) return;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!s_pstTimer1ms) return;
 
-    if (!pifDotMatrix_Init(s_pstTimer, 1)) return;
+    if (!pifDotMatrix_Init(s_pstTimer1ms, DOT_MATRIX_COUNT)) return;
 
     s_pstDotMatrix = pifDotMatrix_Add(PIF_ID_AUTO, 8, 8, _actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;

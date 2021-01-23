@@ -62,16 +62,15 @@ static void _taskTerminal(PIF_stTask *pstTask)
 
 	(void)pstTask;
 
-    while (pifComm_SendData(s_pstSerial, &txData)) {
+    if (pifComm_SendData(s_pstSerial, &txData)) {
     	SerialUSB.print((char)txData);
     }
 
-    while (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
+    if (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
 		if (SerialUSB.available()) {
 			rxData = SerialUSB.read();
 			pifComm_ReceiveData(s_pstSerial, rxData);
 		}
-		else break;
     }
 }
 
@@ -240,9 +239,9 @@ void setup()
     pifLog_UseTerminal(TRUE);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!s_pstTimer1ms) return;
-    s_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
+    s_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);		// 200us
     if (!s_pstTimer200us) return;
 
     if (!pifStepMotor_Init(s_pstTimer200us, 200, MOTOR_COUNT)) return;

@@ -186,7 +186,7 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
 	if (!pifPulse_Init(PULSE_COUNT)) return;
-	s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
+	s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!s_pstTimer1ms) return;
 
     if (!pifSequence_Init(s_pstTimer1ms, SEQUENCE_COUNT)) return;

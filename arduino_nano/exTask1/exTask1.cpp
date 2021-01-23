@@ -20,6 +20,8 @@ static void led_toggle(PIF_stTask *pstTask)
 	static int nCount = 0;
 	static BOOL sw = LOW;
 
+	(void)pstTask;
+
     if (!nCount) {
 		digitalWrite(PIN_LED_L, sw);
 		sw ^= 1;

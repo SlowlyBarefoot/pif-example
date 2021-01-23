@@ -18,7 +18,7 @@
 #define TASK_COUNT              5
 
 
-static PIF_stPulse *s_pstTimer = NULL;
+static PIF_stPulse *s_pstTimer1ms = NULL;
 static PIF_stFnd *s_pstFnd = NULL;
 
 
@@ -73,7 +73,7 @@ extern "C" {
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(s_pstTimer);
+		pifPulse_sigTick(s_pstTimer1ms);
 	}
 }
 
@@ -94,10 +94,10 @@ void setup()
 	pifLog_AttachActPrint(_actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!s_pstTimer) return;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!s_pstTimer1ms) return;
 
-    if (!pifFnd_Init(s_pstTimer, FND_COUNT)) return;
+    if (!pifFnd_Init(s_pstTimer1ms, FND_COUNT)) return;
     s_pstFnd = pifFnd_Add(PIF_ID_AUTO, 1, _actFnd1Display);
     if (!s_pstFnd) return;
 

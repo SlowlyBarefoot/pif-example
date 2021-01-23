@@ -43,7 +43,7 @@ static void _taskLedYellowToggle(PIF_stTask *pstTask)
 	sw ^= 1;
 }
 
-void sysTickHook()
+static void sysTickHook()
 {
 	pif_sigTimer1ms();
 }

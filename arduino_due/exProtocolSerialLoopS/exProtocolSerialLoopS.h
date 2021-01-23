@@ -14,7 +14,7 @@
 
 
 //add your function definitions for the project exProtocolSerialLoopS here
-extern PIF_stPulse *g_pstTimer;
+extern PIF_stPulse *g_pstTimer1ms;
 
 
 //Do not add code below this line

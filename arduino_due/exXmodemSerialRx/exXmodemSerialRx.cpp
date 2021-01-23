@@ -18,7 +18,7 @@
 #define USE_SERIAL_3			// Other Anduino
 
 
-static PIF_stPulse *s_pstTimer = NULL;
+static PIF_stPulse *s_pstTimer1ms = NULL;
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stXmodem *s_pstXmodem = NULL;
 
@@ -86,7 +86,7 @@ extern "C" {
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(s_pstTimer);
+		pifPulse_sigTick(s_pstTimer1ms);
 	}
 }
 
@@ -111,13 +111,13 @@ void setup()
     if (!pifComm_Init(COMM_COUNT)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!s_pstTimer) return;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!s_pstTimer1ms) return;
 
     s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
 
-    if (!pifXmodem_Init(s_pstTimer, XMODEM_COUNT)) return;
+    if (!pifXmodem_Init(s_pstTimer1ms, XMODEM_COUNT)) return;
     s_pstXmodem = pifXmodem_Add(PIF_ID_AUTO, XT_CRC);
     if (!s_pstXmodem) return;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);

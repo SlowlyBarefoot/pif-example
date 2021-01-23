@@ -19,7 +19,7 @@
 #define SWITCH_COUNT            2
 
 
-static PIF_stPulse *g_pstTimer1ms = NULL;
+static PIF_stPulse *s_pstTimer1ms = NULL;
 static PIF_stSwitch *s_pstPushSwitch = NULL;
 static PIF_stSwitch *s_pstTiltSwitch = NULL;
 
@@ -53,11 +53,11 @@ static void _TiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 	digitalWrite(PIN_LED_YELLOW, swState);
 }
 
-void sysTickHook()
+static void sysTickHook()
 {
 	pif_sigTimer1ms();
 
-	pifPulse_sigTick(g_pstTimer1ms);
+	pifPulse_sigTick(s_pstTimer1ms);
 }
 
 //The setup function is called once at startup of the sketch
@@ -81,10 +81,10 @@ void setup()
 	pifLog_AttachActPrint(_LogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!g_pstTimer1ms) return;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!s_pstTimer1ms) return;
 
-    pstTimerSwitch = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
+    pstTimerSwitch = pifPulse_AddItem(s_pstTimer1ms, PT_enRepeat);
     if (!pstTimerSwitch) return;
     pifPulse_AttachEvtFinish(pstTimerSwitch, _SwitchReceive, NULL);
 

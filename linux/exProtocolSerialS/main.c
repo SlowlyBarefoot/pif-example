@@ -28,7 +28,7 @@
 
 static int s_fd;
 
-static PIF_stPulse *s_pstTimer = NULL;
+static PIF_stPulse *s_pstTimer1ms = NULL;
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
@@ -174,7 +174,7 @@ static void _TimerHandler()
 {
     pif_sigTimer1ms();
 
-	pifPulse_sigTick(s_pstTimer);
+	pifPulse_sigTick(s_pstTimer1ms);
 }
 
 int main(int argc, char **argv)
@@ -225,20 +225,20 @@ int main(int argc, char **argv)
     if (!pifComm_Init(COMM_COUNT)) goto fail;
 
     if (!pifPulse_Init(PULSE_COUNT)) goto fail;
-    s_pstTimer = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
-    if (!s_pstTimer) goto fail;
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!s_pstTimer1ms) goto fail;
 
     s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) goto fail;
 
-    if (!pifProtocol_Init(s_pstTimer, PROTOCOL_COUNT)) goto fail;
+    if (!pifProtocol_Init(s_pstTimer1ms, PROTOCOL_COUNT)) goto fail;
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) goto fail;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
 
     for (int i = 0; i < 2; i++) {
-    	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(s_pstTimer, PT_enOnce);
+    	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(s_pstTimer1ms, PT_enOnce);
 		if (!s_stProtocolTest[i].pstDelay) goto fail;
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }

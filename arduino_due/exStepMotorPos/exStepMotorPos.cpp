@@ -70,17 +70,17 @@ const PIF_stStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		{
 				MM_D_enCW | MM_PC_enYes,
 				NULL, NULL, NULL,
-				100, 100,
-				600, 750,
-				100, 100, 100,
+				200, 50,
+				800, 750,
+				200, 50, 100,
 				1000
 		},
 		{
 				MM_D_enCCW | MM_PC_enYes,
 				NULL, NULL, NULL,
-				100, 100,
-				600, 750,
-				100, 100, 100,
+				200, 50,
+				800, 750,
+				200, 50, 100,
 				1000
 		},
 		{
@@ -115,16 +115,15 @@ static void _taskTerminal(PIF_stTask *pstTask)
 
 	(void)pstTask;
 
-    while (pifComm_SendData(s_pstSerial, &txData)) {
+    if (pifComm_SendData(s_pstSerial, &txData)) {
     	SerialUSB.print((char)txData);
     }
 
-    while (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
+    if (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
 		if (SerialUSB.available()) {
 			rxData = SerialUSB.read();
 			pifComm_ReceiveData(s_pstSerial, rxData);
 		}
-		else break;
     }
 }
 
@@ -417,9 +416,9 @@ void setup()
     pifLog_UseTerminal(TRUE);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
+    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!s_pstTimer1ms) return;
-    s_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT);
+    s_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);		// 200us
     if (!s_pstTimer200us) return;
 
     if (!pifSwitch_Init(SWITCH_COUNT)) return;

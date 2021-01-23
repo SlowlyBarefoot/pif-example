@@ -22,6 +22,8 @@ static void led_red_toggle(PIF_stTask *pstTask)
 	static int nCount = 0;
 	static BOOL sw = LOW;
 
+	(void)pstTask;
+
     if (!nCount) {
 		digitalWrite(PIN_LED_RED, sw);
 		sw ^= 1;
@@ -36,6 +38,8 @@ static void led_yellow_toggle(PIF_stTask *pstTask)
 	static int nCount = 0;
 	static BOOL sw = LOW;
 
+	(void)pstTask;
+
     if (!nCount) {
 		digitalWrite(PIN_LED_YELLOW, sw);
 		sw ^= 1;
@@ -49,6 +53,8 @@ static void led_green_toggle(PIF_stTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
+
+	(void)pstTask;
 
     if (!nCount) {
 		digitalWrite(PIN_LED_GREEN, sw);

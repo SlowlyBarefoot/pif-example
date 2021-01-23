@@ -48,7 +48,6 @@ int main(int argc, char **argv)
         pif_Loop();
     }
 
-fail:
     pifLog_Exit();
 
     stop_timer();
