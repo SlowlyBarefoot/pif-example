@@ -102,7 +102,7 @@ void setup()
 	if (!s_pstSerial) return;
 
     if (!pifXmodem_Init(s_pstTimer1ms, XMODEM_COUNT)) return;
-    s_pstXmodem = pifXmodem_Add(PIF_ID_AUTO, XT_CRC);
+    s_pstXmodem = pifXmodem_Add(PIF_ID_AUTO, XT_enCRC);
     if (!s_pstXmodem) return;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvent(s_pstXmodem, NULL, _evtXmodemRxReceive);
