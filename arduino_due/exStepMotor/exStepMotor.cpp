@@ -77,10 +77,10 @@ static void _taskTerminal(PIF_stTask *pstTask)
 static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Method: %d", s_pstMotor->enMethod);
-		pifLog_Printf(LT_enNone, "\n  Operation: %d", s_pstMotor->enOperation);
+		pifLog_Printf(LT_enNone, "\n  Method: %d", s_pstMotor->_enMethod);
+		pifLog_Printf(LT_enNone, "\n  Operation: %d", s_pstMotor->_enOperation);
 		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->ucDirection);
-		pifLog_Printf(LT_enNone, "\n  P/S: %u", s_pstMotor->usCurrentPps);
+		pifLog_Printf(LT_enNone, "\n  P/S: %u", s_pstMotor->_usCurrentPps);
 		pifLog_Printf(LT_enNone, "\n  R/M: %2f", pifStepMotor_GetRpm(s_pstMotor));
 		pifLog_Printf(LT_enNone, "\n  Step Count: %d", s_stStepMotorTest.unStepCount);
 		pifLog_Printf(LT_enNone, "\n  Break Time: %d", s_stStepMotorTest.usBreakTime);
@@ -88,7 +88,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	}
 	else if (argc > 2) {
 		if (!strcmp(argv[1], "mt")) {
-			if (s_pstMotor->enState == MS_enIdle) {
+			if (s_pstMotor->_enState == MS_enIdle) {
 				int value = atoi(argv[2]);
 				if (value >= 0 && value <= 1) {
 					pifStepMotor_SetMethod(s_pstMotor, (PIF_enStepMotorMethod)value);
@@ -244,7 +244,7 @@ void setup()
     s_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);		// 200us
     if (!s_pstTimer200us) return;
 
-    if (!pifStepMotor_Init(s_pstTimer200us, 200, MOTOR_COUNT)) return;
+    if (!pifStepMotor_Init(s_pstTimer200us, MOTOR_COUNT)) return;
     s_pstMotor = pifStepMotor_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S);
     if (!s_pstMotor) return;
     pifStepMotor_AttachAction(s_pstMotor, _actSetStep);
