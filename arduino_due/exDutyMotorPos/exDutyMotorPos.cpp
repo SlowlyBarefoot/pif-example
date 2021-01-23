@@ -214,7 +214,7 @@ static void _evtStable(PIF_stDutyMotor *pstOwner, void *pvInfo)
 {
 	PIF_stDutyMotorPos *pstInfo = (PIF_stDutyMotorPos *)pvInfo;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u P=%u", pstOwner->usPifId, pstInfo->ucStageIndex, pstInfo->unCurrentPulse);
+	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u P=%u", pstOwner->_usPifId, pstInfo->_ucStageIndex, pstInfo->_unCurrentPulse);
 }
 
 static void _evtStop(PIF_stDutyMotor *pstOwner, void *pvInfo)
@@ -222,7 +222,7 @@ static void _evtStop(PIF_stDutyMotor *pstOwner, void *pvInfo)
 	PIF_stDutyMotorPos *pstInfo = (PIF_stDutyMotorPos *)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u P=%u", pstOwner->usPifId, pstInfo->ucStageIndex, pstInfo->unCurrentPulse);
+	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u P=%u", pstOwner->_usPifId, pstInfo->_ucStageIndex, pstInfo->_unCurrentPulse);
 }
 
 static void _evtError(PIF_stDutyMotor *pstOwner, void *pvInfo)
@@ -230,7 +230,7 @@ static void _evtError(PIF_stDutyMotor *pstOwner, void *pvInfo)
 	PIF_stDutyMotorPos *pstInfo = (PIF_stDutyMotorPos *)pvInfo;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u P=%u", pstOwner->usPifId, pstInfo->ucStageIndex, pstInfo->unCurrentPulse);
+	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u P=%u", pstOwner->_usPifId, pstInfo->_ucStageIndex, pstInfo->_unCurrentPulse);
 }
 
 static void _taskInitPos(PIF_stTask *pstTask)
@@ -249,7 +249,7 @@ static void _taskInitPos(PIF_stTask *pstTask)
 
 	case 2:
 		if (!s_stDutyMotorTest.ucStage) {
-			if (s_pstSwitch[0]->swCurrState == ON) {
+			if (s_pstSwitch[0]->_swCurrState == ON) {
 				pifLog_Printf(LT_enInfo, "InitPos: Find");
 				s_stDutyMotorTest.ucInitPos = 0;
 			}

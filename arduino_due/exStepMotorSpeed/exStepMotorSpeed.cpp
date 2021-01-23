@@ -240,7 +240,7 @@ static void _taskInitPos(PIF_stTask *pstTask)
 
 	case 2:
 		if (!s_stStepMotorTest.ucStage) {
-			if (s_pstSwitch[0]->swCurrState == ON) {
+			if (s_pstSwitch[0]->_swCurrState == ON) {
 				pifLog_Printf(LT_enInfo, "InitPos: Find");
 				s_stStepMotorTest.ucInitPos = 0;
 			}

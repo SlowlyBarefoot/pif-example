@@ -69,8 +69,8 @@ static void _taskTerminal(PIF_stTask *pstTask)
 static int CmdDutyMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Duty: %d", s_pstMotor->usCurrentDuty);
-		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->ucDirection);
+		pifLog_Printf(LT_enNone, "\n  Duty: %d", s_pstMotor->_usCurrentDuty);
+		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->_ucDirection);
 		return PIF_TERM_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {

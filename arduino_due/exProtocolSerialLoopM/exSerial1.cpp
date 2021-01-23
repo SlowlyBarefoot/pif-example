@@ -135,10 +135,10 @@ static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssue
 		s_stProtocolTest[index].ucDataCount = rand() % 8;
 		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
 		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-			pifLog_Printf(LT_enError, "PushSwitchChange(%d): DC=%d E=%d", index, s_pstProtocol->usPifId, pif_enError);
+			pifLog_Printf(LT_enError, "PushSwitchChange(%d): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_enError);
 		}
 		else {
-			pifLog_Printf(LT_enInfo, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_pstProtocol->usPifId, s_stProtocolTest[index].ucDataCount);
+			pifLog_Printf(LT_enInfo, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);
 			if (s_stProtocolTest[index].ucDataCount) {
 				pifLog_Printf(LT_enNone, "\nData:");
 				for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {

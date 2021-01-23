@@ -136,10 +136,10 @@ static void _evtDelay(void *pvIssuer)
 	int index = pstOwner->ucCommand & 0x0F;
 
 	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->usPifId, pif_enError);
+		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_enError);
 	}
 	else {
-		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->usPifId, s_stProtocolTest[index].ucDataCount);
+		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);
 		if (s_stProtocolTest[index].ucDataCount) {
 			pifLog_Printf(LT_enNone, "\nData:");
 			for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
