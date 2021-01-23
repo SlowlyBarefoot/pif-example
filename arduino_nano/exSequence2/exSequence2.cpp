@@ -80,7 +80,7 @@ static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
 
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
-		index = PIF_ID_2_INDEX(pstOwner->usPifId);
+		index = PIF_ID_2_INDEX(pstOwner->_usPifId);
 		digitalWrite(s_stSequenceTest[index].ucPinLed, ON);
 		s_stSequenceTest[index].bSequenceParam = FALSE;
 		return SR_enNext;
@@ -108,7 +108,7 @@ static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
 
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
-		index = PIF_ID_2_INDEX(pstOwner->usPifId);
+		index = PIF_ID_2_INDEX(pstOwner->_usPifId);
 		digitalWrite(s_stSequenceTest[index].ucPinLed, OFF);
 		return SR_enNext;
 

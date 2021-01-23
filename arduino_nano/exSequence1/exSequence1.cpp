@@ -133,7 +133,7 @@ static void _taskSequence(PIF_stTask *pstTask)
 	digitalWrite(PIN_LED_L, sw);
 	sw ^= 1;
 
-	switch (s_pstSequence->ucPhaseNo) {
+	switch (s_pstSequence->_ucPhaseNo) {
 	case 0:
 		switch (s_pstSequence->ucStep) {
 		case 1:
