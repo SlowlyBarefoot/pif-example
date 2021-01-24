@@ -32,8 +32,8 @@ static void led_red_toggle(PIF_stTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pifTask_Pause(pstTask);
-			pifTask_Restart(s_pstTask[1]);
+			pstTask->bPause = TRUE;
+			s_pstTask[1]->bPause = FALSE;
 		}
 
 		nCount = 9999;
@@ -53,8 +53,8 @@ static void led_yellow_toggle(PIF_stTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pifTask_Pause(pstTask);
-			pifTask_Restart(s_pstTask[2]);
+			pstTask->bPause = TRUE;
+			s_pstTask[2]->bPause = FALSE;
 		}
 
 		nCount = 9999;
@@ -74,8 +74,8 @@ static void led_green_toggle(PIF_stTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pifTask_Pause(pstTask);
-			pifTask_Restart(s_pstTask[0]);
+			pstTask->bPause = TRUE;
+			s_pstTask[0]->bPause = FALSE;
 		}
 
 		nCount = 9999;
@@ -99,11 +99,11 @@ void setup()
 
     s_pstTask[1] = pifTask_AddRatio(60, led_yellow_toggle, NULL);	// 60%
     if (!s_pstTask[1]) return;
-    pifTask_Pause(s_pstTask[1]);
+    s_pstTask[1]->bPause = TRUE;
 
     s_pstTask[2] = pifTask_AddRatio(100, led_green_toggle, NULL);	// 100%
     if (!s_pstTask[2]) return;
-    pifTask_Pause(s_pstTask[2]);
+    s_pstTask[2]->bPause = TRUE;
 }
 
 // The loop function is called in an endless loop

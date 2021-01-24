@@ -197,7 +197,7 @@ BOOL exSerial1_Setup()
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-    pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
+    s_pstProtocol->evtError = _evtProtocolError;
 
     if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return FALSE;		// 3%
     if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return FALSE;		// 3%

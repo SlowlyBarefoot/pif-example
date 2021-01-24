@@ -150,7 +150,7 @@ BOOL exSerial2_Setup()
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-    pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
+    s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
     	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);

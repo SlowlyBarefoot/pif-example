@@ -263,7 +263,7 @@ void setup()
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-    pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
+    s_pstProtocol->evtError = _evtProtocolError;
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%

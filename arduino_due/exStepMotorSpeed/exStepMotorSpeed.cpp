@@ -350,8 +350,10 @@ void setup()
     s_pstMotor = pifStepMotorSpeed_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S, 100);	// 100ms
     if (!s_pstMotor) return;
     pifStepMotor_AttachAction(s_pstMotor, _actSetStep);
-    pifStepMotor_AttachEvent(s_pstMotor, _evtStable, _evtStop, _evtError);
-	s_pstMotor->ucReductionGearRatio = STEP_MOTOR_REDUCTION_GEAR_RATIO;
+    s_pstMotor->evtStable = _evtStable;
+    s_pstMotor->evtStop = _evtStop;
+    s_pstMotor->evtError = _evtError;
+    pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
     pifStepMotorSpeed_AddStages(s_pstMotor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 
     if (!pifTask_Init(TASK_COUNT)) return;

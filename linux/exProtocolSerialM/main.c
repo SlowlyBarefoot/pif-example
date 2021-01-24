@@ -235,7 +235,7 @@ int main(int argc, char **argv)
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) goto fail;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-    pifProtocol_AttachEvent(s_pstProtocol, _evtProtocolError);
+    s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
     	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(s_pstTimer1ms, PT_enOnce);

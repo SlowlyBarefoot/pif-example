@@ -36,7 +36,7 @@ static void _taskServoMotor(PIF_stTask *pstTask)
 
 	(void)pstTask;
 
-	if (pifPulse_GetStep(s_pstPwm) == PS_enStop) return;
+	if (s_pstPwm->_enStep == PS_enStop) return;
 
     if (dir) {
         duty -= 0.005;

@@ -353,7 +353,9 @@ void setup()
     s_pstMotor = pifDutyMotorSpeedEnc_Add(PIF_ID_AUTO, 255, 100);
     pifDutyMotorSpeedEnc_AddStages(s_pstMotor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
     pifDutyMotor_AttachAction(s_pstMotor, _actSetDuty, _actSetDirection, _actOperateBreak);
-    pifDutyMotor_AttachEvent(s_pstMotor, _evtStable, _evtStop, _evtError);
+    s_pstMotor->evtStable = _evtStable;
+    s_pstMotor->evtStop = _evtStop;
+    s_pstMotor->evtError = _evtError;
     pifPidControl_Init(pifDutyMotorSpeedEnc_GetPidControl(s_pstMotor), 0.1, 0, 0, 100);
 
     if (!pifTask_Init(TASK_COUNT)) return;

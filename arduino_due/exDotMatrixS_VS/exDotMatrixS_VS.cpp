@@ -251,7 +251,7 @@ void setup()
 
     s_pstDotMatrix = pifDotMatrix_Add(PIF_ID_AUTO, 8, 8, _actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-    pifDotMatrix_AttachEvent(s_pstDotMatrix, _evtDotMatrixShiftFinish);
+    s_pstDotMatrix->evtShiftFinish = _evtDotMatrixShiftFinish;
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;
    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 9 * 8, ucPattern)) return;
 

@@ -117,7 +117,10 @@ void setup()
     pstKeypad = pifKeypad_Init(PIF_ID_AUTO, ROWS, COLS, keys);
     if (!pstKeypad) return;
     pifKeypad_AttachAction(_actKeypadAcquire);
-    pifKeypad_AttachEvent(_evtKeypadPressed, _evtKeypadReleased, _evtKeypadLongReleased, _evtKeypadDoublePressed);
+    pstKeypad->evtPressed = _evtKeypadPressed;
+    pstKeypad->evtReleased = _evtKeypadReleased;
+    pstKeypad->evtLongReleased = _evtKeypadLongReleased;
+    pstKeypad->evtDoublePressed = _evtKeypadDoublePressed;
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddPeriodMs(10, pifKeypad_taskAll, NULL)) return;	// 10ms

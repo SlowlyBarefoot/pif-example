@@ -169,7 +169,7 @@ void setup()
 		s_stSequenceTest[i].pstSequence = pifSequence_Add(PIF_ID_SWITCH + i, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
-	    pifSequence_AttachEvent(s_stSequenceTest[i].pstSequence, _evtSequenceError);
+	    s_stSequenceTest[i].pstSequence->evtError = _evtSequenceError;
     }
 
     if (!pifTask_Init(TASK_COUNT)) return;

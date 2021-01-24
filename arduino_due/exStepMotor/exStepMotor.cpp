@@ -79,7 +79,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	if (argc == 1) {
 		pifLog_Printf(LT_enNone, "\n  Method: %d", s_pstMotor->_enMethod);
 		pifLog_Printf(LT_enNone, "\n  Operation: %d", s_pstMotor->_enOperation);
-		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->ucDirection);
+		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->_ucDirection);
 		pifLog_Printf(LT_enNone, "\n  P/S: %u", s_pstMotor->_usCurrentPps);
 		pifLog_Printf(LT_enNone, "\n  R/M: %2f", pifStepMotor_GetRpm(s_pstMotor));
 		pifLog_Printf(LT_enNone, "\n  Step Count: %d", s_stStepMotorTest.unStepCount);
@@ -124,7 +124,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 		else if (!strcmp(argv[1], "dir")) {
 			int value = atoi(argv[2]);
 			if (value == 0 || value == 1) {
-				s_pstMotor->ucDirection = value;
+				pifStepMotor_SetDirection(s_pstMotor, value);
 				return PIF_TERM_CMD_NO_ERROR;
 			}
 		}
@@ -248,8 +248,8 @@ void setup()
     s_pstMotor = pifStepMotor_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S);
     if (!s_pstMotor) return;
     pifStepMotor_AttachAction(s_pstMotor, _actSetStep);
-    pifStepMotor_AttachEvent(s_pstMotor, NULL, _evtStop, NULL);
-	s_pstMotor->ucReductionGearRatio = STEP_MOTOR_REDUCTION_GEAR_RATIO;
+    s_pstMotor->evtStop = _evtStop;
+    pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
 	pifStepMotor_SetPps(s_pstMotor, 200);
 
     if (!pifTask_Init(TASK_COUNT)) return;
