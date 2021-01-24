@@ -37,6 +37,8 @@ const uint8_t c_unPinCom[] = {
 		13		// COM4
 };
 
+const uint8_t c_ucUserChar[] = { 0x01, 0x08 };
+
 
 static void _actLogPrint(char *pcString)
 {
@@ -67,13 +69,13 @@ static void _taskFndTest(PIF_stTask *pstTask)
 		s_pstFnd->ucSubNumericDigits = 0;
 		int32_t nValue = rand() % 14000 - 2000;
 		if (nValue <= -1000) {
-			pifFnd_SetString(s_pstFnd, (char *)"UDER");
+			pifFnd_SetString(s_pstFnd, (char *)"AAAA");
 		}
 		else if (nValue < 10000) {
 			pifFnd_SetInterger(s_pstFnd, nValue);
 		}
 		else {
-			pifFnd_SetString(s_pstFnd, (char *)"OVER");
+			pifFnd_SetString(s_pstFnd, (char *)"BBBB");
 		}
 
 		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
@@ -135,6 +137,7 @@ void setup()
     if (!s_pstTimer1ms) return;
 
     if (!pifFnd_Init(s_pstTimer1ms, FND_COUNT)) return;
+    pifFnd_SetUserChar(c_ucUserChar, 2);
     s_pstFnd = pifFnd_Add(PIF_ID_AUTO, 4, _actFnd1Display);
     if (!s_pstFnd) return;
 

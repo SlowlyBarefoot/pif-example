@@ -87,11 +87,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDutyMotor.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifDutyMotorBase.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDutyMotorBase.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifDutyMotorPos.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDutyMotorPos.h</locationURI>
@@ -165,11 +160,6 @@
 			<name>pif/core/include/pifStepMotor.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifStepMotor.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifStepMotorBase.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifStepMotorBase.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifStepMotorPos.h</name>

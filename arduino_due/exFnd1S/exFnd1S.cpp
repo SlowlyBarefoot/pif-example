@@ -28,6 +28,16 @@ const uint8_t c_unPinFnd[] = {
 		41 		// dp
 };
 
+const uint8_t c_ucUserChar[] = {
+		0x77, /*  A  */	0x7C, /*  b  */ 0x39, /*  C  */ 0x5E, /*  d  */ 	// 0
+		0x79, /*  E  */ 0x71, /*  F  */ 0x3D, /*  G  */ 0x76, /*  H  */ 	// 4
+		0x30, /*  I  */ 0x1E, /*  J  */ 0x7A, /*  K  */ 0x38, /*  L  */ 	// 8
+		0x55, /*  m  */ 0x54, /*  n  */ 0x5C, /*  o  */	0x73, /*  P  */ 	// 12
+		0x67, /*  q  */ 0x50, /*  r  */ 0x6D, /*  S  */	0x78, /*  t  */ 	// 16
+		0x3E, /*  U  */ 0x7E, /*  V  */ 0x6A, /*  W  */ 0x36, /*  X  */ 	// 20
+		0x6E, /*  y  */ 0x49, /*  Z  */										// 24
+};
+
 
 static void _actLogPrint(char *pcString)
 {
@@ -105,6 +115,7 @@ void setup()
     if (!s_pstTimer1ms) return;
 
     if (!pifFnd_Init(s_pstTimer1ms, FND_COUNT)) return;
+    pifFnd_SetUserChar(c_ucUserChar, 26);
     s_pstFnd = pifFnd_Add(PIF_ID_AUTO, 1, _actFnd1Display);
     if (!s_pstFnd) return;
 
