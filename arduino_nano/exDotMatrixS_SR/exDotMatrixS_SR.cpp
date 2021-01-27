@@ -2,6 +2,7 @@
 #include <MsTimer2.h>
 
 #include "exDotMatrixS_SR.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13

@@ -1,5 +1,6 @@
 // Do not remove the include below
 #include "exDotMatrixS_VS.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13

@@ -1,3 +1,4 @@
+#include "appMain.h"
 #include "exDotMatrixS.h"
 
 #include "pifDotMatrix.h"
