@@ -9,14 +9,18 @@
 #include "Arduino.h"
 //add your includes for the project exKeypad1 here
 
+#include "pifTask.h"
 
 //end of add your includes here
 
+#define	ROWS	4		// 행(rows) 개수
+#define	COLS	4		// 열(columns) 개수
 
 //add your function definitions for the project exKeypad1 here
 
-
-
+void actLogPrint(char *pcString);
+void actLedToggle(PIF_stTask *pstTask);
+void actKeypadAcquire(uint16_t *pusState);
 
 //Do not add code below this line
 #endif /* _exKeypad1_H_ */
