@@ -17,7 +17,7 @@
 //add your function definitions for the project exSequence1 here
 
 void actLogPrint(char *pcString);
-void actLedToggle(PIF_stTask *pstTask);
+void taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exSequence1_H_ */

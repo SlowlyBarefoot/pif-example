@@ -13,7 +13,7 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void actLedToggle(PIF_stTask *pstTask)
+void taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
