@@ -1,37 +1,28 @@
 // Do not remove the include below
 #include "exSwitch1.h"
-
-#include "pifLog.h"
-#include "pifSwitch.h"
-#include "pifTask.h"
+#include "appMain.h"
 
 
+#define PIN_LED_L				13
 #define PIN_LED_RED				23
 #define PIN_LED_YELLOW			25
 #define PIN_PUSH_SWITCH			29
 #define PIN_TILT_SWITCH			31
 
-#define TASK_COUNT              1
-#define SWITCH_COUNT            2
 
-
-static PIF_stSwitch *s_pstPushSwitch = NULL;
-static PIF_stSwitch *s_pstTiltSwitch = NULL;
-
-
-static void _LogPrint(char *pcString)
+void actLogPrint(char *pcString)
 {
 	Serial.print(pcString);
 }
 
-static SWITCH _PushSwitchAcquire(PIF_usId usPifId)
+SWITCH actPushSwitchAcquire(PIF_usId usPifId)
 {
 	(void)usPifId;
 
 	return digitalRead(PIN_PUSH_SWITCH);
 }
 
-static void _PushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+void evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
@@ -39,14 +30,14 @@ static void _PushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 	digitalWrite(PIN_LED_RED, swState);
 }
 
-static SWITCH _TiltSwitchAcquire(PIF_usId usPifId)
+SWITCH actTiltSwitchAcquire(PIF_usId usPifId)
 {
 	(void)usPifId;
 
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-static void _TiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+void evtTiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
@@ -54,9 +45,27 @@ static void _TiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 	digitalWrite(PIN_LED_YELLOW, swState);
 }
 
+void taskLedToggle(PIF_stTask *pstTask)
+{
+	static BOOL swLed = LOW;
+
+	(void)pstTask;
+
+	digitalWrite(PIN_LED_L, swLed);
+	swLed ^= 1;
+}
+
+extern "C" {
+	void sysTickHook()
+	{
+		pif_sigTimer1ms();
+	}
+}
+
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_PUSH_SWITCH, INPUT_PULLUP);
@@ -64,26 +73,7 @@ void setup()
 
 	Serial.begin(115200); //Doesn't matter speed
 
-    pif_Init();
-
-    pifLog_Init();
-	pifLog_AttachActPrint(_LogPrint);
-
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
-
-    s_pstPushSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
-    if (!s_pstPushSwitch) return;
-    s_pstPushSwitch->bStateReverse = TRUE;
-    pifSwitch_AttachAction(s_pstPushSwitch, _PushSwitchAcquire);
-    pifSwitch_AttachEvtChange(s_pstPushSwitch, _PushSwitchChange, NULL);
-
-    s_pstTiltSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
-	if (!s_pstTiltSwitch) return;
-	pifSwitch_AttachAction(s_pstTiltSwitch, _TiltSwitchAcquire);
-	pifSwitch_AttachEvtChange(s_pstTiltSwitch, _TiltSwitchChange, NULL);
-
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%
+	appSetup();
 }
 
 // The loop function is called in an endless loop

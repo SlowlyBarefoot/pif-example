@@ -47,6 +47,11 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.3/variants/eightanaloginputs</locationURI>
 		</link>
 		<link>
+			<name>libraries/MsTimer2</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/MsTimer2/1.1.0</locationURI>
+		</link>
+		<link>
 			<name>pif/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
