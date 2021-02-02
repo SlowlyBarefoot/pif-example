@@ -16,10 +16,26 @@ PIF_stSwitch *g_pstPushSwitch = NULL;
 PIF_stSwitch *g_pstTiltSwitch = NULL;
 PIF_stPulse *g_pstTimer1ms = NULL;
 
-static PIF_stLed *s_pstLedL = NULL;
+static PIF_stLed *s_pstLed = NULL;
 static PIF_stSwitchFilter s_stPushSwitchFilter;
 static PIF_stSwitchFilter s_stTiltSwitchFilter;
 
+
+static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+{
+	(void)usPifId;
+	(void)pvIssuer;
+
+	pifLed_Change(s_pstLed, 1, swState);
+}
+
+static void _evtTiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+{
+	(void)usPifId;
+	(void)pvIssuer;
+
+	pifLed_Change(s_pstLed, 2, swState);
+}
 
 void appSetup()
 {
@@ -35,10 +51,10 @@ void appSetup()
     if (!g_pstTimer1ms) return;
 
     if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;
-    s_pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
-    if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;						// 500ms
-    pifLed_BlinkOn(s_pstLedL, 0);
+    s_pstLed = pifLed_Add(PIF_ID_AUTO, 3, actLedState);
+    if (!s_pstLed) return;
+    if (!pifLed_AttachBlink(s_pstLed, 500)) return;							// 500ms
+    pifLed_BlinkOn(s_pstLed, 0);
 
     pstTimerSwitch = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimerSwitch) return;
@@ -49,12 +65,12 @@ void appSetup()
     g_pstPushSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
     if (!g_pstPushSwitch) return;
     g_pstPushSwitch->bStateReverse = TRUE;
-    pifSwitch_AttachEvtChange(g_pstPushSwitch, evtPushSwitchChange, NULL);
+    pifSwitch_AttachEvtChange(g_pstPushSwitch, _evtPushSwitchChange, NULL);
     if (!pifSwitch_AttachFilter(g_pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 5, &s_stPushSwitchFilter)) return;
 
     g_pstTiltSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
 	if (!g_pstTiltSwitch) return;
-	pifSwitch_AttachEvtChange(g_pstTiltSwitch, evtTiltSwitchChange, NULL);
+	pifSwitch_AttachEvtChange(g_pstTiltSwitch, _evtTiltSwitchChange, NULL);
     if (!pifSwitch_AttachFilter(g_pstTiltSwitch, PIF_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;

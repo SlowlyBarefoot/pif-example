@@ -15,12 +15,23 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
 {
 	(void)usPifId;
-	(void)ucIndex;
 
-	digitalWrite(PIN_LED_L, swState);
+	switch (ucIndex) {
+	case 0:
+		digitalWrite(PIN_LED_L, swState);
+		break;
+
+	case 1:
+		digitalWrite(PIN_LED_RED, swState);
+		break;
+
+	case 2:
+		digitalWrite(PIN_LED_YELLOW, swState);
+		break;
+	}
 }
 
 void evtSwitchAcquire(void *pvIssuer)
@@ -29,22 +40,6 @@ void evtSwitchAcquire(void *pvIssuer)
 
 	pifSwitch_sigData(g_pstPushSwitch, digitalRead(PIN_PUSH_SWITCH));
 	pifSwitch_sigData(g_pstTiltSwitch, digitalRead(PIN_TILT_SWITCH));
-}
-
-void evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
-{
-	(void)usPifId;
-	(void)pvIssuer;
-
-	digitalWrite(PIN_LED_RED, swState);
-}
-
-void evtTiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
-{
-	(void)usPifId;
-	(void)pvIssuer;
-
-	digitalWrite(PIN_LED_YELLOW, swState);
 }
 
 extern "C" {
