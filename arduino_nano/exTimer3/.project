@@ -72,6 +72,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif.h</locationURI>
 		</link>
 		<link>
+			<name>pif/core/include/pifLed.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifLed.h</locationURI>
+		</link>
+		<link>
 			<name>pif/core/include/pifLog.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifLog.h</locationURI>
@@ -105,6 +110,11 @@
 			<name>pif/core/source/pif.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
+		</link>
+		<link>
+			<name>pif/core/source/pifLed.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifLed.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifLog.c</name>

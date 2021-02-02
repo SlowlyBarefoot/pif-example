@@ -15,8 +15,7 @@
 
 //add your function definitions for the project exTimer1 here
 
-
-
+void evtLedToggle(void *pvIssuer);
 
 //Do not add code below this line
 #endif /* _exTimer1_H_ */

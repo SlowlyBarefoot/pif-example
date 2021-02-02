@@ -8,18 +8,10 @@
 
 // Do not remove the include below
 #include "exTimer1.h"
-
-#include "pifPulse.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13
-
-#define PULSE_COUNT         	1
-#define PULSE_ITEM_COUNT    	1
-#define TASK_COUNT              1
-
-
-static PIF_stPulse *s_pstTimer1ms = NULL;
 
 
 extern "C" {
@@ -27,11 +19,11 @@ extern "C" {
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(s_pstTimer1ms);
+		pifPulse_sigTick(g_pstTimer1ms);
 	}
 }
 
-static void led_toggle(void *pvIssuer)
+void evtLedToggle(void *pvIssuer)
 {
 	static BOOL sw = LOW;
 
@@ -44,23 +36,9 @@ static void led_toggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_stPulseItem *pstTimer1ms;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
-	pif_Init();
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!s_pstTimer1ms) return;
-
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-
-    pstTimer1ms = pifPulse_AddItem(s_pstTimer1ms, PT_enRepeat);
-    if (!pstTimer1ms) return;
-    pifPulse_AttachEvtFinish(pstTimer1ms, led_toggle, NULL);
-    pifPulse_StartItem(pstTimer1ms, 500);							// 500ms
+	appSetup();
 }
 
 // The loop function is called in an endless loop
