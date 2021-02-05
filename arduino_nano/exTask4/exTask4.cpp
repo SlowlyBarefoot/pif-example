@@ -2,18 +2,15 @@
 #include <MsTimer2.h>
 
 #include "exTask4.h"
-
-#include "pifTask.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13
 #define PIN_LED_RED				2
 #define PIN_LED_YELLOW			3
 
-#define TASK_COUNT              3
 
-
-static void _taskLedToggle(PIF_stTask *pstTask)
+void taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -23,7 +20,7 @@ static void _taskLedToggle(PIF_stTask *pstTask)
 	sw ^= 1;
 }
 
-static void _taskLedRedToggle(PIF_stTask *pstTask)
+void taskLedRedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -33,7 +30,7 @@ static void _taskLedRedToggle(PIF_stTask *pstTask)
 	sw ^= 1;
 }
 
-static void _taskLedYellowToggle(PIF_stTask *pstTask)
+void taskLedYellowToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -58,12 +55,7 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	pif_Init();
-
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;		// 500ms
-    if (!pifTask_AddRatio(100, _taskLedRedToggle, NULL)) return;		// 100%
-    if (!pifTask_AddPeriodUs(500, _taskLedYellowToggle, NULL)) return;	// 500us
+	appSetup();
 }
 
 // The loop function is called in an endless loop

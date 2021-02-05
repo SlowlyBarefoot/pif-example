@@ -9,14 +9,16 @@
 #include "Arduino.h"
 //add your includes for the project exTask4 here
 
+#include "pifTask.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exTask4 here
 
-
-
+void taskLedToggle(PIF_stTask *pstTask);
+void taskLedRedToggle(PIF_stTask *pstTask);
+void taskLedYellowToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exTask4_H_ */
