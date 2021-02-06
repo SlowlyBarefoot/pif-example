@@ -6,73 +6,39 @@
 
 // Do not remove the include below
 #include "exLogPrint.h"
-
-#include "pifLog.h"
-#include "pifPulse.h"
-#include "pifTask.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13
 
-#define PULSE_COUNT         	1
-#define PULSE_ITEM_COUNT    	1
-#define TASK_COUNT              1
 
+void actLogPrint(char *pcString)
+{
+	Serial.print(pcString);
+}
 
-static PIF_stPulse *s_pstTimer1ms = NULL;
-
+void actLedL(SWITCH sw)
+{
+	digitalWrite(PIN_LED_L, sw);
+}
 
 extern "C" {
 	void sysTickHook()
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(s_pstTimer1ms);
+		pifPulse_sigTick(g_pstTimer1ms);
 	}
-}
-
-static void log_print(char *pcString)
-{
-	Serial.print(pcString);
-}
-
-static void led_toggle(void *pvIssuer)
-{
-	static BOOL sw = LOW;
-
-	(void)pvIssuer;
-
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
-
-	pifLog_Printf(LT_enInfo, "%d", sw);
 }
 
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_stPulseItem *pstTimer1ms;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200);
 
-	pif_Init();
-
-	pifLog_Init();
-	pifLog_AttachActPrint(log_print);
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!s_pstTimer1ms) return;
-
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-
-    pstTimer1ms = pifPulse_AddItem(s_pstTimer1ms, PT_enRepeat);
-    if (!pstTimer1ms) return;
-    pifPulse_AttachEvtFinish(pstTimer1ms, led_toggle, NULL);
-    pifPulse_StartItem(pstTimer1ms, 1000);							// 1000ms
+	appSetup();
 }
 
 // The loop function is called in an endless loop
