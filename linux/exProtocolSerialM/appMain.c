@@ -138,37 +138,33 @@ BOOL appInit()
     pifLog_Init();
     pifLog_AttachActPrint(actLogPrint);
 
-    if (!pifComm_Init(COMM_COUNT)) goto fail;
+    if (!pifComm_Init(COMM_COUNT)) return FALSE;
 
-    if (!pifPulse_Init(PULSE_COUNT)) goto fail;
+    if (!pifPulse_Init(PULSE_COUNT)) return FALSE;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) goto fail;
+    if (!g_pstTimer1ms) return FALSE;
 
     g_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!g_pstSerial) goto fail;
+	if (!g_pstSerial) return FALSE;
 
-    if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) goto fail;
+    if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return FALSE;
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
-    if (!s_pstProtocol) goto fail;
+    if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, g_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
     	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
-		if (!s_stProtocolTest[i].pstDelay) goto fail;
+		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
-    if (!pifTask_Init(TASK_COUNT)) goto fail;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) goto fail;			// 100%
-    if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) goto fail;		// 300us
+    if (!pifTask_Init(TASK_COUNT)) return FALSE;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return FALSE;		// 100%
+    if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return FALSE;		// 300us
 
-    if (!pifTask_AddPeriodUs(300, taskSerial, NULL)) goto fail;				// 300us
+    if (!pifTask_AddPeriodUs(300, taskSerial, NULL)) return FALSE;			// 300us
     return TRUE;
-
-fail:
-	appExit();
-	return FALSE;
 }
 
 void appExit()

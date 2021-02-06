@@ -4,6 +4,8 @@
  * Save log to log buffer every second and print them out at the end of the program.
  */
 
+#include "main.h"
+#include "appMain.h"
 #include "timer.h"
 
 #include "pifLog.h"
@@ -27,7 +29,7 @@ static void _TimerHandler()
     }
 }
 
-static void _LogPrint(char *cString)
+void actLogPrint(char *cString)
 {
 	printf("%s", cString);
 }
@@ -39,14 +41,7 @@ int main(int argc, char **argv)
         return(1);
     }
 
-    pif_Init();
-
-    if (!pifLog_InitHeap(0x200)) goto fail;
-    pifLog_AttachActPrint(_LogPrint);
-
-	pifLog_Printf(LT_enInfo, "Start");
-
-    pifLog_Disable();
+    if (!appInit()) goto fail;
 
     while (s_unTimer) {
         pif_Loop();
@@ -55,7 +50,7 @@ int main(int argc, char **argv)
     pifLog_PrintInBuffer();
 
 fail:
-    pifLog_Exit();
+	appExit();
 
     stop_timer();
 

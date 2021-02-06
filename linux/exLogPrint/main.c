@@ -4,6 +4,8 @@
  * Output log every second.
  */
 
+#include "main.h"
+#include "appMain.h"
 #include "timer.h"
 
 #include "pifLog.h"
@@ -27,7 +29,7 @@ static void _TimerHandler()
     }
 }
 
-static void _LogPrint(char *cString)
+void actLogPrint(char *cString)
 {
 	printf("%s", cString);
 }
@@ -39,16 +41,14 @@ int main(int argc, char **argv)
         return(1);
     }
 
-    pif_Init();
-
-    pifLog_Init();
-    pifLog_AttachActPrint(_LogPrint);
+    if (!appInit()) goto fail;
 
     while (s_unTimer) {
         pif_Loop();
     }
 
-    pifLog_Exit();
+fail:
+	appExit();
 
     stop_timer();
 
