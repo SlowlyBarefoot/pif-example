@@ -1,11 +1,12 @@
 #include "exProtocolSerialLoopM.h"
+#include "appMain.h"
 
-#include "pifComm.h"
 #include "pifLog.h"
 #include "pifProtocol.h"
 
 
-static PIF_stComm *s_pstSerial = NULL;
+PIF_stComm *g_pstSerial2 = NULL;
+
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket);
@@ -120,36 +121,14 @@ static void _evtDelay(void *pvIssuer)
 	}
 }
 
-static void _taskProtocolTest(PIF_stTask *pstTask)
-{
-	uint8_t txData;
-	int rxData;
-
-	(void)pstTask;
-
-    while (pifComm_SendData(s_pstSerial, &txData)) {
-    	Serial2.print((char)txData);
-    }
-
-    while (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
-		rxData = Serial2.read();
-		if (rxData >= 0) {
-			pifComm_ReceiveData(s_pstSerial, rxData);
-		}
-		else break;
-	}
-}
-
 BOOL exSerial2_Setup()
 {
-	Serial2.begin(115200);
-
-    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!s_pstSerial) return FALSE;
+    g_pstSerial2 = pifComm_Add(PIF_ID_AUTO);
+	if (!g_pstSerial2) return FALSE;
 
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
+    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial2);
     s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
@@ -158,7 +137,7 @@ BOOL exSerial2_Setup()
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
-    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return FALSE;		// 3%
+    if (!pifTask_AddRatio(3, taskSerial2, NULL)) return FALSE;		// 3%
 
     return TRUE;
 }

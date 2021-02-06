@@ -1,12 +1,23 @@
-#include "exProtocolSerialLoopS.h"
 #include "appMain.h"
+#include "exProtocolSerialM.h"
 
+#include "pifLed.h"
 #include "pifLog.h"
 #include "pifProtocol.h"
 #include "pifSwitch.h"
 
 
-PIF_stComm *g_pstSerial1 = NULL;
+#define COMM_COUNT         		1
+#define LED_COUNT         		1
+#define PROTOCOL_COUNT          1
+#define PULSE_COUNT         	1
+#define PULSE_ITEM_COUNT    	10
+#define SWITCH_COUNT            2
+#define TASK_COUNT              4
+
+
+PIF_stPulse *g_pstTimer1ms = NULL;
+PIF_stComm *g_pstSerial = NULL;
 
 static PIF_stProtocol *s_pstProtocol = NULL;
 
@@ -42,7 +53,7 @@ static struct {
 static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName)
 {
 	if (pstPacket) {
-		pifLog_Printf(LT_enInfo, "%s: CNT=%u", pcName, pstPacket->usDataCount);
+		pifLog_Printf(LT_enInfo, "%s: PID=%d CNT=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
 		if (pstPacket->usDataCount) {
 			pifLog_Printf(LT_enNone, "\nData:");
 			for (int i = 0; i < pstPacket->usDataCount; i++) {
@@ -81,7 +92,7 @@ static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket)
 	_fnProtocolPrint(pstPacket, "Question20");
 
 	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "Question20: Error=%d", pif_enError);
+		pifLog_Printf(LT_enInfo, "Question20: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
 	}
 }
 
@@ -132,31 +143,52 @@ static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssue
 	}
 }
 
-BOOL exSerial1_Setup()
+void appSetup()
 {
 	int i;
+	PIF_stLed *pstLedL = NULL;
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return FALSE;
+    pif_Init();
+
+    pifLog_Init();
+	pifLog_AttachActPrint(actLogPrint);
+
+    if (!pifComm_Init(COMM_COUNT)) return;
+
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!g_pstTimer1ms) return;
+
+    if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;
+    pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
+    if (!pstLedL) return;
+    if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
+    pifLed_BlinkOn(pstLedL, 0);
+
+    if (!pifSwitch_Init(SWITCH_COUNT)) return;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_stProtocolTest[i].pstPushSwitch = pifSwitch_Add(PIF_ID_SWITCH + i, 0);
-		if (!s_stProtocolTest[i].pstPushSwitch) return FALSE;
+		if (!s_stProtocolTest[i].pstPushSwitch) return;
 		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
 		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSwitch_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
-	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
+	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
     }
 
-    g_pstSerial1 = pifComm_Add(PIF_ID_AUTO);
-	if (!g_pstSerial1) return FALSE;
+    g_pstSerial = pifComm_Add(PIF_ID_AUTO);
+	if (!g_pstSerial) return;
 
-    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
-    if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
+    if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return;
+    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
+    if (!s_pstProtocol) return;
+    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
 
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return FALSE;		// 3%
-    if (!pifTask_AddRatio(3, taskSerial1, NULL)) return FALSE;				// 3%
+    if (!pifTask_Init(TASK_COUNT)) return;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
+    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;				// 3%
+    if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return;			// 300us
 
-    return TRUE;
+    if (!pifTask_AddPeriodUs(300, taskSerial, NULL)) return;				// 300us
 }

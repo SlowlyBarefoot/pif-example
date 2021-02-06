@@ -2,124 +2,36 @@
 #include <Wire.h>
 
 #include "exProtocolI2C.h"
-
-#include "pifComm.h"
-#include "pifLog.h"
-#include "pifProtocol.h"
-#include "pifSwitch.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13
-#define PIN_LED_RED				23
-#define PIN_LED_YELLOW			25
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
 
-#define COMM_COUNT         		1
-#define PROTOCOL_COUNT          1
-#define PULSE_COUNT         	1
-#define PULSE_ITEM_COUNT    	10
-#define SWITCH_COUNT            2
-#define TASK_COUNT              5
 
-#define PIF_ID_SWITCH			0x100
-#define PIF_ID_2_INDEX(id)		((id) - PIF_ID_SWITCH)
+static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
-static PIF_stPulse *s_pstTimer1ms = NULL;
-static PIF_stComm *s_pstI2C = NULL;
-static PIF_stProtocol *s_pstProtocol = NULL;
-
-static void _fnProtocolResponse30(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket);
-
-const PIF_stProtocolRequest stProtocolRequests[] = {
-		{ 0x30, PF_enResponse_Yes | PF_enLogPrint_Yes, _fnProtocolResponse30, 3, 300 },
-		{ 0x31, PF_enResponse_Ack | PF_enLogPrint_Yes, _fnProtocolResponse31, 3, 300 },
-		{ 0, PF_enDefault, NULL, 0, 0 }
-};
-
-static struct {
-	uint8_t ucPinSwitch;
-	uint8_t ucPinLed;
-	PIF_stSwitch *pstPushSwitch;
-	uint8_t ucDataCount;
-	uint8_t ucData[8];
-	PIF_stSwitchFilter stPushSwitchFilter;
-} s_stProtocolTest[SWITCH_COUNT] = {
-		{ PIN_PUSH_SWITCH_1, PIN_LED_RED, NULL, 0, },
-		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL, 0, }
-};
-
-
-static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName)
-{
-	if (pstPacket) {
-		pifLog_Printf(LT_enInfo, "%s: CNT=%u", pcName, pstPacket->usDataCount);
-		if (pstPacket->usDataCount) {
-			pifLog_Printf(LT_enNone, "\nData:");
-			for (int i = 0; i < pstPacket->usDataCount; i++) {
-				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
-			}
-		}
-	}
-	else {
-		pifLog_Printf(LT_enInfo, pcName);
-	}
-}
-
-static void _fnProtocolResponse30(PIF_stProtocolPacket *pstPacket)
-{
-	_fnProtocolPrint(pstPacket, "Response30");
-}
-
-static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket)
-{
-	(void)pstPacket;
-
-	pifLog_Printf(LT_enInfo, "Response31: ACK");
-}
-
-static void _evtProtocolError(PIF_usId usPifId)
-{
-	pifLog_Printf(LT_enError, "ProtocolError DC=%d", usPifId);
-}
-
-static void _actLogPrint(char *pcString)
+void actLogPrint(char *pcString)
 {
 	Serial.print(pcString);
 }
 
-static SWITCH _actPushSwitchAcquire(PIF_usId usPifId)
+SWITCH actPushSwitchAcquire(PIF_usId usPifId)
 {
-	return digitalRead(s_stProtocolTest[PIF_ID_2_INDEX(usPifId)].ucPinSwitch);
+	return digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
 {
-	uint8_t index = PIF_ID_2_INDEX(usPifId);
+	(void)usPifId;
+	(void)ucIndex;
 
-	(void)pvIssuer;
-
-	if (swState) {
-		s_stProtocolTest[index].ucDataCount = rand() % 8;
-		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
-		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-			pifLog_Printf(LT_enError, "PushSwitchChange(%d): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_enError);
-		}
-		else {
-			pifLog_Printf(LT_enInfo, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);
-			if (s_stProtocolTest[index].ucDataCount) {
-				pifLog_Printf(LT_enNone, "\nData:");
-				for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
-					pifLog_Printf(LT_enNone, " %u", s_stProtocolTest[index].ucData[i]);
-				}
-			}
-		}
-	}
+	digitalWrite(PIN_LED_L, swState);
 }
 
-static void _taskProtocolTest(PIF_stTask *pstTask)
+void taskI2C(PIF_stTask *pstTask)
 {
 	uint8_t txData;
 	int rxData;
@@ -127,10 +39,10 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
 
 	(void)pstTask;
 
-	if (pifComm_GetFillSizeOfTxBuffer(s_pstI2C)) {
+	if (pifComm_GetFillSizeOfTxBuffer(g_pstI2C)) {
 		Wire.beginTransmission(1);
 		for (int i = 0; i < PIF_COMM_RX_BUFFER_SIZE; i++) {
-			if (pifComm_SendData(s_pstI2C, &txData)) {
+			if (pifComm_SendData(g_pstI2C, &txData)) {
 				Wire.write((char)txData);
 				if (txData == ASCII_ETX) {
 					stepRead = 1;
@@ -143,7 +55,7 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
 
     switch (stepRead) {
     case 1:
-    	if (pifComm_GetRemainSizeOfRxBuffer(s_pstI2C)) {
+    	if (pifComm_GetRemainSizeOfRxBuffer(g_pstI2C)) {
 			Wire.requestFrom(1, 1);
 			stepRead = 2;
     	}
@@ -153,7 +65,7 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
     	if (Wire.available() > 0) {
 			rxData = Wire.read();
 			if (rxData > 0) {
-				pifComm_ReceiveData(s_pstI2C, rxData);
+				pifComm_ReceiveData(g_pstI2C, rxData);
 				switch (rxData) {
 				case ASCII_ETX:
 				case ASCII_ACK:
@@ -171,33 +83,19 @@ static void _taskProtocolTest(PIF_stTask *pstTask)
     }
 }
 
-static void _taskLedToggle(PIF_stTask *pstTask)
-{
-	static BOOL sw = LOW;
-
-	(void)pstTask;
-
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
-}
-
 extern "C" {
 	void sysTickHook()
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(s_pstTimer1ms);
+		pifPulse_sigTick(g_pstTimer1ms);
 	}
 }
 
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	int i;
-
 	pinMode(PIN_LED_L, OUTPUT);
-	pinMode(PIN_LED_RED, OUTPUT);
-	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
 	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
 
@@ -205,44 +103,7 @@ void setup()
 
 	Wire.begin();
 
-    pif_Init();
-
-    pifLog_Init();
-	pifLog_AttachActPrint(_actLogPrint);
-
-    if (!pifComm_Init(COMM_COUNT)) return;
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!s_pstTimer1ms) return;
-
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
-
-    for (i = 0; i < SWITCH_COUNT; i++) {
-    	s_stProtocolTest[i].pstPushSwitch = pifSwitch_Add(PIF_ID_SWITCH + i, 0);
-		if (!s_stProtocolTest[i].pstPushSwitch) return;
-		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
-		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, _actPushSwitchAcquire);
-		pifSwitch_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
-	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
-    }
-
-    s_pstI2C = pifComm_Add(PIF_ID_AUTO);
-	if (!s_pstI2C) return;
-
-    if (!pifProtocol_Init(s_pstTimer1ms, PROTOCOL_COUNT)) return;
-    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, NULL);
-    if (!s_pstProtocol) return;
-    pifProtocol_AttachComm(s_pstProtocol, s_pstI2C);
-    s_pstProtocol->evtError = _evtProtocolError;
-
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%
-    if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return;	// 300us
-
-    if (!pifTask_AddPeriodUs(300, _taskProtocolTest, NULL)) return;	// 300us
-    if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;	// 500ms
+	appSetup();
 }
 
 // The loop function is called in an endless loop

@@ -1,39 +1,70 @@
 // Do not remove the include below
 #include "exProtocolSerialLoopS.h"
-
-#include "pifComm.h"
-#include "pifLog.h"
-#include "pifProtocol.h"
-
-#include "exSerial1.h"
-#include "exSerial2.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13
-
-#define COMM_COUNT         		2
-#define PROTOCOL_COUNT          2
-#define PULSE_COUNT         	1
-#define PULSE_ITEM_COUNT    	10
-#define TASK_COUNT              6
+#define PIN_PUSH_SWITCH_1		29
+#define PIN_PUSH_SWITCH_2		31
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
-static void _actLogPrint(char *pcString)
+void actLogPrint(char *pcString)
 {
 	Serial.print(pcString);
 }
 
-static void _taskLedToggle(PIF_stTask *pstTask)
+void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
 {
-	static BOOL sw = LOW;
+	(void)usPifId;
+	(void)ucIndex;
+
+	digitalWrite(PIN_LED_L, swState);
+}
+
+SWITCH actPushSwitchAcquire(PIF_usId usPifId)
+{
+	return digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
+}
+
+void taskSerial1(PIF_stTask *pstTask)
+{
+	uint8_t txData;
+	int rxData;
 
 	(void)pstTask;
 
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
+    if (pifComm_SendData(g_pstSerial1, &txData)) {
+    	Serial1.print((char)txData);
+    }
+
+    if (pifComm_GetRemainSizeOfRxBuffer(g_pstSerial1)) {
+		rxData = Serial1.read();
+		if (rxData >= 0) {
+			pifComm_ReceiveData(g_pstSerial1, rxData);
+		}
+    }
+}
+
+void taskSerial2(PIF_stTask *pstTask)
+{
+	uint8_t txData;
+	int rxData;
+
+	(void)pstTask;
+
+    if (pifComm_SendData(g_pstSerial2, &txData)) {
+    	Serial2.print((char)txData);
+    }
+
+    if (pifComm_GetRemainSizeOfRxBuffer(g_pstSerial2)) {
+		rxData = Serial2.read();
+		if (rxData >= 0) {
+			pifComm_ReceiveData(g_pstSerial2, rxData);
+		}
+	}
 }
 
 extern "C" {
@@ -49,30 +80,14 @@ extern "C" {
 void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
+	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
+	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
 
 	Serial.begin(115200);
+	Serial1.begin(115200);
+	Serial2.begin(115200);
 
-    pif_Init();
-
-    pifLog_Init();
-	pifLog_AttachActPrint(_actLogPrint);
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) return;
-
-    if (!pifComm_Init(COMM_COUNT)) return;
-
-    if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return;
-
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddRatio(3, pifComm_taskAll, NULL)) return;		// 3%
-
-    if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;	// 500ms
-
-    if (!exSerial1_Setup()) return;
-    if (!exSerial2_Setup()) return;
+	appSetup();
 }
 
 // The loop function is called in an endless loop

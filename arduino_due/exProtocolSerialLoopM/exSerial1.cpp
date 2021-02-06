@@ -1,23 +1,13 @@
 #include "exProtocolSerialLoopM.h"
+#include "appMain.h"
 
-#include "pifComm.h"
 #include "pifLog.h"
 #include "pifProtocol.h"
 #include "pifSwitch.h"
 
 
-#define PIN_LED_RED				23
-#define PIN_LED_YELLOW			25
-#define PIN_PUSH_SWITCH_1		29
-#define PIN_PUSH_SWITCH_2		31
+PIF_stComm *g_pstSerial1 = NULL;
 
-#define SWITCH_COUNT            2
-
-#define PIF_ID_SWITCH			0x100
-#define PIF_ID_2_INDEX(id)		((id) - PIF_ID_SWITCH)
-
-
-static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket);
@@ -39,15 +29,13 @@ const PIF_stProtocolRequest stProtocolRequests[] = {
 };
 
 static struct {
-	uint8_t ucPinSwitch;
-	uint8_t ucPinLed;
 	PIF_stSwitch *pstPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 	PIF_stSwitchFilter stPushSwitchFilter;
 } s_stProtocolTest[SWITCH_COUNT] = {
-		{ PIN_PUSH_SWITCH_1, PIN_LED_RED, NULL, 0, },
-		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW, NULL, 0, }
+		{ NULL, 0, },
+		{ NULL, 0, }
 };
 
 
@@ -120,14 +108,9 @@ static void _evtProtocolError(PIF_usId usPifId)
 	pifLog_Printf(LT_enError, "ProtocolError DC=%d", usPifId);
 }
 
-static SWITCH _actPushSwitchAcquire(PIF_usId usPifId)
-{
-	return digitalRead(s_stProtocolTest[PIF_ID_2_INDEX(usPifId)].ucPinSwitch);
-}
-
 static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
 {
-	uint8_t index = PIF_ID_2_INDEX(usPifId);
+	uint8_t index = usPifId - PIF_ID_SWITCH;
 
 	(void)pvIssuer;
 
@@ -149,36 +132,9 @@ static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssue
 	}
 }
 
-static void _taskProtocolTest(PIF_stTask *pstTask)
-{
-	uint8_t txData;
-	int rxData;
-
-	(void)pstTask;
-
-    while (pifComm_SendData(s_pstSerial, &txData)) {
-    	Serial1.print((char)txData);
-    }
-
-    while (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
-		rxData = Serial1.read();
-		if (rxData >= 0) {
-			pifComm_ReceiveData(s_pstSerial, rxData);
-		}
-		else break;
-    }
-}
-
 BOOL exSerial1_Setup()
 {
 	int i;
-
-	pinMode(PIN_LED_RED, OUTPUT);
-	pinMode(PIN_LED_YELLOW, OUTPUT);
-	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
-	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
-
-	Serial1.begin(115200);
 
     if (!pifSwitch_Init(SWITCH_COUNT)) return FALSE;
 
@@ -186,21 +142,21 @@ BOOL exSerial1_Setup()
     	s_stProtocolTest[i].pstPushSwitch = pifSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return FALSE;
 		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
-		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, _actPushSwitchAcquire);
+		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSwitch_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
     }
 
-    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!s_pstSerial) return FALSE;
+    g_pstSerial1 = pifComm_Add(PIF_ID_AUTO);
+	if (!g_pstSerial1) return FALSE;
 
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
+    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
     s_pstProtocol->evtError = _evtProtocolError;
 
     if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return FALSE;		// 3%
-    if (!pifTask_AddRatio(3, _taskProtocolTest, NULL)) return FALSE;		// 3%
+    if (!pifTask_AddRatio(3, taskSerial1, NULL)) return FALSE;				// 3%
 
     return TRUE;
 }

@@ -9,14 +9,16 @@
 #include "Arduino.h"
 //add your includes for the project exProtocolSerialS here
 
+#include "pifTask.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exProtocolSerialS here
 
-
-
+void actLogPrint(char *pcString);
+void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void taskSerial(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exProtocolSerialS_H_ */
