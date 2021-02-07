@@ -9,14 +9,19 @@
 #include "Arduino.h"
 //add your includes for the project exDutyMotor here
 
+#include "pifTask.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exDutyMotor here
 
-
-
+void actLogPrint(char *pcString);
+void taskTerminal(PIF_stTask *pstTask);
+void actSetDuty(uint16_t usDuty);
+void actSetDirection(uint8_t ucDir);
+void actOperateBreak(uint8_t ucState);
+void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
 
 //Do not add code below this line
 #endif /* _exDutyMotor_H_ */
