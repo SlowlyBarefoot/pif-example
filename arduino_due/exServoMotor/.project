@@ -47,6 +47,11 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x</locationURI>
 		</link>
 		<link>
+			<name>libraries/DueTimer</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/DueTimer/1.4.7</locationURI>
+		</link>
+		<link>
 			<name>pif/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -105,6 +110,11 @@
 			<name>pif/core/include/pifKeypad.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifKeypad.h</locationURI>
+		</link>
+		<link>
+			<name>pif/core/include/pifLed.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifLed.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifLog.h</name>
@@ -230,6 +240,11 @@
 			<name>pif/core/source/pifKeypad.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifKeypad.c</locationURI>
+		</link>
+		<link>
+			<name>pif/core/source/pifLed.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifLed.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifLog.c</name>
