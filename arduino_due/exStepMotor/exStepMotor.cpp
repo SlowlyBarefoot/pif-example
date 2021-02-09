@@ -2,12 +2,7 @@
 #include <DueTimer.h>
 
 #include "exStepMotor.h"
-
-#include "pifLog.h"
-#include "pifPulse.h"
-#include "pifStepMotor.h"
-#include "pifTask.h"
-#include "pifTerminal.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13
@@ -16,160 +11,32 @@
 #define PIN_STEP_MOTOR_3		34
 #define PIN_STEP_MOTOR_4		36
 
-#define COMM_COUNT				1
-#define MOTOR_COUNT				1
-#define PULSE_COUNT         	2
-#define PULSE_ITEM_COUNT    	20
-#define TASK_COUNT              5
 
-#define STEP_MOTOR_RESOLUTION				200
-#define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
-
-
-static PIF_stComm *s_pstSerial = NULL;
-static PIF_stPulse *s_pstTimer1ms = NULL;
-static PIF_stPulse *s_pstTimer200us = NULL;
-static PIF_stStepMotor *s_pstMotor = NULL;
-
-static int CmdStepMotorTest(int argc, char *argv[]);
-
-const PIF_stTermCmdEntry c_psCmdTable[] = {
-	{ "ver", pifTerminal_PrintVersion, "\nPrint Version" },
-	{ "status", pifTerminal_SetStatus, "\nSet Status" },
-	{ "mt", CmdStepMotorTest, "\nMotor Test" },
-
-	{ NULL, NULL, NULL }
-};
-
-typedef struct {
-	int nMode;
-	uint16_t usBreakTime;
-	uint32_t unStepCount;
-} ST_StepMotorTest;
-
-static ST_StepMotorTest s_stStepMotorTest = { 0, 1000, 200 };
-
-
-static void _actLogPrint(char *pcString)
+void actLogPrint(char *pcString)
 {
 	Serial.print(pcString);
 }
 
-static void _taskTerminal(PIF_stTask *pstTask)
+void taskTerminal(PIF_stTask *pstTask)
 {
 	uint8_t txData;
 	int rxData;
 
 	(void)pstTask;
 
-    if (pifComm_SendData(s_pstSerial, &txData)) {
+    if (pifComm_SendData(g_pstSerial, &txData)) {
     	SerialUSB.print((char)txData);
     }
 
-    if (pifComm_GetRemainSizeOfRxBuffer(s_pstSerial)) {
+    if (pifComm_GetRemainSizeOfRxBuffer(g_pstSerial)) {
 		if (SerialUSB.available()) {
 			rxData = SerialUSB.read();
-			pifComm_ReceiveData(s_pstSerial, rxData);
+			pifComm_ReceiveData(g_pstSerial, rxData);
 		}
     }
 }
 
-static int CmdStepMotorTest(int argc, char *argv[])
-{
-	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Method: %d", s_pstMotor->_enMethod);
-		pifLog_Printf(LT_enNone, "\n  Operation: %d", s_pstMotor->_enOperation);
-		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->_ucDirection);
-		pifLog_Printf(LT_enNone, "\n  P/S: %u", s_pstMotor->_usCurrentPps);
-		pifLog_Printf(LT_enNone, "\n  R/M: %2f", pifStepMotor_GetRpm(s_pstMotor));
-		pifLog_Printf(LT_enNone, "\n  Step Count: %d", s_stStepMotorTest.unStepCount);
-		pifLog_Printf(LT_enNone, "\n  Break Time: %d", s_stStepMotorTest.usBreakTime);
-		return PIF_TERM_CMD_NO_ERROR;
-	}
-	else if (argc > 2) {
-		if (!strcmp(argv[1], "mt")) {
-			if (s_pstMotor->_enState == MS_enIdle) {
-				int value = atoi(argv[2]);
-				if (value >= 0 && value <= 1) {
-					pifStepMotor_SetMethod(s_pstMotor, (PIF_enStepMotorMethod)value);
-					return PIF_TERM_CMD_NO_ERROR;
-				}
-			}
-		}
-		else if (!strcmp(argv[1], "op")) {
-			int value = atoi(argv[2]);
-			if (value >= SMO_en2P_4W_1S && value <= SMO_en2P_4W_1_2S) {
-				pifStepMotor_SetOperation(s_pstMotor, (PIF_enStepMotorOperation)value);
-				return PIF_TERM_CMD_NO_ERROR;
-			}
-		}
-		else if (!strcmp(argv[1], "pps")) {
-			float value = atof(argv[2]);
-			if (value > 0) {
-				if (!pifStepMotor_SetPps(s_pstMotor, value)) {
-					pifLog_Printf(LT_enError, "\n  Invalid Parameter: %d", value);
-				}
-				return PIF_TERM_CMD_NO_ERROR;
-			}
-		}
-		else if (!strcmp(argv[1], "rpm")) {
-			float value = atof(argv[2]);
-			if (value > 0) {
-				if (!pifStepMotor_SetRpm(s_pstMotor, value)) {
-					pifLog_Printf(LT_enError, "\n  Invalid Parameter: %d", value);
-				}
-				return PIF_TERM_CMD_NO_ERROR;
-			}
-		}
-		else if (!strcmp(argv[1], "dir")) {
-			int value = atoi(argv[2]);
-			if (value == 0 || value == 1) {
-				pifStepMotor_SetDirection(s_pstMotor, value);
-				return PIF_TERM_CMD_NO_ERROR;
-			}
-		}
-		else if (!strcmp(argv[1], "cnt")) {
-			int value = atoi(argv[2]);
-			if (value > 0) {
-				s_stStepMotorTest.unStepCount = value;
-				return PIF_TERM_CMD_NO_ERROR;
-			}
-		}
-		else if (!strcmp(argv[1], "cbt")) {
-			int value = atoi(argv[2]);
-			if (value > 0) {
-				s_stStepMotorTest.usBreakTime = value;
-				return PIF_TERM_CMD_NO_ERROR;
-			}
-		}
-		return PIF_TERM_CMD_INVALID_ARG;
-	}
-	else if (argc > 1) {
-		if (!strcmp(argv[1], "str")) {
-			s_stStepMotorTest.nMode = 1;
-			pifStepMotor_Start(s_pstMotor, 0);
-			return PIF_TERM_CMD_NO_ERROR;
-		}
-		else if (!strcmp(argv[1], "sts")) {
-			s_stStepMotorTest.nMode = 2;
-			pifStepMotor_Start(s_pstMotor, s_stStepMotorTest.unStepCount);
-			return PIF_TERM_CMD_NO_ERROR;
-		}
-		else if (!strcmp(argv[1], "sp")) {
-			s_stStepMotorTest.nMode = 0;
-			pifStepMotor_BreakRelease(s_pstMotor, s_stStepMotorTest.usBreakTime);
-			return PIF_TERM_CMD_NO_ERROR;
-		}
-		else if (!strcmp(argv[1], "rel")) {
-			pifStepMotor_Release(s_pstMotor);
-			return PIF_TERM_CMD_NO_ERROR;
-		}
-		return PIF_TERM_CMD_INVALID_ARG;
-	}
-	return PIF_TERM_CMD_TOO_FEW_ARGS;
-}
-
-static void _actSetStep(uint16_t usPhase)
+void actSetStep(uint16_t usPhase)
 {
 	digitalWrite(PIN_STEP_MOTOR_1, usPhase & 1);
 	digitalWrite(PIN_STEP_MOTOR_2, (usPhase >> 1) & 1);
@@ -177,22 +44,12 @@ static void _actSetStep(uint16_t usPhase)
 	digitalWrite(PIN_STEP_MOTOR_4, (usPhase >> 3) & 1);
 }
 
-static void _evtStop(PIF_stStepMotor *pstOwner, void *pvInfo)
+void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
 {
-	(void)pvInfo;
+	(void)usPifId;
+	(void)ucIndex;
 
-	s_stStepMotorTest.nMode = 0;
-	pifStepMotor_BreakRelease(pstOwner, s_stStepMotorTest.usBreakTime);
-}
-
-static void _taskLedToggle(PIF_stTask *pstTask)
-{
-	static BOOL sw = LOW;
-
-	(void)pstTask;
-
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
+	digitalWrite(PIN_LED_L, swState);
 }
 
 extern "C" {
@@ -200,20 +57,18 @@ extern "C" {
 	{
 		pif_sigTimer1ms();
 
-		pifPulse_sigTick(s_pstTimer1ms);
+		pifPulse_sigTick(g_pstTimer1ms);
 	}
 }
 
 static void _sigTimer200us()
 {
-	pifPulse_sigTick(s_pstTimer200us);
+	pifPulse_sigTick(g_pstTimer200us);
 }
 
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PIF_stTask *pstTask;
-
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_STEP_MOTOR_1, OUTPUT);
 	pinMode(PIN_STEP_MOTOR_2, OUTPUT);
@@ -225,42 +80,7 @@ void setup()
 	Serial.begin(115200);
 	SerialUSB.begin(115200);
 
-    pifLog_Init();
-	pifLog_AttachActPrint(_actLogPrint);
-
-    if (!pifComm_Init(COMM_COUNT)) return;
-    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!s_pstSerial) return;
-
-    if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
-	pifTerminal_AttachComm(s_pstSerial);
-
-	pifLog_DetachActPrint();
-    pifLog_UseTerminal(TRUE);
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    s_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!s_pstTimer1ms) return;
-    s_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);		// 200us
-    if (!s_pstTimer200us) return;
-
-    if (!pifStepMotor_Init(s_pstTimer200us, MOTOR_COUNT)) return;
-    s_pstMotor = pifStepMotor_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S);
-    if (!s_pstMotor) return;
-    pifStepMotor_AttachAction(s_pstMotor, _actSetStep);
-    s_pstMotor->evtStop = _evtStop;
-    pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
-	pifStepMotor_SetPps(s_pstMotor, 200);
-
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
-    if (!pifTask_AddPeriodMs(10, pifComm_taskAll, NULL)) return;		// 10ms
-    pstTask = pifTask_AddPeriodUs(200, pifStepMotor_taskAll, NULL);		// 200us
-    if (!pstTask) return;
-    pifStepMotor_AttachTask(s_pstMotor, pstTask);
-
-    if (!pifTask_AddPeriodMs(10, _taskTerminal, NULL)) return;			// 10ms
-    if (!pifTask_AddPeriodMs(500, _taskLedToggle, NULL)) return;		// 500ms
+	appSetup();
 }
 
 // The loop function is called in an endless loop

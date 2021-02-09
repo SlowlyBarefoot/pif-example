@@ -9,14 +9,17 @@
 #include "Arduino.h"
 //add your includes for the project exStepMotor here
 
+#include "pifTask.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exStepMotor here
 
-
-
+void actLogPrint(char *pcString);
+void taskTerminal(PIF_stTask *pstTask);
+void actSetStep(uint16_t usPhase);
+void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
 
 //Do not add code below this line
 #endif /* _exStepMotor_H_ */
