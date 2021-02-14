@@ -125,27 +125,27 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 	return PIF_TERM_CMD_TOO_FEW_ARGS;
 }
 
-static void _evtStable(PIF_stDutyMotor *pstOwner, void *pvInfo)
+static void _evtStable(PIF_stDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorSpeedEnc *pstInfo = (PIF_stDutyMotorSpeedEnc *)pvInfo;
+	PIF_stDutyMotorSpeedEnc *pstChild = (PIF_stDutyMotorSpeedEnc *)pstOwner->_pvChild;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u", pstOwner->_usPifId, pstInfo->_ucStageIndex);
+	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
 }
 
-static void _evtStop(PIF_stDutyMotor *pstOwner, void *pvInfo)
+static void _evtStop(PIF_stDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorSpeedEnc *pstInfo = (PIF_stDutyMotorSpeedEnc *)pvInfo;
+	PIF_stDutyMotorSpeedEnc *pstChild = (PIF_stDutyMotorSpeedEnc *)pstOwner->_pvChild;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u", pstOwner->_usPifId, pstInfo->_ucStageIndex);
+	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
 }
 
-static void _evtError(PIF_stDutyMotor *pstOwner, void *pvInfo)
+static void _evtError(PIF_stDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorSpeedEnc *pstInfo = (PIF_stDutyMotorSpeedEnc *)pvInfo;
+	PIF_stDutyMotorSpeedEnc *pstChild = (PIF_stDutyMotorSpeedEnc *)pstOwner->_pvChild;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u", pstOwner->_usPifId, pstInfo->_ucStageIndex);
+	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
 }
 
 static void _taskInitPos(PIF_stTask *pstTask)

@@ -138,10 +138,8 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	return PIF_TERM_CMD_TOO_FEW_ARGS;
 }
 
-static void _evtStop(PIF_stStepMotor *pstOwner, void *pvInfo)
+static void _evtStop(PIF_stStepMotor *pstOwner)
 {
-	(void)pvInfo;
-
 	s_stStepMotorTest.nMode = 0;
 	pifStepMotor_BreakRelease(pstOwner, s_stStepMotorTest.usBreakTime);
 }
