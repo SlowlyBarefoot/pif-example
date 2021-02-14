@@ -29,24 +29,24 @@ void evtSwitchAcquire(void *pvIssuer)
 {
 	(void)pvIssuer;
 
-	pifSwitch_sigData(g_pstPushSwitch, digitalRead(PIN_PUSH_SWITCH));
-	pifSwitch_sigData(g_pstTiltSwitch, digitalRead(PIN_TILT_SWITCH));
+	pifSensorSwitch_sigData(g_pstPushSwitch, !digitalRead(PIN_PUSH_SWITCH));
+	pifSensorSwitch_sigData(g_pstTiltSwitch, digitalRead(PIN_TILT_SWITCH));
 }
 
-void evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
 
-	digitalWrite(PIN_LED_RED, swState);
+	digitalWrite(PIN_LED_RED, usLevel);
 }
 
-void evtTiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+void evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
 
-	digitalWrite(PIN_LED_YELLOW, swState);
+	digitalWrite(PIN_LED_YELLOW, usLevel);
 }
 
 static void sysTickHook()

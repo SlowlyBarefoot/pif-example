@@ -16,7 +16,7 @@ PIF_stPulse *g_pstTimer1ms = NULL;
 PIF_stSensor *g_pstSensor = NULL;
 
 #if USE_FILTER_AVERAGE
-static PIF_stSensorFilter s_stFilter;
+static PIF_stSensorDigitalFilter s_stFilter;
 #endif
 
 
@@ -36,13 +36,13 @@ void appSetup()
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
 
-    if (!pifSensor_Init(g_pstTimer1ms, SENSOR_COUNT)) return;
-    g_pstSensor = pifSensor_Add(PIF_ID_AUTO);
+    if (!pifSensorDigital_Init(g_pstTimer1ms, SENSOR_COUNT)) return;
+    g_pstSensor = pifSensorDigital_Add(PIF_ID_AUTO);
     if (!g_pstSensor) return;
 #if USE_FILTER_AVERAGE
-    pifSensor_AttachFilter(g_pstSensor, PIF_SENSOR_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
+    pifSensorDigital_AttachFilter(g_pstSensor, PIF_SENSOR_DIGITAL_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
 #endif
-    if (!pifSensor_SetEventPeriod(g_pstSensor, _evtSensorPeriod)) return;
+    if (!pifSensorDigital_AttachEvtPeriod(g_pstSensor, _evtSensorPeriod)) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
@@ -50,5 +50,5 @@ void appSetup()
     if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL)) return;				// 500ms
     if (!pifTask_AddPeriodMs(100, taskSensorAcquisition, NULL)) return;		// 100ms
 
-    if (!pifSensor_StartPeriod(g_pstSensor, 500)) return;					// 500ms
+    if (!pifSensorDigital_StartPeriod(g_pstSensor, 500)) return;			// 500ms
 }

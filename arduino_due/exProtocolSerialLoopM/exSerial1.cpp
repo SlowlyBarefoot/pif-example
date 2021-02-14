@@ -3,7 +3,7 @@
 
 #include "pifLog.h"
 #include "pifProtocol.h"
-#include "pifSwitch.h"
+#include "pifSensorSwitch.h"
 
 
 PIF_stComm *g_pstSerial1 = NULL;
@@ -29,10 +29,10 @@ const PIF_stProtocolRequest stProtocolRequests[] = {
 };
 
 static struct {
-	PIF_stSwitch *pstPushSwitch;
+	PIF_stSensor *pstPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
-	PIF_stSwitchFilter stPushSwitchFilter;
+	PIF_stSensorSwitchFilter stPushSwitchFilter;
 } s_stProtocolTest[SWITCH_COUNT] = {
 		{ NULL, 0, },
 		{ NULL, 0, }
@@ -108,13 +108,13 @@ static void _evtProtocolError(PIF_usId usPifId)
 	pifLog_Printf(LT_enError, "ProtocolError DC=%d", usPifId);
 }
 
-static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	uint8_t index = usPifId - PIF_ID_SWITCH;
 
 	(void)pvIssuer;
 
-	if (swState) {
+	if (usLevel) {
 		s_stProtocolTest[index].ucDataCount = rand() % 8;
 		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
 		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
@@ -136,15 +136,14 @@ BOOL exSerial1_Setup()
 {
 	int i;
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return FALSE;
+    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return FALSE;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-    	s_stProtocolTest[i].pstPushSwitch = pifSwitch_Add(PIF_ID_SWITCH + i, 0);
+    	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return FALSE;
-		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
-		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
-		pifSwitch_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
-	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
+		pifSensor_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
+		pifSensor_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
+	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
     }
 
     g_pstSerial1 = pifComm_Add(PIF_ID_AUTO);
@@ -155,7 +154,7 @@ BOOL exSerial1_Setup()
     pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
     s_pstProtocol->evtError = _evtProtocolError;
 
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return FALSE;		// 3%
+    if (!pifTask_AddRatio(3, pifSensorSwitch_taskAll, NULL)) return FALSE;		// 3%
     if (!pifTask_AddRatio(3, taskSerial1, NULL)) return FALSE;				// 3%
 
     return TRUE;

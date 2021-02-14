@@ -4,6 +4,7 @@
 #include "pifDutyMotorSpeed.h"
 #include "pifLed.h"
 #include "pifLog.h"
+#include "pifSensorSwitch.h"
 #include "pifTerminal.h"
 
 
@@ -20,7 +21,7 @@ PIF_stComm *g_pstSerial = NULL;
 PIF_stDutyMotor *g_pstMotor = NULL;
 PIF_stPulse *g_pstTimer1ms = NULL;
 
-static PIF_stSwitch *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
+static PIF_stSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
 
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
@@ -248,11 +249,11 @@ void appSetup()
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     for (int i = 0; i < SWITCH_COUNT; i++) {
-		s_pstSwitch[i] = pifSwitch_Add(PIF_ID_SWITCH + i, 0);
+		s_pstSwitch[i] = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_pstSwitch[i]) return;
-	    pifSwitch_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
+	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
     if (!pifDutyMotor_Init(g_pstTimer1ms, MOTOR_COUNT)) return;
@@ -266,7 +267,7 @@ void appSetup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
-    if (!pifTask_AddPeriodMs(1, pifSwitch_taskAll, NULL)) return;			// 1ms
+    if (!pifTask_AddPeriodMs(1, pifSensorSwitch_taskAll, NULL)) return;		// 1ms
 
     if (!pifTask_AddPeriodMs(1, taskTerminal, NULL)) return;				// 1ms
     if (!pifTask_AddPeriodMs(10, _taskInitPos, NULL)) return;				// 10ms

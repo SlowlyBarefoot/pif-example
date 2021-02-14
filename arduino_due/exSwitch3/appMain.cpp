@@ -12,29 +12,29 @@
 #define SWITCH_COUNT            2
 
 
-PIF_stSwitch *g_pstPushSwitch = NULL;
-PIF_stSwitch *g_pstTiltSwitch = NULL;
+PIF_stSensor *g_pstPushSwitch = NULL;
+PIF_stSensor *g_pstTiltSwitch = NULL;
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLed = NULL;
-static PIF_stSwitchFilter s_stPushSwitchFilter;
-static PIF_stSwitchFilter s_stTiltSwitchFilter;
+static PIF_stSensorSwitchFilter s_stPushSwitchFilter;
+static PIF_stSensorSwitchFilter s_stTiltSwitchFilter;
 
 
-static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLed, 1, swState);
+	pifLed_Change(s_pstLed, 1, usLevel);
 }
 
-static void _evtTiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+static void _evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLed, 2, swState);
+	pifLed_Change(s_pstLed, 2, usLevel);
 }
 
 void appSetup()
@@ -60,22 +60,21 @@ void appSetup()
     if (!pstTimerSwitch) return;
     pifPulse_AttachEvtFinish(pstTimerSwitch, evtSwitchAcquire, NULL);
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
 
-    g_pstPushSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
+    g_pstPushSwitch = pifSensorSwitch_Add(PIF_ID_AUTO, OFF);
     if (!g_pstPushSwitch) return;
-    g_pstPushSwitch->bStateReverse = TRUE;
-    pifSwitch_AttachEvtChange(g_pstPushSwitch, _evtPushSwitchChange, NULL);
-    if (!pifSwitch_AttachFilter(g_pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 5, &s_stPushSwitchFilter)) return;
+    pifSensor_AttachEvtChange(g_pstPushSwitch, _evtPushSwitchChange, NULL);
+    if (!pifSensorSwitch_AttachFilter(g_pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 5, &s_stPushSwitchFilter)) return;
 
-    g_pstTiltSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
+    g_pstTiltSwitch = pifSensorSwitch_Add(PIF_ID_AUTO, OFF);
 	if (!g_pstTiltSwitch) return;
-	pifSwitch_AttachEvtChange(g_pstTiltSwitch, _evtTiltSwitchChange, NULL);
-    if (!pifSwitch_AttachFilter(g_pstTiltSwitch, PIF_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
+	pifSensor_AttachEvtChange(g_pstTiltSwitch, _evtTiltSwitchChange, NULL);
+    if (!pifSensorSwitch_AttachFilter(g_pstTiltSwitch, PIF_SENSOR_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
+    if (!pifTask_AddRatio(3, pifSensorSwitch_taskAll, NULL)) return;		// 3%
 
-    pifPulse_StartItem(pstTimerSwitch, 20);							// 20ms
+    pifPulse_StartItem(pstTimerSwitch, 20);									// 20ms
 }

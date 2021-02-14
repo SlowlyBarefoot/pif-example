@@ -38,8 +38,8 @@ void evtSwitchAcquire(void *pvIssuer)
 {
 	(void)pvIssuer;
 
-	pifSwitch_sigData(g_pstPushSwitch, digitalRead(PIN_PUSH_SWITCH));
-	pifSwitch_sigData(g_pstTiltSwitch, digitalRead(PIN_TILT_SWITCH));
+	pifSensorSwitch_sigData(g_pstPushSwitch, !digitalRead(PIN_PUSH_SWITCH));
+	pifSensorSwitch_sigData(g_pstTiltSwitch, digitalRead(PIN_TILT_SWITCH));
 }
 
 extern "C" {

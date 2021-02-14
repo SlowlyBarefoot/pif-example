@@ -2,12 +2,11 @@
 #define APP_MAIN_H
 
 
-#include "pifPulse.h"
-#include "pifSwitch.h"
+#include "pifSensorSwitch.h"
 
 
-extern PIF_stSwitch *g_pstPushSwitch;
-extern PIF_stSwitch *g_pstTiltSwitch;
+extern PIF_stSensor *g_pstPushSwitch;
+extern PIF_stSensor *g_pstTiltSwitch;
 extern PIF_stPulse *g_pstTimer1ms;
 
 

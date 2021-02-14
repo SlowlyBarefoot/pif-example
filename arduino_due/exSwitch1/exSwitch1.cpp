@@ -15,34 +15,34 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-SWITCH actPushSwitchAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 {
 	(void)usPifId;
 
-	return digitalRead(PIN_PUSH_SWITCH);
+	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-void evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
 
-	digitalWrite(PIN_LED_RED, swState);
+	digitalWrite(PIN_LED_RED, usLevel);
 }
 
-SWITCH actTiltSwitchAcquire(PIF_usId usPifId)
+uint16_t actTiltSwitchAcquire(PIF_usId usPifId)
 {
 	(void)usPifId;
 
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-void evtTiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+void evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
 
-	digitalWrite(PIN_LED_YELLOW, swState);
+	digitalWrite(PIN_LED_YELLOW, usLevel);
 }
 
 void taskLedToggle(PIF_stTask *pstTask)

@@ -19,7 +19,7 @@
 void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
 void actLedRGBState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
-SWITCH actPushSwitchAcquire(PIF_usId usPifId);
+uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 
 //Do not add code below this line
 #endif /* _exSequence2_H_ */

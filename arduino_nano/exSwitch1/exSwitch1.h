@@ -17,10 +17,10 @@
 //add your function definitions for the project exSwitch1 here
 
 void actLogPrint(char *pcString);
-SWITCH actPushSwitchAcquire(PIF_usId usPifId);
-void evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer);
-SWITCH actTiltSwitchAcquire(PIF_usId usPifId);
-void evtTiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer);
+uint16_t actPushSwitchAcquire(PIF_usId usPifId);
+void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
+uint16_t actTiltSwitchAcquire(PIF_usId usPifId);
+void evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
 void taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line

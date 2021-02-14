@@ -40,7 +40,7 @@ void taskTerminal(PIF_stTask *pstTask)
     }
 }
 
-SWITCH actPhotoInterruptAcquire(PIF_usId usPifId)
+uint16_t actPhotoInterruptAcquire(PIF_usId usPifId)
 {
 	switch (usPifId) {
 	case PIF_ID_SWITCH:

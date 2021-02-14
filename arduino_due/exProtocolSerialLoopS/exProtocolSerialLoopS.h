@@ -18,7 +18,7 @@
 
 void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
-SWITCH actPushSwitchAcquire(PIF_usId usPifId);
+uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 void taskSerial1(PIF_stTask *pstTask);
 void taskSerial2(PIF_stTask *pstTask);
 

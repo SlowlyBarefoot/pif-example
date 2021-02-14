@@ -12,8 +12,8 @@
 #define TASK_COUNT              2
 
 
-PIF_stSwitch *g_pstPushSwitch = NULL;
-PIF_stSwitch *g_pstTiltSwitch = NULL;
+PIF_stSensor *g_pstPushSwitch = NULL;
+PIF_stSensor *g_pstTiltSwitch = NULL;
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
@@ -42,20 +42,19 @@ void appSetup()
     if (!pstTimerSwitch) return;
     pifPulse_AttachEvtFinish(pstTimerSwitch, evtSwitchAcquire, NULL);
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
 
-    g_pstPushSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
+    g_pstPushSwitch = pifSensorSwitch_Add(PIF_ID_AUTO, OFF);
     if (!g_pstPushSwitch) return;
-    g_pstPushSwitch->bStateReverse = TRUE;
-    pifSwitch_AttachEvtChange(g_pstPushSwitch, evtPushSwitchChange, NULL);
+    pifSensor_AttachEvtChange(g_pstPushSwitch, evtPushSwitchChange, NULL);
 
-    g_pstTiltSwitch = pifSwitch_Add(PIF_ID_AUTO, 0);
+    g_pstTiltSwitch = pifSensorSwitch_Add(PIF_ID_AUTO, OFF);
 	if (!g_pstTiltSwitch) return;
-	pifSwitch_AttachEvtChange(g_pstTiltSwitch, evtTiltSwitchChange, NULL);
+	pifSensor_AttachEvtChange(g_pstTiltSwitch, evtTiltSwitchChange, NULL);
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;		// 3%
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
+    if (!pifTask_AddRatio(3, pifSensorSwitch_taskAll, NULL)) return;		// 3%
 
-    pifPulse_StartItem(pstTimerSwitch, 20);							// 20ms
+    pifPulse_StartItem(pstTimerSwitch, 20);									// 20ms
 }

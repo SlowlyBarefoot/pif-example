@@ -39,9 +39,9 @@ void actLedRGBState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
 	digitalWrite(s_stSequenceTest[ucIndex].ucPinLed, swState);
 }
 
-SWITCH actPushSwitchAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 {
-	return digitalRead(s_stSequenceTest[usPifId - PIF_ID_SWITCH].ucPinSwitch);
+	return !digitalRead(s_stSequenceTest[usPifId - PIF_ID_SWITCH].ucPinSwitch);
 }
 
 extern "C" {

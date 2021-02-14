@@ -27,9 +27,9 @@ void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
 	digitalWrite(PIN_LED_L, swState);
 }
 
-SWITCH actPushSwitchAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 {
-	return digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
+	return !digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
 void taskSerial(PIF_stTask *pstTask)

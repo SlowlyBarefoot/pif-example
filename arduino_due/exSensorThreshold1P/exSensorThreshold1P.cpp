@@ -26,7 +26,7 @@ void taskSensorAcquisition(PIF_stTask *pstTask)
 {
 	(void)pstTask;
 
-	pifSensor_sigData(g_pstSensor, analogRead(PIN_CDS));
+	pifSensorDigital_sigData(g_pstSensor, analogRead(PIN_CDS));
 }
 
 extern "C" {

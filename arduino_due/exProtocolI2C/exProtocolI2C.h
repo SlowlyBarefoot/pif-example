@@ -17,7 +17,7 @@
 //add your function definitions for the project exProtocolI2C here
 
 void actLogPrint(char *pcString);
-SWITCH actPushSwitchAcquire(PIF_usId usPifId);
+uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
 void taskI2C(PIF_stTask *pstTask);
 

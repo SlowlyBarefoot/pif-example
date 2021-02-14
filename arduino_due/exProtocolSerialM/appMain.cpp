@@ -4,7 +4,7 @@
 #include "pifLed.h"
 #include "pifLog.h"
 #include "pifProtocol.h"
-#include "pifSwitch.h"
+#include "pifSensorSwitch.h"
 
 
 #define COMM_COUNT         		1
@@ -40,10 +40,10 @@ const PIF_stProtocolRequest stProtocolRequests[] = {
 };
 
 static struct {
-	PIF_stSwitch *pstPushSwitch;
+	PIF_stSensor *pstPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
-	PIF_stSwitchFilter stPushSwitchFilter;
+	PIF_stSensorSwitchFilter stPushSwitchFilter;
 } s_stProtocolTest[SWITCH_COUNT] = {
 		{ NULL, 0, },
 		{ NULL, 0, }
@@ -119,13 +119,13 @@ static void _evtProtocolError(PIF_usId usPifId)
 	pifLog_Printf(LT_enError, "ProtocolError DC=%d", usPifId);
 }
 
-static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	uint8_t index = usPifId - PIF_ID_SWITCH;
 
 	(void)pvIssuer;
 
-	if (swState) {
+	if (usLevel) {
 		s_stProtocolTest[index].ucDataCount = rand() % 8;
 		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
 		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
@@ -165,15 +165,14 @@ void appSetup()
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-    	s_stProtocolTest[i].pstPushSwitch = pifSwitch_Add(PIF_ID_SWITCH + i, 0);
+    	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return;
-		s_stProtocolTest[i].pstPushSwitch->bStateReverse = TRUE;
-		pifSwitch_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
-		pifSwitch_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
-	    if (!pifSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
+		pifSensor_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
+		pifSensor_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
+	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
     }
 
     g_pstSerial = pifComm_Add(PIF_ID_AUTO);
@@ -187,7 +186,7 @@ void appSetup()
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
-    if (!pifTask_AddRatio(3, pifSwitch_taskAll, NULL)) return;				// 3%
+    if (!pifTask_AddRatio(3, pifSensorSwitch_taskAll, NULL)) return;		// 3%
     if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return;			// 300us
 
     if (!pifTask_AddPeriodUs(300, taskSerial, NULL)) return;				// 300us

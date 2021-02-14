@@ -4,7 +4,7 @@
 #include "pifLed.h"
 #include "pifLog.h"
 #include "pifSequence.h"
-#include "pifSwitch.h"
+#include "pifSensorSwitch.h"
 
 
 #define LED_COUNT         		2
@@ -30,7 +30,7 @@ const PIF_stSequencePhase s_astSequencePhaseList[] = {
 };
 
 static struct {
-	PIF_stSwitch *pstPushSwitch;
+	PIF_stSensor *pstPushSwitch;
 	PIF_stSequence *pstSequence;
 	BOOL bSequenceParam;
 } s_stSequenceTest[SEQUENCE_COUNT] = {
@@ -39,19 +39,19 @@ static struct {
 };
 
 
-static void _evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer)
+static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	uint8_t index = usPifId - PIF_ID_SWITCH;
 
 	(void)pvIssuer;
 
-	if (swState) {
+	if (usLevel) {
 		pifSequence_Start(s_stSequenceTest[index].pstSequence);
 	}
 	else {
 		s_stSequenceTest[index].bSequenceParam = TRUE;
 	}
-	pifLog_Printf(LT_enInfo, "Switch(%d): %d", usPifId, swState);
+	pifLog_Printf(LT_enInfo, "Switch(%d): %d", usPifId, usLevel);
 }
 
 static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
@@ -129,15 +129,14 @@ void appSetup()
     s_pstLedRGB = pifLed_Add(PIF_ID_AUTO, SEQUENCE_COUNT, actLedRGBState);
     if (!s_pstLedRGB) return;
 
-    if (!pifSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifSequence_Init(g_pstTimer1ms, SEQUENCE_COUNT)) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-    	s_stSequenceTest[i].pstPushSwitch = pifSwitch_Add(PIF_ID_SWITCH + i, 0);
+    	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
-		s_stSequenceTest[i].pstPushSwitch->bStateReverse = TRUE;
-		pifSwitch_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
-		pifSwitch_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
+		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
+		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
 		s_stSequenceTest[i].pstSequence = pifSequence_Add(PIF_ID_SEQUENCE + i, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
@@ -146,7 +145,7 @@ void appSetup()
     }
 
     if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
-    if (!pifTask_AddPeriodMs(1, pifSwitch_taskAll, NULL)) return;		// 1ms
-    if (!pifTask_AddPeriodMs(10, pifSequence_taskAll, NULL)) return;	// 10ms
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
+    if (!pifTask_AddPeriodMs(1, pifSensorSwitch_taskAll, NULL)) return;		// 1ms
+    if (!pifTask_AddPeriodMs(10, pifSequence_taskAll, NULL)) return;		// 10ms
 }

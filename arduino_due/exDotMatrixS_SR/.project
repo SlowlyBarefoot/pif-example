@@ -112,11 +112,6 @@
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifSolenoid.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifSwitch.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifSwitch.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifTask.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifTask.h</locationURI>
@@ -170,11 +165,6 @@
 			<name>pif/core/source/pifSolenoid.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifSolenoid.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifSwitch.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifSwitch.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifTask.c</name>

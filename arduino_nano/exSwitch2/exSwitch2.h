@@ -19,8 +19,8 @@
 void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
 void evtSwitchAcquire(void *pvIssuer);
-void evtPushSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer);
-void evtTiltSwitchChange(PIF_usId usPifId, SWITCH swState, void *pvIssuer);
+void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
+void evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
 
 //Do not add code below this line
 #endif /* _exSwitch2_H_ */

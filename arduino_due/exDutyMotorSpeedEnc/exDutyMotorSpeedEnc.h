@@ -18,7 +18,7 @@
 
 void actLogPrint(char *pcString);
 void taskTerminal(PIF_stTask *pstTask);
-SWITCH actPhotoInterruptAcquire(PIF_usId usPifId);
+uint16_t actPhotoInterruptAcquire(PIF_usId usPifId);
 void actSetDuty(uint16_t usDuty);
 void actSetDirection(uint8_t ucDir);
 void actOperateBreak(uint8_t ucState);

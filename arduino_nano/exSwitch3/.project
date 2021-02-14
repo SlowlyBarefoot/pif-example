@@ -107,14 +107,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifRingData.h</locationURI>
 		</link>
 		<link>
+			<name>pif/core/include/pifSensor.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSensor.h</locationURI>
+		</link>
+		<link>
+			<name>pif/core/include/pifSensorSwitch.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSensorSwitch.h</locationURI>
+		</link>
+		<link>
 			<name>pif/core/include/pifSolenoid.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSolenoid.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifSwitch.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSwitch.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifTask.h</name>
@@ -162,14 +167,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifRingData.c</locationURI>
 		</link>
 		<link>
+			<name>pif/core/source/pifSensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSensor.c</locationURI>
+		</link>
+		<link>
+			<name>pif/core/source/pifSensorSwitch.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSensorSwitch.c</locationURI>
+		</link>
+		<link>
 			<name>pif/core/source/pifSolenoid.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSolenoid.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifSwitch.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSwitch.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifTask.c</name>

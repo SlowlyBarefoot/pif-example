@@ -53,7 +53,7 @@ static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName
 		pifLog_Printf(LT_enInfo, "%s: CNT=%u", pcName, pstPacket->usDataCount);
 		if (pstPacket->usDataCount) {
 			pifLog_Printf(LT_enNone, "\nData:");
-			for (int i = 0; i < pstPacket->usDataCount; i++) {
+			for (uint16_t i = 0; i < pstPacket->usDataCount; i++) {
 				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
 			}
 		}
