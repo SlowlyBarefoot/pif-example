@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exProtocolSerialM here
 
-#include "pifTask.h"
+#include "pifRingBuffer.h"
 
 //end of add your includes here
 
@@ -19,7 +19,8 @@
 void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
-void taskSerial(PIF_stTask *pstTask);
+BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer);
+void actSerialReceiveData(PIF_stRingBuffer *pstBuffer);
 
 //Do not add code below this line
 #endif /* _exProtocolSerialM_H_ */

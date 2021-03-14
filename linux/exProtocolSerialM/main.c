@@ -24,23 +24,25 @@ void actLogPrint(char *pcString)
 	printf("%s", pcString);
 }
 
-void taskSerial(PIF_stTask *pstTask)
+BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer)
 {
 	uint8_t txData;
-	uint8_t rxData[8];
-	uint16_t size;
 
-	(void)pstTask;
-
-    if (pifComm_SendData(g_pstSerial, &txData)) {
+    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
         write(s_fd, &txData, 1);
     }
+    return TRUE;
+}
 
-    size = pifComm_GetRemainSizeOfRxBuffer(g_pstSerial);
+void actSerialReceiveData(PIF_stRingBuffer *pstBuffer)
+{
+	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	uint8_t rxData[8];
+
 	if (size) {
-		size = read(s_fd, rxData, size);
+		size = read(s_fd, rxData, size > 8 ? 8 : size);
 		if (size) {
-			pifComm_ReceiveDatas(g_pstSerial, rxData, size);
+			pifRingBuffer_PutData(pstBuffer, rxData, size);
 		}
 	}
 }

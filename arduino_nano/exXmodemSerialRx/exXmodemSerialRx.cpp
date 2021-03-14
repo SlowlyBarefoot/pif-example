@@ -17,20 +17,25 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void taskXmodemTest(PIF_stTask *pstTask)
+BOOL actXmodemSendData(PIF_stRingBuffer *pstBuffer)
 {
-	uint8_t txData, rxData;
+	uint8_t txData;
 
-	(void)pstTask;
-
-    while (pifComm_SendData(g_pstSerial, &txData)) {
+    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
     	SwSerial.write((char)txData);
     }
+    return TRUE;
+}
 
-    while (pifComm_GetRemainSizeOfRxBuffer(g_pstSerial)) {
-    	if (SwSerial.available()) {
-			rxData = SwSerial.read();
-			pifComm_ReceiveData(g_pstSerial, rxData);
+void actXmodemReceiveData(PIF_stRingBuffer *pstBuffer)
+{
+	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	int rxData;
+
+	for (uint16_t i = 0; i < size; i++) {
+		rxData = SwSerial.read();
+		if (rxData >= 0) {
+			pifRingBuffer_PutByte(pstBuffer, rxData);
 		}
 		else break;
     }

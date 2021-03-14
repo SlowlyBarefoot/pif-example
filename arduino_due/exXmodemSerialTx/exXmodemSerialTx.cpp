@@ -14,13 +14,11 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void taskXmodemTest(PIF_stTask *pstTask)
+BOOL actXmodemSendData(PIF_stRingBuffer *pstBuffer)
 {
-	uint8_t txData, rxData;
+	uint8_t txData;
 
-	(void)pstTask;
-
-    while (pifComm_SendData(g_pstSerial, &txData)) {
+    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
 #ifdef USE_SERIAL_USB
     	SerialUSB.print((char)txData);
 #endif
@@ -28,22 +26,25 @@ void taskXmodemTest(PIF_stTask *pstTask)
     	Serial3.print((char)txData);
 #endif
     }
+    return TRUE;
+}
 
-    while (pifComm_GetRemainSizeOfRxBuffer(g_pstSerial)) {
+void actXmodemReceiveData(PIF_stRingBuffer *pstBuffer)
+{
+	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	int rxData;
+
+	for (uint16_t i = 0; i < size; i++) {
 #ifdef USE_SERIAL_USB
-		if (SerialUSB.available()) {
-			rxData = SerialUSB.read();
-			pifComm_ReceiveData(g_pstSerial, rxData);
-		}
-		else break;
+		rxData = SerialUSB.read();
 #endif
 #ifdef USE_SERIAL_3
-		if (Serial3.available()) {
-			rxData = Serial3.read();
-			pifComm_ReceiveData(g_pstSerial, rxData);
+		rxData = Serial3.read();
+#endif
+		if (rxData >= 0) {
+			pifRingBuffer_PutByte(pstBuffer, rxData);
 		}
 		else break;
-#endif
     }
 }
 

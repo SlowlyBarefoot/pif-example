@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exProtocolSerialLoopS here
 
-#include "pifTask.h"
+#include "pifRingBuffer.h"
 
 //end of add your includes here
 
@@ -19,8 +19,10 @@
 void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
-void taskSerial1(PIF_stTask *pstTask);
-void taskSerial2(PIF_stTask *pstTask);
+BOOL actSerial1SendData(PIF_stRingBuffer *pstBuffer);
+void actSerial1ReceiveData(PIF_stRingBuffer *pstBuffer);
+BOOL actSerial2SendData(PIF_stRingBuffer *pstBuffer);
+void actSerial2ReceiveData(PIF_stRingBuffer *pstBuffer);
 
 //Do not add code below this line
 #endif /* _exProtocolSerialLoopS_H_ */

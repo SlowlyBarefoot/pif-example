@@ -2,7 +2,6 @@
 #define APP_MAIN_H
 
 
-#include "pifComm.h"
 #include "pifPulse.h"
 
 
@@ -12,8 +11,6 @@
 
 
 extern PIF_stPulse *g_pstTimer1ms;
-extern PIF_stComm *g_pstSerial1;
-extern PIF_stComm *g_pstSerial2;
 
 
 void appSetup();

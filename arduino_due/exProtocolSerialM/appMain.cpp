@@ -13,12 +13,12 @@
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
 #define SWITCH_COUNT            2
-#define TASK_COUNT              4
+#define TASK_COUNT              3
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
-PIF_stComm *g_pstSerial = NULL;
 
+static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket);
@@ -175,19 +175,18 @@ void appSetup()
 	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
     }
 
-    g_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!g_pstSerial) return;
+    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
+	if (!s_pstSerial) return;
+	pifComm_AttachAction(s_pstSerial, actSerialReceiveData, actSerialSendData);
 
     if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return;
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return;
-    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial);
+    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
     if (!pifTask_AddRatio(3, pifSensorSwitch_taskAll, NULL)) return;		// 3%
     if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return;			// 300us
-
-    if (!pifTask_AddPeriodUs(300, taskSerial, NULL)) return;				// 300us
 }

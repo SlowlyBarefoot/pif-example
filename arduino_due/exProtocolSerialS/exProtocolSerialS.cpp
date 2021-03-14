@@ -32,13 +32,11 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 	return !digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-void taskSerial(PIF_stTask *pstTask)
+BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer)
 {
 	uint8_t txData;
 
-	(void)pstTask;
-
-    if (pifComm_SendData(g_pstSerial, &txData)) {
+    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
 #ifdef USE_SERIAL_USB
     	SerialUSB.print((char)txData);
 #endif
@@ -46,18 +44,25 @@ void taskSerial(PIF_stTask *pstTask)
     	Serial3.print((char)txData);
 #endif
     }
+    return TRUE;
+}
 
-    if (pifComm_GetRemainSizeOfRxBuffer(g_pstSerial)) {
+void actSerialReceiveData(PIF_stRingBuffer *pstBuffer)
+{
+	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	int rxData;
+
+    for (uint16_t i = 0; i < size; i++) {
 #ifdef USE_SERIAL_USB
-		if (SerialUSB.available()) {
-			pifComm_ReceiveData(g_pstSerial, SerialUSB.read());
-		}
+    	rxData = SerialUSB.read();
 #endif
 #ifdef USE_SERIAL_3
-		if (Serial3.available()) {
-			pifComm_ReceiveData(g_pstSerial, Serial3.read());
-		}
+		rxData = Serial3.read();
 #endif
+		if (rxData >= 0) {
+			pifRingBuffer_PutByte(pstBuffer, rxData);
+		}
+		else break;
     }
 }
 

@@ -5,8 +5,7 @@
 #include "pifProtocol.h"
 
 
-PIF_stComm *g_pstSerial2 = NULL;
-
+static PIF_stComm *s_pstSerial2 = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket);
@@ -123,12 +122,13 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL exSerial2_Setup()
 {
-    g_pstSerial2 = pifComm_Add(PIF_ID_AUTO);
-	if (!g_pstSerial2) return FALSE;
+	s_pstSerial2 = pifComm_Add(PIF_ID_AUTO);
+	if (!s_pstSerial2) return FALSE;
+	pifComm_AttachAction(s_pstSerial2, actSerial2ReceiveData, actSerial2SendData);
 
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial2);
+    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial2);
     s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
@@ -136,8 +136,6 @@ BOOL exSerial2_Setup()
 		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
-
-    if (!pifTask_AddRatio(3, taskSerial2, NULL)) return FALSE;		// 3%
 
     return TRUE;
 }

@@ -9,6 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exXmodemSerialTx here
 
+#include "pifRingBuffer.h"
 #include "pifTask.h"
 
 //end of add your includes here
@@ -17,7 +18,8 @@
 //add your function definitions for the project exXmodemSerialTx here
 
 void actLogPrint(char *pcString);
-void taskXmodemTest(PIF_stTask *pstTask);
+BOOL actXmodemSendData(PIF_stRingBuffer *pstBuffer);
+void actXmodemReceiveData(PIF_stRingBuffer *pstBuffer);
 void taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line

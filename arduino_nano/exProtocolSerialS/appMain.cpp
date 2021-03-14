@@ -11,12 +11,12 @@
 #define PROTOCOL_COUNT          1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	8
-#define TASK_COUNT              4
+#define TASK_COUNT              3
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
-PIF_stComm *g_pstSerial = NULL;
 
+static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket);
@@ -152,13 +152,14 @@ void appSetup()
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
-    g_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!g_pstSerial) return;
+    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
+	if (!s_pstSerial) return;
+	pifComm_AttachAction(s_pstSerial, actSerialReceiveData, actSerialSendData);
 
     if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return;
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return;
-    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial);
+    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
@@ -170,6 +171,4 @@ void appSetup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
     if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return;	// 300us
-
-    if (!pifTask_AddPeriodUs(300, taskSerial, NULL)) return;	// 300us
 }

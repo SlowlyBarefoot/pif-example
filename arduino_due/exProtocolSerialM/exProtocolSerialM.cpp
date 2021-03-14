@@ -29,20 +29,27 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 	return !digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-void taskSerial(PIF_stTask *pstTask)
+BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer)
 {
 	uint8_t txData;
 
-	(void)pstTask;
-
-    if (pifComm_SendData(g_pstSerial, &txData)) {
+    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
     	SerialUSB.print((char)txData);
     }
+    return TRUE;
+}
 
-    if (pifComm_GetRemainSizeOfRxBuffer(g_pstSerial)) {
-		if (SerialUSB.available()) {
-			pifComm_ReceiveData(g_pstSerial, SerialUSB.read());
+void actSerialReceiveData(PIF_stRingBuffer *pstBuffer)
+{
+	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	int rxData;
+
+	for (uint16_t i = 0; i < size; i++) {
+		rxData = SerialUSB.read();
+		if (rxData >= 0) {
+			pifRingBuffer_PutByte(pstBuffer, rxData);
 		}
+		else break;
     }
 }
 

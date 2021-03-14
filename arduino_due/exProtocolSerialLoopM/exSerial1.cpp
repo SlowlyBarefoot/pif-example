@@ -6,8 +6,7 @@
 #include "pifSensorSwitch.h"
 
 
-PIF_stComm *g_pstSerial1 = NULL;
-
+static PIF_stComm *s_pstSerial1 = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket);
@@ -146,16 +145,16 @@ BOOL exSerial1_Setup()
 	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
     }
 
-    g_pstSerial1 = pifComm_Add(PIF_ID_AUTO);
-	if (!g_pstSerial1) return FALSE;
+    s_pstSerial1 = pifComm_Add(PIF_ID_AUTO);
+	if (!s_pstSerial1) return FALSE;
+	pifComm_AttachAction(s_pstSerial1, actSerial1ReceiveData, actSerial1SendData);
 
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
+    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial1);
     s_pstProtocol->evtError = _evtProtocolError;
 
     if (!pifTask_AddRatio(3, pifSensorSwitch_taskAll, NULL)) return FALSE;		// 3%
-    if (!pifTask_AddRatio(3, taskSerial1, NULL)) return FALSE;				// 3%
 
     return TRUE;
 }

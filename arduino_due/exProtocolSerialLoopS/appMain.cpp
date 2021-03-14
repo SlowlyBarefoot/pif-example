@@ -14,7 +14,7 @@
 #define PROTOCOL_COUNT          2
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
-#define TASK_COUNT              5
+#define TASK_COUNT              3
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;

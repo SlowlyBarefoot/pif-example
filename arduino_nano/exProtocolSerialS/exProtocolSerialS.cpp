@@ -24,20 +24,27 @@ void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
 	digitalWrite(PIN_LED_L, swState);
 }
 
-void taskSerial(PIF_stTask *pstTask)
+BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer)
 {
 	uint8_t txData;
 
-	(void)pstTask;
-
-    if (pifComm_SendData(g_pstSerial, &txData)) {
+    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
     	SwSerial.write((char)txData);
     }
+    return TRUE;
+}
 
-    if (pifComm_GetRemainSizeOfRxBuffer(g_pstSerial)) {
-		if (SwSerial.available()) {
-			pifComm_ReceiveData(g_pstSerial, SwSerial.read());
+void actSerialReceiveData(PIF_stRingBuffer *pstBuffer)
+{
+	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	int rxData;
+
+    for (uint16_t i = 0; i < size; i++) {
+		rxData = SwSerial.read();
+		if (rxData >= 0) {
+			pifRingBuffer_PutByte(pstBuffer, rxData);
 		}
+		else break;
     }
 }
 

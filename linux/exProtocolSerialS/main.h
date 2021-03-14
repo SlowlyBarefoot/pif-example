@@ -2,11 +2,12 @@
 #define MAIN_H_
 
 
-#include "pifTask.h"
+#include "pifRingBuffer.h"
 
 
 void actLogPrint(char *pcString);
-void taskSerial(PIF_stTask *pstTask);
+BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer);
+void actSerialReceiveData(PIF_stRingBuffer *pstBuffer);
 
 
 #endif /* MAIN_H_ */
