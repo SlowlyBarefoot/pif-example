@@ -308,6 +308,8 @@ void appSetup()
 	PIF_stLed *pstLedL = NULL;
 	PIF_stTask *pstTask;
 
+	pif_Init(NULL);
+
     pifLog_Init();
 	pifLog_AttachActPrint(actLogPrint);
 

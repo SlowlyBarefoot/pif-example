@@ -15,8 +15,8 @@
 #include "appMain.h"
 
 
-#define PIN_LED_RED				23
-#define PIN_LED_YELLOW			25
+#define PIN_LED_RED				11
+#define PIN_LED_YELLOW			13
 
 
 extern "C" {

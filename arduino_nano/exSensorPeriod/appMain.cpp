@@ -27,7 +27,7 @@ static void _evtSensorPeriod(PIF_usId usPifId, uint16_t usLevel)
 
 void appSetup()
 {
-	pif_Init();
+	pif_Init(NULL);
 
     pifLog_Init();
 	pifLog_AttachActPrint(actLogPrint);

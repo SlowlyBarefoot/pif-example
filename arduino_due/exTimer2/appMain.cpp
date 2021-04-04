@@ -16,7 +16,7 @@ void appSetup()
 	PIF_stPulseItem *pstTimer1ms;
 	PIF_stPulseItem *pstTimer100us;
 
-    pif_Init();
+    pif_Init(NULL);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
@@ -30,10 +30,10 @@ void appSetup()
     pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1ms) return;
     pifPulse_AttachEvtFinish(pstTimer1ms, evtLedRedToggle, NULL);
-    if (!pifPulse_StartItem(pstTimer1ms, 500)) return;						// 500ms
+    if (!pifPulse_StartItem(pstTimer1ms, 1)) return;						// 500ms
 
     pstTimer100us = pifPulse_AddItem(g_pstTimer100us, PT_enRepeat);
     if (!pstTimer100us) return;
     pifPulse_AttachEvtFinish(pstTimer100us, evtLedYellowToggle, NULL);
-    if (!pifPulse_StartItem(pstTimer100us, 5000)) return;					// 5000 * 100us = 500ms
+    if (!pifPulse_StartItem(pstTimer100us, 100)) return;					// 5000 * 100us = 500ms
 }

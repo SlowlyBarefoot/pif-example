@@ -6,7 +6,7 @@
 
 BOOL appInit()
 {
-    pif_Init();
+    pif_Init(NULL);
 
     if (!pifLog_InitHeap(0x200)) return FALSE;
     pifLog_AttachActPrint(actLogPrint);

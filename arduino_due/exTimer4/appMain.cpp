@@ -74,7 +74,7 @@ static void _evtLedGreenToggle(void *pvIssuer)
 
 void appSetup()
 {
-	pif_Init();
+	pif_Init(NULL);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us

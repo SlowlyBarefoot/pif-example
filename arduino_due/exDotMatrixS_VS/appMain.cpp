@@ -166,7 +166,7 @@ void appSetup()
 	static uint8_t ucPattern[9 * 8];
 	int n;
 
-    pif_Init();
+    pif_Init(NULL);
 
     pifLog_Init();
 	pifLog_AttachActPrint(actLogPrint);

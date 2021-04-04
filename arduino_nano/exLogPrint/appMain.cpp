@@ -28,7 +28,7 @@ void appSetup()
 {
 	PIF_stPulseItem *pstTimer1ms;
 
-	pif_Init();
+	pif_Init(NULL);
 
 	pifLog_Init();
 	pifLog_AttachActPrint(actLogPrint);

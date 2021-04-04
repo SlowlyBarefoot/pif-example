@@ -39,7 +39,7 @@ void appSetup()
 {
 	PIF_stPulseItem *pstTimer1ms;
 
-	pif_Init();
+	pif_Init(NULL);
 
     if (!pifLog_InitStatic(LOG_BUFFER_SIZE, s_acLog)) return;
 	pifLog_AttachActPrint(actLogPrint);

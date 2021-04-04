@@ -30,7 +30,7 @@ static void _evtXmodemRxReceive(uint8_t ucCode, PIF_stXmodemPacket *pstPacket)
 
 void appSetup()
 {
-    pif_Init();
+    pif_Init(NULL);
 
     pifLog_Init();
 	pifLog_AttachActPrint(actLogPrint);

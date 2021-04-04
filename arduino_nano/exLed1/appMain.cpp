@@ -106,7 +106,7 @@ static void _taskLed(PIF_stTask *pstTask)
 
 void appSetup()
 {
-    pif_Init();
+    pif_Init(NULL);
 
     pifLog_Init();
 	pifLog_AttachActPrint(actLogPrint);

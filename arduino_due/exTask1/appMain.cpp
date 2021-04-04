@@ -25,7 +25,7 @@ static void _taskLedToggle(PIF_stTask *pstTask)
 
 void appSetup()
 {
-	pif_Init();
+	pif_Init(NULL);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(50, _taskLedToggle, NULL)) return;	// 50%
