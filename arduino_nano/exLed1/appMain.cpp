@@ -27,27 +27,27 @@ static void _taskLed(PIF_stTask *pstTask)
 	if (!usTimer) {
 		switch (usStep) {
 		case 0:
-			pifLed_On(s_pstLedRGB, 0);
+			pifLed_EachOn(s_pstLedRGB, 0);
 			usStep = 1;
 			usTimer = 6;
 			break;
 
 		case 1:
-			pifLed_Off(s_pstLedRGB, 0);
-			pifLed_On(s_pstLedRGB, 1);
+			pifLed_EachOff(s_pstLedRGB, 0);
+			pifLed_EachOn(s_pstLedRGB, 1);
 			usStep = 2;
 			usTimer = 6;
 			break;
 
 		case 2:
-			pifLed_Off(s_pstLedRGB, 1);
-			pifLed_On(s_pstLedRGB, 2);
+			pifLed_EachOff(s_pstLedRGB, 1);
+			pifLed_EachOn(s_pstLedRGB, 2);
 			usStep = 3;
 			usTimer = 6;
 			break;
 
 		case 3:
-			pifLed_Off(s_pstLedRGB, 2);
+			pifLed_EachOff(s_pstLedRGB, 2);
 			pifLed_BlinkOn(s_pstLedRGB, 0);
 			usStep = 4;
 			usTimer = 6;

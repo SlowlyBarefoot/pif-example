@@ -18,32 +18,21 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
-	(void)ucIndex;
 
-	digitalWrite(PIN_LED_L, swState);
+	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void actLedRGBState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedRGBState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
-	switch (ucIndex) {
-	case 0:
-		digitalWrite(PIN_LED_RED, swState);
-		break;
-
-	case 1:
-		digitalWrite(PIN_LED_YELLOW, swState);
-		break;
-
-	case 2:
-		digitalWrite(PIN_LED_GREEN, swState);
-		break;
-	}
-	pifLog_Printf(LT_enInfo, "RGB:%u I=%u S:%u", __LINE__, ucIndex, swState);
+	digitalWrite(PIN_LED_RED, unState & 1);
+	digitalWrite(PIN_LED_YELLOW, (unState >> 1) & 1);
+	digitalWrite(PIN_LED_GREEN, (unState >> 2) & 1);
+	pifLog_Printf(LT_enInfo, "RGB:%u S:%xh", __LINE__, unState);
 }
 
 static void sysTickHook()
