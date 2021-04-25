@@ -44,12 +44,11 @@ void actSetStep(uint16_t usPhase)
 	digitalWrite(PIN_STEP_MOTOR_4, (usPhase >> 3) & 1);
 }
 
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
-	(void)ucIndex;
 
-	digitalWrite(PIN_LED_L, swState);
+	digitalWrite(PIN_LED_L, unState & 1);
 }
 
 extern "C" {

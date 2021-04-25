@@ -17,7 +17,7 @@
 //add your function definitions for the project exServoMotor here
 
 void actLogPrint(char *pcString);
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
 void actPulsePwm(SWITCH swValue);
 
 //Do not add code below this line

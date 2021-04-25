@@ -17,7 +17,7 @@
 //add your function definitions for the project exSwitch3 here
 
 void actLogPrint(char *pcString);
-void actLedState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedState(PIF_usId usPifId, uint32_t unState);
 void evtSwitchAcquire(void *pvIssuer);
 
 //Do not add code below this line

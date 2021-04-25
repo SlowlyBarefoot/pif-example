@@ -16,12 +16,11 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
-	(void)ucIndex;
 
-	digitalWrite(PIN_LED_L, swState);
+	digitalWrite(PIN_LED_L, unState & 1);
 }
 
 BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer)

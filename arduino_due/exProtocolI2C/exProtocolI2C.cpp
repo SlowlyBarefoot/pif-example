@@ -23,12 +23,11 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 	return !digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
-	(void)ucIndex;
 
-	digitalWrite(PIN_LED_L, swState);
+	digitalWrite(PIN_LED_L, unState & 1);
 }
 
 void taskI2C(PIF_stTask *pstTask)

@@ -20,13 +20,11 @@ static PIF_stPulseItem *s_pstTimer1msGreen = NULL;
 
 static void _evtLedRedToggle(void *pvIssuer)
 {
-	static BOOL sw = HIGH;
 	static int count = 0;
 
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLedRGB, 0, sw);
-	sw ^= 1;
+	pifLed_EachToggle(s_pstLedRGB, 0);
 
 	count++;
 	if (count >= 10) {
@@ -38,13 +36,11 @@ static void _evtLedRedToggle(void *pvIssuer)
 
 static void _evtLedYellowToggle(void *pvIssuer)
 {
-	static BOOL sw = HIGH;
 	static int count = 0;
 
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLedRGB, 1, sw);
-	sw ^= 1;
+	pifLed_EachToggle(s_pstLedRGB, 1);
 
 	count++;
 	if (count >= 10) {
@@ -56,13 +52,11 @@ static void _evtLedYellowToggle(void *pvIssuer)
 
 static void _evtLedGreenToggle(void *pvIssuer)
 {
-	static BOOL sw = HIGH;
 	static int count = 0;
 
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLedRGB, 2, sw);
-	sw ^= 1;
+	pifLed_EachToggle(s_pstLedRGB, 2);
 
 	count++;
 	if (count >= 10) {

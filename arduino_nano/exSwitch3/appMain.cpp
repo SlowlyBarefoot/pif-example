@@ -26,7 +26,7 @@ static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIss
 	(void)usPifId;
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLed, 1, usLevel);
+	pifLed_EachChange(s_pstLed, 1, usLevel);
 }
 
 static void _evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
@@ -34,7 +34,7 @@ static void _evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIss
 	(void)usPifId;
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLed, 2, usLevel);
+	pifLed_EachChange(s_pstLed, 2, usLevel);
 }
 
 void appSetup()

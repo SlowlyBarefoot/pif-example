@@ -17,7 +17,7 @@
 //add your function definitions for the project exProtocolSerialLoopS here
 
 void actLogPrint(char *pcString);
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 BOOL actSerial1SendData(PIF_stRingBuffer *pstBuffer);
 void actSerial1ReceiveData(PIF_stRingBuffer *pstBuffer);

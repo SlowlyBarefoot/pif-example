@@ -21,7 +21,7 @@ void taskTerminal(PIF_stTask *pstTask);
 void actSetDuty(uint16_t usDuty);
 void actSetDirection(uint8_t ucDir);
 void actOperateBreak(uint8_t ucState);
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exDutyMotor_H_ */

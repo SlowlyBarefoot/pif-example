@@ -17,7 +17,7 @@
 //add your function definitions for the project exProtocolI2C here
 
 void actLogPrint(char *pcString);
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exProtocolI2C_H_ */

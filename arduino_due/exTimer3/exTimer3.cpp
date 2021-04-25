@@ -20,23 +20,13 @@
 #define PIN_LED_GREEN			27
 
 
-void actLedRGBState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedRGBState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
-	switch (ucIndex) {
-	case 0:
-		digitalWrite(PIN_LED_RED, swState);
-		break;
-
-	case 1:
-		digitalWrite(PIN_LED_YELLOW, swState);
-		break;
-
-	case 2:
-		digitalWrite(PIN_LED_GREEN, swState);
-		break;
-	}
+	digitalWrite(PIN_LED_RED, unState & 1);
+	digitalWrite(PIN_LED_YELLOW, (unState >> 1) & 1);
+	digitalWrite(PIN_LED_GREEN, (unState >> 2) & 1);
 }
 
 extern "C" {

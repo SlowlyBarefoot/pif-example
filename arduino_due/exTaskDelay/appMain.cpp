@@ -20,7 +20,7 @@ static PIF_stLed *s_pstLedRGB = NULL;
 static void _taskLed(PIF_stTask *pstTask)
 {
 	if (pifTask_FirstDelay(pstTask)) {
-		pifLed_On(s_pstLedRGB, 0);
+		pifLed_EachOn(s_pstLedRGB, 0);
 	}
 	if (pifTask_NextDelay(pstTask)) {
 		//
@@ -32,7 +32,7 @@ static void _taskLed(PIF_stTask *pstTask)
 		//
 	}
 	if (pifTask_LastDelay(pstTask)) {
-		pifLed_Off(s_pstLedRGB, 0);
+		pifLed_EachOff(s_pstLedRGB, 0);
 	}
 }
 

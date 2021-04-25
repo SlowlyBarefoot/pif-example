@@ -27,11 +27,9 @@ static void _taskServoMotor(PIF_stTask *pstTask)
 	(void)pstTask;
 
 	if (!s_bStart) {
-		if (pif_stPerformance._bReady) {
-		    pifPulse_StartItem(g_pstPwm, 200);		// 200 * 100us / 1000 = 20ms
-		    pifPulse_SetPwmDuty(g_pstPwm, duty);
-			s_bStart = TRUE;
-		}
+		pifPulse_StartItem(g_pstPwm, 200);		// 200 * 100us / 1000 = 20ms
+		pifPulse_SetPwmDuty(g_pstPwm, duty);
+		s_bStart = TRUE;
 	}
 
 	if (g_pstPwm->_enStep == PS_enStop) return;

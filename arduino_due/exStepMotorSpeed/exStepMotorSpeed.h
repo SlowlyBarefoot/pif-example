@@ -20,7 +20,7 @@ void actLogPrint(char *pcString);
 void taskTerminal(PIF_stTask *pstTask);
 uint16_t actPhotoInterruptAcquire(PIF_usId usPifId);
 void actSetStep(uint16_t usPhase);
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exStepMotorSpeed_H_ */

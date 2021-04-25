@@ -26,19 +26,19 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
-	(void)ucIndex;
 
-	digitalWrite(PIN_LED_L, swState);
+	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void actLedRGBState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedRGBState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
-	digitalWrite(s_stSequenceTest[ucIndex].ucPinLed, swState);
+	digitalWrite(s_stSequenceTest[0].ucPinLed, unState & 1);
+	digitalWrite(s_stSequenceTest[1].ucPinLed, (unState >> 1) & 1);
 }
 
 uint16_t actPushSwitchAcquire(PIF_usId usPifId)

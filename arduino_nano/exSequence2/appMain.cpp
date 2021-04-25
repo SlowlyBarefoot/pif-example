@@ -61,7 +61,7 @@ static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
 		index = pstOwner->_usPifId - PIF_ID_SEQUENCE;
-		pifLed_On(s_pstLedRGB, index);
+		pifLed_EachOn(s_pstLedRGB, index);
 		s_stSequenceTest[index].bSequenceParam = FALSE;
 		return SR_enNext;
 
@@ -89,7 +89,7 @@ static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
 		index = pstOwner->_usPifId - PIF_ID_SEQUENCE;
-		pifLed_Off(s_pstLedRGB, index);
+		pifLed_EachOff(s_pstLedRGB, index);
 		return SR_enNext;
 
 	default:

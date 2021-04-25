@@ -17,7 +17,7 @@
 //add your function definitions for the project exProtocolSerialS here
 
 void actLogPrint(char *pcString);
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer);
 void actSerialReceiveData(PIF_stRingBuffer *pstBuffer);

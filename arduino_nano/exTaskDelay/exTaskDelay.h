@@ -17,8 +17,8 @@
 //add your function definitions for the project exTaskDelay here
 
 void actLogPrint(char *pcString);
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
-void actLedRGBState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedRGBState(PIF_usId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exTaskDelay_H_ */

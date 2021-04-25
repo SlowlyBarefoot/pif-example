@@ -17,8 +17,8 @@
 //add your function definitions for the project exCollectSignal1 here
 
 void actLogPrint(char *pcString);
-void actLedLState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
-void actLedRGBState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedRGBState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 void taskTerminal(PIF_stTask *pstTask);
 

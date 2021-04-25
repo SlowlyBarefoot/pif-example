@@ -20,36 +20,27 @@ static PIF_stPulseItem *s_pstTimer1msGreen = NULL;
 
 static void _evtLedRedToggle(void *pvIssuer)
 {
-	static BOOL sw = LOW;
-
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLedRGB, 0, sw);
-	sw ^= 1;
+	pifLed_EachToggle(s_pstLedRGB, 0);
 
 	pifPulse_StartItem(s_pstTimer1msYellow, 500);	// 500 * 1ms = 0.5sec
 }
 
 static void _evtLedYellowToggle(void *pvIssuer)
 {
-	static BOOL sw = LOW;
-
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLedRGB, 1, sw);
-	sw ^= 1;
+	pifLed_EachToggle(s_pstLedRGB, 1);
 
 	pifPulse_StartItem(s_pstTimer1msGreen, 1000);	// 1000 * 1ms = 1sec
 }
 
 static void _evtLedGreenToggle(void *pvIssuer)
 {
-	static BOOL sw = LOW;
-
 	(void)pvIssuer;
 
-	pifLed_Change(s_pstLedRGB, 2, sw);
-	sw ^= 1;
+	pifLed_EachToggle(s_pstLedRGB, 2);
 
 	pifPulse_StartItem(s_pstTimer1msRed, 200);		// 200 * 1ms = 0.2sec
 }

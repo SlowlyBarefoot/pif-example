@@ -15,23 +15,13 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void actLedState(PIF_usId usPifId, uint8_t ucIndex, SWITCH swState)
+void actLedState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
-	switch (ucIndex) {
-	case 0:
-		digitalWrite(PIN_LED_L, swState);
-		break;
-
-	case 1:
-		digitalWrite(PIN_LED_RED, swState);
-		break;
-
-	case 2:
-		digitalWrite(PIN_LED_YELLOW, swState);
-		break;
-	}
+	digitalWrite(PIN_LED_L, unState & 1);
+	digitalWrite(PIN_LED_RED, (unState >> 1) & 1);
+	digitalWrite(PIN_LED_YELLOW, (unState >> 2) & 1);
 }
 
 void evtSwitchAcquire(void *pvIssuer)
