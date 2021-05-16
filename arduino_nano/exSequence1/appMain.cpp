@@ -64,7 +64,7 @@ static PIF_enSequenceResult _fnSequence2(PIF_stSequence *pstOwner)
 	case 4:
 		// 다음 Phase를 처리하기 전 일정 시간 지연이 필요한 경우 설정함.
 		// Set if a delay is required before processing the next Phase.
-		pstOwner->usDelay = 100;
+		pstOwner->usDelay1us = 100000;
 		return SR_enNext;
 
 	default:
@@ -152,9 +152,9 @@ static void _taskSequence(PIF_stTask *pstTask)
 	}
 }
 
-void appSetup()
+void appSetup(PIF_actTimer1us actTimer1us)
 {
-	pif_Init(NULL);
+	pif_Init(actTimer1us);
 
     pifLog_Init();
 	pifLog_AttachActPrint(actLogPrint);

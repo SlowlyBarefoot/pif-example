@@ -37,7 +37,7 @@ void setup()
 
 	Serial.begin(115200); //Doesn't matter speed
 
-	appSetup();
+	appSetup(micros);
 }
 
 // The loop function is called in an endless loop

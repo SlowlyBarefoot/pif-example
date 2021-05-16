@@ -76,7 +76,7 @@ static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
 static PIF_enSequenceResult _fnSequenceRun(PIF_stSequence *pstOwner)
 {
 	if (*(BOOL *)pstOwner->pvParam) {
-		pstOwner->usDelay = 1000;
+		pstOwner->usDelay1us = 1000000;
 		return SR_enNext;
 	}
 	return SR_enContinue;
@@ -107,11 +107,11 @@ static void _evtSequenceError(PIF_stSequence *pstOwner)
 	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_enError);
 }
 
-void appSetup()
+void appSetup(PIF_actTimer1us actTimer1us)
 {
 	int i;
 
-	pif_Init(NULL);
+	pif_Init(actTimer1us);
 
     pifLog_Init();
 	pifLog_AttachActPrint(actLogPrint);
