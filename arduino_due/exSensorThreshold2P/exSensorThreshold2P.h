@@ -17,8 +17,8 @@
 //add your function definitions for the project exSensorThreshold2P here
 
 void actLogPrint(char *pcString);
-void taskLedToggle(PIF_stTask *pstTask);
-void taskSensorAcquisition(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskSensorAcquisition(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exSensorThreshold2P_H_ */

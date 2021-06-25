@@ -19,7 +19,7 @@ PIF_stPulseItem *g_pstPwm = NULL;
 static BOOL s_bStart = FALSE;
 
 
-static void _taskServoMotor(PIF_stTask *pstTask)
+static uint16_t _taskServoMotor(PIF_stTask *pstTask)
 {
 	static uint16_t duty = 75;						// 75 = 1.5ms / 20ms * 1000
 	static BOOL dir = FALSE;
@@ -32,7 +32,7 @@ static void _taskServoMotor(PIF_stTask *pstTask)
 		s_bStart = TRUE;
 	}
 
-	if (g_pstPwm->_enStep == PS_enStop) return;
+	if (g_pstPwm->_enStep == PS_enStop) return 0;
 
     if (dir) {
         duty -= 5;
@@ -47,6 +47,7 @@ static void _taskServoMotor(PIF_stTask *pstTask)
         }
     }
     pifPulse_SetPwmDuty(g_pstPwm, duty);
+    return 0;
 }
 
 void appSetup()

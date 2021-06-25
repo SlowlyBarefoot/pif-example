@@ -42,7 +42,7 @@ void actSolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir)
 	pifLog_Printf(LT_enInfo, "_SolenoidOrder(%d, %d)", enDir, swOrder);
 }
 
-void taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -50,6 +50,7 @@ void taskLedToggle(PIF_stTask *pstTask)
 
 	digitalWrite(PIN_LED_L, sw);
 	sw ^= 1;
+	return 0;
 }
 
 extern "C" {

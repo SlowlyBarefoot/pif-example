@@ -115,7 +115,7 @@ static void _evtSequenceError(PIF_stSequence *pstOwner)
 	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_enError);
 }
 
-static void _taskSequence(PIF_stTask *pstTask)
+static uint16_t _taskSequence(PIF_stTask *pstTask)
 {
 	(void)pstTask;
 
@@ -150,6 +150,7 @@ static void _taskSequence(PIF_stTask *pstTask)
 		}
 		break;
 	}
+	return 0;
 }
 
 void appSetup(PIF_actTimer1us actTimer1us)

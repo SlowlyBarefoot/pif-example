@@ -30,7 +30,7 @@ void actLedLState(PIF_usId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void taskI2C(PIF_stTask *pstTask)
+uint16_t taskI2C(PIF_stTask *pstTask)
 {
 	uint8_t txData;
 	int rxData;
@@ -80,6 +80,7 @@ void taskI2C(PIF_stTask *pstTask)
     	}
     	break;
     }
+    return 0;
 }
 
 extern "C" {

@@ -17,8 +17,8 @@
 //add your function definitions for the project exTerminal here
 
 void actLogPrint(char *pcString);
-void taskTerminal(PIF_stTask *pstTask);
-void taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskTerminal(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exTerminal_H_ */

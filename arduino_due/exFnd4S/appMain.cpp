@@ -18,7 +18,7 @@ static PIF_stFnd *s_pstFnd = NULL;
 const uint8_t c_ucUserChar[] = { 0x01, 0x08 };
 
 
-static void _taskFndTest(PIF_stTask *pstTask)
+static uint16_t _taskFndTest(PIF_stTask *pstTask)
 {
 	static int nBlink = 0;
 	static BOOL swBlink = FALSE;
@@ -59,6 +59,7 @@ static void _taskFndTest(PIF_stTask *pstTask)
 		}
 		swBlink ^= 1;
 	}
+	return 0;
 }
 
 void appSetup()

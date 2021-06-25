@@ -17,7 +17,7 @@ static PIF_stLed *s_pstLedL = NULL;
 static PIF_stLed *s_pstLedRGB = NULL;
 
 
-static void _taskLed(PIF_stTask *pstTask)
+static uint16_t _taskLed(PIF_stTask *pstTask)
 {
 	static uint16_t usStep = 0;
 	static uint16_t usTimer = 0;
@@ -102,6 +102,7 @@ static void _taskLed(PIF_stTask *pstTask)
 	else {
 		usTimer--;
 	}
+	return 0;
 }
 
 void appSetup()

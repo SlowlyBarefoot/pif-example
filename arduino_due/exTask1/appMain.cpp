@@ -7,7 +7,7 @@
 #define TASK_COUNT              1
 
 
-static void _taskLedToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedToggle(PIF_stTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -21,6 +21,7 @@ static void _taskLedToggle(PIF_stTask *pstTask)
 		nCount = 9999;
     }
     else nCount--;
+    return 0;
 }
 
 void appSetup()

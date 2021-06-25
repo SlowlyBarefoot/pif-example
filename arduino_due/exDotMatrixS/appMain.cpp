@@ -115,7 +115,7 @@ const uint8_t font8x8_basic[96][8] = {
 };
 
 
-static void _taskDotMatrixTest(PIF_stTask *pstTask)
+static uint16_t _taskDotMatrixTest(PIF_stTask *pstTask)
 {
 	static int nBlink = 0;
 	static int index = 0;
@@ -137,6 +137,7 @@ static void _taskDotMatrixTest(PIF_stTask *pstTask)
 	    nBlink = 0;
 	    break;
 	}
+	return 0;
 }
 
 void appSetup()

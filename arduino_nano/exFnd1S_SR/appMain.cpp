@@ -26,7 +26,7 @@ const uint8_t c_ucUserChar[] = {
 };
 
 
-static void _taskFndTest(PIF_stTask *pstTask)
+static uint16_t _taskFndTest(PIF_stTask *pstTask)
 {
 	static int i = 0;
 	static BOOL swBlink = FALSE;
@@ -52,6 +52,7 @@ static void _taskFndTest(PIF_stTask *pstTask)
 	}
 
 	pifLog_Printf(LT_enInfo, "%d", i);
+	return 0;
 }
 
 void appSetup()

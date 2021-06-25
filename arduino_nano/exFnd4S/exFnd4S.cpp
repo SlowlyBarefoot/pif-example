@@ -43,7 +43,7 @@ void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit)
 	}
 }
 
-void taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL swLed = LOW;
 
@@ -51,6 +51,7 @@ void taskLedToggle(PIF_stTask *pstTask)
 
 	digitalWrite(PIN_LED_L, swLed);
 	swLed ^= 1;
+	return 0;
 }
 
 static void sysTickHook()

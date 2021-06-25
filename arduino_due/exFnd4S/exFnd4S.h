@@ -18,7 +18,7 @@
 
 void actLogPrint(char *pcString);
 void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit);
-void taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exFnd4S_H_ */

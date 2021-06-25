@@ -15,7 +15,7 @@ static PIF_stGpio *s_pstGpioRG = NULL;
 static PIF_stGpio *s_pstGpioSwitch = NULL;
 
 
-static void _taskGpioTest(PIF_stTask *pstTask)
+static uint16_t _taskGpioTest(PIF_stTask *pstTask)
 {
 	static SWITCH swLedL = OFF;
 	static uint8_t ucLedRG = 0;
@@ -29,6 +29,7 @@ static void _taskGpioTest(PIF_stTask *pstTask)
 	ucLedRG = (ucLedRG + 1) & 3;
 
 	pifLog_Printf(LT_enInfo, "Sw:%u", pifGpio_ReadAll(s_pstGpioSwitch));
+	return 0;
 }
 
 void appSetup()

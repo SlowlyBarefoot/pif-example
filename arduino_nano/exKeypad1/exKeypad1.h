@@ -19,7 +19,7 @@
 //add your function definitions for the project exKeypad1 here
 
 void actLogPrint(char *pcString);
-void actLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PIF_stTask *pstTask);
 void actKeypadAcquire(uint16_t *pusState);
 
 //Do not add code below this line

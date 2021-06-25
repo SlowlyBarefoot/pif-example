@@ -152,7 +152,7 @@ static void _evtError(PIF_stDutyMotor *pstOwner)
 	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
 }
 
-static void _taskInitPos(PIF_stTask *pstTask)
+static uint16_t _taskInitPos(PIF_stTask *pstTask)
 {
 	static uint32_t unTime;
 
@@ -203,6 +203,7 @@ static void _taskInitPos(PIF_stTask *pstTask)
 		s_stDutyMotorTest.ucInitPos = 0;
 		break;
 	}
+	return 0;
 }
 
 void appSetup()

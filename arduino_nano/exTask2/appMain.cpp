@@ -7,7 +7,7 @@
 #define TASK_COUNT              3
 
 
-static void _taskLedRedToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedRedToggle(PIF_stTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -21,9 +21,10 @@ static void _taskLedRedToggle(PIF_stTask *pstTask)
 		nCount = 9999;
     }
     else nCount--;
+    return 0;
 }
 
-static void _taskLedYellowToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedYellowToggle(PIF_stTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -37,9 +38,10 @@ static void _taskLedYellowToggle(PIF_stTask *pstTask)
 		nCount = 9999;
     }
     else nCount--;
+    return 0;
 }
 
-static void _taskLedGreenToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedGreenToggle(PIF_stTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -53,6 +55,7 @@ static void _taskLedGreenToggle(PIF_stTask *pstTask)
 		nCount = 9999;
     }
     else nCount--;
+    return 0;
 }
 
 void appSetup()

@@ -44,7 +44,7 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 	return !digitalRead(s_stSequenceTest[usPifId - PIF_ID_SWITCH].ucPinSwitch);
 }
 
-void taskTerminal(PIF_stTask *pstTask)
+uint16_t taskTerminal(PIF_stTask *pstTask)
 {
 	uint8_t txData;
 	int rxData;
@@ -59,6 +59,7 @@ void taskTerminal(PIF_stTask *pstTask)
 	if (rxData >= 0) {
 		pifComm_ReceiveData(g_pstComm, rxData);
 	}
+	return 0;
 }
 
 extern "C" {

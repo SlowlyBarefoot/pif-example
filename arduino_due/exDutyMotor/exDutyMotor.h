@@ -17,7 +17,7 @@
 //add your function definitions for the project exDutyMotor here
 
 void actLogPrint(char *pcString);
-void taskTerminal(PIF_stTask *pstTask);
+uint16_t taskTerminal(PIF_stTask *pstTask);
 void actSetDuty(uint16_t usDuty);
 void actSetDirection(uint8_t ucDir);
 void actOperateBreak(uint8_t ucState);

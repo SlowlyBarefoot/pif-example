@@ -12,7 +12,7 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -20,13 +20,15 @@ void taskLedToggle(PIF_stTask *pstTask)
 
 	digitalWrite(PIN_LED_L, sw);
 	sw ^= 1;
+	return 0;
 }
 
-void taskSensorAcquisition(PIF_stTask *pstTask)
+uint16_t taskSensorAcquisition(PIF_stTask *pstTask)
 {
 	(void)pstTask;
 
 	pifSensorDigital_sigData(g_pstSensor, analogRead(PIN_CDS));
+	return 0;
 }
 
 extern "C" {

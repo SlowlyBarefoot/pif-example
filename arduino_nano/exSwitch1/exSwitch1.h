@@ -21,7 +21,7 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
 uint16_t actTiltSwitchAcquire(PIF_usId usPifId);
 void evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
-void taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exSwitch1_H_ */

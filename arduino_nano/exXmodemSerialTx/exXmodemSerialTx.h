@@ -20,7 +20,7 @@
 void actLogPrint(char *pcString);
 BOOL actXmodemSendData(PIF_stRingBuffer *pstBuffer);
 void actXmodemReceiveData(PIF_stRingBuffer *pstBuffer);
-void taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exXmodemSerialTx_H_ */

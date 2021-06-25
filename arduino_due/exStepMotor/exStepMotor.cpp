@@ -17,7 +17,7 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-void taskTerminal(PIF_stTask *pstTask)
+uint16_t taskTerminal(PIF_stTask *pstTask)
 {
 	uint8_t txData;
 	int rxData;
@@ -34,6 +34,7 @@ void taskTerminal(PIF_stTask *pstTask)
 			pifComm_ReceiveData(g_pstSerial, rxData);
 		}
     }
+    return 0;
 }
 
 void actSetStep(uint16_t usPhase)

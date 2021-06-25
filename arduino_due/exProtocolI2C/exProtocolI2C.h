@@ -19,7 +19,7 @@
 void actLogPrint(char *pcString);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
-void taskI2C(PIF_stTask *pstTask);
+uint16_t taskI2C(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exProtocolI2C_H_ */

@@ -18,7 +18,7 @@
 
 void actLogPrint(char *pcString);
 void actSolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir);
-void taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exSolenoid1P_H_ */

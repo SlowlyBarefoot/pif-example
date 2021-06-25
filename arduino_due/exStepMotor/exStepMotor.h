@@ -17,7 +17,7 @@
 //add your function definitions for the project exStepMotor here
 
 void actLogPrint(char *pcString);
-void taskTerminal(PIF_stTask *pstTask);
+uint16_t taskTerminal(PIF_stTask *pstTask);
 void actSetStep(uint16_t usPhase);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 

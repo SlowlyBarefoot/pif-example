@@ -18,7 +18,7 @@
 
 void actLogPrint(char *pcString);
 void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData);
-void taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PIF_stTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exDotMatrixS_H_ */

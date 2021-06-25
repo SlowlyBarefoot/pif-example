@@ -10,7 +10,7 @@
 #define PIN_LED_YELLOW			3
 
 
-void taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -18,9 +18,10 @@ void taskLedToggle(PIF_stTask *pstTask)
 
 	digitalWrite(PIN_LED_L, sw);
 	sw ^= 1;
+	return 0;
 }
 
-void taskLedRedToggle(PIF_stTask *pstTask)
+uint16_t taskLedRedToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -28,9 +29,10 @@ void taskLedRedToggle(PIF_stTask *pstTask)
 
 	digitalWrite(PIN_LED_RED, sw);
 	sw ^= 1;
+	return 0;
 }
 
-void taskLedYellowToggle(PIF_stTask *pstTask)
+uint16_t taskLedYellowToggle(PIF_stTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -38,6 +40,7 @@ void taskLedYellowToggle(PIF_stTask *pstTask)
 
 	digitalWrite(PIN_LED_YELLOW, sw);
 	sw ^= 1;
+	return 0;
 }
 
 static void sysTickHook()

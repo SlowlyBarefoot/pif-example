@@ -120,7 +120,7 @@ static void _evtDotMatrixShiftFinish(PIF_usId usPifId)
 	pifLog_Printf(LT_enInfo, "_DotMatrixEventShiftFinish(%d)", usPifId);
 }
 
-static void _taskDotMatrixTest(PIF_stTask *pstTask)
+static uint16_t _taskDotMatrixTest(PIF_stTask *pstTask)
 {
 	static int nShift = 0;
 	static int index = 0;
@@ -158,6 +158,7 @@ static void _taskDotMatrixTest(PIF_stTask *pstTask)
 		nShift = 0;
 		break;
 	}
+	return 0;
 }
 
 void appSetup()
