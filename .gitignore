@@ -1,2 +1,7 @@
 .hg
 .hgignore
+.metadata
+
+*.d
+*.o
+*.su
