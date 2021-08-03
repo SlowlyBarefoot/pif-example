@@ -24,27 +24,20 @@ void actLogPrint(char *pcString)
 	printf("%s", pcString);
 }
 
-BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer)
+uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	uint8_t txData;
-
-    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
-        write(s_fd, &txData, 1);
-    }
-    return TRUE;
+    return write(s_fd, pucBuffer, usSize);
 }
 
-void actSerialReceiveData(PIF_stRingBuffer *pstBuffer)
+BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
-	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
-	uint8_t rxData[8];
+	uint8_t data;
 
-	if (size) {
-		size = read(s_fd, rxData, size > 8 ? 8 : size);
-		if (size) {
-			pifRingBuffer_PutData(pstBuffer, rxData, size);
-		}
+	if (read(s_fd, &data, 1)) {
+		*pucData = data;
+		return TRUE;
 	}
+	return FALSE;
 }
 
 static void _TimerHandler()
@@ -70,6 +63,13 @@ int main(int argc, char **argv)
 		s_fd = open( port, O_RDWR | O_NOCTTY );
 		if (s_fd >= 0) break;
     }
+	if (s_fd < 0) {
+	    for (i = 0; i < 10; i++) {
+	    	sprintf(port, "/dev/ttyUSB%d", i);
+			s_fd = open( port, O_RDWR | O_NOCTTY );
+			if (s_fd >= 0) break;
+	    }
+	}
 	if (s_fd < 0) {
 		fprintf(stderr, "All port open failed.\n");
 		exit(-1);

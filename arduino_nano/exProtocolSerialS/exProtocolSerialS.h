@@ -9,17 +9,16 @@
 #include "Arduino.h"
 //add your includes for the project exProtocolSerialS here
 
-#include "pifRingBuffer.h"
+#include "pifComm.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exProtocolSerialS here
 
-void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
-BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer);
-void actSerialReceiveData(PIF_stRingBuffer *pstBuffer);
+uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exProtocolSerialS_H_ */

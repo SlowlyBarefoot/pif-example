@@ -146,7 +146,8 @@ BOOL appInit()
 
     s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) return FALSE;
-	pifComm_AttachAction(s_pstSerial, actSerialReceiveData, actSerialSendData);
+	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
+	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
 
     if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return FALSE;
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
@@ -162,7 +163,7 @@ BOOL appInit()
 
     if (!pifTask_Init(TASK_COUNT)) return FALSE;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return FALSE;		// 100%
-    if (!pifTask_AddPeriodUs(300, pifComm_taskAll, NULL)) return FALSE;		// 300us
+    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return FALSE;		// 1ms
     return TRUE;
 }
 

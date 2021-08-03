@@ -1,6 +1,5 @@
 // Do not remove the include below
 #include <MsTimer2.h>
-#include <SoftwareSerial.h>
 
 #include "exProtocolSerialS.h"
 #include "appMain.h"
@@ -9,13 +8,6 @@
 #define PIN_LED_L				13
 
 
-static SoftwareSerial SwSerial(7, 8);
-
-void actLogPrint(char *pcString)
-{
-	Serial.print(pcString);
-}
-
 void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
@@ -23,33 +15,30 @@ void actLedLState(PIF_usId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer)
+uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	uint8_t txData;
+	(void)pstComm;
 
-    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
-    	SwSerial.write((char)txData);
-    }
-    return TRUE;
+	return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actSerialReceiveData(PIF_stRingBuffer *pstBuffer)
+BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
-	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
 	int rxData;
 
-    for (uint16_t i = 0; i < size; i++) {
-		rxData = SwSerial.read();
-		if (rxData >= 0) {
-			pifRingBuffer_PutByte(pstBuffer, rxData);
-		}
-		else break;
-    }
+	(void)pstComm;
+
+	rxData = Serial.read();
+	if (rxData >= 0) {
+		*pucData = rxData;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 static void sysTickHook()
 {
-    pif_sigTimer1ms();
+	pif_sigTimer1ms();
 
 	pifPulse_sigTick(g_pstTimer1ms);
 }
@@ -59,11 +48,10 @@ void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
 
-	Serial.begin(115200); //Doesn't matter speed
-	SwSerial.begin(115200);
-
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
+
+	Serial.begin(115200);
 
 	appSetup();
 }

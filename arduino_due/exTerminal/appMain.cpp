@@ -1,7 +1,6 @@
 #include "appMain.h"
 #include "exTerminal.h"
 
-//#include "pifComm.h"
 #include "pifLog.h"
 #include "pifTerminal.h"
 
@@ -32,6 +31,8 @@ void appSetup()
     if (!pifComm_Init(COMM_COUNT)) return;
 	g_pstComm = pifComm_Add(0);
 	if (!g_pstComm) return;
+	pifComm_AttachActReceiveData(g_pstComm, actSerialReceiveData);
+	pifComm_AttachActSendData(g_pstComm, actSerialSendData);
 
     if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
 	pifTerminal_AttachComm(g_pstComm);
@@ -42,6 +43,5 @@ void appSetup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddPeriodMs(10, pifComm_taskAll, NULL)) return;		// 10ms
 
-    if (!pifTask_AddPeriodMs(10, taskTerminal, NULL)) return;			// 10ms
     if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL)) return;			// 500ms
 }

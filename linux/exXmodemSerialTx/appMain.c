@@ -1,7 +1,6 @@
 #include "appMain.h"
-#include "exXmodemSerialTx.h"
+#include "main.h"
 
-#include "pifComm.h"
 #include "pifLog.h"
 #include "pifXmodem.h"
 
@@ -66,35 +65,50 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 	case ASCII_CAN:
 		break;
 	}
-	pifLog_Printf(LT_enInfo, "C=%u PN=%u L=%u P=%u S=%u", ucCode, ucPacketNo, s_stXmodemTest.usLength, s_stXmodemTest.usPos, s_stXmodemTest.step);
+	if (s_stXmodemTest.step) {
+		pifLog_Printf(LT_enInfo, "C=%u PN=%u L=%u P=%u S=%u DT=%2xh", ucCode, ucPacketNo, s_stXmodemTest.usLength,
+				s_stXmodemTest.usPos, s_stXmodemTest.step, s_stXmodemTest.aucData[0]);
+	}
+	else {
+		pifLog_Printf(LT_enInfo, "C=%u", ucCode);
+	}
 }
 
-void appSetup()
+BOOL appInit()
 {
     pif_Init(NULL);
 
     pifLog_Init();
     pifLog_AttachActPrint(actLogPrint);
 
-    if (!pifComm_Init(COMM_COUNT)) return;
+    if (!pifComm_Init(COMM_COUNT)) return FALSE;
 
-    if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifPulse_Init(PULSE_COUNT)) return FALSE;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!g_pstTimer1ms) return FALSE;
 
     s_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!s_pstSerial) return;
-	pifComm_AttachAction(s_pstSerial, actXmodemReceiveData, actXmodemSendData);
+	if (!s_pstSerial) return FALSE;
+	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
+	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
 
-    if (!pifXmodem_Init(g_pstTimer1ms, XMODEM_COUNT)) return;
+    if (!pifXmodem_Init(g_pstTimer1ms, XMODEM_COUNT)) return FALSE;
     s_pstXmodem = pifXmodem_Add(PIF_ID_AUTO, XT_enCRC);
-	if (!s_pstXmodem) return;
+    if (!s_pstXmodem) return FALSE;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
-    pifXmodem_AttachEvent(s_pstXmodem, _evtXmodemTxReceive, NULL);
+    pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);
 
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddPeriodUs(500, pifComm_taskAll, NULL)) return;	// 500us
+    if (!pifTask_Init(TASK_COUNT)) return FALSE;
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return FALSE;		// 100%
+    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return FALSE;		// 1ms
+    return TRUE;
+}
 
-    if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL)) return;	// 500ms
+void appExit()
+{
+	pifTask_Exit();
+	pifXmodem_Exit();
+	pifPulse_Exit();
+	pifComm_Exit();
+    pifLog_Exit();
 }

@@ -13,7 +13,7 @@
 
 PIF_stPulse *g_pstTimer1ms = NULL;
 
-static char s_acLog[LOG_BUFFER_SIZE];
+static uint8_t s_aucLog[LOG_BUFFER_SIZE];
 
 
 static void _evtLedToggle(void *pvIssuer)
@@ -41,7 +41,7 @@ void appSetup()
 
 	pif_Init(NULL);
 
-    if (!pifLog_InitStatic(LOG_BUFFER_SIZE, s_acLog)) return;
+    if (!pifLog_InitStatic(LOG_BUFFER_SIZE, s_aucLog)) return;
 	pifLog_AttachActPrint(actLogPrint);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;

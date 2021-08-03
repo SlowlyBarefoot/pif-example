@@ -11,25 +11,25 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-uint16_t taskTerminal(PIF_stTask *pstTask)
+uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	uint8_t txData;
+	(void)pstComm;
+
+    return SerialUSB.write((char *)pucBuffer, usSize);
+}
+
+BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+{
 	int rxData;
 
-	(void)pstTask;
+	(void)pstComm;
 
-    while (pifComm_SendData(g_pstComm, &txData)) {
-    	SerialUSB.print((char)txData);
-    }
-
-    while (1) {
-		rxData = SerialUSB.read();
-		if (rxData >= 0) {
-			pifComm_ReceiveData(g_pstComm, rxData);
-		}
-		else break;
-    }
-    return 0;
+	rxData = SerialUSB.read();
+	if (rxData >= 0) {
+		*pucData = rxData;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 uint16_t taskLedToggle(PIF_stTask *pstTask)

@@ -5,58 +5,39 @@
 
 #define PIN_LED_L				13
 
-//#define USE_SERIAL_USB		// Linux or Windows
-#define USE_SERIAL_3			// Other Anduino
-
 
 void actLogPrint(char *pcString)
 {
 	Serial.print(pcString);
 }
 
-BOOL actXmodemSendData(PIF_stRingBuffer *pstBuffer)
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
-	uint8_t txData;
+	(void)usPifId;
 
-    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
-#ifdef USE_SERIAL_USB
-    	SerialUSB.print((char)txData);
-#endif
-#ifdef USE_SERIAL_3
-    	Serial3.print((char)txData);
-#endif
-    }
-    return TRUE;
+	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void actXmodemReceiveData(PIF_stRingBuffer *pstBuffer)
+uint16_t actXmodemSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	(void)pstComm;
+
+    return Serial3.write((char *)pucBuffer, usSize);
+}
+
+BOOL actXmodemReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+{
 	int rxData;
 
-	for (uint16_t i = 0; i < size; i++) {
-#ifdef USE_SERIAL_USB
-		rxData = SerialUSB.read();
-#endif
-#ifdef USE_SERIAL_3
-		rxData = Serial3.read();
-#endif
-		if (rxData >= 0) {
-			pifRingBuffer_PutByte(pstBuffer, rxData);
-		}
-		else break;
-    }
-}
+	(void)pstComm;
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
-{
-	static BOOL sw = LOW;
-
-	(void)pstTask;
-
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
-	return 0;
+	rxData = Serial3.read();
+	if (rxData >= 0) {
+		if (rxData == 'C') Serial.write('C');
+		*pucData = rxData;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 extern "C" {
@@ -73,13 +54,8 @@ void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
 
-	Serial.begin(115200); //Doesn't matter speed
-#ifdef USE_SERIAL_USB
-	SerialUSB.begin(115200);
-#endif
-#ifdef USE_SERIAL_3
-	Serial3.begin(9600);
-#endif
+	Serial.begin(115200);
+	Serial3.begin(115200);
 
 	appSetup();
 }

@@ -4,9 +4,10 @@
 
 
 #define PIN_LED_L				13
+#define PIN_PUSH_SWITCH			29
 
-//#define USE_SERIAL_USB			// Linux or Windows
-#define USE_SERIAL_3			// Other Anduino
+#define USE_SERIAL_USB			// Linux or Windows
+//#define USE_SERIAL_3			// Other Anduino
 
 
 void actLogPrint(char *pcString)
@@ -14,49 +15,49 @@ void actLogPrint(char *pcString)
 	Serial.print(pcString);
 }
 
-BOOL actXmodemSendData(PIF_stRingBuffer *pstBuffer)
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
-	uint8_t txData;
+	(void)usPifId;
 
-    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
-#ifdef USE_SERIAL_USB
-    	SerialUSB.print((char)txData);
-#endif
-#ifdef USE_SERIAL_3
-    	Serial3.print((char)txData);
-#endif
-    }
-    return TRUE;
+	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void actXmodemReceiveData(PIF_stRingBuffer *pstBuffer)
+uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 {
-	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	(void)usPifId;
+
+	return !digitalRead(PIN_PUSH_SWITCH);
+}
+
+uint16_t actXmodemSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+{
+	(void)pstComm;
+
+#ifdef USE_SERIAL_USB
+	return SerialUSB.write((char *)pucBuffer, usSize);
+#endif
+#ifdef USE_SERIAL_3
+   	return Serial3.write((char *)pucBuffer, usSize);
+#endif
+}
+
+BOOL actXmodemReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+{
 	int rxData;
 
-	for (uint16_t i = 0; i < size; i++) {
+	(void)pstComm;
+
 #ifdef USE_SERIAL_USB
-		rxData = SerialUSB.read();
+	rxData = SerialUSB.read();
 #endif
 #ifdef USE_SERIAL_3
-		rxData = Serial3.read();
+	rxData = Serial3.read();
 #endif
-		if (rxData >= 0) {
-			pifRingBuffer_PutByte(pstBuffer, rxData);
-		}
-		else break;
-    }
-}
-
-uint16_t taskLedToggle(PIF_stTask *pstTask)
-{
-	static BOOL sw = LOW;
-
-	(void)pstTask;
-
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
-	return 0;
+	if (rxData >= 0) {
+		*pucData = rxData;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 extern "C" {
@@ -72,10 +73,11 @@ extern "C" {
 void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
+	pinMode(PIN_PUSH_SWITCH, INPUT_PULLUP);
 
 	Serial.begin(115200);
 #ifdef USE_SERIAL_USB
-	SerialUSB.begin(9600);
+	SerialUSB.begin(115200);
 #endif
 #ifdef USE_SERIAL_3
 	Serial3.begin(115200);

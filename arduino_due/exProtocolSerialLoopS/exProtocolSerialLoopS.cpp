@@ -28,52 +28,46 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 	return !digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-BOOL actSerial1SendData(PIF_stRingBuffer *pstBuffer)
+uint16_t actSerial1SendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	uint8_t txData;
+	(void)pstComm;
 
-	while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
-    	Serial1.print((char)txData);
-    }
-	return TRUE;
+    return Serial1.write((char *)pucBuffer, usSize);
 }
 
-void actSerial1ReceiveData(PIF_stRingBuffer *pstBuffer)
+BOOL actSerial1ReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
-	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
 	int rxData;
 
-	for (uint16_t i = 0; i < size; i++) {
-		rxData = Serial1.read();
-		if (rxData >= 0) {
-			pifRingBuffer_PutByte(pstBuffer, rxData);
-		}
-		else break;
-    }
-}
+	(void)pstComm;
 
-BOOL actSerial2SendData(PIF_stRingBuffer *pstBuffer)
-{
-	uint8_t txData;
-
-	while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
-    	Serial2.print((char)txData);
-    }
-	return TRUE;
-}
-
-void actSerial2ReceiveData(PIF_stRingBuffer *pstBuffer)
-{
-	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
-	int rxData;
-
-	for (uint16_t i = 0; i < size; i++) {
-		rxData = Serial2.read();
-		if (rxData >= 0) {
-			pifRingBuffer_PutByte(pstBuffer, rxData);
-		}
-		else break;
+	rxData = Serial1.read();
+	if (rxData >= 0) {
+		*pucData = rxData;
+		return TRUE;
 	}
+	return FALSE;
+}
+
+uint16_t actSerial2SendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+{
+	(void)pstComm;
+
+    return Serial2.write((char *)pucBuffer, usSize);
+}
+
+BOOL actSerial2ReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+{
+	int rxData;
+
+	(void)pstComm;
+
+	rxData = Serial2.read();
+	if (rxData >= 0) {
+		*pucData = rxData;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 extern "C" {

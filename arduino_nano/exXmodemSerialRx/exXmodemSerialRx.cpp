@@ -1,55 +1,47 @@
 // Do not remove the include below
 #include <MsTimer2.h>
-#include <SoftwareSerial.h>
 
 #include "exXmodemSerialRx.h"
 #include "appMain.h"
 
 
 #define PIN_LED_L				13
+#define PIN_PUSH_SWITCH			2
 
 
-static SoftwareSerial SwSerial(7, 8);
-
-
-void actLogPrint(char *pcString)
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
-	Serial.print(pcString);
+	(void)usPifId;
+
+	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-BOOL actXmodemSendData(PIF_stRingBuffer *pstBuffer)
+uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 {
-	uint8_t txData;
+	(void)usPifId;
 
-    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
-    	SwSerial.write((char)txData);
-    }
-    return TRUE;
+	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-void actXmodemReceiveData(PIF_stRingBuffer *pstBuffer)
+uint16_t actXmodemSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
+}
+
+BOOL actXmodemReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+{
 	int rxData;
 
-	for (uint16_t i = 0; i < size; i++) {
-		rxData = SwSerial.read();
-		if (rxData >= 0) {
-			pifRingBuffer_PutByte(pstBuffer, rxData);
-		}
-		else break;
-    }
-}
+	(void)pstComm;
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
-{
-	static BOOL sw = LOW;
-
-	(void)pstTask;
-
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
-	return 0;
+	rxData = Serial.read();
+	if (rxData >= 0) {
+		*pucData = rxData;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 static void sysTickHook()
@@ -63,12 +55,12 @@ static void sysTickHook()
 void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
-
-	Serial.begin(115200);
-	SwSerial.begin(9600);
+	pinMode(PIN_PUSH_SWITCH, INPUT_PULLUP);
 
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
+
+	Serial.begin(115200);
 
 	appSetup();
 }

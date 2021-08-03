@@ -52,11 +52,6 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/MsTimer2/1.1.0</locationURI>
 		</link>
 		<link>
-			<name>libraries/SoftwareSerial</name>
-			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.3/libraries/SoftwareSerial</locationURI>
-		</link>
-		<link>
 			<name>pif/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -82,29 +77,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifComm.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifDotMatrix.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDotMatrix.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifFnd.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifFnd.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifKeypad.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifKeypad.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifLed.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifLed.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifLog.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifLog.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifProtocol.h</name>
@@ -122,26 +97,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifRingBuffer.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifRingData.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifRingData.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifSensor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSensor.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifSequence.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSequence.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifSolenoid.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSolenoid.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifTask.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTask.h</locationURI>
@@ -157,29 +112,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifComm.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pifDotMatrix.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifDotMatrix.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifFnd.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifFnd.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifKeypad.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifKeypad.c</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pifLed.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifLed.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifLog.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifLog.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifProtocol.c</name>
@@ -195,26 +130,6 @@
 			<name>pif/core/source/pifRingBuffer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifRingBuffer.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifRingData.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifRingData.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifSensor.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSensor.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifSequence.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSequence.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifSolenoid.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSolenoid.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifTask.c</name>

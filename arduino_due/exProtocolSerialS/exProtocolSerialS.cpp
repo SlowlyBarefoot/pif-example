@@ -7,8 +7,8 @@
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
 
-//#define USE_SERIAL_USB		// Linux or Windows
-#define USE_SERIAL_3			// Other Anduino
+#define USE_SERIAL_USB		// Linux or Windows
+//#define USE_SERIAL_3			// Other Anduino
 
 
 static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
@@ -31,38 +31,35 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 	return !digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-BOOL actSerialSendData(PIF_stRingBuffer *pstBuffer)
+uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	uint8_t txData;
+	(void)pstComm;
 
-    while (pifRingBuffer_GetByte(pstBuffer, &txData)) {
 #ifdef USE_SERIAL_USB
-    	SerialUSB.print((char)txData);
+    return SerialUSB.write((char *)pucBuffer, usSize);
 #endif
 #ifdef USE_SERIAL_3
-    	Serial3.print((char)txData);
+    return Serial3.write((char *)pucBuffer, usSize);
 #endif
-    }
-    return TRUE;
 }
 
-void actSerialReceiveData(PIF_stRingBuffer *pstBuffer)
+BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
-	uint16_t size = pifRingBuffer_GetRemainSize(pstBuffer);
 	int rxData;
 
-    for (uint16_t i = 0; i < size; i++) {
+	(void)pstComm;
+
 #ifdef USE_SERIAL_USB
-    	rxData = SerialUSB.read();
+   	rxData = SerialUSB.read();
 #endif
 #ifdef USE_SERIAL_3
-		rxData = Serial3.read();
+	rxData = Serial3.read();
 #endif
-		if (rxData >= 0) {
-			pifRingBuffer_PutByte(pstBuffer, rxData);
-		}
-		else break;
-    }
+	if (rxData >= 0) {
+		*pucData = rxData;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 extern "C" {

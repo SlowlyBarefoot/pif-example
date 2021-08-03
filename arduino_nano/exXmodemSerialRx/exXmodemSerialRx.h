@@ -9,8 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exXmodemSerialRx here
 
-#include "pifRingBuffer.h"
-#include "pifTask.h"
+#include "pifComm.h"
 
 //end of add your includes here
 
@@ -18,9 +17,10 @@
 //add your function definitions for the project exXmodemSerialRx here
 
 void actLogPrint(char *pcString);
-BOOL actXmodemSendData(PIF_stRingBuffer *pstBuffer);
-void actXmodemReceiveData(PIF_stRingBuffer *pstBuffer);
-uint16_t taskLedToggle(PIF_stTask *pstTask);
+void actLedLState(PIF_usId usPifId, uint32_t unState);
+uint16_t actPushSwitchAcquire(PIF_usId usPifId);
+uint16_t actXmodemSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actXmodemReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exXmodemSerialRx_H_ */
