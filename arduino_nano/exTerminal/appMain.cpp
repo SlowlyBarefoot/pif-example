@@ -1,7 +1,6 @@
 #include "appMain.h"
 #include "exTerminal.h"
 
-//#include "pifComm.h"
 #include "pifLog.h"
 #include "pifTerminal.h"
 

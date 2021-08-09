@@ -72,74 +72,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifCollectSignal.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifCollectSignal.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifComm.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifComm.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifDotMatrix.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDotMatrix.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifDutyMotor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDutyMotor.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifDutyMotorPos.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDutyMotorPos.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifDutyMotorSpeed.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDutyMotorSpeed.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifDutyMotorSpeedEnc.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifDutyMotorSpeedEnc.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifFnd.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifFnd.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifGpio.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifGpio.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifGps.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifGps.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifGpsSerialNmea.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifGpsSerialNmea.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifIfI2c.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifIfI2c.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifIfStorage.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifIfStorage.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifKeypad.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifKeypad.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifLed.h</name>
@@ -150,11 +85,6 @@
 			<name>pif/core/include/pifLog.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifLog.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifMotor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifMotor.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifProtocol.h</name>
@@ -172,11 +102,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifRingBuffer.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifRingData.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifRingData.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifSensor.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSensor.h</locationURI>
@@ -192,31 +117,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSensorSwitch.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifSequence.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSequence.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifSolenoid.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifSolenoid.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifStepMotor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifStepMotor.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifStepMotorPos.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifStepMotorPos.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifStepMotorSpeed.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifStepMotorSpeed.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifTask.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTask.h</locationURI>
@@ -227,84 +127,14 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTerminal.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifXmodem.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifXmodem.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pif.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pifCollectSignal.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifCollectSignal.c</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pifComm.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifComm.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifDotMatrix.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifDotMatrix.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifDutyMotor.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifDutyMotor.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifDutyMotorPos.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifDutyMotorPos.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifDutyMotorSpeed.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifDutyMotorSpeed.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifDutyMotorSpeedEnc.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifDutyMotorSpeedEnc.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifFnd.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifFnd.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifGpio.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifGpio.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifGps.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifGps.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifGpsSerialNmea.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifGpsSerialNmea.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifIfI2c.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifIfI2c.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifIfStorage.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifIfStorage.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifKeypad.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifKeypad.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifLed.c</name>
@@ -315,11 +145,6 @@
 			<name>pif/core/source/pifLog.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifLog.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifMotor.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifMotor.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifProtocol.c</name>
@@ -337,11 +162,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifRingBuffer.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pifRingData.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifRingData.c</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pifSensor.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSensor.c</locationURI>
@@ -357,31 +177,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSensorSwitch.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pifSequence.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSequence.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifSolenoid.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifSolenoid.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifStepMotor.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifStepMotor.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifStepMotorPos.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifStepMotorPos.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifStepMotorSpeed.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifStepMotorSpeed.c</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pifTask.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifTask.c</locationURI>
@@ -390,11 +185,6 @@
 			<name>pif/core/source/pifTerminal.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifTerminal.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifXmodem.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifXmodem.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
