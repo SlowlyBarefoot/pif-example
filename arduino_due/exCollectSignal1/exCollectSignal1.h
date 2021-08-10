@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exCollectSignal1 here
 
-#include "pifTask.h"
+#include "pifComm.h"
 
 //end of add your includes here
 
@@ -20,7 +20,8 @@ void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 void actLedRGBState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
-uint16_t taskTerminal(PIF_stTask *pstTask);
+uint16_t actSerialSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actSerialReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exCollectSignal1_H_ */

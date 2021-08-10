@@ -17,7 +17,6 @@
 #define TASK_COUNT              5
 
 
-PIF_stComm *g_pstSerial = NULL;
 PIF_stDutyMotor *g_pstMotor = NULL;
 PIF_stPulse *g_pstTimer1ms = NULL;
 
@@ -225,7 +224,8 @@ static uint16_t _taskInitPos(PIF_stTask *pstTask)
 
 void appSetup()
 {
-	PIF_stLed *pstLedL = NULL;
+	PIF_stLed *pstLedL;
+	PIF_stComm *pstSerial;
 
 	pif_Init(NULL);
 
@@ -233,11 +233,13 @@ void appSetup()
 	pifLog_AttachActPrint(actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
-    g_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!g_pstSerial) return;
+    pstSerial = pifComm_Add(PIF_ID_AUTO);
+	if (!pstSerial) return;
+	pifComm_AttachActReceiveData(pstSerial, actSerialReceiveData);
+	pifComm_AttachActSendData(pstSerial, actSerialSendData);
 
     if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
-	pifTerminal_AttachComm(g_pstSerial);
+	pifTerminal_AttachComm(pstSerial);
 
 	pifLog_DetachActPrint();
     pifLog_UseTerminal(TRUE);
@@ -272,6 +274,5 @@ void appSetup()
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
     if (!pifTask_AddPeriodMs(1, pifSensorSwitch_taskAll, NULL)) return;		// 1ms
 
-    if (!pifTask_AddPeriodMs(1, taskTerminal, NULL)) return;				// 1ms
     if (!pifTask_AddPeriodMs(10, _taskInitPos, NULL)) return;				// 10ms
 }

@@ -20,7 +20,6 @@
 #define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
 
 
-PIF_stComm *g_pstSerial = NULL;
 PIF_stPulse *g_pstTimer1ms = NULL;
 PIF_stPulse *g_pstTimer200us = NULL;
 
@@ -307,7 +306,8 @@ static uint16_t _taskRepeat(PIF_stTask *pstTask)
 
 void appSetup()
 {
-	PIF_stLed *pstLedL = NULL;
+	PIF_stLed *pstLedL;
+	PIF_stComm *pstSerial;
 	PIF_stTask *pstTask;
 
 	pif_Init(NULL);
@@ -316,11 +316,13 @@ void appSetup()
 	pifLog_AttachActPrint(actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
-    g_pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!g_pstSerial) return;
+    pstSerial = pifComm_Add(PIF_ID_AUTO);
+	if (!pstSerial) return;
+	pifComm_AttachActReceiveData(pstSerial, actSerialReceiveData);
+	pifComm_AttachActSendData(pstSerial, actSerialSendData);
 
     if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
-	pifTerminal_AttachComm(g_pstSerial);
+	pifTerminal_AttachComm(pstSerial);
 
 	pifLog_DetachActPrint();
     pifLog_UseTerminal(TRUE);
@@ -362,7 +364,6 @@ void appSetup()
     if (!pstTask) return;
     pifStepMotor_AttachTask(s_pstMotor, pstTask);
 
-    if (!pifTask_AddPeriodMs(1, taskTerminal, NULL)) return;									// 1ms
     if (!pifTask_AddPeriodMs(10, _taskInitPos, NULL)) return;									// 10ms
     if (!pifTask_AddPeriodMs(10, _taskRepeat, NULL)) return;									// 10ms
 }

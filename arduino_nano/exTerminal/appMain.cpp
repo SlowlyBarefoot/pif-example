@@ -11,8 +11,6 @@
 #define TASK_COUNT              3
 
 
-PIF_stComm *g_pstComm = NULL;
-
 const PIF_stTermCmdEntry c_psCmdTable[] = {
 	{ "ver", pifTerminal_PrintVersion, "\nPrint Version" },
 	{ "status", pifTerminal_SetStatus, "\nSet Status" },
@@ -23,18 +21,20 @@ const PIF_stTermCmdEntry c_psCmdTable[] = {
 
 void appSetup()
 {
+	PIF_stComm *pstComm;
+
     pif_Init(NULL);
 
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
-	g_pstComm = pifComm_Add(0);
-	if (!g_pstComm) return;
-	pifComm_AttachActReceiveData(g_pstComm, actSerialReceiveData);
-	pifComm_AttachActSendData(g_pstComm, actSerialSendData);
+    pstComm = pifComm_Add(PIF_ID_AUTO);
+	if (!pstComm) return;
+	pifComm_AttachActReceiveData(pstComm, actSerialReceiveData);
+	pifComm_AttachActSendData(pstComm, actSerialSendData);
 
     if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
-	pifTerminal_AttachComm(g_pstComm);
+	pifTerminal_AttachComm(pstComm);
 
     pifLog_UseTerminal(TRUE);
 

@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exStepMotor here
 
-#include "pifTask.h"
+#include "pifComm.h"
 
 //end of add your includes here
 
@@ -17,7 +17,8 @@
 //add your function definitions for the project exStepMotor here
 
 void actLogPrint(char *pcString);
-uint16_t taskTerminal(PIF_stTask *pstTask);
+uint16_t actSerialSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actSerialReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 void actSetStep(uint16_t usPhase);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 

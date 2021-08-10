@@ -44,22 +44,25 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 	return !digitalRead(s_stSequenceTest[usPifId - PIF_ID_SWITCH].ucPinSwitch);
 }
 
-uint16_t taskTerminal(PIF_stTask *pstTask)
+uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	uint8_t txData;
+	(void)pstComm;
+
+    return SerialUSB.write((char *)pucBuffer, usSize);
+}
+
+BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+{
 	int rxData;
 
-	(void)pstTask;
-
-    if (pifComm_SendData(g_pstComm, &txData)) {
-    	SerialUSB.print((char)txData);
-    }
+	(void)pstComm;
 
 	rxData = SerialUSB.read();
 	if (rxData >= 0) {
-		pifComm_ReceiveData(g_pstComm, rxData);
+		*pucData = rxData;
+		return TRUE;
 	}
-	return 0;
+	return FALSE;
 }
 
 extern "C" {

@@ -18,7 +18,6 @@
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
-PIF_stComm *g_pstComm = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
 static PIF_stLed *s_pstLedRGB = NULL;
@@ -136,6 +135,7 @@ static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
 
 void appSetup(PIF_actTimer1us actTimer1us)
 {
+	PIF_stComm *pstComm;
 	int i;
 
 	pif_Init(actTimer1us);
@@ -144,11 +144,13 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	pifLog_AttachActPrint(actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
-	g_pstComm = pifComm_Add(0);
-	if (!g_pstComm) return;
+	pstComm = pifComm_Add(PIF_ID_AUTO);
+	if (!pstComm) return;
+	pifComm_AttachActReceiveData(pstComm, actSerialReceiveData);
+	pifComm_AttachActSendData(pstComm, actSerialSendData);
 
     if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
-	pifTerminal_AttachComm(g_pstComm);
+	pifTerminal_AttachComm(pstComm);
 
 	pifCollectSignal_Init("example");
 
@@ -187,6 +189,4 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!pifTask_AddPeriodMs(1, pifSensorSwitch_taskAll, NULL)) return;		// 1ms
     if (!pifTask_AddPeriodMs(10, pifSequence_taskAll, NULL)) return;		// 10ms
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
-
-    if (!pifTask_AddPeriodMs(1, taskTerminal, NULL)) return;				// 1ms
 }
