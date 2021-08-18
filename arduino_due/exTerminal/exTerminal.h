@@ -16,10 +16,11 @@
 
 //add your function definitions for the project exTerminal here
 
-void actLogPrint(char *pcString);
-uint16_t actSerialSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actSerialReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
-uint16_t taskLedToggle(PIF_stTask *pstTask);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+#ifdef __PIF_LOG_COMMAND__
+BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+#endif
+void actLedLState(PIF_usId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exTerminal_H_ */

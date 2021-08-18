@@ -4,7 +4,6 @@
 #include "pifDutyMotor.h"
 #include "pifLed.h"
 #include "pifLog.h"
-#include "pifTerminal.h"
 
 
 #define COMM_COUNT				1
@@ -21,9 +20,7 @@ static PIF_stDutyMotor *s_pstMotor = NULL;
 
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
-const PIF_stTermCmdEntry c_psCmdTable[] = {
-	{ "ver", pifTerminal_PrintVersion, "\nPrint Version" },
-	{ "status", pifTerminal_SetStatus, "\nSet Status" },
+const PIF_stLogCmdEntry c_psCmdTable[] = {
 	{ "mt", CmdDutyMotorTest, "\nMotor Test" },
 
 	{ NULL, NULL, NULL }
@@ -41,64 +38,60 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 	if (argc == 1) {
 		pifLog_Printf(LT_enNone, "\n  Duty: %d", s_pstMotor->_usCurrentDuty);
 		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->_ucDirection);
-		return PIF_TERM_CMD_NO_ERROR;
+		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
 		if (!strcmp(argv[1], "duty")) {
 			int value = atoi(argv[2]);
 			if (value > 0 && value < 256) {
 				pifDutyMotor_SetDuty(s_pstMotor, value);
-				return PIF_TERM_CMD_NO_ERROR;
+				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
 		else if (!strcmp(argv[1], "dir")) {
 			int value = atoi(argv[2]);
 			if (value == 0 || value == 1) {
 				pifDutyMotor_SetDirection(s_pstMotor, value);
-				return PIF_TERM_CMD_NO_ERROR;
+				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
-		return PIF_TERM_CMD_INVALID_ARG;
+		return PIF_LOG_CMD_INVALID_ARG;
 	}
 	else if (argc > 1) {
 		if (!strcmp(argv[1], "stop")) {
 			pifDutyMotor_BreakRelease(s_pstMotor, 0);
-			return PIF_TERM_CMD_NO_ERROR;
+			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[1], "break")) {
 			pifDutyMotor_BreakRelease(s_pstMotor, 1000);
-			return PIF_TERM_CMD_NO_ERROR;
+			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[1], "start")) {
 			pifDutyMotor_Start(s_pstMotor, s_stDutyMotorTest.usDuty);
-			return PIF_TERM_CMD_NO_ERROR;
+			return PIF_LOG_CMD_NO_ERROR;
 		}
-		return PIF_TERM_CMD_INVALID_ARG;
+		return PIF_LOG_CMD_INVALID_ARG;
 	}
-	return PIF_TERM_CMD_TOO_FEW_ARGS;
+	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
 void appSetup()
 {
+	PIF_stComm *pstCommLog;
 	PIF_stLed *pstLedL;
-	PIF_stComm *pstSerial;
 
 	pif_Init(NULL);
 
 	pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
-    pstSerial = pifComm_Add(PIF_ID_AUTO);
-	if (!pstSerial) return;
-	pifComm_AttachActReceiveData(pstSerial, actSerialReceiveData);
-	pifComm_AttachActSendData(pstSerial, actSerialSendData);
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
-    if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
-	pifTerminal_AttachComm(pstSerial);
-
-	pifLog_DetachActPrint();
-    pifLog_UseTerminal(TRUE);
+	if (!pifLog_AttachComm(pstCommLog)) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us
@@ -118,4 +111,5 @@ void appSetup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;			// 1ms
+    if (!pifTask_AddPeriodMs(20, pifLog_taskAll, NULL)) return;			// 20ms
 }

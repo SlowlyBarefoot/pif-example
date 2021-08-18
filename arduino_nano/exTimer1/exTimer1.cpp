@@ -19,7 +19,6 @@
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-
 	pifPulse_sigTick(g_pstTimer1ms);
 }
 

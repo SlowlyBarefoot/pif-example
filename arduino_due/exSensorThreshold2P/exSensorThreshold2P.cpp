@@ -7,9 +7,11 @@
 #define PIN_CDS					A0
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 uint16_t taskLedToggle(PIF_stTask *pstTask)
@@ -32,11 +34,11 @@ uint16_t taskSensorAcquisition(PIF_stTask *pstTask)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-
 		pifPulse_sigTick(g_pstTimer1ms);
+		return 0;
 	}
 }
 

@@ -9,6 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exSolenoid1P_B here
 
+#include "pifComm.h"
 #include "pifSolenoid.h"
 
 //end of add your includes here
@@ -16,7 +17,7 @@
 
 //add your function definitions for the project exSolenoid1P_B here
 
-void actLogPrint(char *pcString);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actSolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir);
 uint16_t taskLedToggle(PIF_stTask *pstTask);
 

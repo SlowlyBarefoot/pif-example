@@ -18,9 +18,11 @@ const uint8_t c_unPinCom[] = {
 };
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit)
@@ -46,11 +48,11 @@ uint16_t taskLedToggle(PIF_stTask *pstTask)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-
 		pifPulse_sigTick(g_pstTimer1ms);
+		return 0;
 	}
 }
 

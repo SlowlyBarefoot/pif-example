@@ -4,7 +4,6 @@
 #include "pifGpsNmea.h"
 #include "pifLed.h"
 #include "pifLog.h"
-#include "pifTerminal.h"
 
 
 #define COMM_COUNT         		2
@@ -12,7 +11,7 @@
 #define LED_COUNT         		1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
-#define TASK_COUNT              5
+#define TASK_COUNT              3
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
@@ -25,9 +24,7 @@ static PIF_stLed *s_pstLedL = NULL;
 static int _cmdPrintRawData(int argc, char *argv[]);
 static int _cmdRequest(int argc, char *argv[]);
 
-const PIF_stTermCmdEntry c_psCmdTable[] = {
-	{ "ver", pifTerminal_PrintVersion, "\nPrint Version" },
-	{ "status", pifTerminal_SetStatus, "\nSet Status" },
+const PIF_stLogCmdEntry c_psCmdTable[] = {
 	{ "raw", _cmdPrintRawData, "\nPrint RawData" },
 	{ "req", _cmdRequest, "\nRequest" },
 
@@ -39,7 +36,7 @@ static int _cmdPrintRawData(int argc, char *argv[])
 {
 	if (argc == 1) {
 		pifLog_Printf(LT_enNone, "\n  Print RawData: %d", g_bPrintRawData);
-		return PIF_TERM_CMD_NO_ERROR;
+		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
 		switch (argv[1][0]) {
@@ -56,11 +53,11 @@ static int _cmdPrintRawData(int argc, char *argv[])
 			break;
 
 		default:
-			return PIF_TERM_CMD_INVALID_ARG;
+			return PIF_LOG_CMD_INVALID_ARG;
 		}
-		return PIF_TERM_CMD_NO_ERROR;
+		return PIF_LOG_CMD_NO_ERROR;
 	}
-	return PIF_TERM_CMD_TOO_FEW_ARGS;
+	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
 static int _cmdRequest(int argc, char *argv[])
@@ -95,11 +92,11 @@ static int _cmdRequest(int argc, char *argv[])
 			break;
 
 		default:
-			return PIF_TERM_CMD_INVALID_ARG;
+			return PIF_LOG_CMD_INVALID_ARG;
 		}
-		return PIF_TERM_CMD_NO_ERROR;
+		return PIF_LOG_CMD_NO_ERROR;
 	}
-	return PIF_TERM_CMD_TOO_FEW_ARGS;
+	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
 static void _evtGpsNmeaText(PIF_stGpsNmeaTxt *pstTxt)
@@ -143,12 +140,20 @@ static void _evtGpsReceive(PIF_stGps *pstOwner)
 
 void appSetup()
 {
-	PIF_stComm *pstCommTerminal = NULL;
+	PIF_stComm *pstCommLog;
 
 	pif_Init(NULL);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
+
+    if (!pifComm_Init(COMM_COUNT)) return;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
@@ -159,16 +164,6 @@ void appSetup()
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;						// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
-
-    if (!pifComm_Init(COMM_COUNT)) return;
-
-    pstCommTerminal = pifComm_Add(PIF_ID_AUTO);
-	if (!pstCommTerminal) return;
-	pifComm_AttachActReceiveData(pstCommTerminal, actTerminalReceiveData);
-	pifComm_AttachActSendData(pstCommTerminal, actTerminalSendData);
-
-    if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
-	pifTerminal_AttachComm(pstCommTerminal);
 
 	s_pstCommGps = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstCommGps) return;
@@ -187,4 +182,5 @@ void appSetup()
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
+    if (!pifTask_AddPeriodMs(20, pifLog_taskAll, NULL)) return;				// 20ms
 }

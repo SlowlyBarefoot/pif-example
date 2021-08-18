@@ -7,7 +7,7 @@
 #include "pifProtocol.h"
 
 
-#define COMM_COUNT         		1
+#define COMM_COUNT         		2
 #define PROTOCOL_COUNT          1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
@@ -133,12 +133,18 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL appInit()
 {
+	PIF_stComm *pstCommLog;
+
     pif_Init(NULL);
 
     pifLog_Init();
-    pifLog_AttachActPrint(actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return FALSE;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return FALSE;
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return FALSE;
 
     if (!pifPulse_Init(PULSE_COUNT)) return FALSE;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us

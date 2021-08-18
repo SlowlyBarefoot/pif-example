@@ -33,15 +33,15 @@ static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIss
 
 void appSetup()
 {
-	PIF_stLed *pstLedL = NULL;
-	PIF_stSensor *pstPushSwitch = NULL;
+	PIF_stLed *pstLedL;
+	PIF_stSensor *pstPushSwitch;
 
     pif_Init(NULL);
 
     if (!pifComm_Init(COMM_COUNT)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
 
     if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;

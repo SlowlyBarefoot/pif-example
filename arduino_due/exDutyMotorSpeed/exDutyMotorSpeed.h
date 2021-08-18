@@ -16,9 +16,8 @@
 
 //add your function definitions for the project exDutyMotorSpeed here
 
-void actLogPrint(char *pcString);
-uint16_t actSerialSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actSerialReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 uint16_t actPhotoInterruptAcquire(PIF_usId usPifId);
 void actSetDuty(uint16_t usDuty);
 void actSetDirection(uint8_t ucDir);

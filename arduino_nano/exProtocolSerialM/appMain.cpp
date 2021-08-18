@@ -101,7 +101,7 @@ static void _evtDelay(void *pvIssuer)
 
 void appSetup()
 {
-	PIF_stLed *pstLedL = NULL;
+	PIF_stLed *pstLedL;
 
     pif_Init(NULL);
 

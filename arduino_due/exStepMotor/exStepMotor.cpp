@@ -12,25 +12,20 @@
 #define PIN_STEP_MOTOR_4		36
 
 
-void actLogPrint(char *pcString)
-{
-	Serial.print(pcString);
-}
-
-uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
-    return SerialUSB.write((char *)pucBuffer, usSize);
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 
 	(void)pstComm;
 
-	rxData = SerialUSB.read();
+	rxData = Serial.read();
 	if (rxData >= 0) {
 		*pucData = rxData;
 		return TRUE;
@@ -54,11 +49,11 @@ void actLedLState(PIF_usId usPifId, uint32_t unState)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-
 		pifPulse_sigTick(g_pstTimer1ms);
+		return 0;
 	}
 }
 
@@ -79,9 +74,8 @@ void setup()
 	Timer3.attachInterrupt(_sigTimer200us).start(200);
 
 	Serial.begin(115200);
-	SerialUSB.begin(115200);
 
-	appSetup();
+	appSetup(micros);
 }
 
 // The loop function is called in an endless loop

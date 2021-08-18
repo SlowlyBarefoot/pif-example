@@ -397,7 +397,7 @@ environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.COM_PORT/
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.COM_PORT/value=/dev/ttyACM0
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}//
+environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}/////////
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.ALL/value=
@@ -412,7 +412,7 @@ environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.C.C
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.C.COMPILE/value=
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.COMPILE/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.COMPILE/operation=replace
-environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.COMPILE/value=-D__PIF_NO_TERMINAL__
+environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.COMPILE/value=
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.CPP.COMPILE/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.CPP.COMPILE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.774948675/JANTJE.EXTRA.CPP.COMPILE/value=

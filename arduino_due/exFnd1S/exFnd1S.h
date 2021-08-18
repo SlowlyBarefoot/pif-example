@@ -9,14 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exFnd1S here
 
-#include "pifTask.h"
+#include "pifComm.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exFnd1S here
 
-void actLogPrint(char *pcString);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit);
 uint16_t taskLedToggle(PIF_stTask *pstTask);
 

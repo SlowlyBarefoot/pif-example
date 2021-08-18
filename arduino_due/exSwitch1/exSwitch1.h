@@ -9,14 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exSwitch1 here
 
-#include "pifTask.h"
+#include "pifComm.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exSwitch1 here
 
-void actLogPrint(char *pcString);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
 uint16_t actTiltSwitchAcquire(PIF_usId usPifId);

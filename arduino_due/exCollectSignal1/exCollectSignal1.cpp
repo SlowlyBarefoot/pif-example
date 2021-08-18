@@ -6,8 +6,10 @@
 #define PIN_LED_L				13
 #define PIN_LED_RED				23
 #define PIN_LED_YELLOW			25
+#define PIN_LED_BLUE			27
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
+#define PIN_PUSH_SWITCH_3		33
 
 
 static struct {
@@ -18,11 +20,6 @@ static struct {
 		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW }
 };
 
-
-void actLogPrint(char *pcString)
-{
-	Serial.print(pcString);
-}
 
 void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
@@ -39,25 +36,39 @@ void actLedRGBState(PIF_usId usPifId, uint32_t unState)
 	digitalWrite(s_stSequenceTest[1].ucPinLed, (unState >> 1) & 1);
 }
 
+void actLedCollectState(PIF_usId usPifId, uint32_t unState)
+{
+	(void)usPifId;
+
+	digitalWrite(PIN_LED_BLUE, unState & 1);
+}
+
 uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 {
 	return !digitalRead(s_stSequenceTest[usPifId - PIF_ID_SWITCH].ucPinSwitch);
 }
 
-uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actPushSwitchCollectAcquire(PIF_usId usPifId)
+{
+	(void)usPifId;
+
+	return !digitalRead(PIN_PUSH_SWITCH_3);
+}
+
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
-    return SerialUSB.write((char *)pucBuffer, usSize);
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 
 	(void)pstComm;
 
-	rxData = SerialUSB.read();
+	rxData = Serial.read();
 	if (rxData >= 0) {
 		*pucData = rxData;
 		return TRUE;
@@ -66,11 +77,11 @@ BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-
 		pifPulse_sigTick(g_pstTimer1ms);
+		return 0;
 	}
 }
 
@@ -80,11 +91,12 @@ void setup()
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
+	pinMode(PIN_LED_BLUE, OUTPUT);
 	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
 	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
+	pinMode(PIN_PUSH_SWITCH_3, INPUT_PULLUP);
 
-	Serial.begin(115200); //Doesn't matter speed
-	SerialUSB.begin(115200); //Doesn't matter speed
+	Serial.begin(115200);
 
 	appSetup(micros);
 }

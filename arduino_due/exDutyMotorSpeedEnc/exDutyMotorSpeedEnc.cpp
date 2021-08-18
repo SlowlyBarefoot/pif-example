@@ -16,25 +16,20 @@
 #define PIN_PHOTO_INTERRUPT_3	39
 
 
-void actLogPrint(char *pcString)
-{
-	Serial.print(pcString);
-}
-
-uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
-    return SerialUSB.write((char *)pucBuffer, usSize);
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 
 	(void)pstComm;
 
-	rxData = SerialUSB.read();
+	rxData = Serial.read();
 	if (rxData >= 0) {
 		*pucData = rxData;
 		return TRUE;
@@ -104,11 +99,11 @@ void actLedLState(PIF_usId usPifId, uint32_t unState)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-
 		pifPulse_sigTick(g_pstTimer1ms);
+		return 0;
 	}
 }
 
@@ -127,7 +122,6 @@ void setup()
 	attachInterrupt(PIN_ENCODER, _isrEncoder, FALLING);
 
 	Serial.begin(115200);
-	SerialUSB.begin(115200);
 
 	appSetup();
 }

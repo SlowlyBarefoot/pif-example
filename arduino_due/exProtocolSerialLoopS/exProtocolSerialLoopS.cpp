@@ -11,9 +11,11 @@
 static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 void actLedLState(PIF_usId usPifId, uint32_t unState)
@@ -71,11 +73,11 @@ BOOL actSerial2ReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-
 		pifPulse_sigTick(g_pstTimer1ms);
+		return 0;
 	}
 }
 

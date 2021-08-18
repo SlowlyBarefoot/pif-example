@@ -10,9 +10,11 @@ static uint8_t rowPins[ROWS] = { 40, 42, 44, 46 };   // R1, R2, R3, R4 단자가
 static uint8_t colPins[COLS] = { 38, 36, 34, 32 };   // C1, C2, C3, C4 단자가 연결된 아두이노 핀 번호
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 uint16_t taskLedToggle(PIF_stTask *pstTask)
@@ -47,11 +49,11 @@ void actKeypadAcquire(uint16_t *pusState)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-
 		pifPulse_sigTick(g_pstTimer1ms);
+		return 0;
 	}
 }
 

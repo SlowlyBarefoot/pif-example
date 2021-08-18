@@ -16,7 +16,6 @@
 
 //add your function definitions for the project exXmodemSerialRx here
 
-void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 uint16_t actXmodemSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);

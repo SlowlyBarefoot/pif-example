@@ -12,11 +12,11 @@
 
 //end of add your includes here
 
-#include "pif.h"
+#include "pifComm.h"
 
 //add your function definitions for the project exGpio1 here
 
-void actLogPrint(char *pcString);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actGpioLedL(PIF_usId usPifId, uint8_t ucState);
 void actGpioLedRG(PIF_usId usPifId, uint8_t ucState);
 uint8_t actGpioSwitch(PIF_usId usPifId);

@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exKeypad1 here
 
-#include "pifTask.h"
+#include "pifComm.h"
 
 //end of add your includes here
 
@@ -18,7 +18,7 @@
 
 //add your function definitions for the project exKeypad1 here
 
-void actLogPrint(char *pcString);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 uint16_t taskLedToggle(PIF_stTask *pstTask);
 void actKeypadAcquire(uint16_t *pusState);
 

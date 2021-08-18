@@ -8,13 +8,15 @@
 #define PIN_LED_L				13
 
 
-uint8_t rowPins[ROWS] = { 6, 7, 8, 9 };   // R1, R2, R3, R4 단자가 연결된 아두이노 핀 번호
-uint8_t colPins[COLS] = { 5, 4, 3, 2 };   // C1, C2, C3, C4 단자가 연결된 아두이노 핀 번호
+static uint8_t rowPins[ROWS] = { 6, 7, 8, 9 };   // R1, R2, R3, R4 단자가 연결된 아두이노 핀 번호
+static uint8_t colPins[COLS] = { 5, 4, 3, 2 };   // C1, C2, C3, C4 단자가 연결된 아두이노 핀 번호
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 uint16_t taskLedToggle(PIF_stTask *pstTask)
@@ -51,7 +53,6 @@ void actKeypadAcquire(uint16_t *pusState)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-
 	pifPulse_sigTick(g_pstTimer1ms);
 }
 

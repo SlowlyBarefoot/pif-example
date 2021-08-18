@@ -4,18 +4,22 @@
 #include "exTerminal.h"
 #include "appMain.h"
 
+#include "pifLog.h"
+
 
 #define PIN_LED_L				13
 
 
-uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+#ifdef __PIF_LOG_COMMAND__
+
+BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 
@@ -29,20 +33,20 @@ BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 	return FALSE;
 }
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
+#endif
+
+void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
-	static BOOL sw = LOW;
+	(void)usPifId;
 
-	(void)pstTask;
-
-	digitalWrite(PIN_LED_L, sw);
-	sw ^= 1;
-	return 0;
+	digitalWrite(PIN_LED_L, unState & 1);
+	pifLog_Printf(LT_enInfo, "LED State=%u", unState);
 }
 
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
+	pifPulse_sigTick(g_pstTimer1ms);
 }
 
 //The setup function is called once at startup of the sketch

@@ -58,7 +58,7 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	appSetup();
+	appSetup(micros);
 }
 
 // The loop function is called in an endless loop

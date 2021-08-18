@@ -5,10 +5,11 @@
 #include "pifSequence.h"
 
 
+#define COMM_COUNT         		1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	3
 #define SEQUENCE_COUNT          1
-#define TASK_COUNT              4
+#define TASK_COUNT              5
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
@@ -64,7 +65,7 @@ static PIF_enSequenceResult _fnSequence2(PIF_stSequence *pstOwner)
 	case 4:
 		// 다음 Phase를 처리하기 전 일정 시간 지연이 필요한 경우 설정함.
 		// Set if a delay is required before processing the next Phase.
-		pstOwner->usDelay1us = 100000;
+		pstOwner->unDelay1us = 100000UL;
 		return SR_enNext;
 
 	default:
@@ -98,6 +99,7 @@ static PIF_enSequenceResult _fnSequence3(PIF_stSequence *pstOwner)
 		break;
 
 	case 6:
+		pifLog_Printf(LT_enInfo, "Sequence3: Complete");
 		return SR_enNext;
 
 	default:
@@ -155,10 +157,18 @@ static uint16_t _taskSequence(PIF_stTask *pstTask)
 
 void appSetup(PIF_actTimer1us actTimer1us)
 {
+	PIF_stComm *pstCommLog;
+
 	pif_Init(actTimer1us);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
+
+    if (!pifComm_Init(COMM_COUNT)) return;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return;
 
 	if (!pifPulse_Init(PULSE_COUNT)) return;
 	g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us
@@ -171,6 +181,7 @@ void appSetup(PIF_actTimer1us actTimer1us)
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
+    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;			// 1ms
     if (!pifTask_AddPeriodMs(10, pifSequence_taskAll, NULL)) return;	// 10ms
 
     if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL)) return;			// 500ms

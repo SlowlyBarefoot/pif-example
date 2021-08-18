@@ -67,19 +67,14 @@
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifDotMatrix.h</name>
+			<name>pif/core/include/pifComm.h</name>
 			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifDotMatrix.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifComm.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifFnd.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifFnd.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifKeypad.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifKeypad.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifLog.h</name>
@@ -97,21 +92,6 @@
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifRingBuffer.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifRingData.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifRingData.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifSensor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifSensor.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifSolenoid.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifSolenoid.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifTask.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifTask.h</locationURI>
@@ -122,19 +102,14 @@
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pifDotMatrix.c</name>
+			<name>pif/core/source/pifComm.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifDotMatrix.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifComm.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifFnd.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifFnd.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifKeypad.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifKeypad.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifLog.c</name>
@@ -150,21 +125,6 @@
 			<name>pif/core/source/pifRingBuffer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifRingBuffer.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifRingData.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifRingData.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifSensor.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifSensor.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifSolenoid.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifSolenoid.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifTask.c</name>

@@ -34,7 +34,6 @@ void actLedRGBState(PIF_usId usPifId, uint32_t unState)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-
 	pifPulse_sigTick(g_pstTimer1ms);
 }
 

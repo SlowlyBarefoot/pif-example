@@ -12,9 +12,11 @@
 #define PIN_74HC595_SHIFT		5
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
@@ -39,7 +41,6 @@ uint16_t taskLedToggle(PIF_stTask *pstTask)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-
 	pifPulse_sigTick(g_pstTimer1ms);
 }
 

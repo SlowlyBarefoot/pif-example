@@ -9,7 +9,7 @@
 #include "exSerial2.h"
 
 
-#define COMM_COUNT         		2
+#define COMM_COUNT         		3
 #define LED_COUNT         		1
 #define PROTOCOL_COUNT          2
 #define PULSE_COUNT         	1
@@ -22,12 +22,19 @@ PIF_stPulse *g_pstTimer1ms = NULL;
 
 void appSetup()
 {
-	PIF_stLed *pstLedL = NULL;
+	PIF_stComm *pstCommLog;
+	PIF_stLed *pstLedL;
 
 	pif_Init(NULL);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
+
+    if (!pifComm_Init(COMM_COUNT)) return;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us
@@ -38,8 +45,6 @@ void appSetup()
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;						// 500ms
     pifLed_BlinkOn(pstLedL, 0);
-
-    if (!pifComm_Init(COMM_COUNT)) return;
 
     if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return;
 

@@ -3,6 +3,7 @@
  *
  * Save log to log buffer every second and print them out at the end of the program.
  */
+#include <stdio.h>
 
 #include "main.h"
 #include "appMain.h"
@@ -29,9 +30,11 @@ static void _TimerHandler()
     }
 }
 
-void actLogPrint(char *cString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	printf("%s", cString);
+	(void)pstComm;
+
+    return fwrite((char *)pucBuffer, 1, usSize, stdout);
 }
 
 int main(int argc, char **argv)
@@ -45,6 +48,8 @@ int main(int argc, char **argv)
 
     while (s_unTimer) {
         pif_Loop();
+
+        pifTask_Loop();
     }
 
     pifLog_PrintInBuffer();

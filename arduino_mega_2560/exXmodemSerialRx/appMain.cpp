@@ -7,7 +7,7 @@
 #include "pifXmodem.h"
 
 
-#define COMM_COUNT         		1
+#define COMM_COUNT         		2
 #define LED_COUNT         		1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
@@ -44,18 +44,23 @@ static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIss
 
 void appSetup()
 {
-	PIF_stLed *pstLedL = NULL;
-	PIF_stSensor *pstPushSwitch = NULL;
+	PIF_stComm *pstCommLog;
+	PIF_stLed *pstLedL;
+	PIF_stSensor *pstPushSwitch;
 
     pif_Init(NULL);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
 
     if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;

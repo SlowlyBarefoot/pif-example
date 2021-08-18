@@ -82,11 +82,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifLog.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifProtocol.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifProtocol.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifPulse.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifPulse.h</locationURI>
@@ -95,11 +90,6 @@
 			<name>pif/core/include/pifRingBuffer.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifRingBuffer.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifRingData.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifRingData.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifSensor.h</name>
@@ -115,11 +105,6 @@
 			<name>pif/core/include/pifTask.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTask.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifTerminal.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTerminal.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pifXmodem.h</name>
@@ -147,11 +132,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifLog.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pifProtocol.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifProtocol.c</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pifPulse.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifPulse.c</locationURI>
@@ -160,11 +140,6 @@
 			<name>pif/core/source/pifRingBuffer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifRingBuffer.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifRingData.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifRingData.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifSensor.c</name>
@@ -180,11 +155,6 @@
 			<name>pif/core/source/pifTask.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifTask.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifTerminal.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifTerminal.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifXmodem.c</name>

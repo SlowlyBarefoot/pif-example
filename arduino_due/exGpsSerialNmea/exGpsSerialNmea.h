@@ -16,12 +16,11 @@
 
 //add your function definitions for the project exGpsSerialNmea here
 
-void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 uint16_t actGpsSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actGpsReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
-uint16_t actTerminalSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actTerminalReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exGpsSerialNmea_H_ */

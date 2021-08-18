@@ -42,9 +42,10 @@ uint16_t taskLedYellowToggle(PIF_stTask *pstTask)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
+		return 0;
 	}
 }
 
@@ -55,7 +56,7 @@ void setup()
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 
-	appSetup();
+	appSetup(micros);
 }
 
 // The loop function is called in an endless loop

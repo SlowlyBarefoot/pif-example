@@ -12,9 +12,11 @@
 #define PIN_TILT_SWITCH			6
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 void actLedState(PIF_usId usPifId, uint32_t unState)
@@ -37,7 +39,6 @@ void evtSwitchAcquire(void *pvIssuer)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-
 	pifPulse_sigTick(g_pstTimer1ms);
 }
 

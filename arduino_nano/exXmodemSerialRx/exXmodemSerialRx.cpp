@@ -47,7 +47,6 @@ BOOL actXmodemReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 static void sysTickHook()
 {
     pif_sigTimer1ms();
-
 	pifPulse_sigTick(g_pstTimer1ms);
 }
 

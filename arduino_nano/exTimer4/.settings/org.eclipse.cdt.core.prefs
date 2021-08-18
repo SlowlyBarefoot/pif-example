@@ -448,7 +448,7 @@ environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.COM_PORT
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.COM_PORT/value=/dev/ttyUSB0
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}//////////////
+environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}/////////////////////
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.ALL/value=
@@ -463,7 +463,7 @@ environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.C.
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.C.COMPILE/value=
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.COMPILE/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.COMPILE/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.COMPILE/value=-D__PIF_NO_LOG__ -D__PIF_NO_TERMINAL__
+environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.COMPILE/value=-D__PIF_NO_LOG__
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.CPP.COMPILE/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.CPP.COMPILE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1660347580/JANTJE.EXTRA.CPP.COMPILE/value=

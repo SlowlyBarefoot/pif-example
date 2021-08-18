@@ -5,10 +5,11 @@
 #include "pifLog.h"
 
 
+#define COMM_COUNT         		1
 #define DOT_MATRIX_COUNT		1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	3
-#define TASK_COUNT              4
+#define TASK_COUNT              5
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
@@ -123,13 +124,8 @@ static void _evtDotMatrixShiftFinish(PIF_usId usPifId)
 static uint16_t _taskDotMatrixTest(PIF_stTask *pstTask)
 {
 	static int nShift = 0;
-	static int index = 0;
 
 	(void)pstTask;
-
-	pifDotMatrix_SelectPattern(s_pstDotMatrix, index);
-	index++;
-	if (index >= 96) index = 0;
 
 	nShift++;
 	switch (nShift) {
@@ -163,6 +159,7 @@ static uint16_t _taskDotMatrixTest(PIF_stTask *pstTask)
 
 void appSetup()
 {
+	PIF_stComm *pstCommLog;
 	char cPattern[] = "Hello";
 	static uint8_t ucPattern[5 * 8];
 	int n;
@@ -170,7 +167,13 @@ void appSetup()
     pif_Init(NULL);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
+
+    if (!pifComm_Init(COMM_COUNT)) return;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
@@ -193,6 +196,7 @@ void appSetup()
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
+    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
 	if (!pifTask_AddRatio(5, pifDotMatrix_taskAll, NULL)) return;			// 5%
 
     if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL)) return;				// 500ms

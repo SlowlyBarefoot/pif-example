@@ -30,11 +30,11 @@ void actLedRGBState(PIF_usId usPifId, uint32_t unState)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-
 		pifPulse_sigTick(g_pstTimer1ms);
+		return 0;
 	}
 }
 

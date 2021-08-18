@@ -15,9 +15,11 @@
 static int s_fd;
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	printf("%s", pcString);
+	(void)pstComm;
+
+    return fwrite((char *)pucBuffer, 1, usSize, stdout);
 }
 
 uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)

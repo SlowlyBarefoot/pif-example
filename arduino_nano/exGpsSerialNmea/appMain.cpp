@@ -68,12 +68,19 @@ static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIss
 
 void appSetup()
 {
-	PIF_stSensor *pstPushSwitch = NULL;
+	PIF_stComm *pstCommLog;
+	PIF_stSensor *pstPushSwitch;
 
 	pif_Init(NULL);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
+
+    if (!pifComm_Init(COMM_COUNT)) return;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
@@ -91,8 +98,6 @@ void appSetup()
 	if (!pstPushSwitch) return;
 	pifSensor_AttachAction(pstPushSwitch, actPushSwitchAcquire);
 	pifSensor_AttachEvtChange(pstPushSwitch, _evtPushSwitchChange, NULL);
-
-    if (!pifComm_Init(COMM_COUNT)) return;
 
 	s_pstCommGps = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstCommGps) return;

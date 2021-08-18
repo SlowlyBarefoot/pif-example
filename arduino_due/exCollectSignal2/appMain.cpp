@@ -4,16 +4,15 @@
 #include "pifCollectSignal.h"
 #include "pifLed.h"
 #include "pifLog.h"
-#include "pifSequence.h"
 #include "pifSensorSwitch.h"
-#include "pifTerminal.h"
+#include "pifSequence.h"
 
 
 #define COMM_COUNT         		1
-#define LED_COUNT         		2
+#define LED_COUNT         		3
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	3
-#define SWITCH_COUNT            SEQUENCE_COUNT
+#define SWITCH_COUNT            3
 #define TASK_COUNT              6
 
 
@@ -21,16 +20,7 @@ PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
 static PIF_stLed *s_pstLedRGB = NULL;
-
-static int _CollectSignalTest(int argc, char *argv[]);
-
-const PIF_stTermCmdEntry c_psCmdTable[] = {
-	{ "ver", pifTerminal_PrintVersion, "\nPrint Version" },
-	{ "status", pifTerminal_SetStatus, "\nSet Status" },
-	{ "cs", _CollectSignalTest, "\nCollect Signal Test" },
-
-	{ NULL, NULL, NULL }
-};
+static PIF_stLed *s_pstLedCollect = NULL;
 
 static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner);
 static PIF_enSequenceResult _fnSequenceRun(PIF_stSequence *pstOwner);
@@ -41,6 +31,8 @@ const PIF_stSequencePhase s_astSequencePhaseList[] = {
 		{ _fnSequenceRun, 2 },
 		{ _fnSequenceStop, PIF_SEQUENCE_PHASE_NO_IDLE }
 };
+
+static BOOL bCollect = FALSE;
 
 static struct {
 	PIF_stSensor *pstPushSwitch;
@@ -59,34 +51,35 @@ static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIss
 	(void)pvIssuer;
 
 	if (usLevel) {
-		pifSequence_Start(s_stSequenceTest[index].pstSequence);
+		if (s_stSequenceTest[index].pstSequence->_ucPhaseNo == PIF_SEQUENCE_PHASE_NO_IDLE) {
+			pifSequence_Start(s_stSequenceTest[index].pstSequence);
+		}
 	}
 	else {
-		s_stSequenceTest[index].bSequenceParam = TRUE;
+		if (s_stSequenceTest[index].pstSequence->_ucPhaseNo != PIF_SEQUENCE_PHASE_NO_IDLE) {
+			s_stSequenceTest[index].bSequenceParam = TRUE;
+		}
 	}
 }
 
-static int _CollectSignalTest(int argc, char *argv[])
+static void _evtPushSwitchCollectChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 {
-	if (argc == 1) {
-		return PIF_TERM_CMD_NO_ERROR;
-	}
-	else if (argc > 1) {
-		if (!strcmp(argv[1], "start")) {
+	(void)usPifId;
+	(void)pvIssuer;
+
+	if (usLevel) {
+		if (!bCollect) {
+			pifLed_AllOn(s_pstLedCollect);
 		    pifCollectSignal_Start();
-			return PIF_TERM_CMD_NO_ERROR;
+			bCollect = TRUE;
 		}
-		else if (!strcmp(argv[1], "stop")) {
+		else {
+			pifLed_AllOff(s_pstLedCollect);
 		    pifCollectSignal_Stop();
-			return PIF_TERM_CMD_NO_ERROR;
-		}
-		else if (!strcmp(argv[1], "print")) {
 		    pifCollectSignal_PrintLog();
-			return PIF_TERM_CMD_NO_ERROR;
+			bCollect = FALSE;
 		}
-		return PIF_TERM_CMD_INVALID_ARG;
 	}
-	return PIF_TERM_CMD_TOO_FEW_ARGS;
 }
 
 static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
@@ -111,7 +104,7 @@ static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
 static PIF_enSequenceResult _fnSequenceRun(PIF_stSequence *pstOwner)
 {
 	if (*(BOOL *)pstOwner->pvParam) {
-		pstOwner->usDelay1us = 1000000;
+		pstOwner->unDelay1us = 1000000UL;
 		return SR_enNext;
 	}
 	return SR_enContinue;
@@ -137,22 +130,21 @@ static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
 
 void appSetup(PIF_actTimer1us actTimer1us)
 {
-	PIF_stComm *pstComm;
+	PIF_stComm *pstCommLog;
+	PIF_stSensor *pstPushSwitchCollect;
 	int i;
 
 	pif_Init(actTimer1us);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
-	pstComm = pifComm_Add(PIF_ID_AUTO);
-	if (!pstComm) return;
-	pifComm_AttachActReceiveData(pstComm, actSerialReceiveData);
-	pifComm_AttachActSendData(pstComm, actSerialSendData);
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
-    if (!pifTerminal_Init(c_psCmdTable, "\nDebug")) return;
-	pifTerminal_AttachComm(pstComm);
+	if (!pifLog_AttachComm(pstCommLog)) return;
 
 	pifCollectSignal_InitHeap("example", 0x1000);
 
@@ -169,12 +161,16 @@ void appSetup(PIF_actTimer1us actTimer1us)
     s_pstLedRGB = pifLed_Add(PIF_ID_AUTO, SEQUENCE_COUNT, actLedRGBState);
     if (!s_pstLedRGB) return;
 
+    s_pstLedCollect = pifLed_Add(PIF_ID_AUTO, 1, actLedCollectState);
+    if (!s_pstLedCollect) return;
+
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifSequence_Init(g_pstTimer1ms, SEQUENCE_COUNT)) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
     	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
+	    pifSensorSwitch_SetCsFlagEach(s_stSequenceTest[i].pstPushSwitch, SSCsF_enFilterBit);
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
@@ -182,13 +178,16 @@ void appSetup(PIF_actTimer1us actTimer1us)
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
     }
-
-    pifSensorSwitch_SetCsFlagAll(SSCsF_enFilterBit);
     pifSequence_SetCsFlagAll(SqCsF_enAllBit);
+
+    pstPushSwitchCollect = pifSensorSwitch_Add(PIF_ID_AUTO, 0);
+	if (!pstPushSwitchCollect) return;
+	pifSensor_AttachAction(pstPushSwitchCollect, actPushSwitchCollectAcquire);
+	pifSensor_AttachEvtChange(pstPushSwitchCollect, _evtPushSwitchCollectChange, NULL);
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
-    if (!pifTask_AddPeriodMs(1, pifSensorSwitch_taskAll, NULL)) return;		// 1ms
+    if (!pifTask_AddPeriodMs(5, pifSensorSwitch_taskAll, NULL)) return;		// 5ms
     if (!pifTask_AddPeriodMs(10, pifSequence_taskAll, NULL)) return;		// 10ms
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
     if (!pifTask_AddPeriodMs(10, pifCollectSignal_taskAll, NULL)) return;	// 10ms

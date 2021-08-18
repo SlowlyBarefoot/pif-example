@@ -13,9 +13,11 @@
 #define PIN_TILT_SWITCH			31
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 void actGpioLedL(PIF_usId usPifId, uint8_t ucState)
@@ -41,9 +43,10 @@ uint8_t actGpioSwitch(PIF_usId usPifId)
 }
 
 extern "C" {
-	void sysTickHook()
+	int sysTickHook()
 	{
 		pif_sigTimer1ms();
+		return 0;
 	}
 }
 

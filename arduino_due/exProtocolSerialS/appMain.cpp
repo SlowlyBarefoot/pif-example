@@ -7,7 +7,7 @@
 #include "pifSensorSwitch.h"
 
 
-#define COMM_COUNT         		1
+#define COMM_COUNT         		2
 #define LED_COUNT         		1
 #define PROTOCOL_COUNT          1
 #define PULSE_COUNT         	1
@@ -146,14 +146,19 @@ static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIss
 void appSetup()
 {
 	int i;
-	PIF_stLed *pstLedL = NULL;
+	PIF_stComm *pstCommLog;
+	PIF_stLed *pstLedL;
 
     pif_Init(NULL);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
 
     if (!pifComm_Init(COMM_COUNT)) return;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us

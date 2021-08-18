@@ -5,11 +5,12 @@
 #include "pifLog.h"
 
 
+#define COMM_COUNT         		1
 #define LED_COUNT         		1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	3
 #define SWITCH_COUNT            2
-#define TASK_COUNT              2
+#define TASK_COUNT              3
 
 
 PIF_stSensor *g_pstPushSwitch = NULL;
@@ -21,12 +22,19 @@ static PIF_stLed *s_pstLedL = NULL;
 
 void appSetup()
 {
+	PIF_stComm *pstCommLog;
 	PIF_stPulseItem *pstTimerSwitch;
 
     pif_Init(NULL);
 
     pifLog_Init();
-	pifLog_AttachActPrint(actLogPrint);
+
+    if (!pifComm_Init(COMM_COUNT)) return;
+    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!pstCommLog) return;
+	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+
+	if (!pifLog_AttachComm(pstCommLog)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
@@ -54,6 +62,7 @@ void appSetup()
 
     if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
+    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
     if (!pifTask_AddRatio(3, pifSensorSwitch_taskAll, NULL)) return;		// 3%
 
     pifPulse_StartItem(pstTimerSwitch, 20);									// 20ms

@@ -15,11 +15,6 @@
 SoftwareSerial serialGps(8, 9);		// RX, TX
 
 
-void actLogPrint(char *pcString)
-{
-	Serial.print(pcString);
-}
-
 void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
 	(void)usPifId;
@@ -27,32 +22,18 @@ void actLedLState(PIF_usId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actPushSwitchAcquire(PIF_usId usPifId)
-{
-	(void)usPifId;
-
-	return !digitalRead(PIN_PUSH_SWITCH);
-}
-
-uint16_t actTerminalSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actTerminalReceiveData(PIF_stComm *pstOwner, uint8_t *pucData)
+uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 {
-	int rxData;
+	(void)usPifId;
 
-	(void)pstOwner;
-
-	rxData = Serial.read();
-	if (rxData >= 0) {
-		*pucData = rxData;
-		return TRUE;
-	}
-	return FALSE;
+	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
 uint16_t actGpsSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
@@ -80,7 +61,6 @@ BOOL actGpsReceiveData(PIF_stComm *pstOwner, uint8_t *pucData)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-
 	pifPulse_sigTick(g_pstTimer1ms);
 }
 

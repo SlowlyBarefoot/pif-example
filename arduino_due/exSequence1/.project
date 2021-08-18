@@ -72,21 +72,6 @@
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifComm.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifDotMatrix.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifDotMatrix.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifFnd.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifFnd.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifKeypad.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifKeypad.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifLog.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifLog.h</locationURI>
@@ -117,19 +102,9 @@
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifSequence.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifSolenoid.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifSolenoid.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pifTask.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifTask.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifTerminal.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/include/pifTerminal.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pif.c</name>
@@ -140,21 +115,6 @@
 			<name>pif/core/source/pifComm.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifComm.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifDotMatrix.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifDotMatrix.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifFnd.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifFnd.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifKeypad.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifKeypad.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pifLog.c</name>
@@ -187,19 +147,9 @@
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifSequence.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pifSolenoid.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifSolenoid.c</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pifTask.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifTask.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifTerminal.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/core/source/pifTerminal.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

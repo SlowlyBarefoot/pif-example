@@ -2,7 +2,10 @@
 #define APP_MAIN_H
 
 
-void appSetup();
+#include "pif.h"
+
+
+void appSetup(PIF_actTimer1us actTimer1us);
 
 
 #endif	// APP_MAIN_H

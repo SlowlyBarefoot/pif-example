@@ -16,12 +16,13 @@
 
 //add your function definitions for the project exCollectSignal2 here
 
-void actLogPrint(char *pcString);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 void actLedRGBState(PIF_usId usPifId, uint32_t unState);
+void actLedCollectState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
-uint16_t actSerialSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actSerialReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+uint16_t actPushSwitchCollectAcquire(PIF_usId usPifId);
+uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exCollectSignal2_H_ */

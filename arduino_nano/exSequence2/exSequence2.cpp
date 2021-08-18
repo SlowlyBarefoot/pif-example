@@ -21,9 +21,11 @@ static struct {
 };
 
 
-void actLogPrint(char *pcString)
+uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
-	Serial.print(pcString);
+	(void)pstComm;
+
+    return Serial.write((char *)pucBuffer, usSize);
 }
 
 void actLedLState(PIF_usId usPifId, uint32_t unState)
@@ -49,7 +51,6 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-
 	pifPulse_sigTick(g_pstTimer1ms);
 }
 
@@ -65,7 +66,7 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	Serial.begin(115200); //Doesn't matter speed
+	Serial.begin(115200);
 
 	appSetup(micros);
 }
