@@ -67,11 +67,11 @@ static int _CmdLedControl(int argc, char *argv[])
 
 #endif
 
-void appSetup()
+void appSetup(PIF_actTimer1us actTimer1us)
 {
 	PIF_stComm *pstCommLog;
 
-    pif_Init(NULL);
+    pif_Init(actTimer1us);
 
     pifLog_Init();
 

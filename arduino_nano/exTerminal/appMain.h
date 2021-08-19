@@ -8,7 +8,7 @@
 extern PIF_stPulse *g_pstTimer1ms;
 
 
-void appSetup();
+void appSetup(PIF_actTimer1us actTimer1us);
 
 
 #endif	// APP_MAIN_H

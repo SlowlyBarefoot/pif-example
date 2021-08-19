@@ -59,7 +59,7 @@ void setup()
 
 	Serial.begin(115200);
 
-	appSetup();
+	appSetup(micros);
 }
 
 // The loop function is called in an endless loop
