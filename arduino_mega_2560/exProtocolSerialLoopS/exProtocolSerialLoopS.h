@@ -13,16 +13,30 @@
 
 //end of add your includes here
 
+#define USE_SERIAL
+//#define USE_USART
+
 
 //add your function definitions for the project exProtocolSerialLoopS here
 
+#ifdef USE_SERIAL
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+#endif
+#ifdef USE_USART
+void actLogStartTransfer();
+#endif
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
-uint16_t actSerial1SendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actSerial1ReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
-uint16_t actSerial2SendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actSerial2ReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+#ifdef USE_SERIAL
+uint16_t actSerial1SendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actSerial1ReceiveData(PIF_stComm *pstComm, uint8_t *pucData);
+uint16_t actSerial2SendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actSerial2ReceiveData(PIF_stComm *pstComm, uint8_t *pucData);
+#endif
+#ifdef USE_USART
+void actUart1StartTransfer();
+void actUart2StartTransfer();
+#endif
 
 //Do not add code below this line
 #endif /* _exProtocolSerialLoopS_H_ */

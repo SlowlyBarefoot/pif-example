@@ -3,6 +3,9 @@
 
 #include "exProtocolSerialLoopS.h"
 #include "appMain.h"
+#ifdef USE_USART
+#include "../usart.h"
+#endif
 
 
 #define PIN_LED_L				13
@@ -13,12 +16,30 @@
 static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
+#ifdef USE_SERIAL
+
 uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
+
+#endif
+
+#ifdef USE_USART
+
+void actLogStartTransfer()
+{
+	USART_StartTransfer(0);
+}
+
+ISR(USART0_UDRE_vect)
+{
+	USART_Send(0, g_pstCommLog);
+}
+
+#endif
 
 void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
@@ -31,6 +52,8 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 {
 	return !digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
+
+#ifdef USE_SERIAL
 
 uint16_t actSerial1SendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
@@ -74,6 +97,42 @@ BOOL actSerial2ReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 	return FALSE;
 }
 
+#endif
+
+#ifdef USE_USART
+
+void actUart1StartTransfer()
+{
+	USART_StartTransfer(1);
+}
+
+ISR(USART1_UDRE_vect)
+{
+	USART_Send(1, g_pstSerial1);
+}
+
+ISR(USART1_RX_vect)
+{
+	USART_Receive(1, g_pstSerial1);
+}
+
+void actUart2StartTransfer()
+{
+	USART_StartTransfer(2);
+}
+
+ISR(USART2_UDRE_vect)
+{
+	USART_Send(2, g_pstSerial2);
+}
+
+ISR(USART2_RX_vect)
+{
+	USART_Receive(2, g_pstSerial2);
+}
+
+#endif
+
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
@@ -90,9 +149,19 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
+#ifdef USE_SERIAL
 	Serial.begin(115200);
 	Serial1.begin(115200);
 	Serial2.begin(115200);
+#endif
+#ifdef USE_USART
+	USART_Init(0, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
+	USART_Init(1, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
+	USART_Init(2, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
+
+	//Enable Global Interrupts
+	sei();
+#endif
 
 	appSetup();
 }

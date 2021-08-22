@@ -5,7 +5,8 @@
 #include "pifProtocol.h"
 
 
-static PIF_stComm *s_pstSerial2 = NULL;
+PIF_stComm *g_pstSerial2 = NULL;
+
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket);
@@ -122,14 +123,21 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL exSerial2_Setup()
 {
-	s_pstSerial2 = pifComm_Add(PIF_ID_AUTO);
-	if (!s_pstSerial2) return FALSE;
-	pifComm_AttachActReceiveData(s_pstSerial2, actSerial2ReceiveData);
-	pifComm_AttachActSendData(s_pstSerial2, actSerial2SendData);
+	g_pstSerial2 = pifComm_Add(PIF_ID_AUTO);
+	if (!g_pstSerial2) return FALSE;
+#ifdef USE_SERIAL
+	pifComm_AttachActReceiveData(g_pstSerial2, actSerial2ReceiveData);
+	pifComm_AttachActSendData(g_pstSerial2, actSerial2SendData);
+#endif
+#ifdef USE_USART
+	if (!pifComm_AllocRxBuffer(g_pstSerial2, 64)) return FALSE;
+	if (!pifComm_AllocTxBuffer(g_pstSerial2, 64)) return FALSE;
+	pifComm_AttachActStartTransfer(g_pstSerial2, actUart2StartTransfer);
+#endif
 
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial2);
+    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial2);
     s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {

@@ -3,6 +3,9 @@
 
 #include "exTerminal.h"
 #include "appMain.h"
+#ifdef USE_USART
+#include "../usart.h"
+#endif
 
 #include "pifLog.h"
 
@@ -10,14 +13,14 @@
 #define PIN_LED_L				13
 
 
+#ifdef USE_SERIAL
+
 uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
-
-#ifdef __PIF_LOG_COMMAND__
 
 BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 {
@@ -31,6 +34,25 @@ BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 		return TRUE;
 	}
 	return FALSE;
+}
+
+#endif
+
+#ifdef USE_USART
+
+void actLogStartTransfer()
+{
+	USART_StartTransfer(0);
+}
+
+ISR(USART0_UDRE_vect)
+{
+	USART_Send(0, g_pstCommLog);
+}
+
+ISR(USART0_RX_vect)
+{
+	USART_Receive(0, g_pstCommLog);
 }
 
 #endif
@@ -57,7 +79,15 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
+#ifdef USE_SERIAL
 	Serial.begin(115200);
+#endif
+#ifdef USE_USART
+	USART_Init(0, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
+
+	// Enable Global Interrupts
+	sei();
+#endif
 
 	appSetup(micros);
 }
