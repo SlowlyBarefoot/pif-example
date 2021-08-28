@@ -13,9 +13,8 @@
 
 //end of add your includes here
 
-#define USE_SERIAL
-//#define USE_USART
-
+//#define USE_SERIAL
+#define USE_USART
 
 //add your function definitions for the project exTerminal here
 

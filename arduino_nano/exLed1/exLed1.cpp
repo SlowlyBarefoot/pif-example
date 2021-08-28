@@ -3,6 +3,9 @@
 
 #include "exLed1.h"
 #include "appMain.h"
+#ifdef USE_USART
+#include "../usart.h"
+#endif
 
 #include "pifLog.h"
 
@@ -13,12 +16,30 @@
 #define PIN_LED_GREEN			4
 
 
+#ifdef USE_SERIAL
+
 uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
+
+#endif
+
+#ifdef USE_USART
+
+void actLogStartTransfer()
+{
+	USART_StartTransfer();
+}
+
+ISR(USART_UDRE_vect)
+{
+	USART_Send(g_pstCommLog);
+}
+
+#endif
 
 void actLedLState(PIF_usId usPifId, uint32_t unState)
 {
@@ -54,7 +75,15 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
+#ifdef USE_SERIAL
 	Serial.begin(115200); //Doesn't matter speed
+#endif
+#ifdef USE_USART
+	USART_Init(115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
+
+	// Enable Global Interrupts
+	sei();
+#endif
 
     appSetup();
 }

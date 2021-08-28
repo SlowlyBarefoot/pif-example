@@ -37,6 +37,16 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>usart.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/usart.c</locationURI>
+		</link>
+		<link>
+			<name>usart.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/usart.h</locationURI>
+		</link>
+		<link>
 			<name>core/core</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.3/cores/arduino</locationURI>

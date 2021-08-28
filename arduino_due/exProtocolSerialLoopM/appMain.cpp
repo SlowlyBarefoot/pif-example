@@ -18,11 +18,11 @@
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
+PIF_stComm *g_pstCommLog = NULL;
 
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
 	PIF_stLed *pstLedL;
 
 	pif_Init(NULL);
@@ -30,11 +30,11 @@ void appSetup()
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+    g_pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!g_pstCommLog) return;
+	pifComm_AttachActSendData(g_pstCommLog, actLogSendData);
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(g_pstCommLog)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us

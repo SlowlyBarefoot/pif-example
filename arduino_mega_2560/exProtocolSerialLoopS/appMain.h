@@ -8,6 +8,8 @@
 #include "exSerial2.h"
 
 
+//#define PRINT_PACKET_DATA
+
 #define SWITCH_COUNT          	2
 
 #define PIF_ID_SWITCH			0x100

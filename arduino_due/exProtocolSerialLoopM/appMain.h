@@ -4,6 +4,9 @@
 
 #include "pifPulse.h"
 
+#include "exSerial1.h"
+#include "exSerial2.h"
+
 
 #define SWITCH_COUNT          	2
 
@@ -11,6 +14,7 @@
 
 
 extern PIF_stPulse *g_pstTimer1ms;
+extern PIF_stComm *g_pstCommLog;
 
 
 void appSetup();

@@ -13,6 +13,7 @@
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
+PIF_stComm *g_pstCommLog = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
 static PIF_stLed *s_pstLedRGB = NULL;
@@ -108,18 +109,22 @@ static uint16_t _taskLed(PIF_stTask *pstTask)
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
-
     pif_Init(NULL);
 
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+    g_pstCommLog = pifComm_Add(PIF_ID_AUTO);
+	if (!g_pstCommLog) return;
+#ifdef USE_SERIAL
+	pifComm_AttachActSendData(g_pstCommLog, actLogSendData);
+#endif
+#ifdef USE_USART
+	if (!pifComm_AllocTxBuffer(g_pstCommLog, 64)) return;
+	pifComm_AttachActStartTransfer(g_pstCommLog, actLogStartTransfer);
+#endif
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(g_pstCommLog)) return;
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us

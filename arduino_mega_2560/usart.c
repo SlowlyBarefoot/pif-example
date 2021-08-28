@@ -63,6 +63,7 @@ void USART_Send(int port, PIF_stComm *pstComm)
 #endif
 	}
 	if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
+		pifComm_FinishTransfer(pstComm);
 		*p_stUsart->ucsrb &= ~(1 << UDRIE0); // Disables the Interrupt, uncomment for one time transmission of data
 	}
 }
