@@ -47,17 +47,18 @@ void appSetup()
 	PIF_stKeypad *pstKeypad;
 
 	pif_Init(NULL);
-
 	pifLog_Init();
 
 	if (!pifComm_Init(COMM_COUNT)) return;
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
+	pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    if (!pifPulse_Init(PULSE_COUNT)) return;
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
 
@@ -69,7 +70,6 @@ void appSetup()
     pstKeypad->evtLongReleased = _evtKeypadLongReleased;
     pstKeypad->evtDoublePressed = _evtKeypadDoublePressed;
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
     if (!pifTask_AddPeriodMs(10, pifKeypad_taskAll, NULL)) return;			// 10ms
 

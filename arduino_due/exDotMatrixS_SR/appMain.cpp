@@ -146,21 +146,22 @@ void appSetup()
 	PIF_stComm *pstCommLog;
 
     pif_Init(NULL);
-
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!g_pstTimer1ms) return;
+
+    if (!pifDotMatrix_Init(DOT_MATRIX_COUNT, g_pstTimer1ms)) return;
+
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
-
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) return;
-
-    if (!pifDotMatrix_Init(g_pstTimer1ms, DOT_MATRIX_COUNT)) return;
 
     s_pstDotMatrix = pifDotMatrix_Add(PIF_ID_AUTO, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
@@ -169,7 +170,6 @@ void appSetup()
     	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 8, (uint8_t *)font8x8_basic[i])) return;
     }
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
 	if (!pifTask_AddRatio(5, pifDotMatrix_taskAll, NULL)) return;			// 5%

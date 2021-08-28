@@ -137,8 +137,6 @@ BOOL exSerial1_Setup()
 {
 	int i;
 
-    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return FALSE;
-
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return FALSE;
@@ -152,7 +150,7 @@ BOOL exSerial1_Setup()
 	pifComm_AttachActReceiveData(g_pstSerial1, actSerial1ReceiveData);
 	pifComm_AttachActSendData(g_pstSerial1, actSerial1SendData);
 
-    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
+    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions1);
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
     s_pstProtocol->evtError = _evtProtocolError;

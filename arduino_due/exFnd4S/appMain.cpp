@@ -68,26 +68,27 @@ void appSetup()
 	PIF_stComm *pstCommLog;
 
     pif_Init(NULL);
-
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!g_pstTimer1ms) return;
+
+    if (!pifFnd_Init(FND_COUNT, g_pstTimer1ms)) return;
+
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) return;
-
-    if (!pifFnd_Init(g_pstTimer1ms, FND_COUNT)) return;
     pifFnd_SetUserChar(c_ucUserChar, 2);
     s_pstFnd = pifFnd_Add(PIF_ID_AUTO, 4, actFndDisplay);
     if (!s_pstFnd) return;
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
     if (!pifTask_AddRatio(5, pifFnd_taskAll, NULL)) return;					// 5%

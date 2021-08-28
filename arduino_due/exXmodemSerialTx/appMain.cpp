@@ -106,24 +106,27 @@ void appSetup()
 	PIF_stLed *pstLedL;
 
     pif_Init(NULL);
-
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us
+    if (!g_pstTimer1ms) return;
+
+    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
+    if (!pifXmodem_Init(XMODEM_COUNT, g_pstTimer1ms)) return;
+
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) return;
-
-    if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;
     pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
+    if (!pifLed_AttachBlink(pstLedL, 500)) return;						// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
     s_pstSerial = pifComm_Add(PIF_ID_AUTO);
@@ -131,13 +134,11 @@ void appSetup()
 	pifComm_AttachActReceiveData(s_pstSerial, actXmodemReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actXmodemSendData);
 
-    if (!pifXmodem_Init(g_pstTimer1ms, XMODEM_COUNT)) return;
     s_pstXmodem = pifXmodem_Add(PIF_ID_AUTO, XT_enCRC);
 	if (!s_pstXmodem) return;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;			// 1ms
 }

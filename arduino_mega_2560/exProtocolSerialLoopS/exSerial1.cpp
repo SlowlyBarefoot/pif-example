@@ -137,8 +137,6 @@ BOOL exSerial1_Setup()
 {
 	int i;
 
-    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return FALSE;
-
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return FALSE;

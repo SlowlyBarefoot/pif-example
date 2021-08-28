@@ -160,26 +160,27 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	PIF_stComm *pstCommLog;
 
 	pif_Init(actTimer1us);
-
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
+	if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
+	g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us
+    if (!g_pstTimer1ms) return;
+
+    if (!pifSequence_Init(SEQUENCE_COUNT, g_pstTimer1ms)) return;
+
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-	if (!pifPulse_Init(PULSE_COUNT)) return;
-	g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);	// 1000us
-    if (!g_pstTimer1ms) return;
-
-    if (!pifSequence_Init(g_pstTimer1ms, SEQUENCE_COUNT)) return;
     s_pstSequence = pifSequence_Add(1, s_astSequencePhaseList, NULL);
     if (!s_pstSequence) return;
     s_pstSequence->evtError = _evtSequenceError;
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;			// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;			// 1ms
     if (!pifTask_AddPeriodMs(10, pifSequence_taskAll, NULL)) return;	// 10ms

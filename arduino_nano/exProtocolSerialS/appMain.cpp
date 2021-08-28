@@ -26,14 +26,14 @@ static void _fnProtocolResponse20(PIF_stProtocolPacket *pstPacket);
 static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket);
 
 const PIF_stProtocolQuestion stProtocolQuestions[] = {
-		{ 0x30, PF_enDefault, _fnProtocolQuestion30 },
-		{ 0x31, PF_enDefault, _fnProtocolQuestion31 },
+		{ 0x30, PF_enAnswer_Yes | PF_enDefault, _fnProtocolQuestion30 },
+		{ 0x31, PF_enAnswer_No | PF_enDefault, _fnProtocolQuestion31 },
 		{ 0, PF_enDefault, NULL }
 };
 
 const PIF_stProtocolRequest stProtocolRequestTable[] = {
 		{ 0x20, PF_enResponse_Yes, _fnProtocolResponse20, 3, 300 },
-		{ 0x21, PF_enResponse_Ack, _fnProtocolResponse21, 3, 300 },
+		{ 0x21, PF_enResponse_No, _fnProtocolResponse21, 3, 300 },
 		{ 0, PF_enDefault, NULL, 0, 0 }
 };
 
@@ -106,12 +106,15 @@ void appSetup()
     pif_Init(NULL);
 
     if (!pifComm_Init(COMM_COUNT)) return;
-
     if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
 
-    if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;
+    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
+    if (!pifProtocol_Init(PROTOCOL_COUNT, g_pstTimer1ms)) return;
+
     pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
@@ -128,12 +131,10 @@ void appSetup()
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
 
-    if (!pifProtocol_Init(g_pstTimer1ms, PROTOCOL_COUNT)) return;
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;		// 1ms
 }

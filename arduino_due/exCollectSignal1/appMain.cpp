@@ -136,10 +136,20 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	int i;
 
 	pif_Init(actTimer1us);
-
     pifLog_Init();
 
+    pifCollectSignal_Init("example");
     if (!pifComm_Init(COMM_COUNT)) return;
+	if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
+	g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!g_pstTimer1ms) return;
+
+    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
+    if (!pifSequence_Init(SEQUENCE_COUNT, g_pstTimer1ms)) return;
+
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
@@ -147,13 +157,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-	pifCollectSignal_Init("example");
-
-	if (!pifPulse_Init(PULSE_COUNT)) return;
-	g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) return;
-
-    if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;
     s_pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;						// 500ms
@@ -164,9 +167,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
 
     s_pstLedCollect = pifLed_Add(PIF_ID_AUTO, 1, actLedCollectState);
     if (!s_pstLedCollect) return;
-
-    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-    if (!pifSequence_Init(g_pstTimer1ms, SEQUENCE_COUNT)) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
     	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
@@ -186,7 +186,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	pifSensor_AttachAction(pstPushSwitchCollect, actPushSwitchCollectAcquire);
 	pifSensor_AttachEvtChange(pstPushSwitchCollect, _evtPushSwitchCollectChange, NULL);
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
     if (!pifTask_AddPeriodMs(5, pifSensorSwitch_taskAll, NULL)) return;		// 5ms
     if (!pifTask_AddPeriodMs(10, pifSequence_taskAll, NULL)) return;		// 10ms

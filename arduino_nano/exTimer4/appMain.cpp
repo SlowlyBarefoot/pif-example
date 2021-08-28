@@ -71,11 +71,12 @@ void appSetup()
 	pif_Init(NULL);
 
     if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
 
-    if (!pifTask_Init(TASK_COUNT)) return;
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
+    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
 
     s_pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!s_pstTimer1msRed) return;
@@ -90,7 +91,8 @@ void appSetup()
     if (!s_pstTimer1msGreen) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msGreen, _evtLedGreenToggle, s_pstTimer1msGreen);
 
-    if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;
     s_pstLedRGB = pifLed_Add(PIF_ID_AUTO, 3, actLedRGBState);
     if (!s_pstLedRGB) return;
+
+    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
 }

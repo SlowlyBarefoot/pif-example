@@ -41,21 +41,23 @@ void appSetup()
 	PIF_stComm *pstCommLog;
 
     pif_Init(NULL);
-
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!g_pstTimer1ms) return;
+
+    if (!pifSolenoid_Init(SOLENOID_COUNT, g_pstTimer1ms)) return;
+
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) return;
-
-    if (!pifSolenoid_Init(g_pstTimer1ms, SOLENOID_COUNT)) return;
     s_stSolenoidTest.pstSolenoid = pifSolenoid_Add(PIF_ID_AUTO, ST_en2Point, 30, actSolenoidOrder);	// 30ms
     if (!s_stSolenoidTest.pstSolenoid) return;
 
@@ -64,7 +66,6 @@ void appSetup()
     pifPulse_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _evtSolenoidFinish, &s_stSolenoidTest);
     pifPulse_StartItem(s_stSolenoidTest.pstTimerItem, 1000);				// 1000ms
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
 

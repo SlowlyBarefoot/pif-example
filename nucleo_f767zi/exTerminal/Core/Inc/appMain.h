@@ -5,9 +5,6 @@
 #include "pifComm.h"
 #include "pifPulse.h"
 
-#include "exSerial1.h"
-#include "exSerial2.h"
-
 
 extern PIF_stPulse *g_pstTimer1ms;
 extern PIF_stComm *g_pstCommLog;

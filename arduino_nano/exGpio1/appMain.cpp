@@ -38,17 +38,18 @@ void appSetup()
 	PIF_stComm *pstCommLog;
 
     pif_Init(NULL);
-
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
+    if (!pifGpio_Init(GPIO_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    if (!pifGpio_Init(GPIO_COUNT)) return;
     s_pstGpioL = pifGpio_AddOut(PIF_ID_AUTO, 1, actGpioLedL);
     if (!s_pstGpioL) return;
 
@@ -58,7 +59,6 @@ void appSetup()
     s_pstGpioSwitch = pifGpio_AddIn(PIF_ID_AUTO, 1, actGpioSwitch);
     if (!s_pstGpioSwitch) return;
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
 
     if (!pifTask_AddPeriodMs(500, _taskGpioTest, NULL)) return;				// 500ms

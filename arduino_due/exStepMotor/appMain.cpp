@@ -147,10 +147,20 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	PIF_stTask *pstTask;
 
 	pif_Init(actTimer1us);
-
     pifLog_Init();
 
     if (!pifComm_Init(COMM_COUNT)) return;
+    if (!pifPulse_Init(PULSE_COUNT)) return;
+    if (!pifTask_Init(TASK_COUNT)) return;
+
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    if (!g_pstTimer1ms) return;
+    g_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);		// 200us
+    if (!g_pstTimer200us) return;
+
+    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
+    if (!pifStepMotor_Init(MOTOR_COUNT, g_pstTimer200us)) return;
+
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
@@ -159,19 +169,11 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	if (!pifLog_AttachComm(pstCommLog)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
-    if (!pifPulse_Init(PULSE_COUNT)) return;
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
-    if (!g_pstTimer1ms) return;
-    g_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);		// 200us
-    if (!g_pstTimer200us) return;
-
-    if (!pifLed_Init(g_pstTimer1ms, LED_COUNT)) return;
     pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
-    if (!pifStepMotor_Init(g_pstTimer200us, MOTOR_COUNT)) return;
     s_pstMotor = pifStepMotor_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S);
     if (!s_pstMotor) return;
     pifStepMotor_AttachAction(s_pstMotor, actSetStep);
@@ -179,7 +181,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
     pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
 	pifStepMotor_SetPps(s_pstMotor, 200);
 
-    if (!pifTask_Init(TASK_COUNT)) return;
     if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
     if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
     if (!pifTask_AddPeriodMs(20, pifLog_taskAll, NULL)) return;				// 20ms
