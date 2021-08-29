@@ -50,15 +50,14 @@ void appSetup()
 
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
+    if (!pifTask_AddPeriodMs(1, pifComm_Task, pstCommLog, TRUE)) return;	// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
-
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
-    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
+    if (!pifTask_AddRatio(100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;	// 100%
 
     pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!pstTimer1ms) return;

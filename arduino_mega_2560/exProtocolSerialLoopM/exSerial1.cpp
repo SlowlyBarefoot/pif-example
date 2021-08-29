@@ -140,6 +140,7 @@ BOOL exSerial1_Setup()
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return FALSE;
+	    if (!pifTask_AddPeriodMs(10, pifSensorSwitch_Task, s_stProtocolTest[i].pstPushSwitch, TRUE)) return FALSE;	// 10ms
 		pifSensor_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
@@ -147,6 +148,7 @@ BOOL exSerial1_Setup()
 
     g_pstSerial1 = pifComm_Add(PIF_ID_AUTO);
 	if (!g_pstSerial1) return FALSE;
+    if (!pifTask_AddPeriodMs(1, pifComm_Task, g_pstSerial1, TRUE)) return FALSE;									// 1ms
 #ifdef USE_SERIAL
 	pifComm_AttachActReceiveData(g_pstSerial1, actSerial1ReceiveData);
 	pifComm_AttachActSendData(g_pstSerial1, actSerial1SendData);
@@ -161,8 +163,6 @@ BOOL exSerial1_Setup()
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
     s_pstProtocol->evtError = _evtProtocolError;
-
-    if (!pifTask_AddPeriodMs(10, pifSensorSwitch_taskAll, NULL)) return FALSE;	// 10ms
 
     return TRUE;
 }

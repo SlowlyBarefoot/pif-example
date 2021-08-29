@@ -129,6 +129,7 @@ BOOL exSerial2_Setup()
 {
 	g_pstSerial2 = pifComm_Add(PIF_ID_AUTO);
 	if (!g_pstSerial2) return FALSE;
+    if (!pifTask_AddPeriodMs(1, pifComm_Task, g_pstSerial2, TRUE)) return FALSE;			// 1ms
 #ifdef USE_SERIAL
 	pifComm_AttachActReceiveData(g_pstSerial2, actSerial2ReceiveData);
 	pifComm_AttachActSendData(g_pstSerial2, actSerial2SendData);

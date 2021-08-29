@@ -75,6 +75,7 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
+    if (!pifTask_AddRatio(100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;	// 100%
 
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
 
@@ -93,6 +94,4 @@ void appSetup()
 
     s_pstLedRGB = pifLed_Add(PIF_ID_AUTO, 3, actLedRGBState);
     if (!s_pstLedRGB) return;
-
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
 }

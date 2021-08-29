@@ -11,7 +11,7 @@ void appSetup(PIF_actTimer1us actTimer1us)
 
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL)) return;			// 500ms
-    if (!pifTask_AddRatio(100, taskLedRedToggle, NULL)) return;			// 100%
-    if (!pifTask_AddPeriodUs(200, taskLedYellowToggle, NULL)) return;	// 200us
+    if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL, TRUE)) return;			// 500ms
+    if (!pifTask_AddRatio(100, taskLedRedToggle, NULL, TRUE)) return;			// 100%
+    if (!pifTask_AddPeriodUs(200, taskLedYellowToggle, NULL, TRUE)) return;		// 200us
 }

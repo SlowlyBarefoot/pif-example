@@ -55,6 +55,7 @@ void appSetup()
 
 	pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
+    if (!pifTask_AddPeriodMs(1, pifComm_Task, pstCommLog, TRUE)) return;	// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -64,14 +65,12 @@ void appSetup()
 
     pstKeypad = pifKeypad_Init(PIF_ID_AUTO, ROWS, COLS, c_cKeys);
     if (!pstKeypad) return;
+    if (!pifTask_AddPeriodMs(10, pifKeypad_Task, pstKeypad, TRUE)) return;	// 10ms
     pifKeypad_AttachAction(actKeypadAcquire);
     pstKeypad->evtPressed = _evtKeypadPressed;
     pstKeypad->evtReleased = _evtKeypadReleased;
     pstKeypad->evtLongReleased = _evtKeypadLongReleased;
     pstKeypad->evtDoublePressed = _evtKeypadDoublePressed;
 
-    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
-    if (!pifTask_AddPeriodMs(10, pifKeypad_taskAll, NULL)) return;			// 10ms
-
-    if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL)) return;				// 500ms
+    if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL, TRUE)) return;		// 500ms
 }

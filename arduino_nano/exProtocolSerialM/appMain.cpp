@@ -11,7 +11,7 @@
 #define PROTOCOL_COUNT          1
 #define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	5
-#define TASK_COUNT              2
+#define TASK_COUNT              3
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
@@ -109,15 +109,16 @@ void appSetup()
     if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);											// 1000us
     if (!g_pstTimer1ms) return;
+    if (!pifTask_AddRatio(100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;										// 100%
 
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
     if (!pifProtocol_Init(PROTOCOL_COUNT, g_pstTimer1ms)) return;
 
     pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
+    if (!pifLed_AttachBlink(pstLedL, 500)) return;																// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
     for (int i = 0; i < 2; i++) {
@@ -128,13 +129,11 @@ void appSetup()
 
     s_pstSerial = pifComm_Add(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
+    if (!pifTask_AddPeriodMs(1, pifComm_Task, s_pstSerial, TRUE)) return;										// 1ms
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
 
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;		// 100%
-    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;		// 1ms
 }

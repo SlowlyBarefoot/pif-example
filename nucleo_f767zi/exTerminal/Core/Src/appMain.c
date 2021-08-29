@@ -76,11 +76,13 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
+    if (!pifTask_AddRatio(100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;	// 100%
 
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
 
     g_pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
+    if (!pifTask_AddPeriodMs(1, pifComm_Task, g_pstCommLog, TRUE)) return;	// 1ms
 	if (!pifComm_AllocRxBuffer(g_pstCommLog, 64)) return;
 	if (!pifComm_AllocTxBuffer(g_pstCommLog, 128)) return;
 	pifComm_AttachActStartTransfer(g_pstCommLog, actLogStartTransfer);
@@ -94,7 +96,5 @@ void appSetup()
     pifLed_BlinkOn(s_pstLedL, 0);
     bBlink = TRUE;
 
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return;				// 100%
-    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return;				// 1ms
-    if (!pifTask_AddPeriodMs(20, pifLog_taskAll, NULL)) return;				// 20ms
+    if (!pifTask_AddPeriodMs(20, pifLog_Task, NULL, TRUE)) return;			// 20ms
 }

@@ -64,7 +64,7 @@ void appSetup()
 
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    if (!pifTask_AddRatio(30, _taskLedRedToggle, NULL)) return;			// 30%
-    if (!pifTask_AddRatio(60, _taskLedYellowToggle, NULL)) return;		// 60%
-    if (!pifTask_AddRatio(100, _taskLedGreenToggle, NULL)) return;		// 100%
+    if (!pifTask_AddRatio(30, _taskLedRedToggle, NULL, TRUE)) return;			// 30%
+    if (!pifTask_AddRatio(60, _taskLedYellowToggle, NULL, TRUE)) return;		// 60%
+    if (!pifTask_AddRatio(100, _taskLedGreenToggle, NULL, TRUE)) return;		// 100%
 }
