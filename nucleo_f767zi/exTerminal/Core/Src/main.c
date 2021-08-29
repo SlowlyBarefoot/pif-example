@@ -64,7 +64,7 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void actLogStartTransfer()
+BOOL actLogStartTransfer()
 {
 	uint8_t *pucData, ucState;
 	uint16_t usLength;
@@ -72,7 +72,9 @@ void actLogStartTransfer()
 	ucState = pifComm_SendDatas(g_pstCommLog, &pucData, &usLength);
 	if (ucState & 1) {
 		HAL_UART_Transmit_IT(&huart3, pucData, usLength);
+		return TRUE;
 	}
+	return FALSE;
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)

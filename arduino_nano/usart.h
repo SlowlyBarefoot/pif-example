@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 void USART_Init(uint32_t baud, uint8_t config, BOOL bRxInt);
-void USART_StartTransfer();
+BOOL USART_StartTransfer();
 void USART_Send(PIF_stComm *pstComm);
 void USART_Receive(PIF_stComm *pstComm);
 

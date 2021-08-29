@@ -42,9 +42,10 @@ void USART_Init(int port, uint32_t baud, uint8_t config, BOOL bRxInt)
 	if (bRxInt)	*p_stUsart->ucsrb |= (1 << RXCIE0);
 }
 
-void USART_StartTransfer(int port)
+BOOL USART_StartTransfer(int port)
 {
 	*s_stUsart[port].ucsrb |= (1 << UDRIE0); // Enables the Interrupt
+	return TRUE;
 }
 
 void USART_Send(int port, PIF_stComm *pstComm)

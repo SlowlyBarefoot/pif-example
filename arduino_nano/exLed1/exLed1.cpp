@@ -29,9 +29,9 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
 
 #ifdef USE_USART
 
-void actLogStartTransfer()
+BOOL actLogStartTransfer()
 {
-	USART_StartTransfer();
+	return USART_StartTransfer();
 }
 
 ISR(USART_UDRE_vect)

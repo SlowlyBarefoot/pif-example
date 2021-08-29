@@ -24,7 +24,7 @@ uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSiz
 BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 #endif
 #ifdef USE_USART
-void actLogStartTransfer();
+BOOL actLogStartTransfer();
 #endif
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 

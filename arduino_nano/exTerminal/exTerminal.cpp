@@ -40,9 +40,9 @@ BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 
 #ifdef USE_USART
 
-void actLogStartTransfer()
+BOOL actLogStartTransfer()
 {
-	USART_StartTransfer();
+	return USART_StartTransfer();
 }
 
 ISR(USART_UDRE_vect)

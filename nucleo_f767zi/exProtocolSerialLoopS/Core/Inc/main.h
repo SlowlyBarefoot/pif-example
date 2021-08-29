@@ -55,11 +55,11 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void actLogStartTransfer();
+BOOL actLogStartTransfer();
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
-void actUart1StartTransfer();
-void actUart2StartTransfer();
+BOOL actUart1StartTransfer();
+BOOL actUart2StartTransfer();
 
 /* USER CODE END EFP */
 

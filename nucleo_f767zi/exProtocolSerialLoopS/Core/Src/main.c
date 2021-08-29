@@ -74,14 +74,16 @@ static void MX_UART4_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void actLogStartTransfer()
+BOOL actLogStartTransfer()
 {
 	uint8_t *pucData, ucState;
 
 	ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
+		return TRUE;
 	}
+	return FALSE;
 }
 
 void actLedLState(PIF_usId usPifId, uint32_t unState)
@@ -98,24 +100,28 @@ uint16_t actPushSwitchAcquire(PIF_usId usPifId)
 	return !HAL_GPIO_ReadPin(GPIOE, usPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-void actUart1StartTransfer()
+BOOL actUart1StartTransfer()
 {
 	uint8_t *pucData, ucState;
 
 	ucState = pifComm_StartSendDatas(g_pstSerial1, &pucData, &s_usSerial1Tx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart4, pucData, s_usSerial1Tx);
+		return TRUE;
 	}
+	return FALSE;
 }
 
-void actUart2StartTransfer()
+BOOL actUart2StartTransfer()
 {
 	uint8_t *pucData, ucState;
 
 	ucState = pifComm_StartSendDatas(g_pstSerial2, &pucData, &s_usSerial2Tx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart5, pucData, s_usSerial2Tx);
+		return TRUE;
 	}
+	return FALSE;
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)

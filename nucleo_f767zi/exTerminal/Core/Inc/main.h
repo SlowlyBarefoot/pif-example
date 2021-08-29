@@ -55,7 +55,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void actLogStartTransfer();
+BOOL actLogStartTransfer();
 void actLedLState(PIF_usId usPifId, uint32_t unState);
 
 /* USER CODE END EFP */
