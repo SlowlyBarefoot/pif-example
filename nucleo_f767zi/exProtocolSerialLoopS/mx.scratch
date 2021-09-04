@@ -14,7 +14,11 @@
       <ProjectName>exProtocolSerialLoopS</ProjectName>
       <ProjectNature>C</ProjectNature>
       <Secure/>
-      <filestoremove/>
+      <filestoremove>
+        <file>
+          <name>Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c</name>
+        </file>
+      </filestoremove>
       <sourceEntriesToRemove>
         <sourceEntry/>
       </sourceEntriesToRemove>

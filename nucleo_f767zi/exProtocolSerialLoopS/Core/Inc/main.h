@@ -49,6 +49,9 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
+#define USE_INTERRUPT
+//#define USE_DMA
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -112,12 +115,6 @@ BOOL actUart2StartTransfer();
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
-#define LDRed_Pin GPIO_PIN_3
-#define LDRed_GPIO_Port GPIOD
-#define LDGreen_Pin GPIO_PIN_4
-#define LDGreen_GPIO_Port GPIOD
-#define LDBlue_Pin GPIO_PIN_5
-#define LDBlue_GPIO_Port GPIOD
 #define RMII_TX_EN_Pin GPIO_PIN_11
 #define RMII_TX_EN_GPIO_Port GPIOG
 #define RMII_TXD0_Pin GPIO_PIN_13
@@ -126,7 +123,6 @@ BOOL actUart2StartTransfer();
 #define SWO_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
-void   MX_ETH_Init(void);
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

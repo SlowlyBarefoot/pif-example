@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "main.h"
 #include "appMain.h"
 
@@ -136,6 +138,9 @@ BOOL exSerial2_Setup()
 
     s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions2);
     if (!s_pstProtocol) return FALSE;
+#ifdef USE_DMA
+    if (!pifProtocol_SetFrameSize(s_pstProtocol, UART_FRAME_SIZE)) return FALSE;
+#endif
     pifProtocol_AttachComm(s_pstProtocol, g_pstSerial2);
     s_pstProtocol->evtError = _evtProtocolError;
 

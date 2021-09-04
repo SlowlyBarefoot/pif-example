@@ -35,6 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,13 +48,23 @@
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart3;
+DMA_HandleTypeDef hdma_uart4_rx;
+DMA_HandleTypeDef hdma_uart4_tx;
+DMA_HandleTypeDef hdma_uart5_rx;
+DMA_HandleTypeDef hdma_uart5_tx;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
 static uint8_t s_ucLogRx;
+#ifdef USE_INTERRUPT
 static uint8_t s_ucSerial1Rx;
 static uint8_t s_ucSerial2Rx;
+#endif
+#ifdef USE_DMA
+static uint8_t s_ucSerial1Buffer[UART_FRAME_SIZE];
+static uint8_t s_ucSerial2Buffer[UART_FRAME_SIZE];
+#endif
 
 static uint16_t s_usLogTx;
 static uint16_t s_usSerial1Tx;
@@ -65,9 +76,10 @@ static uint16_t s_usSerial2Tx;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
-static void MX_UART5_Init(void);
-static void MX_USB_OTG_FS_PCD_Init(void);
+static void MX_DMA_Init(void);
 static void MX_UART4_Init(void);
+static void MX_USB_OTG_FS_PCD_Init(void);
+static void MX_UART5_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -78,6 +90,7 @@ BOOL actLogStartTransfer()
 {
 	uint8_t *pucData, ucState;
 
+	s_usLogTx = 0;
 	ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
@@ -104,9 +117,16 @@ BOOL actUart1StartTransfer()
 {
 	uint8_t *pucData, ucState;
 
+	s_usSerial1Tx = UART_FRAME_SIZE;
 	ucState = pifComm_StartSendDatas(g_pstSerial1, &pucData, &s_usSerial1Tx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
+#ifdef USE_INTERRUPT
 		HAL_UART_Transmit_IT(&huart4, pucData, s_usSerial1Tx);
+#endif
+
+#ifdef USE_DMA
+		HAL_UART_Transmit_DMA(&huart4, pucData, s_usSerial1Tx);
+#endif
 		return TRUE;
 	}
 	return FALSE;
@@ -116,9 +136,16 @@ BOOL actUart2StartTransfer()
 {
 	uint8_t *pucData, ucState;
 
+	s_usSerial2Tx = UART_FRAME_SIZE;
 	ucState = pifComm_StartSendDatas(g_pstSerial2, &pucData, &s_usSerial2Tx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
+#ifdef USE_INTERRUPT
 		HAL_UART_Transmit_IT(&huart5, pucData, s_usSerial2Tx);
+#endif
+
+#ifdef USE_DMA
+		HAL_UART_Transmit_DMA(&huart5, pucData, s_usSerial2Tx);
+#endif
 		return TRUE;
 	}
 	return FALSE;
@@ -134,6 +161,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 			pifComm_FinishTransfer(g_pstCommLog);
 		}
 		else {
+			s_usLogTx = 0;
 			ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
 			if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
@@ -146,9 +174,16 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 			pifComm_FinishTransfer(g_pstSerial1);
 		}
 		else {
+			s_usSerial1Tx = UART_FRAME_SIZE;
 			ucState = pifComm_StartSendDatas(g_pstSerial1, &pucData, &s_usSerial1Tx);
 			if (ucState & 1) {
+#ifdef USE_INTERRUPT
 				HAL_UART_Transmit_IT(huart, pucData, s_usSerial1Tx);
+#endif
+
+#ifdef USE_DMA
+				HAL_UART_Transmit_DMA(huart, pucData, s_usSerial1Tx);
+#endif
 			}
 		}
 	}
@@ -158,9 +193,16 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 			pifComm_FinishTransfer(g_pstSerial2);
 		}
 		else {
+			s_usSerial2Tx = UART_FRAME_SIZE;
 			ucState = pifComm_StartSendDatas(g_pstSerial2, &pucData, &s_usSerial2Tx);
 			if (ucState & 1) {
+#ifdef USE_INTERRUPT
 				HAL_UART_Transmit_IT(huart, pucData, s_usSerial2Tx);
+#endif
+
+#ifdef USE_DMA
+				HAL_UART_Transmit_DMA(huart, pucData, s_usSerial2Tx);
+#endif
 			}
 		}
 	}
@@ -173,12 +215,26 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		HAL_UART_Receive_IT(huart, &s_ucLogRx, 1);
 	}
 	else if (huart->Instance == UART4) {
+#ifdef USE_INTERRUPT
 		pifComm_ReceiveData(g_pstSerial1, s_ucSerial1Rx);
 		HAL_UART_Receive_IT(huart, &s_ucSerial1Rx, 1);
+#endif
+
+#ifdef USE_DMA
+		pifComm_ReceiveDatas(g_pstSerial1, s_ucSerial1Buffer, UART_FRAME_SIZE);
+		HAL_UART_Receive_DMA(huart, s_ucSerial1Buffer, UART_FRAME_SIZE);
+#endif
 	}
 	else if (huart->Instance == UART5) {
+#ifdef USE_INTERRUPT
 		pifComm_ReceiveData(g_pstSerial2, s_ucSerial2Rx);
 		HAL_UART_Receive_IT(huart, &s_ucSerial2Rx, 1);
+#endif
+
+#ifdef USE_DMA
+		pifComm_ReceiveDatas(g_pstSerial2, s_ucSerial2Buffer, UART_FRAME_SIZE);
+		HAL_UART_Receive_DMA(huart, s_ucSerial2Buffer, UART_FRAME_SIZE);
+#endif
 	}
 }
 
@@ -213,15 +269,24 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART3_UART_Init();
-  MX_UART5_Init();
-  MX_USB_OTG_FS_PCD_Init();
+  MX_DMA_Init();
   MX_UART4_Init();
+  MX_USB_OTG_FS_PCD_Init();
+  MX_UART5_Init();
   /* USER CODE BEGIN 2 */
   appSetup();
 
   HAL_UART_Receive_IT(&huart3, &s_ucLogRx, 1);
+
+#ifdef USE_INTERRUPT
   HAL_UART_Receive_IT(&huart4, &s_ucSerial1Rx, 1);
   HAL_UART_Receive_IT(&huart5, &s_ucSerial2Rx, 1);
+#endif
+
+#ifdef USE_DMA
+  HAL_UART_Receive_DMA(&huart4, s_ucSerial1Buffer, UART_FRAME_SIZE);
+  HAL_UART_Receive_DMA(&huart5, s_ucSerial2Buffer, UART_FRAME_SIZE);
+#endif
 
   /* USER CODE END 2 */
 
@@ -444,6 +509,31 @@ static void MX_USB_OTG_FS_PCD_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+  /* DMA1_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
+  /* DMA1_Stream4_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream4_IRQn);
+  /* DMA1_Stream7_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream7_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream7_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -467,14 +557,27 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LDRed_Pin|LDGreen_Pin|LDBlue_Pin, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : USER_Btn_Pin */
   GPIO_InitStruct.Pin = USER_Btn_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RMII_MDC_Pin RMII_RXD0_Pin RMII_RXD1_Pin */
+  GPIO_InitStruct.Pin = RMII_MDC_Pin|RMII_RXD0_Pin|RMII_RXD1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RMII_REF_CLK_Pin RMII_MDIO_Pin RMII_CRS_DV_Pin */
+  GPIO_InitStruct.Pin = RMII_REF_CLK_Pin|RMII_MDIO_Pin|RMII_CRS_DV_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|LD2_Pin;
@@ -489,6 +592,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : RMII_TXD1_Pin */
+  GPIO_InitStruct.Pin = RMII_TXD1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+  HAL_GPIO_Init(RMII_TXD1_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : USB_PowerSwitchOn_Pin */
   GPIO_InitStruct.Pin = USB_PowerSwitchOn_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -502,12 +613,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LDRed_Pin LDGreen_Pin LDBlue_Pin */
-  GPIO_InitStruct.Pin = LDRed_Pin|LDGreen_Pin|LDBlue_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  /*Configure GPIO pins : RMII_TX_EN_Pin RMII_TXD0_Pin */
+  GPIO_InitStruct.Pin = RMII_TX_EN_Pin|RMII_TXD0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
 }
 

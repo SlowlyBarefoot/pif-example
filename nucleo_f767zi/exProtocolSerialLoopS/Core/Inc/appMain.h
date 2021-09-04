@@ -14,6 +14,8 @@
 
 #define PIF_ID_SWITCH			0x100
 
+#define UART_FRAME_SIZE			8
+
 
 extern PIF_stPulse *g_pstTimer1ms;
 extern PIF_stComm *g_pstCommLog;
