@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "pifComm.h"
+#include "pifI2c.h"
 
 /* USER CODE END Includes */
 
@@ -48,6 +49,9 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+#define USE_POLLING
+//#define USE_INTERRUPT
+//#define USE_DMA
 
 /* USER CODE END EM */
 
@@ -57,7 +61,8 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 BOOL actLogStartTransfer();
 void actLedLState(PIF_usId usPifId, uint32_t unState);
-void actLedRGBState(PIF_usId usPifId, uint32_t unState);
+BOOL actAds1115StartRead(PIF_stI2c *pstOwner, uint16_t usSize);
+BOOL actAds1115StartWrite(PIF_stI2c *pstOwner, uint16_t usSize);
 
 /* USER CODE END EFP */
 
@@ -106,12 +111,6 @@ void actLedRGBState(PIF_usId usPifId, uint32_t unState);
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
-#define LDRed_Pin GPIO_PIN_3
-#define LDRed_GPIO_Port GPIOD
-#define LDGreen_Pin GPIO_PIN_4
-#define LDGreen_GPIO_Port GPIOD
-#define LDBlue_Pin GPIO_PIN_5
-#define LDBlue_GPIO_Port GPIOD
 #define RMII_TX_EN_Pin GPIO_PIN_11
 #define RMII_TX_EN_GPIO_Port GPIOG
 #define RMII_TXD0_Pin GPIO_PIN_13
@@ -120,7 +119,6 @@ void actLedRGBState(PIF_usId usPifId, uint32_t unState);
 #define SWO_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
-void   MX_ETH_Init(void);
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
