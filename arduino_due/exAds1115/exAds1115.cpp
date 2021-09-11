@@ -24,7 +24,7 @@ void actLedLState(PIF_usId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-BOOL actAds1115StartWrite(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Write(PIF_stI2c *pstOwner, uint16_t usSize)
 {
 	uint16_t i;
 	BOOL bResult = TRUE;
@@ -42,7 +42,7 @@ BOOL actAds1115StartWrite(PIF_stI2c *pstOwner, uint16_t usSize)
     return bResult;
 }
 
-BOOL actAds1115StartRead(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Read(PIF_stI2c *pstOwner, uint16_t usSize)
 {
 	uint16_t i;
 	uint8_t count;

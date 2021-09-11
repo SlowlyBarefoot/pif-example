@@ -19,8 +19,8 @@
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PIF_usId usPifId, uint32_t unState);
-BOOL actAds1115StartRead(PIF_stI2c *pstOwner, uint16_t usSize);
-BOOL actAds1115StartWrite(PIF_stI2c *pstOwner, uint16_t usSize);
+BOOL actAds1115Read(PIF_stI2c *pstOwner, uint16_t usSize);
+BOOL actAds1115Write(PIF_stI2c *pstOwner, uint16_t usSize);
 
 //Do not add code below this line
 #endif /* _exAds1115_H_ */

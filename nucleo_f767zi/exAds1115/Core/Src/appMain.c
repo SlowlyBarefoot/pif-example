@@ -71,7 +71,7 @@ void appSetup(PIF_actTimer1us actTimer1us)
     pifLed_BlinkOn(s_pstLedL, 0);
 
     g_pstAds1x1x = pifAds1x1x_Add(PIF_ID_AUTO, AT_en1115);
-    pifAds1x1x_AttachAction(g_pstAds1x1x, actAds1115StartRead, actAds1115StartWrite);
+    pifI2c_AttachAction(&g_pstAds1x1x->_stI2c, actAds1115Read, actAds1115Write);
 
     stConfig = pifAds1x1x_GetConfig(g_pstAds1x1x);
 #if 1
