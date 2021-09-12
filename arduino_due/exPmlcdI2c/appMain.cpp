@@ -25,6 +25,7 @@ static PIF_stLed *s_pstLedL = NULL;
 uint16_t _taskPmlcdI2c(PIF_stTask *pstTask)
 {
 	static int nStep = 0;
+	static int nNumber = 0;
 
 	(void)pstTask;
 
@@ -35,7 +36,7 @@ uint16_t _taskPmlcdI2c(PIF_stTask *pstTask)
 		pifPmlcdI2c_SetCursor(s_pstPmlcdI2c, 0, 0);
 		pifPmlcdI2c_Print(s_pstPmlcdI2c, "Hello World.");
 		pifPmlcdI2c_SetCursor(s_pstPmlcdI2c, 0, 1);
-		pifPmlcdI2c_Print(s_pstPmlcdI2c, "Go Home : 1234567890");
+		pifPmlcdI2c_Printf(s_pstPmlcdI2c, "Go Home : %d", nNumber);
 		break;
 
 	case 1:
@@ -55,7 +56,7 @@ uint16_t _taskPmlcdI2c(PIF_stTask *pstTask)
 		pifPmlcdI2c_SetCursor(s_pstPmlcdI2c, 15, 0);
 		pifPmlcdI2c_Print(s_pstPmlcdI2c, "Hello World.");
 		pifPmlcdI2c_SetCursor(s_pstPmlcdI2c, 15, 1);
-		pifPmlcdI2c_Print(s_pstPmlcdI2c, "Go Home....");
+		pifPmlcdI2c_Printf(s_pstPmlcdI2c, "Go Home : %d", nNumber);
 		break;
 
 	case 5:
@@ -64,6 +65,7 @@ uint16_t _taskPmlcdI2c(PIF_stTask *pstTask)
 	}
 	nStep++;
 	if (nStep > 5) nStep = 0;
+	nNumber++;
 	return 0;
 }
 
