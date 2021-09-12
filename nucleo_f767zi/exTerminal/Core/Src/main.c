@@ -49,6 +49,7 @@ UART_HandleTypeDef huart3;
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
+static uint16_t s_usLogTx;
 static uint8_t s_ucLogRx;
 
 /* USER CODE END PV */
@@ -67,11 +68,11 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 BOOL actLogStartTransfer()
 {
 	uint8_t *pucData, ucState;
-	uint16_t usLength;
 
-	ucState = pifComm_SendDatas(g_pstCommLog, &pucData, &usLength);
-	if (ucState & 1) {
-		HAL_UART_Transmit_IT(&huart3, pucData, usLength);
+	s_usLogTx = 0;
+	ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
+	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
+		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
 		return TRUE;
 	}
 	return FALSE;
@@ -80,13 +81,20 @@ BOOL actLogStartTransfer()
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 	uint8_t *pucData, ucState;
-	uint16_t usLength;
 
-	ucState = pifComm_SendDatas(g_pstCommLog, &pucData, &usLength);
-	if (ucState & 1) {
-		HAL_UART_Transmit_IT(&huart3, pucData, usLength);
+  if (huart->Instance == USART3) {
+		ucState = pifComm_EndSendDatas(g_pstCommLog, s_usLogTx);
+		if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
+			pifComm_FinishTransfer(g_pstCommLog);
+		}
+		else {
+			s_usLogTx = 0;
+			ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
+			if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
+				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
+			}
+		}
 	}
-	else pifComm_FinishTransfer(g_pstCommLog);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)

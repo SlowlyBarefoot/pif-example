@@ -3,15 +3,15 @@
   <FileVersion>3.0</FileVersion>
   <Workspace>
     <WorkspaceType>Single-project</WorkspaceType>
-    <WorkspacePath>/home/wonjh/github/pif-example/nucleo_f767zi/exLed1/</WorkspacePath>
+    <WorkspacePath>/home/wonjh/github/pif-example/nucleo_f767zi/exPmlcdI2c/</WorkspacePath>
     <underRoot>true</underRoot>
     <TrustZone>0</TrustZone>
     <HAL_Driver>/home/wonjh/STM32Cube/Repository//STM32Cube_FW_F7_V1.16.1</HAL_Driver>
     <CMSIS>Drivers/CMSIS</CMSIS>
     <Toolchain>STM32CubeIDE</Toolchain>
-    <IocFile>exLed1.ioc</IocFile>
+    <IocFile>exPmlcdI2c.ioc</IocFile>
     <Project>
-      <ProjectName>exLed1</ProjectName>
+      <ProjectName>exPmlcdI2c</ProjectName>
       <ProjectNature>C</ProjectNature>
       <Secure/>
       <filestoremove>
@@ -24,7 +24,7 @@
       </sourceEntriesToRemove>
       <configs>
         <config>
-          <name>exLed1</name>
+          <name>exPmlcdI2c</name>
           <mainSourceRepo>Core</mainSourceRepo>
           <sourceStructure>Advanced</sourceStructure>
           <device>STM32F767ZITx</device>
