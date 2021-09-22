@@ -33,14 +33,14 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifTask_AddRatio(100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;		// 100%
+    if (!pifTask_Add(TM_enRatio, 100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;		// 100%
 
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
     if (!pifProtocol_Init(PROTOCOL_COUNT, g_pstTimer1ms)) return;
 
     g_pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
-    if (!pifTask_AddPeriodMs(1, pifComm_Task, g_pstCommLog, TRUE)) return;		// 1ms
+    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, g_pstCommLog, TRUE)) return;		// 1ms
 	pifComm_AttachActSendData(g_pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(g_pstCommLog)) return;

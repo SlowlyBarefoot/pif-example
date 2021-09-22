@@ -152,20 +152,20 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);					// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifTask_AddRatio(100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;		// 100%
+    if (!pifTask_Add(TM_enRatio, 100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;		// 100%
 
-    g_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);			// 200us
+    g_pstTimer200us = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);					// 200us
     if (!g_pstTimer200us) return;
-    if (!pifTask_AddRatio(100, pifPulse_Task, g_pstTimer200us, TRUE)) return;	// 100%
+    if (!pifTask_Add(TM_enRatio, 100, pifPulse_Task, g_pstTimer200us, TRUE)) return;	// 100%
 
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
     if (!pifStepMotor_Init(MOTOR_COUNT, g_pstTimer200us)) return;
 
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifTask_AddPeriodMs(1, pifComm_Task, pstCommLog, TRUE)) return;		// 1ms
+    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, pstCommLog, TRUE)) return;			// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
@@ -174,16 +174,16 @@ void appSetup(PIF_actTimer1us actTimer1us)
 
     pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;								// 500ms
+    if (!pifLed_AttachBlink(pstLedL, 500)) return;										// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
     s_pstMotor = pifStepMotor_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S);
     if (!s_pstMotor) return;
-    if (!pifTask_AddPeriodUs(200, pifStepMotor_Task, NULL, FALSE)) return;		// 200us
+    if (!pifTask_Add(TM_enPeriodUs, 200, pifStepMotor_Task, NULL, FALSE)) return;		// 200us
     pifStepMotor_AttachAction(s_pstMotor, actSetStep);
     s_pstMotor->evtStop = _evtStop;
     pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
 	pifStepMotor_SetPps(s_pstMotor, 200);
 
-    if (!pifTask_AddPeriodMs(20, pifLog_Task, NULL, TRUE)) return;				// 20ms
+    if (!pifTask_Add(TM_enPeriodMs, 20, pifLog_Task, NULL, TRUE)) return;				// 20ms
 }

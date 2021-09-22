@@ -46,7 +46,7 @@ void appSetup()
 
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifTask_AddPeriodMs(1, pifComm_Task, pstCommLog, TRUE)) return;	// 1ms
+    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, pstCommLog, TRUE)) return;	// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -60,5 +60,5 @@ void appSetup()
     s_pstGpioSwitch = pifGpio_AddIn(PIF_ID_AUTO, 1, actGpioSwitch);
     if (!s_pstGpioSwitch) return;
 
-    if (!pifTask_AddPeriodMs(500, _taskGpioTest, NULL, TRUE)) return;		// 500ms
+    if (!pifTask_Add(TM_enPeriodMs, 500, _taskGpioTest, NULL, TRUE)) return;	// 500ms
 }

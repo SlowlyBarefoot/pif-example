@@ -32,7 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "pif.h"
+#include "pifTask.h"
 
 /* USER CODE END Includes */
 

@@ -82,12 +82,12 @@ void appSetup()
 
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    s_pstTask[0] = pifTask_AddRatio(30, _taskLedRedToggle, NULL, TRUE);		// 30%
+    s_pstTask[0] = pifTask_Add(TM_enRatio, 30, _taskLedRedToggle, NULL, TRUE);		// 30%
     if (!s_pstTask[0]) return;
 
-    s_pstTask[1] = pifTask_AddRatio(60, _taskLedYellowToggle, NULL, FALSE);	// 60%
+    s_pstTask[1] = pifTask_Add(TM_enRatio, 60, _taskLedYellowToggle, NULL, FALSE);	// 60%
     if (!s_pstTask[1]) return;
 
-    s_pstTask[2] = pifTask_AddRatio(100, _taskLedGreenToggle, NULL, FALSE);	// 100%
+    s_pstTask[2] = pifTask_Add(TM_enRatio, 100, _taskLedGreenToggle, NULL, FALSE);	// 100%
     if (!s_pstTask[2]) return;
 }

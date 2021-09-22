@@ -27,22 +27,22 @@ void appSetup()
 
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifTask_AddPeriodMs(1, pifComm_Task, pstCommLog, TRUE)) return;			// 1ms
+    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, pstCommLog, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_pstPushSwitch = pifSensorSwitch_Add(PIF_ID_AUTO, OFF);
     if (!s_pstPushSwitch) return;
-    if (!pifTask_AddRatio(3, pifSensorSwitch_Task, s_pstPushSwitch, TRUE)) return;	// 3%
+    if (!pifTask_Add(TM_enRatio, 3, pifSensorSwitch_Task, s_pstPushSwitch, TRUE)) return;	// 3%
     pifSensor_AttachAction(s_pstPushSwitch, actPushSwitchAcquire);
     pifSensor_AttachEvtChange(s_pstPushSwitch, evtPushSwitchChange, NULL);
 
     s_pstTiltSwitch = pifSensorSwitch_Add(PIF_ID_AUTO, OFF);
 	if (!s_pstTiltSwitch) return;
-    if (!pifTask_AddRatio(3, pifSensorSwitch_Task, s_pstTiltSwitch, TRUE)) return;	// 3%
+    if (!pifTask_Add(TM_enRatio, 3, pifSensorSwitch_Task, s_pstTiltSwitch, TRUE)) return;	// 3%
 	pifSensor_AttachAction(s_pstTiltSwitch, actTiltSwitchAcquire);
 	pifSensor_AttachEvtChange(s_pstTiltSwitch, evtTiltSwitchChange, NULL);
 
-    if (!pifTask_AddPeriodMs(500, taskLedToggle, NULL, TRUE)) return;				// 500ms
+    if (!pifTask_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;				// 500ms
 }

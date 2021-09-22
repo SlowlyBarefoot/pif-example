@@ -215,16 +215,16 @@ void appSetup()
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);						// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifTask_AddRatio(100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;					// 100%
+    if (!pifTask_Add(TM_enRatio, 100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;					// 100%
 
     if (!pifDutyMotor_Init(MOTOR_COUNT, g_pstTimer1ms)) return;
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
 
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifTask_AddPeriodMs(1, pifComm_Task, pstCommLog, TRUE)) return;					// 1ms
+    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, pstCommLog, TRUE)) return;						// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
@@ -233,13 +233,13 @@ void appSetup()
 
     pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;											// 500ms
+    if (!pifLed_AttachBlink(pstLedL, 500)) return;													// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
 		s_pstSwitch[i] = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_pstSwitch[i]) return;
-	    if (!pifTask_AddPeriodMs(1, pifSensorSwitch_Task, s_pstSwitch[i], TRUE)) return;	// 1ms
+	    if (!pifTask_Add(TM_enPeriodMs, 1, pifSensorSwitch_Task, s_pstSwitch[i], TRUE)) return;		// 1ms
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
@@ -250,7 +250,7 @@ void appSetup()
     g_pstMotor->evtStop = _evtStop;
     g_pstMotor->evtError = _evtError;
 
-    if (!pifTask_AddPeriodMs(20, pifLog_Task, NULL, TRUE)) return;							// 20ms
+    if (!pifTask_Add(TM_enPeriodMs, 20, pifLog_Task, NULL, TRUE)) return;							// 20ms
 
-    if (!pifTask_AddPeriodMs(10, _taskInitPos, NULL, TRUE)) return;							// 10ms
+    if (!pifTask_Add(TM_enPeriodMs, 10, _taskInitPos, NULL, TRUE)) return;							// 10ms
 }
