@@ -85,8 +85,9 @@ BOOL appInit()
     if (!pifPulse_Init(PULSE_COUNT)) return FALSE;
     if (!pifTask_Init(TASK_COUNT)) return FALSE;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
     if (!g_pstTimer1ms) return FALSE;
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return FALSE;	// 100%
 
     if (!pifXmodem_Init(XMODEM_COUNT, g_pstTimer1ms)) return FALSE;
 
@@ -100,14 +101,12 @@ BOOL appInit()
 	if (!s_pstSerial) return FALSE;
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
+    if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return FALSE;		// 1ms
 
     s_pstXmodem = pifXmodem_Add(PIF_ID_AUTO, XT_enCRC);
     if (!s_pstXmodem) return FALSE;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);
-
-    if (!pifTask_AddRatio(100, pifPulse_taskAll, NULL)) return FALSE;		// 100%
-    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return FALSE;		// 1ms
     return TRUE;
 }
 

@@ -24,7 +24,7 @@ BOOL appInit()
 
 	if (!pifLog_AttachComm(pstCommLog)) return FALSE;
 
-    if (!pifTask_AddPeriodMs(1, pifComm_taskAll, NULL)) return FALSE;				// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return FALSE;	// 1ms
     return TRUE;
 }
 
