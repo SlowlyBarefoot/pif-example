@@ -55,22 +55,22 @@ void appSetup()
 
 	pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, pstCommLog, TRUE)) return;		// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
     if (!g_pstTimer1ms) return;
 
     pstKeypad = pifKeypad_Init(PIF_ID_AUTO, ROWS, COLS, c_cKeys);
     if (!pstKeypad) return;
-    if (!pifTask_Add(TM_enPeriodMs, 10, pifKeypad_Task, pstKeypad, TRUE)) return;	// 10ms
+    if (!pifKeypad_AttachTask(TM_enPeriodMs, 10, TRUE)) return;					// 10ms
     pifKeypad_AttachAction(actKeypadAcquire);
     pstKeypad->evtPressed = _evtKeypadPressed;
     pstKeypad->evtReleased = _evtKeypadReleased;
     pstKeypad->evtLongReleased = _evtKeypadLongReleased;
     pstKeypad->evtDoublePressed = _evtKeypadDoublePressed;
 
-    if (!pifTask_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;		// 500ms
+    if (!pifTask_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
 }

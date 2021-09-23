@@ -74,15 +74,15 @@ void appSetup()
     if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifTask_Add(TM_enRatio, 100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;	// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
 
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
 
     g_pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
-    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, g_pstCommLog, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(g_pstCommLog, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
 	if (!pifComm_AllocRxBuffer(g_pstCommLog, 64)) return;
 	if (!pifComm_AllocTxBuffer(g_pstCommLog, 128)) return;
 	pifComm_AttachActStartTransfer(g_pstCommLog, actLogStartTransfer);
@@ -96,5 +96,5 @@ void appSetup()
     pifLed_BlinkOn(s_pstLedL, 0);
     bBlink = TRUE;
 
-    if (!pifTask_Add(TM_enPeriodMs, 20, pifLog_Task, NULL, TRUE)) return;			// 20ms
+    if (!pifLog_AttachTask(TM_enPeriodMs, 20, TRUE)) return;				// 20ms
 }

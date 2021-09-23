@@ -34,16 +34,16 @@ void appSetup()
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
+    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifTask_Add(TM_enRatio, 100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;	// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
 
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
     if (!pifProtocol_Init(PROTOCOL_COUNT, g_pstTimer1ms)) return;
 
     g_pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
-    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, g_pstCommLog, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(g_pstCommLog, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
 #ifdef USE_SERIAL
 	pifComm_AttachActSendData(g_pstCommLog, actLogSendData);
 #endif
@@ -56,7 +56,7 @@ void appSetup()
 
     pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;									// 500ms
+    if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
     if (!exSerial1_Setup()) return;

@@ -121,23 +121,23 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-	g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);												// 1000us
+	g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);											// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifTask_Add(TM_enRatio, 100, pifPulse_Task, g_pstTimer1ms, TRUE)) return;									// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;										// 100%
 
     if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
     if (!pifSequence_Init(SEQUENCE_COUNT, g_pstTimer1ms)) return;
 
     pstCommLog = pifComm_Add(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifTask_Add(TM_enPeriodMs, 1, pifComm_Task, pstCommLog, TRUE)) return;										// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;										// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
     if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;																// 500ms
+    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;															// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
     s_pstLedRGB = pifLed_Add(PIF_ID_AUTO, SEQUENCE_COUNT, actLedRGBState);
@@ -146,14 +146,14 @@ void appSetup(PIF_actTimer1us actTimer1us)
     for (i = 0; i < SEQUENCE_COUNT; i++) {
     	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
-	    if (!pifTask_Add(TM_enPeriodMs, 10, pifSensorSwitch_Task, s_stSequenceTest[i].pstPushSwitch, TRUE)) return;	// 10ms
+	    if (!pifSensorSwitch_AttachTask(s_stSequenceTest[i].pstPushSwitch, TM_enPeriodMs, 10, TRUE)) return;	// 10ms
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
 		s_stSequenceTest[i].pstSequence = pifSequence_Add(PIF_ID_SEQUENCE + i, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
-	    if (!pifTask_Add(TM_enPeriodMs, 10, pifSequence_Task, s_stSequenceTest[i].pstSequence, TRUE)) return;		// 10ms
+	    if (!pifSequence_AttachTask(s_stSequenceTest[i].pstSequence, TM_enPeriodMs, 10, TRUE)) return;			// 10ms
 	    s_stSequenceTest[i].pstSequence->evtError = _evtSequenceError;
     }
 }
