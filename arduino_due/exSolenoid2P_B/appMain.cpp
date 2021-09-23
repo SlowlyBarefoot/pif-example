@@ -4,8 +4,6 @@
 #include "pifLog.h"
 
 
-#define COMM_COUNT         		1
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	5
 #define SOLENOID_COUNT          1
 #define TASK_COUNT              3
@@ -43,17 +41,15 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return;
-    if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
+    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;		// 100%
 
     if (!pifSolenoid_Init(SOLENOID_COUNT, g_pstTimer1ms)) return;
 
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);

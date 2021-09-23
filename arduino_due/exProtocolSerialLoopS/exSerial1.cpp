@@ -146,13 +146,13 @@ BOOL exSerial1_Setup()
 	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
     }
 
-    g_pstSerial1 = pifComm_Add(PIF_ID_AUTO);
+    g_pstSerial1 = pifComm_Init(PIF_ID_AUTO);
 	if (!g_pstSerial1) return FALSE;
     if (!pifComm_AttachTask(g_pstSerial1, TM_enPeriodMs, 1, TRUE)) return FALSE;									// 1ms
 	pifComm_AttachActReceiveData(g_pstSerial1, actSerial1ReceiveData);
 	pifComm_AttachActSendData(g_pstSerial1, actSerial1SendData);
 
-    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions1);
+    s_pstProtocol = pifProtocol_Init(PIF_ID_AUTO, g_pstTimer1ms, PT_enSmall, stProtocolQuestions1);
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
     s_pstProtocol->evtError = _evtProtocolError;

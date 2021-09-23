@@ -7,10 +7,6 @@
 #include "pifSensorSwitch.h"
 
 
-#define COMM_COUNT         		2
-#define LED_COUNT         		1
-#define PROTOCOL_COUNT          1
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
 #define SWITCH_COUNT            2
 #define TASK_COUNT              5
@@ -152,26 +148,21 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return;
-    if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);											// 1000us
+    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);											// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;										// 100%
 
-    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
-    if (!pifProtocol_Init(PROTOCOL_COUNT, g_pstTimer1ms)) return;
-
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;										// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
+    pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;																// 500ms
     pifLed_BlinkOn(pstLedL, 0);
@@ -185,13 +176,13 @@ void appSetup()
 	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
     }
 
-    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
+    s_pstSerial = pifComm_Init(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
     if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return;										// 1ms
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
 
-    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enMedium, stProtocolQuestions);
+    s_pstProtocol = pifProtocol_Init(PIF_ID_AUTO, g_pstTimer1ms, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;

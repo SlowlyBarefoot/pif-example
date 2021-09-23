@@ -5,15 +5,13 @@
 #include "pifXmodem.h"
 
 
-#define COMM_COUNT         		2
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
 #define TASK_COUNT              3
-#define XMODEM_COUNT         	1
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
 
+static PIF_stComm *s_pstCommLog = NULL;
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stXmodem *s_pstXmodem = NULL;
 
@@ -76,34 +74,28 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 
 BOOL appInit()
 {
-	PIF_stComm *pstCommLog;
-
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return FALSE;
-    if (!pifPulse_Init(PULSE_COUNT)) return FALSE;
     if (!pifTask_Init(TASK_COUNT)) return FALSE;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
+    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
     if (!g_pstTimer1ms) return FALSE;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return FALSE;	// 100%
 
-    if (!pifXmodem_Init(XMODEM_COUNT, g_pstTimer1ms)) return FALSE;
+    s_pstCommLog = pifComm_Init(PIF_ID_AUTO);
+	if (!s_pstCommLog) return FALSE;
+	pifComm_AttachActSendData(s_pstCommLog, actLogSendData);
 
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
-	if (!pstCommLog) return FALSE;
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	if (!pifLog_AttachComm(s_pstCommLog)) return FALSE;
 
-	if (!pifLog_AttachComm(pstCommLog)) return FALSE;
-
-    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
+    s_pstSerial = pifComm_Init(PIF_ID_AUTO);
 	if (!s_pstSerial) return FALSE;
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
     if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return FALSE;		// 1ms
 
-    s_pstXmodem = pifXmodem_Add(PIF_ID_AUTO, XT_enCRC);
+    s_pstXmodem = pifXmodem_Init(PIF_ID_AUTO, g_pstTimer1ms, XT_enCRC);
     if (!s_pstXmodem) return FALSE;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);
@@ -113,8 +105,9 @@ BOOL appInit()
 void appExit()
 {
 	pifTask_Exit();
-	pifXmodem_Exit();
-	pifPulse_Exit();
-	pifComm_Exit();
+	pifXmodem_Exit(s_pstXmodem);
+	pifPulse_Exit(g_pstTimer1ms);
+	pifComm_Exit(s_pstSerial);
+	pifComm_Exit(s_pstCommLog);
     pifLog_Exit();
 }

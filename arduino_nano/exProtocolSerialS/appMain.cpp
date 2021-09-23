@@ -6,10 +6,6 @@
 #include "pifProtocol.h"
 
 
-#define COMM_COUNT         		1
-#define LED_COUNT         		1
-#define PROTOCOL_COUNT          1
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	5
 #define TASK_COUNT              2
 
@@ -105,18 +101,13 @@ void appSetup()
 
     pif_Init(NULL);
 
-    if (!pifComm_Init(COMM_COUNT)) return;
-    if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
 
-    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
-    if (!pifProtocol_Init(PROTOCOL_COUNT, g_pstTimer1ms)) return;
-
-    pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
+    pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(pstLedL, 0);
@@ -127,13 +118,13 @@ void appSetup()
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
-    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
+    s_pstSerial = pifComm_Init(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
     if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
 
-    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
+    s_pstProtocol = pifProtocol_Init(PIF_ID_AUTO, g_pstTimer1ms, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
 }

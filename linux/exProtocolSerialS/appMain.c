@@ -7,15 +7,13 @@
 #include "pifProtocol.h"
 
 
-#define COMM_COUNT         		2
-#define PROTOCOL_COUNT          1
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	10
 #define TASK_COUNT              3
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
 
+static PIF_stComm *s_pstCommLog = NULL;
 static PIF_stComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
@@ -133,34 +131,28 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL appInit()
 {
-	PIF_stComm *pstCommLog;
-
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return FALSE;
-    if (!pifPulse_Init(PULSE_COUNT)) return FALSE;
     if (!pifTask_Init(TASK_COUNT)) return FALSE;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
+    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
     if (!g_pstTimer1ms) return FALSE;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return FALSE;	// 100%
 
-    if (!pifProtocol_Init(PROTOCOL_COUNT, g_pstTimer1ms)) return FALSE;
+    s_pstCommLog = pifComm_Init(PIF_ID_AUTO);
+	if (!s_pstCommLog) return FALSE;
+	pifComm_AttachActSendData(s_pstCommLog, actLogSendData);
 
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
-	if (!pstCommLog) return FALSE;
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	if (!pifLog_AttachComm(s_pstCommLog)) return FALSE;
 
-	if (!pifLog_AttachComm(pstCommLog)) return FALSE;
-
-    s_pstSerial = pifComm_Add(PIF_ID_AUTO);
+    s_pstSerial = pifComm_Init(PIF_ID_AUTO);
 	if (!s_pstSerial) return FALSE;
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
     if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return FALSE;		// 1ms
 
-    s_pstProtocol = pifProtocol_Add(PIF_ID_AUTO, PT_enSmall, stProtocolQuestions);
+    s_pstProtocol = pifProtocol_Init(PIF_ID_AUTO, g_pstTimer1ms, PT_enSmall, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
@@ -176,8 +168,9 @@ BOOL appInit()
 void appExit()
 {
 	pifTask_Exit();
-	pifProtocol_Exit();
-	pifPulse_Exit();
-	pifComm_Exit();
+	pifProtocol_Exit(s_pstProtocol);
+	pifPulse_Exit(g_pstTimer1ms);
+	pifComm_Exit(s_pstSerial);
+	pifComm_Exit(s_pstCommLog);
     pifLog_Exit();
 }

@@ -5,7 +5,6 @@
 #include "pifSensorSwitch.h"
 
 
-#define COMM_COUNT            	1
 #define SWITCH_COUNT            2
 #define TASK_COUNT              4
 
@@ -21,11 +20,10 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return;
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);

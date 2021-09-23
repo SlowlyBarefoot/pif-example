@@ -4,7 +4,6 @@
 #include "pifLog.h"
 
 
-#define COMM_COUNT         		1
 #define TASK_COUNT              1
 
 
@@ -15,10 +14,9 @@ BOOL appInit()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return FALSE;
     if (!pifTask_Init(TASK_COUNT)) return FALSE;
 
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return FALSE;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 

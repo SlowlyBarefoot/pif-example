@@ -7,10 +7,7 @@
 #include "pifSensorSwitch.h"
 
 
-#define COMM_COUNT         		2
 #define GPS_COUNT         		1
-#define LED_COUNT         		1
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	5
 #define SWITCH_COUNT            1
 #define TASK_COUNT              4
@@ -74,26 +71,22 @@ void appSetup()
 	pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return;
 	if (!pifGps_Init(GPS_COUNT)) return;
-    if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);					// 1000us
+    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);					// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;				// 100%
 
-    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
-
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    s_pstLedL = pifLed_Add(PIF_ID_AUTO, 2, actLedLState);
+    s_pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 2, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;									// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
@@ -104,7 +97,7 @@ void appSetup()
 	pifSensor_AttachAction(pstPushSwitch, actPushSwitchAcquire);
 	pifSensor_AttachEvtChange(pstPushSwitch, _evtPushSwitchChange, NULL);
 
-	s_pstCommGps = pifComm_Add(PIF_ID_AUTO);
+	s_pstCommGps = pifComm_Init(PIF_ID_AUTO);
 	if (!s_pstCommGps) return;
     if (!pifComm_AttachTask(s_pstCommGps, TM_enPeriodMs, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActReceiveData(s_pstCommGps, actGpsReceiveData);

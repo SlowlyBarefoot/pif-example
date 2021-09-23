@@ -4,8 +4,6 @@
 #include "pifLed.h"
 
 
-#define LED_COUNT         		1
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	3
 #define TASK_COUNT              3
 
@@ -70,14 +68,11 @@ void appSetup()
 {
 	pif_Init(NULL);
 
-    if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
-
-    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
 
     s_pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
     if (!s_pstTimer1msRed) return;
@@ -92,6 +87,6 @@ void appSetup()
     if (!s_pstTimer1msGreen) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msGreen, _evtLedGreenToggle, s_pstTimer1msGreen);
 
-    s_pstLedRGB = pifLed_Add(PIF_ID_AUTO, 3, actLedRGBState);
+    s_pstLedRGB = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 3, actLedRGBState);
     if (!s_pstLedRGB) return;
 }

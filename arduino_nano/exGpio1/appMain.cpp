@@ -6,7 +6,6 @@
 #include "pifTask.h"
 
 
-#define COMM_COUNT              1
 #define GPIO_COUNT         		3
 #define TASK_COUNT              2
 
@@ -40,11 +39,10 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return;
     if (!pifGpio_Init(GPIO_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);

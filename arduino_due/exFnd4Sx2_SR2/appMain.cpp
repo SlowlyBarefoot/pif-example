@@ -5,9 +5,6 @@
 #include "pifLog.h"
 
 
-#define COMM_COUNT         		1
-#define FND_COUNT         		1
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	3
 #define TASK_COUNT              5
 
@@ -70,17 +67,13 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return;
-    if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
+    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;		// 100%
 
-    if (!pifFnd_Init(FND_COUNT, g_pstTimer1ms)) return;
-
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
@@ -88,7 +81,7 @@ void appSetup()
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     pifFnd_SetUserChar(c_ucUserChar, 2);
-    s_pstFnd = pifFnd_Add(PIF_ID_AUTO, 8, actFndDisplay);
+    s_pstFnd = pifFnd_Init(PIF_ID_AUTO, g_pstTimer1ms, 8, actFndDisplay);
     if (!s_pstFnd) return;
     if (!pifFnd_AttachTask(s_pstFnd, TM_enRatio, 5, TRUE)) return;				// 5%
 

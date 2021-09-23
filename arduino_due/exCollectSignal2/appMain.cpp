@@ -8,9 +8,6 @@
 #include "pifSequence.h"
 
 
-#define COMM_COUNT         		1
-#define LED_COUNT         		3
-#define PULSE_COUNT         	1
 #define PULSE_ITEM_COUNT    	3
 #define SWITCH_COUNT            3
 #define TASK_COUNT              8
@@ -137,19 +134,16 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	pif_Init(actTimer1us);
     pifLog_Init();
 
-    if (!pifComm_Init(COMM_COUNT)) return;
-	if (!pifPulse_Init(PULSE_COUNT)) return;
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
-	g_pstTimer1ms = pifPulse_Add(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);										// 1000us
+	g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);										// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;									// 100%
 
-    if (!pifLed_Init(LED_COUNT, g_pstTimer1ms)) return;
     if (!pifSequence_Init(SEQUENCE_COUNT, g_pstTimer1ms)) return;
 
-    pstCommLog = pifComm_Add(PIF_ID_AUTO);
+    pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;									// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
@@ -160,15 +154,15 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	pifCollectSignal_InitHeap("example", 0x1000);
     if (!pifCollectSignal_AttachTask(TM_enPeriodMs, 10, TRUE)) return;										// 10ms
 
-    s_pstLedL = pifLed_Add(PIF_ID_AUTO, 1, actLedLState);
+    s_pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;														// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
-    s_pstLedRGB = pifLed_Add(PIF_ID_AUTO, SEQUENCE_COUNT, actLedRGBState);
+    s_pstLedRGB = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, SEQUENCE_COUNT, actLedRGBState);
     if (!s_pstLedRGB) return;
 
-    s_pstLedCollect = pifLed_Add(PIF_ID_AUTO, 1, actLedCollectState);
+    s_pstLedCollect = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedCollectState);
     if (!s_pstLedCollect) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
