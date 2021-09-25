@@ -7,7 +7,6 @@
 #include "pifSensorSwitch.h"
 
 
-#define GPS_COUNT         		1
 #define PULSE_ITEM_COUNT    	5
 #define SWITCH_COUNT            1
 #define TASK_COUNT              4
@@ -17,7 +16,7 @@ PIF_stPulse *g_pstTimer1ms = NULL;
 BOOL g_bPrintRawData = FALSE;
 
 static PIF_stComm *s_pstCommGps = NULL;
-static PIF_stGps *s_pstGps = NULL;
+static PIF_stGpsNmea *s_pstGpsNmea = NULL;
 static PIF_stLed *s_pstLedL = NULL;
 
 
@@ -71,7 +70,6 @@ void appSetup()
 	pif_Init(NULL);
     pifLog_Init();
 
-	if (!pifGps_Init(GPS_COUNT)) return;
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
@@ -103,10 +101,10 @@ void appSetup()
 	pifComm_AttachActReceiveData(s_pstCommGps, actGpsReceiveData);
 	pifComm_AttachActSendData(s_pstCommGps, actGpsSendData);
 
-	s_pstGps = pifGpsNmea_Add(PIF_ID_AUTO);
-	if (!s_pstGps) return;
-	if (!pifGpsNmea_SetProcessMessageId(s_pstGps, 2, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_VTG)) return;
-	pifGpsNmea_SetEventMessageId(s_pstGps, NMEA_MESSAGE_ID_GGA);
-	pifGpsNmea_AttachComm(s_pstGps, s_pstCommGps);
-	pifGps_AttachEvent(s_pstGps, _evtGpsReceive);
+	s_pstGpsNmea = pifGpsNmea_Create(PIF_ID_AUTO);
+	if (!s_pstGpsNmea) return;
+	if (!pifGpsNmea_SetProcessMessageId(s_pstGpsNmea, 2, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_VTG)) return;
+	pifGpsNmea_SetEventMessageId(s_pstGpsNmea, NMEA_MESSAGE_ID_GGA);
+	pifGpsNmea_AttachComm(s_pstGpsNmea, s_pstCommGps);
+	pifGps_AttachEvent(&s_pstGpsNmea->_stGps, _evtGpsReceive);
 }

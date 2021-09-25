@@ -5,7 +5,6 @@
 #include "pifLog.h"
 
 
-#define PMLCDI2C_COUNT         	1
 #define PULSE_ITEM_COUNT    	5
 #define TASK_COUNT              3
 
@@ -71,7 +70,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
     pif_Init(actTimer1us);
     pifLog_Init();
 
-    if (!pifPmlcdI2c_Init(PMLCDI2C_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
     g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
@@ -91,7 +89,8 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
-    g_pstPmlcdI2c = pifPmlcdI2c_Add(PIF_ID_AUTO, 0x27);
+    g_pstPmlcdI2c = pifPmlcdI2c_Create(PIF_ID_AUTO, 0x27);
+    if (!g_pstPmlcdI2c) return;
     pifI2c_AttachAction(&g_pstPmlcdI2c->_stI2c, NULL, actPmlcdI2cWrite);
 #if 0
     pifI2c_ScanAddress(&g_pstPmlcdI2c->_stI2c);

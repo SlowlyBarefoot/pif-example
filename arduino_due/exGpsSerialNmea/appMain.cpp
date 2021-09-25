@@ -6,7 +6,6 @@
 #include "pifLog.h"
 
 
-#define GPS_COUNT         		1
 #define PULSE_ITEM_COUNT    	10
 #define TASK_COUNT              4
 
@@ -15,7 +14,7 @@ PIF_stPulse *g_pstTimer1ms = NULL;
 BOOL g_bPrintRawData = FALSE;
 
 static PIF_stComm *s_pstCommGps = NULL;
-static PIF_stGps *s_pstGps = NULL;
+static PIF_stGpsNmea *s_pstGpsNmea = NULL;
 static PIF_stLed *s_pstLedL = NULL;
 
 static int _cmdPrintRawData(int argc, char *argv[]);
@@ -65,25 +64,25 @@ static int _cmdRequest(int argc, char *argv[])
 		command = atoi(argv[1]);
 		switch (command) {
 		case NMEA_MESSAGE_ID_GBQ:
-			if (!pifGpsNmea_PollRequestGBQ(s_pstGps, argv[2])) {
+			if (!pifGpsNmea_PollRequestGBQ(s_pstGpsNmea, argv[2])) {
 				pifLog_Printf(LT_enError, "Error: %u", pif_enError);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GLQ:
-			if (!pifGpsNmea_PollRequestGLQ(s_pstGps, argv[2])) {
+			if (!pifGpsNmea_PollRequestGLQ(s_pstGpsNmea, argv[2])) {
 				pifLog_Printf(LT_enError, "Error: %u", pif_enError);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GNQ:
-			if (!pifGpsNmea_PollRequestGNQ(s_pstGps, argv[2])) {
+			if (!pifGpsNmea_PollRequestGNQ(s_pstGpsNmea, argv[2])) {
 				pifLog_Printf(LT_enError, "Error: %u", pif_enError);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GPQ:
-			if (!pifGpsNmea_PollRequestGPQ(s_pstGps, argv[2])) {
+			if (!pifGpsNmea_PollRequestGPQ(s_pstGpsNmea, argv[2])) {
 				pifLog_Printf(LT_enError, "Error: %u", pif_enError);
 			}
 			break;
@@ -142,7 +141,6 @@ void appSetup()
 	pif_Init(NULL);
     pifLog_Init();
 
-	if (!pifGps_Init(GPS_COUNT)) return;
     if (!pifTask_Init(TASK_COUNT)) return;
 
     g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
@@ -169,13 +167,13 @@ void appSetup()
 	pifComm_AttachActReceiveData(s_pstCommGps, actGpsReceiveData);
 	pifComm_AttachActSendData(s_pstCommGps, actGpsSendData);
 
-	s_pstGps = pifGpsNmea_Add(PIF_ID_AUTO);
-	if (!s_pstGps) return;
-	if (!pifGpsNmea_SetProcessMessageId(s_pstGps, 4, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_TXT, NMEA_MESSAGE_ID_VTG, NMEA_MESSAGE_ID_ZDA)) return;
-	pifGpsNmea_SetEventMessageId(s_pstGps, NMEA_MESSAGE_ID_GGA);
-	pifGpsNmea_AttachComm(s_pstGps, s_pstCommGps);
-	pifGpsNmea_AttachEvtText(s_pstGps, _evtGpsNmeaText);
-	pifGps_AttachEvent(s_pstGps, _evtGpsReceive);
+	s_pstGpsNmea = pifGpsNmea_Create(PIF_ID_AUTO);
+	if (!s_pstGpsNmea) return;
+	if (!pifGpsNmea_SetProcessMessageId(s_pstGpsNmea, 4, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_TXT, NMEA_MESSAGE_ID_VTG, NMEA_MESSAGE_ID_ZDA)) return;
+	pifGpsNmea_SetEventMessageId(s_pstGpsNmea, NMEA_MESSAGE_ID_GGA);
+	pifGpsNmea_AttachComm(s_pstGpsNmea, s_pstCommGps);
+	pifGpsNmea_AttachEvtText(s_pstGpsNmea, _evtGpsNmeaText);
+	pifGps_AttachEvent(&s_pstGpsNmea->_stGps, _evtGpsReceive);
 
     if (!pifLog_AttachTask(TM_enPeriodMs, 20, TRUE)) return;				// 20ms
 }
