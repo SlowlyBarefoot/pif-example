@@ -170,8 +170,6 @@ int main(void)
   while (1)
   {
 	pif_Loop();
-
-	pifTask_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

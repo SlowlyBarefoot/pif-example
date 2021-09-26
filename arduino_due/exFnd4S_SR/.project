@@ -97,6 +97,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTask.h</locationURI>
 		</link>
 		<link>
+			<name>pif/core/include/pif_list.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_list.h</locationURI>
+		</link>
+		<link>
 			<name>pif/core/source/pif.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
@@ -130,6 +135,11 @@
 			<name>pif/core/source/pifTask.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifTask.c</locationURI>
+		</link>
+		<link>
+			<name>pif/core/source/pif_list.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_list.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

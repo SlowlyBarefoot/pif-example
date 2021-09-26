@@ -88,6 +88,4 @@ void setup()
 void loop()
 {
     pif_Loop();
-
-    pifTask_Loop();
 }

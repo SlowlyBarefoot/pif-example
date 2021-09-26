@@ -8,9 +8,7 @@
 
 
 #define MOTOR_COUNT				1
-#define PULSE_ITEM_COUNT    	10
 #define SWITCH_COUNT         	3
-#define TASK_COUNT              5
 
 
 PIF_stDutyMotor *g_pstMotor = NULL;
@@ -204,9 +202,8 @@ void appSetup()
     pifLog_Init();
 
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-    if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);						// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);										// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;					// 100%
 
@@ -243,5 +240,5 @@ void appSetup()
 
     if (!pifLog_AttachTask(TM_enPeriodMs, 20, TRUE)) return;								// 20ms
 
-    if (!pifTask_Add(TM_enPeriodMs, 10, _taskInitPos, NULL, TRUE)) return;					// 10ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 10, _taskInitPos, NULL, TRUE)) return;			// 10ms
 }

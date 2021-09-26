@@ -8,9 +8,7 @@
 
 
 #define MOTOR_COUNT				1
-#define PULSE_ITEM_COUNT    	10
 #define SWITCH_COUNT         	3
-#define TASK_COUNT              10
 
 #define STEP_MOTOR_RESOLUTION				200
 #define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
@@ -91,8 +89,6 @@ static int CmdStepMotorTest(int argc, char *argv[])
 		pifLog_Printf(LT_enNone, "\n  Stage: %d", s_stStepMotorTest.ucStage);
 		pifLog_Printf(LT_enNone, "\n  Method: %d", s_pstMotor->_enMethod);
 		pifLog_Printf(LT_enNone, "\n  Operation: %d", s_pstMotor->_enOperation);
-	    pifLog_Printf(LT_enNone, "\n  Timer 1ms: Max=%u Use=%u", g_pstTimer1ms->_ucItemSize, g_pstTimer1ms->_ucItemCount);
-	    pifLog_Printf(LT_enNone, "\n  Timer 200us: Max=%u Use=%u", g_pstTimer200us->_ucItemSize, g_pstTimer200us->_ucItemCount);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -307,13 +303,12 @@ void appSetup(PIF_actTimer1us actTimer1us)
     pifLog_Init();
 
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-    if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);							// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);											// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;						// 100%
 
-    g_pstTimer200us = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 200);						// 200us
+    g_pstTimer200us = pifPulse_Create(PIF_ID_AUTO, 200);										// 200us
     if (!g_pstTimer200us) return;
     if (!pifPulse_AttachTask(g_pstTimer200us, TM_enRatio, 100, TRUE)) return;					// 100%
 
@@ -352,6 +347,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
 
     if (!pifLog_AttachTask(TM_enPeriodMs, 20, TRUE)) return;									// 20ms
 
-    if (!pifTask_Add(TM_enPeriodMs, 10, _taskInitPos, NULL, TRUE)) return;						// 10ms
-    if (!pifTask_Add(TM_enPeriodMs, 10, _taskRepeat, NULL, TRUE)) return;						// 10ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 10, _taskInitPos, NULL, TRUE)) return;				// 10ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 10, _taskRepeat, NULL, TRUE)) return;				// 10ms
 }

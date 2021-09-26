@@ -6,9 +6,6 @@
 #include "pifLog.h"
 
 
-#define PULSE_ITEM_COUNT    	5
-#define TASK_COUNT              3
-
 #define SINGLE_SHOT
 
 
@@ -72,22 +69,20 @@ void appSetup(PIF_actTimer1us actTimer1us)
     pif_Init(actTimer1us);
     pifLog_Init();
 
-    if (!pifTask_Init(TASK_COUNT)) return;
-
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);									// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;		// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;				// 100%
 
     pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;							// 500ms
+    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;									// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
     s_pstPmlcdI2c = pifPmlcdI2c_Create(PIF_ID_AUTO, 0x27);
@@ -99,6 +94,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
     pifPmlcdI2c_Begin(s_pstPmlcdI2c, 2, PIF_PMLCD_DS_5x8);
     pifPmlcdI2c_Backlight(s_pstPmlcdI2c);
 
-    if (!pifTask_Add(TM_enPeriodMs, 3000, _taskPmlcdI2c, NULL, TRUE)) return;	// 3000ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 3000, _taskPmlcdI2c, NULL, TRUE)) return;	// 3000ms
 #endif
 }

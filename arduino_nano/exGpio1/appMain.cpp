@@ -7,7 +7,6 @@
 
 
 #define GPIO_COUNT         		3
-#define TASK_COUNT              2
 
 
 static PIF_stGpio *s_pstGpioL = NULL;
@@ -40,11 +39,10 @@ void appSetup()
     pifLog_Init();
 
     if (!pifGpio_Init(GPIO_COUNT)) return;
-    if (!pifTask_Init(TASK_COUNT)) return;
 
     pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -58,5 +56,5 @@ void appSetup()
     s_pstGpioSwitch = pifGpio_AddIn(PIF_ID_AUTO, 1, actGpioSwitch);
     if (!s_pstGpioSwitch) return;
 
-    if (!pifTask_Add(TM_enPeriodMs, 500, _taskGpioTest, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 500, _taskGpioTest, NULL, TRUE)) return;	// 500ms
 }

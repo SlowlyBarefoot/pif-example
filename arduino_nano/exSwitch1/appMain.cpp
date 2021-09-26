@@ -6,7 +6,6 @@
 
 
 #define SWITCH_COUNT            2
-#define TASK_COUNT              4
 
 
 static PIF_stSensor *s_pstPushSwitch = NULL;
@@ -21,7 +20,6 @@ void appSetup()
     pifLog_Init();
 
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-    if (!pifTask_Init(TASK_COUNT)) return;
 
     pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
@@ -42,5 +40,5 @@ void appSetup()
 	pifSensor_AttachAction(s_pstTiltSwitch, actTiltSwitchAcquire);
 	pifSensor_AttachEvtChange(s_pstTiltSwitch, evtTiltSwitchChange, NULL);
 
-    if (!pifTask_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;		// 500ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
 }

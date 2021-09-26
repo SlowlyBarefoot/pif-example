@@ -7,9 +7,7 @@
 #include "pifSensorSwitch.h"
 
 
-#define PULSE_ITEM_COUNT    	10
 #define SWITCH_COUNT            2
-#define TASK_COUNT              5
 
 
 PIF_stPulse *g_pstTimer1ms = NULL;
@@ -149,9 +147,8 @@ void appSetup()
     pifLog_Init();
 
     if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-    if (!pifTask_Init(TASK_COUNT)) return;
 
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);											// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);															// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;										// 100%
 

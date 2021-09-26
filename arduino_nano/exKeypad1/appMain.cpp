@@ -5,10 +5,6 @@
 #include "pifLog.h"
 
 
-#define PULSE_ITEM_COUNT    	3
-#define TASK_COUNT              4
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 const char c_cKeys[ROWS * COLS] = {
@@ -47,26 +43,24 @@ void appSetup()
 	pif_Init(NULL);
 	pifLog_Init();
 
-    if (!pifTask_Init(TASK_COUNT)) return;
-
 	pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);			// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
 
     pstKeypad = pifKeypad_Init(PIF_ID_AUTO, ROWS, COLS, c_cKeys);
     if (!pstKeypad) return;
-    if (!pifKeypad_AttachTask(TM_enPeriodMs, 10, TRUE)) return;					// 10ms
+    if (!pifKeypad_AttachTask(TM_enPeriodMs, 10, TRUE)) return;						// 10ms
     pifKeypad_AttachAction(actKeypadAcquire);
     pstKeypad->evtPressed = _evtKeypadPressed;
     pstKeypad->evtReleased = _evtKeypadReleased;
     pstKeypad->evtLongReleased = _evtKeypadLongReleased;
     pstKeypad->evtDoublePressed = _evtKeypadDoublePressed;
 
-    if (!pifTask_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
 }

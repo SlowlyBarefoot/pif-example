@@ -5,10 +5,6 @@
 #include "pifLog.h"
 
 
-#define PULSE_ITEM_COUNT    	3
-#define TASK_COUNT              5
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stDotMatrix *s_pstDotMatrix = NULL;
@@ -164,15 +160,13 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifTask_Init(TASK_COUNT)) return;
-
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);										// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;			// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;					// 100%
 
     pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;					// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -187,14 +181,13 @@ void appSetup()
 
     s_pstDotMatrix = pifDotMatrix_Init(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_enRatio, 5, TRUE)) return;		// 5%
+	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_enRatio, 5, TRUE)) return;				// 5%
     s_pstDotMatrix->evtShiftFinish = _evtDotMatrixShiftFinish;
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;
    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 5 * 8, 8, ucPattern)) return;
 
-
-    if (!pifTask_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;		// 500ms
-	if (!pifTask_Add(TM_enPeriodMs, 1000, _taskDotMatrixTest, NULL, TRUE)) return;	// 1000ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
+	if (!pifTaskManager_Add(TM_enPeriodMs, 1000, _taskDotMatrixTest, NULL, TRUE)) return;	// 1000ms
 
 	pifDotMatrix_Start(s_pstDotMatrix);
 }

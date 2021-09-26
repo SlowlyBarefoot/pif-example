@@ -15,8 +15,8 @@
 #include "appMain.h"
 
 
-#define PIN_LED_RED				11
-#define PIN_LED_YELLOW			13
+#define PIN_LED_RED				23
+#define PIN_LED_YELLOW			25
 
 
 extern "C" {
@@ -68,6 +68,4 @@ void setup()
 void loop()
 {
     pif_Loop();
-
-    pifTask_Loop();
 }
