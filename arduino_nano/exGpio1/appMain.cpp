@@ -6,9 +6,6 @@
 #include "pifTask.h"
 
 
-#define GPIO_COUNT         		3
-
-
 static PIF_stGpio *s_pstGpioL = NULL;
 static PIF_stGpio *s_pstGpioRG = NULL;
 static PIF_stGpio *s_pstGpioSwitch = NULL;
@@ -38,8 +35,6 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifGpio_Init(GPIO_COUNT)) return;
-
     pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
@@ -47,14 +42,17 @@ void appSetup()
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    s_pstGpioL = pifGpio_AddOut(PIF_ID_AUTO, 1, actGpioLedL);
+    s_pstGpioL = pifGpio_Create(PIF_ID_AUTO, 1);
     if (!s_pstGpioL) return;
+    pifGpio_AttachActOut(s_pstGpioL, actGpioLedL);
 
-    s_pstGpioRG = pifGpio_AddOut(PIF_ID_AUTO, 2, actGpioLedRG);
+    s_pstGpioRG = pifGpio_Create(PIF_ID_AUTO, 2);
     if (!s_pstGpioRG) return;
+    pifGpio_AttachActOut(s_pstGpioRG, actGpioLedRG);
 
-    s_pstGpioSwitch = pifGpio_AddIn(PIF_ID_AUTO, 1, actGpioSwitch);
+    s_pstGpioSwitch = pifGpio_Create(PIF_ID_AUTO, 1);
     if (!s_pstGpioSwitch) return;
+    pifGpio_AttachActIn(s_pstGpioSwitch, actGpioSwitch);
 
     if (!pifTaskManager_Add(TM_enPeriodMs, 500, _taskGpioTest, NULL, TRUE)) return;	// 500ms
 }

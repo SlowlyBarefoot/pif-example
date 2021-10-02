@@ -2,19 +2,17 @@
 #include "exCollectSignal1.h"
 
 #include "pifCollectSignal.h"
+#include "pifGpio.h"
 #include "pifLed.h"
 #include "pifLog.h"
 #include "pifSensorSwitch.h"
 #include "pifSequence.h"
 
 
-#define SWITCH_COUNT            3
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
-static PIF_stLed *s_pstLedRGB = NULL;
+static PIF_stGpio *s_pstGpioRGB = NULL;
 static PIF_stLed *s_pstLedCollect = NULL;
 
 static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner);
@@ -85,7 +83,7 @@ static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
 		index = pstOwner->_usPifId - PIF_ID_SEQUENCE;
-		pifLed_EachOn(s_pstLedRGB, index);
+		pifGpio_WriteCell(s_pstGpioRGB, index, ON);
 		s_stSequenceTest[index].bSequenceParam = FALSE;
 		return SR_enNext;
 
@@ -113,7 +111,7 @@ static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
 		index = pstOwner->_usPifId - PIF_ID_SEQUENCE;
-		pifLed_EachOff(s_pstLedRGB, index);
+		pifGpio_WriteCell(s_pstGpioRGB, index, OFF);
 		return SR_enNext;
 
 	default:
@@ -134,13 +132,10 @@ void appSetup(PIF_actTimer1us actTimer1us)
     pifLog_Init();
 
     pifCollectSignal_Init("example");
-    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
 
 	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);														// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;									// 100%
-
-    if (!pifSequence_Init(SEQUENCE_COUNT, g_pstTimer1ms)) return;
 
     pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
@@ -155,28 +150,30 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;														// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
-    s_pstLedRGB = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, SEQUENCE_COUNT, actLedRGBState);
-    if (!s_pstLedRGB) return;
+    s_pstGpioRGB = pifGpio_Create(PIF_ID_AUTO, SEQUENCE_COUNT);
+    if (!s_pstGpioRGB) return;
+    pifGpio_AttachActOut(s_pstGpioRGB, actGpioRGBState);
+    pifGpio_SetCsFlagAll(GpCsF_enAllBit);
 
     s_pstLedCollect = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedCollectState);
     if (!s_pstLedCollect) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-    	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
+    	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
 	    if (!pifSensorSwitch_AttachTask(s_stSequenceTest[i].pstPushSwitch, TM_enPeriodMs, 5, TRUE)) return;	// 5ms
 	    pifSensorSwitch_SetCsFlagEach(s_stSequenceTest[i].pstPushSwitch, SSCsF_enRawBit);
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Add(PIF_ID_SEQUENCE + i, s_astSequencePhaseList,
+		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
 	    if (!pifSequence_AttachTask(s_stSequenceTest[i].pstSequence, TM_enPeriodMs, 10, TRUE)) return;		// 10ms
     }
     pifSequence_SetCsFlagAll(SqCsF_enAllBit);
 
-    pstPushSwitchCollect = pifSensorSwitch_Add(PIF_ID_AUTO, 0);
+    pstPushSwitchCollect = pifSensorSwitch_Create(PIF_ID_AUTO, 0);
 	if (!pstPushSwitchCollect) return;
     if (!pifSensorSwitch_AttachTask(pstPushSwitchCollect, TM_enPeriodMs, 5, TRUE)) return;					// 5ms
 	pifSensor_AttachAction(pstPushSwitchCollect, actPushSwitchCollectAcquire);

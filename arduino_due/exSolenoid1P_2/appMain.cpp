@@ -4,9 +4,6 @@
 #include "pifLog.h"
 
 
-#define SOLENOID_COUNT          1
-
-
 typedef struct {
 	SWITCH nSwitch;
     PIF_stSolenoid *pstSolenoid;
@@ -48,8 +45,6 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;			// 100%
 
-    if (!pifSolenoid_Init(SOLENOID_COUNT, g_pstTimer1ms)) return;
-
     pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
@@ -57,7 +52,8 @@ void appSetup()
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    s_stSolenoidTest.pstSolenoid = pifSolenoid_Add(PIF_ID_AUTO, ST_en1Point, 0, actSolenoidOrder);
+    s_stSolenoidTest.pstSolenoid = pifSolenoid_Create(PIF_ID_AUTO, g_pstTimer1ms,
+    		ST_en1Point, 0, actSolenoidOrder);
     if (!s_stSolenoidTest.pstSolenoid) return;
 
     s_stSolenoidTest.pstTimerItem = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);

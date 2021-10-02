@@ -7,9 +7,6 @@
 #include "pifXmodem.h"
 
 
-#define SWITCH_COUNT            1
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stComm *s_pstSerial = NULL;
@@ -45,8 +42,6 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);									// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;				// 100%
@@ -63,7 +58,7 @@ void appSetup()
     if (!pifLed_AttachBlink(pstLedL, 500)) return;										// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
-	pstPushSwitch = pifSensorSwitch_Add(PIF_ID_AUTO, 0);
+	pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, 0);
 	if (!pstPushSwitch) return;
     if (!pifSensorSwitch_AttachTask(pstPushSwitch, TM_enPeriodMs, 10, TRUE)) return;	// 10ms
 	pifSensor_AttachAction(pstPushSwitch, actPushSwitchAcquire);

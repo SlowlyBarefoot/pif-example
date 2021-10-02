@@ -219,8 +219,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	pif_Init(actTimer1us);
     pifLog_Init();
 
-    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);												// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;							// 100%
@@ -246,7 +244,7 @@ void appSetup(PIF_actTimer1us actTimer1us)
     pifLed_BlinkOn(pstLedL, 0);
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-		s_pstSwitch[i] = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
+		s_pstSwitch[i] = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
 		if (!s_pstSwitch[i]) return;
 	    if (!pifSensorSwitch_AttachTask(s_pstSwitch[i], TM_enPeriodMs, 1, TRUE)) return;			// 1ms
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);

@@ -17,7 +17,7 @@
 //add your function definitions for the project exCollectSignal2 here
 
 void actLedLState(PIF_usId usPifId, uint32_t unState);
-void actLedRGBState(PIF_usId usPifId, uint32_t unState);
+void actGpioRGBState(PIF_usId usPifId, uint8_t unState);
 void actLedCollectState(PIF_usId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PIF_usId usPifId);
 uint16_t actPushSwitchCollectAcquire(PIF_usId usPifId);

@@ -7,9 +7,6 @@
 #include "pifSensorSwitch.h"
 
 
-#define SWITCH_COUNT            SEQUENCE_COUNT
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
@@ -111,13 +108,9 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	pif_Init(actTimer1us);
     pifLog_Init();
 
-    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-
 	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);															// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;										// 100%
-
-    if (!pifSequence_Init(SEQUENCE_COUNT, g_pstTimer1ms)) return;
 
     pstCommLog = pifComm_Init(PIF_ID_AUTO);
 	if (!pstCommLog) return;
@@ -135,13 +128,13 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!s_pstLedRGB) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-    	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
+    	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
 	    if (!pifSensorSwitch_AttachTask(s_stSequenceTest[i].pstPushSwitch, TM_enPeriodMs, 10, TRUE)) return;	// 10ms
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Add(PIF_ID_SEQUENCE + i, s_astSequencePhaseList,
+		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
 	    if (!pifSequence_AttachTask(s_stSequenceTest[i].pstSequence, TM_enPeriodMs, 10, TRUE)) return;			// 10ms

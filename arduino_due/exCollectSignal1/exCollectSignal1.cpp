@@ -28,7 +28,7 @@ void actLedLState(PIF_usId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void actLedRGBState(PIF_usId usPifId, uint32_t unState)
+void actGpioRGBState(PIF_usId usPifId, uint8_t unState)
 {
 	(void)usPifId;
 
