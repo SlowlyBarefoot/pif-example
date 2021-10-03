@@ -138,7 +138,7 @@ BOOL exSerial1_Setup()
 	int i;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-    	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
+    	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
 		if (!s_stProtocolTest[i].pstPushSwitch) return FALSE;
 	    if (!pifSensorSwitch_AttachTask(s_stProtocolTest[i].pstPushSwitch, TM_enPeriodMs, 10, TRUE)) return FALSE;	// 10ms
 		pifSensor_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
@@ -146,7 +146,7 @@ BOOL exSerial1_Setup()
 	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
     }
 
-    g_pstSerial1 = pifComm_Init(PIF_ID_AUTO);
+    g_pstSerial1 = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstSerial1) return FALSE;
     if (!pifComm_AttachTask(g_pstSerial1, TM_enPeriodMs, 1, TRUE)) return FALSE;									// 1ms
 #ifdef USE_SERIAL
@@ -159,7 +159,7 @@ BOOL exSerial1_Setup()
 	pifComm_AttachActStartTransfer(g_pstSerial1, actUart1StartTransfer);
 #endif
 
-    s_pstProtocol = pifProtocol_Init(PIF_ID_AUTO, g_pstTimer1ms, PT_enMedium, stProtocolQuestions1);
+    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_enMedium, stProtocolQuestions1);
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
     s_pstProtocol->evtError = _evtProtocolError;

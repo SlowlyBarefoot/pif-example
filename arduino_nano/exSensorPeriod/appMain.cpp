@@ -4,8 +4,6 @@
 #include "pifLog.h"
 
 
-#define SENSOR_COUNT         	1
-
 #define USE_FILTER_AVERAGE		0
 
 
@@ -33,16 +31,14 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;					// 100%
 
-    if (!pifSensorDigital_Init(SENSOR_COUNT, g_pstTimer1ms)) return;
-
-    pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;					// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    g_pstSensor = pifSensorDigital_Add(PIF_ID_AUTO);
+    g_pstSensor = pifSensorDigital_Create(PIF_ID_AUTO, g_pstTimer1ms);
     if (!g_pstSensor) return;
     if (!pifSensorDigital_AttachTask(g_pstSensor, TM_enRatio, 3, TRUE)) return;				// 3%
 #if USE_FILTER_AVERAGE

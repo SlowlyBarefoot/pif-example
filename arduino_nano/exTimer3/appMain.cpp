@@ -60,6 +60,6 @@ void appSetup()
     if (!s_pstTimer1msGreen) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msGreen, _evtLedGreenToggle, NULL);
 
-    s_pstLedRGB = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 3, actLedRGBState);
+    s_pstLedRGB = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 3, actLedRGBState);
     if (!s_pstLedRGB) return;
 }

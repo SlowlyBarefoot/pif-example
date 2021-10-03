@@ -7,9 +7,6 @@
 #include "pifSensorSwitch.h"
 
 
-#define SWITCH_COUNT            SEQUENCE_COUNT
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
@@ -111,37 +108,33 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	pif_Init(actTimer1us);
     pifLog_Init();
 
-    if (!pifSensorSwitch_Init(SWITCH_COUNT)) return;
-
 	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);															// 1000us
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;										// 100%
 
-    if (!pifSequence_Init(SEQUENCE_COUNT, g_pstTimer1ms)) return;
-
-    pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;										// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    s_pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
+    s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;															// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
-    s_pstLedRGB = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, SEQUENCE_COUNT, actLedRGBState);
+    s_pstLedRGB = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, SEQUENCE_COUNT, actLedRGBState);
     if (!s_pstLedRGB) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-    	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Add(PIF_ID_SWITCH + i, 0);
+    	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
 	    if (!pifSensorSwitch_AttachTask(s_stSequenceTest[i].pstPushSwitch, TM_enPeriodMs, 10, TRUE)) return;	// 10ms
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Add(PIF_ID_SEQUENCE + i, s_astSequencePhaseList,
+		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, s_astSequencePhaseList,
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
 	    if (!pifSequence_AttachTask(s_stSequenceTest[i].pstSequence, TM_enPeriodMs, 10, TRUE)) return;			// 10ms

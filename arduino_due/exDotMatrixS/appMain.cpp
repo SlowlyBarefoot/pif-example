@@ -145,14 +145,14 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;					// 100%
 
-    pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;					// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    s_pstDotMatrix = pifDotMatrix_Init(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
+    s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
 	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_enRatio, 5, TRUE)) return;				// 5%
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 96)) return;

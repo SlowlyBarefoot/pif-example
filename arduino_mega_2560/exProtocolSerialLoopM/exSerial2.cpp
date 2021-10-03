@@ -127,7 +127,7 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL exSerial2_Setup()
 {
-	g_pstSerial2 = pifComm_Init(PIF_ID_AUTO);
+	g_pstSerial2 = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstSerial2) return FALSE;
     if (!pifComm_AttachTask(g_pstSerial2, TM_enPeriodMs, 1, TRUE)) return FALSE;	// 1ms
 #ifdef USE_SERIAL
@@ -140,7 +140,7 @@ BOOL exSerial2_Setup()
 	pifComm_AttachActStartTransfer(g_pstSerial2, actUart2StartTransfer);
 #endif
 
-    s_pstProtocol = pifProtocol_Init(PIF_ID_AUTO, g_pstTimer1ms, PT_enMedium, stProtocolQuestions2);
+    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_enMedium, stProtocolQuestions2);
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, g_pstSerial2);
     s_pstProtocol->evtError = _evtProtocolError;

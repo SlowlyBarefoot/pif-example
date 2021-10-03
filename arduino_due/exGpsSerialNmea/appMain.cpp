@@ -141,7 +141,7 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
 
-    pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
@@ -150,12 +150,12 @@ void appSetup()
 	if (!pifLog_AttachComm(pstCommLog)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
-    s_pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 2, actLedLState);
+    s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 2, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;						// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
-	s_pstCommGps = pifComm_Init(PIF_ID_AUTO);
+	s_pstCommGps = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommGps) return;
     if (!pifComm_AttachTask(s_pstCommGps, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
 	pifComm_AttachActReceiveData(s_pstCommGps, actGpsReceiveData);

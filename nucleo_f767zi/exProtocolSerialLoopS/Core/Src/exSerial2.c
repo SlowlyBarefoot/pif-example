@@ -129,14 +129,14 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL exSerial2_Setup()
 {
-	g_pstSerial2 = pifComm_Init(PIF_ID_AUTO);
+	g_pstSerial2 = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstSerial2) return FALSE;
     if (!pifComm_AttachTask(g_pstSerial2, TM_enPeriodMs, 1, TRUE)) return FALSE;	// 1ms
 	if (!pifComm_AllocRxBuffer(g_pstSerial2, 64)) return FALSE;
 	if (!pifComm_AllocTxBuffer(g_pstSerial2, 64)) return FALSE;
 	pifComm_AttachActStartTransfer(g_pstSerial2, actUart2StartTransfer);
 
-    s_pstProtocol = pifProtocol_Init(PIF_ID_AUTO, g_pstTimer1ms, PT_enSmall, stProtocolQuestions2);
+    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_enSmall, stProtocolQuestions2);
     if (!s_pstProtocol) return FALSE;
 #ifdef USE_DMA
     if (!pifProtocol_SetFrameSize(s_pstProtocol, UART_FRAME_SIZE)) return FALSE;

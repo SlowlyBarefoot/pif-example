@@ -5,10 +5,6 @@
 #include "pifLog.h"
 
 
-#define PULSE_ITEM_COUNT    	5
-#define TASK_COUNT              3
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 PIF_stComm *g_pstCommLog = NULL;
 
@@ -109,28 +105,26 @@ void appSetup()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifTask_Init(TASK_COUNT)) return;
-
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);		// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);							// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;		// 100%
 
-    g_pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    g_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
-    if (!pifComm_AttachTask(g_pstCommLog, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(g_pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
 	if (!pifComm_AllocTxBuffer(g_pstCommLog, 64)) return;
 	pifComm_AttachActStartTransfer(g_pstCommLog, actLogStartTransfer);
 
 	if (!pifLog_AttachComm(g_pstCommLog)) return;
 
-    s_pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
+    s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;						// 500ms
+    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
-    s_pstLedRGB = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 3, actLedRGBState);
+    s_pstLedRGB = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 3, actLedRGBState);
     if (!s_pstLedRGB) return;
-    if (!pifLed_AttachBlink(s_pstLedRGB, 100)) return;						// 100ms
+    if (!pifLed_AttachBlink(s_pstLedRGB, 100)) return;							// 100ms
 
-    if (!pifTask_Add(TM_enPeriodMs, 100, _taskLed, NULL, TRUE)) return;		// 100ms
+    if (!pifTaskManager_Add(TM_enPeriodMs, 100, _taskLed, NULL, TRUE)) return;	// 100ms
 }

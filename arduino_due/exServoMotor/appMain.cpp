@@ -56,7 +56,7 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;				// 100%
 
-    pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
@@ -66,7 +66,7 @@ void appSetup()
     g_pstTimer100us = pifPulse_Create(PIF_ID_AUTO, 100);								// 100us
     if (!g_pstTimer100us) return;
 
-    pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
+    pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;										// 500ms
     pifLed_BlinkOn(pstLedL, 0);

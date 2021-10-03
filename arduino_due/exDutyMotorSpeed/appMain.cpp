@@ -228,7 +228,7 @@ void appSetup()
 
     if (!pifDutyMotor_Init(MOTOR_COUNT, g_pstTimer1ms)) return;
 
-    pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;					// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
@@ -237,7 +237,7 @@ void appSetup()
 	if (!pifLog_AttachComm(pstCommLog)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
-    pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
+    pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;											// 500ms
     pifLed_BlinkOn(pstLedL, 0);

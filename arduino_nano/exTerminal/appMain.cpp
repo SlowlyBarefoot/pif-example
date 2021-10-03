@@ -67,7 +67,7 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
 
-    g_pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    g_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
     if (!pifComm_AttachTask(g_pstCommLog, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
 #ifdef USE_SERIAL
@@ -83,7 +83,7 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	if (!pifLog_AttachComm(g_pstCommLog)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
-    s_pstLedL = pifLed_Init(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
+    s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, nPeriod)) return;
     pifLed_BlinkOn(s_pstLedL, 0);

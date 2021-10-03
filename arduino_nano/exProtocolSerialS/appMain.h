@@ -5,8 +5,6 @@
 #include "pifPulse.h"
 
 
-#define SWITCH_COUNT          	2
-
 #define PIF_ID_SWITCH			0x100
 
 

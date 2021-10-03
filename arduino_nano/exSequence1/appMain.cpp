@@ -162,16 +162,14 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;			// 100%
 
-    if (!pifSequence_Init(SEQUENCE_COUNT, g_pstTimer1ms)) return;
-
-    pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    s_pstSequence = pifSequence_Add(1, s_astSequencePhaseList, NULL);
+    s_pstSequence = pifSequence_Create(PIF_ID_AUTO, g_pstTimer1ms, s_astSequencePhaseList, NULL);
     if (!s_pstSequence) return;
     if (!pifSequence_AttachTask(s_pstSequence, TM_enPeriodMs, 10, TRUE)) return;	// 10ms
     s_pstSequence->evtError = _evtSequenceError;
