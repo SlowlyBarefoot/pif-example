@@ -7,7 +7,6 @@
 #include "pifStepMotorPos.h"
 
 
-#define MOTOR_COUNT				1
 #define SWITCH_COUNT         	3
 
 #define STEP_MOTOR_RESOLUTION				200
@@ -163,14 +162,14 @@ static int CmdStepMotorTest(int argc, char *argv[])
 
 static void _evtStable(PIF_stStepMotor *pstOwner)
 {
-	PIF_stStepMotorPos *pstChild = (PIF_stStepMotorPos *)pstOwner->_pvChild;
+	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
 
 	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
 }
 
 static void _evtStop(PIF_stStepMotor *pstOwner)
 {
-	PIF_stStepMotorPos *pstChild = (PIF_stStepMotorPos *)pstOwner->_pvChild;
+	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
 
 	s_stStepMotorTest.ucStage = 0;
 	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
@@ -178,7 +177,7 @@ static void _evtStop(PIF_stStepMotor *pstOwner)
 
 static void _evtError(PIF_stStepMotor *pstOwner)
 {
-	PIF_stStepMotorPos *pstChild = (PIF_stStepMotorPos *)pstOwner->_pvChild;
+	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
 
 	s_stStepMotorTest.ucStage = 0;
 	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
@@ -310,8 +309,6 @@ void appSetup(PIF_actTimer1us actTimer1us)
     if (!g_pstTimer200us) return;
     if (!pifPulse_AttachTask(g_pstTimer200us, TM_enRatio, 100, TRUE)) return;					// 100%
 
-    if (!pifStepMotor_Init(MOTOR_COUNT, g_pstTimer200us)) return;
-
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;						// 1ms
@@ -333,7 +330,8 @@ void appSetup(PIF_actTimer1us actTimer1us)
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
-    s_pstMotor = pifStepMotorPos_Add(PIF_ID_AUTO, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S, 100);	// 20ms
+    s_pstMotor = pifStepMotorPos_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION,
+    		SMO_en2P_4W_1S, 100);																// 20ms
     if (!s_pstMotor) return;
     if (!pifStepMotor_AttachTask(s_pstMotor, TM_enPeriodUs, 200, FALSE)) return;				// 200us
     pifStepMotor_AttachAction(s_pstMotor, actSetStep);

@@ -6,9 +6,6 @@
 #include "pifLog.h"
 
 
-#define MOTOR_COUNT				1
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stDutyMotor *s_pstMotor = NULL;
@@ -82,8 +79,6 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
 
-    if (!pifDutyMotor_Init(MOTOR_COUNT, g_pstTimer1ms)) return;
-
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
@@ -98,7 +93,7 @@ void appSetup()
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
-    s_pstMotor = pifDutyMotor_Add(PIF_ID_AUTO, 255);
+    s_pstMotor = pifDutyMotor_Create(PIF_ID_AUTO, g_pstTimer1ms, 255);
     if (!s_pstMotor) return;
     pifDutyMotor_AttachAction(s_pstMotor, actSetDuty, actSetDirection, actOperateBreak);
 

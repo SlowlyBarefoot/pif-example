@@ -7,7 +7,6 @@
 #include "pifSensorSwitch.h"
 
 
-#define MOTOR_COUNT				1
 #define SWITCH_COUNT         	3
 
 
@@ -139,14 +138,14 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 
 static void _evtStable(PIF_stDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorSpeed *pstChild = (PIF_stDutyMotorSpeed *)pstOwner->_pvChild;
+	PIF_stDutyMotorSpeed* pstChild = (PIF_stDutyMotorSpeed*)pstOwner;
 
 	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
 }
 
 static void _evtStop(PIF_stDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorSpeed *pstChild = (PIF_stDutyMotorSpeed *)pstOwner->_pvChild;
+	PIF_stDutyMotorSpeed* pstChild = (PIF_stDutyMotorSpeed*)pstOwner;
 
 	s_stDutyMotorTest.ucStage = 0;
 	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
@@ -154,7 +153,7 @@ static void _evtStop(PIF_stDutyMotor *pstOwner)
 
 static void _evtError(PIF_stDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorSpeed *pstChild = (PIF_stDutyMotorSpeed *)pstOwner->_pvChild;
+	PIF_stDutyMotorSpeed* pstChild = (PIF_stDutyMotorSpeed*)pstOwner;
 
 	s_stDutyMotorTest.ucStage = 0;
 	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
@@ -226,8 +225,6 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;					// 100%
 
-    if (!pifDutyMotor_Init(MOTOR_COUNT, g_pstTimer1ms)) return;
-
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;					// 1ms
@@ -249,7 +246,7 @@ void appSetup()
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
-    g_pstMotor = pifDutyMotorSpeed_Add(PIF_ID_AUTO, 255, 100);
+    g_pstMotor = pifDutyMotorSpeed_Create(PIF_ID_AUTO, g_pstTimer1ms, 255, 100);
     pifDutyMotorSpeed_AddStages(g_pstMotor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
     pifDutyMotor_AttachAction(g_pstMotor, actSetDuty, actSetDirection, actOperateBreak);
     g_pstMotor->evtStable = _evtStable;
