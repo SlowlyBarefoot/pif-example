@@ -24,8 +24,8 @@ uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSiz
 #ifdef USE_USART
 BOOL actLogStartTransfer();
 #endif
-void actLedLState(PIF_usId usPifId, uint32_t unState);
-void actLedRGBState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
+void actLedRGBState(PifId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exLed1_H_ */

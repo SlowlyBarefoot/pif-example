@@ -57,7 +57,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 BOOL actLogStartTransfer();
-void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
 BOOL actPmlcdI2cWrite(PIF_stI2c *pstOwner, uint16_t usSize);
 
 /* USER CODE END EFP */

@@ -26,7 +26,7 @@ BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 #ifdef USE_USART
 BOOL actLogStartTransfer();
 #endif
-void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exTerminal_H_ */

@@ -64,7 +64,7 @@ static void _fnProtocolAnswer30(PIF_stProtocolPacket *pstPacket)
 	}
 
 	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions2[0].enFlags, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "Answer30: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
+		pifLog_Printf(LT_enInfo, "Answer30: PID=%d Error=%d", pstPacket->ucPacketId, pif_error);
 	}
 	else {
 		pifPulse_StartItem(s_stProtocolTest[0].pstDelay, 500);
@@ -94,7 +94,7 @@ static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
 	pifLog_Printf(LT_enInfo, "Response21");
 }
 
-static void _evtProtocolError(PIF_usId usPifId)
+static void _evtProtocolError(PifId usPifId)
 {
 	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", usPifId);
 }
@@ -102,7 +102,7 @@ static void _evtProtocolError(PIF_usId usPifId)
 static void _evtDelay(void *pvIssuer)
 {
 	if (!pvIssuer) {
-		pif_enError = E_enInvalidParam;
+		pif_error = E_INVALID_PARAM;
 		return;
 	}
 
@@ -110,7 +110,7 @@ static void _evtDelay(void *pvIssuer)
 	int index = pstOwner->ucCommand & 0x0F;
 
 	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-		pifLog_Printf(LT_enError, "Delay(%u): DC=%u E=%u", index, s_pstProtocol->_usPifId, pif_enError);
+		pifLog_Printf(LT_enError, "Delay(%u): DC=%u E=%u", index, s_pstProtocol->_usPifId, pif_error);
 	}
 	else {
 		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%u CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);

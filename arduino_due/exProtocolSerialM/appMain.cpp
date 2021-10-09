@@ -86,7 +86,7 @@ static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket)
 	_fnProtocolPrint(pstPacket, "Question20");
 
 	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "Question20: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
+		pifLog_Printf(LT_enInfo, "Question20: PID=%d Error=%d", pstPacket->ucPacketId, pif_error);
 	}
 }
 
@@ -108,12 +108,12 @@ static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket)
 	pifLog_Printf(LT_enInfo, "Response31: ACK");
 }
 
-static void _evtProtocolError(PIF_usId usPifId)
+static void _evtProtocolError(PifId usPifId)
 {
 	pifLog_Printf(LT_enError, "ProtocolError DC=%d", usPifId);
 }
 
-static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	uint8_t index = usPifId - PIF_ID_SWITCH;
 
@@ -123,7 +123,7 @@ static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIss
 		s_stProtocolTest[index].ucDataCount = rand() % 8;
 		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
 		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-			pifLog_Printf(LT_enError, "PushSwitchChange(%d): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_enError);
+			pifLog_Printf(LT_enError, "PushSwitchChange(%d): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_error);
 		}
 		else {
 			pifLog_Printf(LT_enInfo, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);

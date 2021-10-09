@@ -61,25 +61,25 @@ static int _cmdRequest(int argc, char *argv[])
 		switch (command) {
 		case NMEA_MESSAGE_ID_GBQ:
 			if (!pifGpsNmea_PollRequestGBQ(s_pstGpsNmea, argv[2])) {
-				pifLog_Printf(LT_enError, "Error: %u", pif_enError);
+				pifLog_Printf(LT_enError, "Error: %u", pif_error);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GLQ:
 			if (!pifGpsNmea_PollRequestGLQ(s_pstGpsNmea, argv[2])) {
-				pifLog_Printf(LT_enError, "Error: %u", pif_enError);
+				pifLog_Printf(LT_enError, "Error: %u", pif_error);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GNQ:
 			if (!pifGpsNmea_PollRequestGNQ(s_pstGpsNmea, argv[2])) {
-				pifLog_Printf(LT_enError, "Error: %u", pif_enError);
+				pifLog_Printf(LT_enError, "Error: %u", pif_error);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GPQ:
 			if (!pifGpsNmea_PollRequestGPQ(s_pstGpsNmea, argv[2])) {
-				pifLog_Printf(LT_enError, "Error: %u", pif_enError);
+				pifLog_Printf(LT_enError, "Error: %u", pif_error);
 			}
 			break;
 
@@ -113,8 +113,8 @@ static void _evtGpsReceive(PIF_stGps *pstOwner)
 
 	if (!g_bPrintRawData) {
 		pifLog_Printf(LT_enInfo, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
-				2000 + pstOwner->_stDateTime.ucYear, pstOwner->_stDateTime.ucMonth, pstOwner->_stDateTime.ucDay,
-				pstOwner->_stDateTime.ucHour, pstOwner->_stDateTime.ucMinute, pstOwner->_stDateTime.ucSecond, pstOwner->_stDateTime.usMilisecond);
+				2000 + pstOwner->_stDateTime.year, pstOwner->_stDateTime.month, pstOwner->_stDateTime.day,
+				pstOwner->_stDateTime.hour, pstOwner->_stDateTime.minute, pstOwner->_stDateTime.second, pstOwner->_stDateTime.millisecond);
 		pifLog_Printf(LT_enInfo, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
 				pstOwner->_dCoordDeg[GPS_LON], stLonDegMin.usDegree, stLonDegMin.dMinute,
 				stLonDegMinSec.usDegree, stLonDegMinSec.usMinute, stLonDegMinSec.dSecond);

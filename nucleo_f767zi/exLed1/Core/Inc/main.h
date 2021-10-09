@@ -56,8 +56,8 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 BOOL actLogStartTransfer();
-void actLedLState(PIF_usId usPifId, uint32_t unState);
-void actLedRGBState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
+void actLedRGBState(PifId usPifId, uint32_t unState);
 
 /* USER CODE END EFP */
 

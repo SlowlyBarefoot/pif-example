@@ -4,8 +4,6 @@
 #include "pifLog.h"
 
 
-#define TASK_COUNT              1
-
 #define LOG_BUFFER_SIZE			0x200
 
 
@@ -16,9 +14,7 @@ BOOL appInit()
     pif_Init(NULL);
     if (!pifLog_InitHeap(LOG_BUFFER_SIZE)) return FALSE;
 
-    if (!pifTask_Init(TASK_COUNT)) return FALSE;
-
-    pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return FALSE;
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
@@ -34,5 +30,5 @@ BOOL appInit()
 
 void appExit()
 {
-	pifLog_Exit();
+	pifLog_Clear();
 }

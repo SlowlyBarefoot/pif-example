@@ -26,14 +26,14 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void actLedRGBState(PIF_usId usPifId, uint32_t unState)
+void actLedRGBState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
@@ -41,7 +41,7 @@ void actLedRGBState(PIF_usId usPifId, uint32_t unState)
 	digitalWrite(s_stSequenceTest[1].ucPinLed, (unState >> 1) & 1);
 }
 
-uint16_t actPushSwitchAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchAcquire(PifId usPifId)
 {
 	return !digitalRead(s_stSequenceTest[usPifId - PIF_ID_SWITCH].ucPinSwitch);
 }

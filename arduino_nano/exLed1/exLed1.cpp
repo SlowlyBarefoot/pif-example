@@ -41,14 +41,14 @@ ISR(USART_UDRE_vect)
 
 #endif
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void actLedRGBState(PIF_usId usPifId, uint32_t unState)
+void actLedRGBState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 

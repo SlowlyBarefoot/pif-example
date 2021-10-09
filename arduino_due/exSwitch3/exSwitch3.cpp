@@ -17,7 +17,7 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actLedState(PIF_usId usPifId, uint32_t unState)
+void actLedState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 

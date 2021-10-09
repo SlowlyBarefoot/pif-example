@@ -74,7 +74,7 @@ static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
 static void _evtDelay(void *pvIssuer)
 {
 	if (!pvIssuer) {
-		pif_enError = E_enInvalidParam;
+		pif_error = E_INVALID_PARAM;
 		return;
 	}
 

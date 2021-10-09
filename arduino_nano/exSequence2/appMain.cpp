@@ -32,7 +32,7 @@ static struct {
 };
 
 
-static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	uint8_t index = usPifId - PIF_ID_SWITCH;
 
@@ -97,15 +97,15 @@ static void _evtSequenceError(PIF_stSequence *pstOwner)
 {
 	(void)pstOwner;
 
-	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_enError);
+	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_error);
 }
 
-void appSetup(PIF_actTimer1us actTimer1us)
+void appSetup(PifActTimer1us act_timer1us)
 {
 	PIF_stComm *pstCommLog;
 	int i;
 
-	pif_Init(actTimer1us);
+	pif_Init(act_timer1us);
     pifLog_Init();
 
 	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);															// 1000us

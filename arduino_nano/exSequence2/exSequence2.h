@@ -17,9 +17,9 @@
 //add your function definitions for the project exSequence2 here
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actLedLState(PIF_usId usPifId, uint32_t unState);
-void actLedRGBState(PIF_usId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PIF_usId usPifId);
+void actLedLState(PifId usPifId, uint32_t unState);
+void actLedRGBState(PifId usPifId, uint32_t unState);
+uint16_t actPushSwitchAcquire(PifId usPifId);
 
 //Do not add code below this line
 #endif /* _exSequence2_H_ */

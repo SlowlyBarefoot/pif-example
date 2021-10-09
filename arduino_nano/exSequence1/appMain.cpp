@@ -110,7 +110,7 @@ static void _evtSequenceError(PIF_stSequence *pstOwner)
 {
 	(void)pstOwner;
 
-	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_enError);
+	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_error);
 }
 
 static uint16_t _taskSequence(PIF_stTask *pstTask)
@@ -151,11 +151,11 @@ static uint16_t _taskSequence(PIF_stTask *pstTask)
 	return 0;
 }
 
-void appSetup(PIF_actTimer1us actTimer1us)
+void appSetup(PifActTimer1us act_timer1us)
 {
 	PIF_stComm *pstCommLog;
 
-	pif_Init(actTimer1us);
+	pif_Init(act_timer1us);
     pifLog_Init();
 
 	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us

@@ -19,14 +19,14 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-uint16_t actPushSwitchAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchAcquire(PifId usPifId)
 {
 	(void)usPifId;
 
 	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+void evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
@@ -34,14 +34,14 @@ void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 	digitalWrite(PIN_LED_RED, usLevel);
 }
 
-uint16_t actTiltSwitchAcquire(PIF_usId usPifId)
+uint16_t actTiltSwitchAcquire(PifId usPifId)
 {
 	(void)usPifId;
 
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-void evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+void evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;

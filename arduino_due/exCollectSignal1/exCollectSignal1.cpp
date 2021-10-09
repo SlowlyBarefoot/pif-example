@@ -21,14 +21,14 @@ static struct {
 };
 
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-void actGpioRGBState(PIF_usId usPifId, uint8_t unState)
+void actGpioRGBState(PifId usPifId, uint8_t unState)
 {
 	(void)usPifId;
 
@@ -36,19 +36,19 @@ void actGpioRGBState(PIF_usId usPifId, uint8_t unState)
 	digitalWrite(s_stSequenceTest[1].ucPinLed, (unState >> 1) & 1);
 }
 
-void actLedCollectState(PIF_usId usPifId, uint32_t unState)
+void actLedCollectState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_BLUE, unState & 1);
 }
 
-uint16_t actPushSwitchAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchAcquire(PifId usPifId)
 {
 	return !digitalRead(s_stSequenceTest[usPifId - PIF_ID_SWITCH].ucPinSwitch);
 }
 
-uint16_t actPushSwitchCollectAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchCollectAcquire(PifId usPifId)
 {
 	(void)usPifId;
 

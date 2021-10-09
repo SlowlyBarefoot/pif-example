@@ -17,7 +17,7 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
@@ -32,7 +32,7 @@ void evtSwitchAcquire(void *pvIssuer)
 	pifSensorSwitch_sigData(g_pstTiltSwitch, digitalRead(PIN_TILT_SWITCH));
 }
 
-void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+void evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;
@@ -40,7 +40,7 @@ void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
 	digitalWrite(PIN_LED_RED, usLevel);
 }
 
-void evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+void evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;

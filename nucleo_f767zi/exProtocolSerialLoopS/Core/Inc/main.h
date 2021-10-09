@@ -59,8 +59,8 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 BOOL actLogStartTransfer();
-void actLedLState(PIF_usId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PIF_usId usPifId);
+void actLedLState(PifId usPifId, uint32_t unState);
+uint16_t actPushSwitchAcquire(PifId usPifId);
 BOOL actUart1StartTransfer();
 BOOL actUart2StartTransfer();
 

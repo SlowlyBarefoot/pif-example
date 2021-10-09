@@ -17,9 +17,9 @@
 //add your function definitions for the project exGpio1 here
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actGpioLedL(PIF_usId usPifId, uint8_t ucState);
-void actGpioLedRG(PIF_usId usPifId, uint8_t ucState);
-uint8_t actGpioSwitch(PIF_usId usPifId);
+void actGpioLedL(PifId usPifId, uint8_t ucState);
+void actGpioLedRG(PifId usPifId, uint8_t ucState);
+uint8_t actGpioSwitch(PifId usPifId);
 
 //Do not add code below this line
 #endif /* _exGpio1_H_ */

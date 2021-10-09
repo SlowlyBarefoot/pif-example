@@ -22,7 +22,7 @@ uint16_t _taskPmlcdI2c(PIF_stTask *pstTask)
 
 	(void)pstTask;
 
-	pifLog_Printf(LT_enInfo, "Task:%u(%u) %lu", __LINE__, nStep, (*pif_actTimer1us)());
+	pifLog_Printf(LT_enInfo, "Task:%u(%u) %lu", __LINE__, nStep, (*pif_act_timer1us)());
 	switch (nStep) {
 	case 0:
 		pifPmlcdI2c_LeftToRight(g_pstPmlcdI2c);
@@ -62,9 +62,9 @@ uint16_t _taskPmlcdI2c(PIF_stTask *pstTask)
 	return 0;
 }
 
-void appSetup(PIF_actTimer1us actTimer1us)
+void appSetup(PifActTimer1us act_timer1us)
 {
-    pif_Init(actTimer1us);
+    pif_Init(act_timer1us);
     pifLog_Init();
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);									// 1000us

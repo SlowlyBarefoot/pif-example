@@ -9,14 +9,14 @@
 #define PIN_PUSH_SWITCH			2
 
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actPushSwitchAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchAcquire(PifId usPifId)
 {
 	(void)usPifId;
 

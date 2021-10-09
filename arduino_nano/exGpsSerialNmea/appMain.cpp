@@ -30,8 +30,8 @@ static void _evtGpsReceive(PIF_stGps *pstOwner)
 
 	if (!g_bPrintRawData) {
 		pifLog_Printf(LT_enInfo, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
-				2000 + pstOwner->_stDateTime.ucYear, pstOwner->_stDateTime.ucMonth, pstOwner->_stDateTime.ucDay,
-				pstOwner->_stDateTime.ucHour, pstOwner->_stDateTime.ucMinute, pstOwner->_stDateTime.ucSecond, pstOwner->_stDateTime.usMilisecond);
+				2000 + pstOwner->_stDateTime.year, pstOwner->_stDateTime.month, pstOwner->_stDateTime.day,
+				pstOwner->_stDateTime.hour, pstOwner->_stDateTime.minute, pstOwner->_stDateTime.second, pstOwner->_stDateTime.millisecond);
 		pifLog_Printf(LT_enInfo, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
 				pstOwner->_dCoordDeg[GPS_LON], stLonDegMin.usDegree, stLonDegMin.dMinute,
 				stLonDegMinSec.usDegree, stLonDegMinSec.usMinute, stLonDegMinSec.dSecond);
@@ -47,7 +47,7 @@ static void _evtGpsReceive(PIF_stGps *pstOwner)
 	pifLog_Printf(LT_enNone, "\n");
 }
 
-static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;

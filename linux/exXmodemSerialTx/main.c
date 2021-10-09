@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     while (1) {
         pif_Loop();
 
-        pifTask_Loop();
+        pifTaskManager_Loop();
     }
 
 fail:
@@ -106,5 +106,5 @@ fail:
 
     stop_timer();
 
-	return pif_enError;
+	return pif_error;
 }

@@ -10,7 +10,7 @@ extern PIF_stPulse *g_pstTimer1ms;
 extern PIF_stComm *g_pstCommLog;
 
 
-void appSetup(PIF_actTimer1us actTimer1us);
+void appSetup(PifActTimer1us act_timer1us);
 
 
 #endif	// APP_MAIN_H

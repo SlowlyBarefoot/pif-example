@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     while (s_unTimer) {
         pif_Loop();
 
-        pifTask_Loop();
+        pifTaskManager_Loop();
     }
 
     pifLog_PrintInBuffer();
@@ -59,5 +59,5 @@ fail:
 
     stop_timer();
 
-	return pif_enError;
+	return pif_error;
 }

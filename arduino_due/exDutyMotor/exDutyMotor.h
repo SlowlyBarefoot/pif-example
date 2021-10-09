@@ -21,7 +21,7 @@ BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 void actSetDuty(uint16_t usDuty);
 void actSetDirection(uint8_t ucDir);
 void actOperateBreak(uint8_t ucState);
-void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exDutyMotor_H_ */

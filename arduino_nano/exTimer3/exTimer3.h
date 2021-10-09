@@ -16,7 +16,7 @@
 
 //add your function definitions for the project exTimer3 here
 
-void actLedRGBState(PIF_usId usPifId, uint32_t unState);
+void actLedRGBState(PifId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exTimer3_H_ */

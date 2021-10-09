@@ -16,7 +16,7 @@
 
 //add your function definitions for the project exGpsSerialNmea here
 
-void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
 uint16_t actGpsSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actGpsReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);

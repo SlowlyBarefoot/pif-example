@@ -24,8 +24,8 @@ uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSiz
 #ifdef USE_USART
 BOOL actLogStartTransfer();
 #endif
-void actLedLState(PIF_usId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PIF_usId usPifId);
+void actLedLState(PifId usPifId, uint32_t unState);
+uint16_t actPushSwitchAcquire(PifId usPifId);
 #ifdef USE_SERIAL
 uint16_t actSerial1SendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actSerial1ReceiveData(PIF_stComm *pstComm, uint8_t *pucData);

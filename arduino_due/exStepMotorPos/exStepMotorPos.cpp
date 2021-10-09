@@ -36,7 +36,7 @@ BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 	return FALSE;
 }
 
-uint16_t actPhotoInterruptAcquire(PIF_usId usPifId)
+uint16_t actPhotoInterruptAcquire(PifId usPifId)
 {
 	switch (usPifId) {
 	case PIF_ID_SWITCH:
@@ -59,7 +59,7 @@ void actSetStep(uint16_t usPhase)
 	digitalWrite(PIN_STEP_MOTOR_4, (usPhase >> 3) & 1);
 }
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 

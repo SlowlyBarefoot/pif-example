@@ -5,10 +5,6 @@
 #include "pifXmodem.h"
 
 
-#define PULSE_ITEM_COUNT    	10
-#define TASK_COUNT              3
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stComm *s_pstCommLog = NULL;
@@ -77,25 +73,23 @@ BOOL appInit()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifTask_Init(TASK_COUNT)) return FALSE;
-
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return FALSE;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return FALSE;	// 100%
 
-    s_pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    s_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommLog) return FALSE;
 	pifComm_AttachActSendData(s_pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(s_pstCommLog)) return FALSE;
 
-    s_pstSerial = pifComm_Init(PIF_ID_AUTO);
+    s_pstSerial = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstSerial) return FALSE;
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
     if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return FALSE;		// 1ms
 
-    s_pstXmodem = pifXmodem_Init(PIF_ID_AUTO, g_pstTimer1ms, XT_enCRC);
+    s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_enCRC);
     if (!s_pstXmodem) return FALSE;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);
@@ -104,10 +98,10 @@ BOOL appInit()
 
 void appExit()
 {
-	pifTask_Exit();
-	pifXmodem_Exit(s_pstXmodem);
-	pifPulse_Exit(g_pstTimer1ms);
-	pifComm_Exit(s_pstSerial);
-	pifComm_Exit(s_pstCommLog);
-    pifLog_Exit();
+	pifTaskManager_Destroy();
+	pifXmodem_Destroy(&s_pstXmodem);
+	pifPulse_Destroy(&g_pstTimer1ms);
+	pifComm_Destroy(&s_pstSerial);
+	pifComm_Destroy(&s_pstCommLog);
+    pifLog_Clear();
 }

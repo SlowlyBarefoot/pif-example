@@ -12,7 +12,7 @@ static PIF_stComm *s_pstSerial = NULL;
 static PIF_stXmodem *s_pstXmodem = NULL;
 
 
-static void _evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)usPifId;
 	(void)pvIssuer;

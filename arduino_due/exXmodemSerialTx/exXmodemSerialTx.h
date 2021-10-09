@@ -17,8 +17,8 @@
 //add your function definitions for the project exXmodemSerialTx here
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actLedLState(PIF_usId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PIF_usId usPifId);
+void actLedLState(PifId usPifId, uint32_t unState);
+uint16_t actPushSwitchAcquire(PifId usPifId);
 uint16_t actXmodemSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actXmodemReceiveData(PIF_stComm *pstComm, uint8_t *pucData);
 

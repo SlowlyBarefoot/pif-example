@@ -99,14 +99,14 @@ BOOL actLogStartTransfer()
 	return FALSE;
 }
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	HAL_GPIO_WritePin(GPIOB, LD2_Pin, unState & 1);
 }
 
-uint16_t actPushSwitchAcquire(PIF_usId usPifId)
+uint16_t actPushSwitchAcquire(PifId usPifId)
 {
 	static uint16_t usPinSwitch[SWITCH_COUNT] = { Switch1_Pin, Switch2_Pin };
 

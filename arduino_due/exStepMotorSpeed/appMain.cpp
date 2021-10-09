@@ -210,12 +210,12 @@ static uint16_t _taskInitPos(PIF_stTask *pstTask)
 	return 0;
 }
 
-void appSetup(PIF_actTimer1us actTimer1us)
+void appSetup(PifActTimer1us act_timer1us)
 {
 	PIF_stComm *pstCommLog;
 	PIF_stLed *pstLedL;
 
-	pif_Init(actTimer1us);
+	pif_Init(act_timer1us);
     pifLog_Init();
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);												// 1000us

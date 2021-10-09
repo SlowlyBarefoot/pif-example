@@ -18,7 +18,7 @@
 //add your function definitions for the project exPmlcdI2c here
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
 BOOL actPmlcdI2cWrite(PIF_stI2c *pstOwner, uint16_t usSize);
 
 //Do not add code below this line

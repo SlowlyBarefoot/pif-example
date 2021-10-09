@@ -18,11 +18,11 @@
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
-uint16_t actPhotoInterruptAcquire(PIF_usId usPifId);
+uint16_t actPhotoInterruptAcquire(PifId usPifId);
 void actSetDuty(uint16_t usDuty);
 void actSetDirection(uint8_t ucDir);
 void actOperateBreak(uint8_t ucState);
-void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
 
 //Do not add code below this line
 #endif /* _exDutyMotorSpeedEnc_H_ */

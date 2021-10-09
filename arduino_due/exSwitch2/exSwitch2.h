@@ -17,10 +17,10 @@
 //add your function definitions for the project exSwitch2 here
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actLedLState(PIF_usId usPifId, uint32_t unState);
+void actLedLState(PifId usPifId, uint32_t unState);
 void evtSwitchAcquire(void *pvIssuer);
-void evtPushSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
-void evtTiltSwitchChange(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer);
+void evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer);
+void evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer);
 
 //Do not add code below this line
 #endif /* _exSwitch2_H_ */

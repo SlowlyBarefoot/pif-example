@@ -33,7 +33,7 @@ BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 
 #endif
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 

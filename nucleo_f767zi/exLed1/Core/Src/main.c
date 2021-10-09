@@ -96,14 +96,14 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	}
 }
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	HAL_GPIO_WritePin(GPIOB, LD2_Pin, unState & 1);
 }
 
-void actLedRGBState(PIF_usId usPifId, uint32_t unState)
+void actLedRGBState(PifId usPifId, uint32_t unState)
 {
   (void)usPifId;
 

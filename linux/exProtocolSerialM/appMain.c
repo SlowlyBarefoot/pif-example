@@ -7,10 +7,6 @@
 #include "pifProtocol.h"
 
 
-#define PULSE_ITEM_COUNT    	10
-#define TASK_COUNT              3
-
-
 PIF_stPulse *g_pstTimer1ms = NULL;
 
 static PIF_stComm *s_pstCommLog = NULL;
@@ -70,7 +66,7 @@ static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket)
 	}
 
 	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "Question30: PID=%d Error=%d", pstPacket->ucPacketId, pif_enError);
+		pifLog_Printf(LT_enInfo, "Question30: PID=%d Error=%d", pstPacket->ucPacketId, pif_error);
 	}
 	else {
 		pifPulse_StartItem(s_stProtocolTest[0].pstDelay, 500);
@@ -100,7 +96,7 @@ static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
 	pifLog_Printf(LT_enInfo, "Response21: ACK");
 }
 
-static void _evtProtocolError(PIF_usId usPifId)
+static void _evtProtocolError(PifId usPifId)
 {
 	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", usPifId);
 }
@@ -108,7 +104,7 @@ static void _evtProtocolError(PIF_usId usPifId)
 static void _evtDelay(void *pvIssuer)
 {
 	if (!pvIssuer) {
-		pif_enError = E_enInvalidParam;
+		pif_error = E_INVALID_PARAM;
 		return;
 	}
 
@@ -116,7 +112,7 @@ static void _evtDelay(void *pvIssuer)
 	int index = pstOwner->ucCommand & 0x0F;
 
 	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_enError);
+		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_error);
 	}
 	else {
 		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);
@@ -134,25 +130,23 @@ BOOL appInit()
     pif_Init(NULL);
     pifLog_Init();
 
-    if (!pifTask_Init(TASK_COUNT)) return FALSE;
-
-    g_pstTimer1ms = pifPulse_Init(PIF_ID_AUTO, PULSE_ITEM_COUNT, 1000);				// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return FALSE;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return FALSE;	// 100%
 
-    s_pstCommLog = pifComm_Init(PIF_ID_AUTO);
+    s_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommLog) return FALSE;
 	pifComm_AttachActSendData(s_pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(s_pstCommLog)) return FALSE;
 
-    s_pstSerial = pifComm_Init(PIF_ID_AUTO);
+    s_pstSerial = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstSerial) return FALSE;
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
     if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return FALSE;		// 1ms
 
-    s_pstProtocol = pifProtocol_Init(PIF_ID_AUTO, g_pstTimer1ms, PT_enMedium, stProtocolQuestions);
+    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_enMedium, stProtocolQuestions);
     if (!s_pstProtocol) return FALSE;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
     s_pstProtocol->evtError = _evtProtocolError;
@@ -167,10 +161,10 @@ BOOL appInit()
 
 void appExit()
 {
-	pifTask_Exit();
-	pifProtocol_Exit(s_pstProtocol);
-	pifPulse_Exit(g_pstTimer1ms);
-	pifComm_Exit(s_pstSerial);
-	pifComm_Exit(s_pstCommLog);
-    pifLog_Exit();
+	pifTaskManager_Destroy();
+	pifProtocol_Destroy(&s_pstProtocol);
+	pifPulse_Destroy(&g_pstTimer1ms);
+	pifComm_Destroy(&s_pstSerial);
+	pifComm_Destroy(&s_pstCommLog);
+    pifLog_Clear();
 }

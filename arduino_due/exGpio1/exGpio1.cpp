@@ -20,14 +20,14 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actGpioLedL(PIF_usId usPifId, uint8_t ucState)
+void actGpioLedL(PifId usPifId, uint8_t ucState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, ucState);
 }
 
-void actGpioLedRG(PIF_usId usPifId, uint8_t ucState)
+void actGpioLedRG(PifId usPifId, uint8_t ucState)
 {
 	(void)usPifId;
 
@@ -35,7 +35,7 @@ void actGpioLedRG(PIF_usId usPifId, uint8_t ucState)
 	digitalWrite(PIN_LED_YELLOW, (ucState >> 1) & 1);
 }
 
-uint8_t actGpioSwitch(PIF_usId usPifId)
+uint8_t actGpioSwitch(PifId usPifId)
 {
 	(void)usPifId;
 

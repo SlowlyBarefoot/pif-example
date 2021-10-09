@@ -15,7 +15,7 @@ static PIF_stSensorDigitalFilter s_stFilter;
 #endif
 
 
-static void _evtSensorThreshold(PIF_usId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtSensorThreshold(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)pvIssuer;
 

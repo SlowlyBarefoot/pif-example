@@ -8,7 +8,7 @@
 #define PIN_LED_L				13
 
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 

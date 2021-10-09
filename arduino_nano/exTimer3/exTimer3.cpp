@@ -22,7 +22,7 @@
 #define PIN_LED_GREEN			4
 
 
-void actLedRGBState(PIF_usId usPifId, uint32_t unState)
+void actLedRGBState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 

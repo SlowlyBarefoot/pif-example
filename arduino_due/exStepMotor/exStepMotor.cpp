@@ -41,7 +41,7 @@ void actSetStep(uint16_t usPhase)
 	digitalWrite(PIN_STEP_MOTOR_4, (usPhase >> 3) & 1);
 }
 
-void actLedLState(PIF_usId usPifId, uint32_t unState)
+void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
