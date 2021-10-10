@@ -6,9 +6,9 @@
 #include "pifTask.h"
 
 
-static PIF_stGpio *s_pstGpioL = NULL;
-static PIF_stGpio *s_pstGpioRG = NULL;
-static PIF_stGpio *s_pstGpioSwitch = NULL;
+static PifGpio *s_pstGpioL = NULL;
+static PifGpio *s_pstGpioRG = NULL;
+static PifGpio *s_pstGpioSwitch = NULL;
 
 
 static uint16_t _taskGpioTest(PifTask *pstTask)

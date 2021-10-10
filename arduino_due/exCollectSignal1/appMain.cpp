@@ -12,7 +12,7 @@
 PifPulse *g_pstTimer1ms = NULL;
 
 static PifLed *s_pstLedL = NULL;
-static PIF_stGpio *s_pstGpioRGB = NULL;
+static PifGpio *s_pstGpioRGB = NULL;
 static PifLed *s_pstLedCollect = NULL;
 
 static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner);
@@ -153,7 +153,7 @@ void appSetup(PifActTimer1us act_timer1us)
     s_pstGpioRGB = pifGpio_Create(PIF_ID_AUTO, SEQUENCE_COUNT);
     if (!s_pstGpioRGB) return;
     pifGpio_AttachActOut(s_pstGpioRGB, actGpioRGBState);
-    pifGpio_SetCsFlagAll(GpCsF_enAllBit);
+    pifGpio_SetCsFlagAll(GP_CSF_ALL_BIT);
 
     s_pstLedCollect = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedCollectState);
     if (!s_pstLedCollect) return;
