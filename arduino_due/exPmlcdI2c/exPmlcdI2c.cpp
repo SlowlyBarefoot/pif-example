@@ -24,18 +24,18 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-BOOL actPmlcdI2cWrite(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actPmlcdI2cWrite(PifI2c *pstOwner, uint16_t usSize)
 {
 	uint16_t i;
 	BOOL bResult = TRUE;
 
-	Wire.beginTransmission(pstOwner->ucAddr);
+	Wire.beginTransmission(pstOwner->addr);
     for (i = 0; i < usSize; i++) {
-    	Wire.write(pstOwner->pucData[i]);
+    	Wire.write(pstOwner->p_data[i]);
     }
     uint8_t status_ = Wire.endTransmission();
     if (status_ != 0) {
-    	pifLog_Printf(LT_enInfo, "I2CW(%xh): C=%u, S=%u", pstOwner->ucAddr, pstOwner->pucData[0], usSize);
+    	pifLog_Printf(LT_enInfo, "I2CW(%xh): C=%u, S=%u", pstOwner->addr, pstOwner->p_data[0], usSize);
         bResult = FALSE;
     }
     pifI2c_sigEndWrite(pstOwner, bResult);

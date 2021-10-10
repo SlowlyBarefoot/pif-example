@@ -111,20 +111,20 @@ void actLedLState(PifId usPifId, uint32_t unState)
 
 #ifdef USE_POLLING
 
-BOOL actAds1115Read(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
 {
 	BOOL bReturn = TRUE;
 
-	if (HAL_I2C_Master_Receive(&hi2c1, (pstOwner->ucAddr << 1) | 1, pstOwner->pucData, usSize, 1000) != HAL_OK) bReturn = FALSE;
+	if (HAL_I2C_Master_Receive(&hi2c1, (pstOwner->addr << 1) | 1, pstOwner->p_data, usSize, 1000) != HAL_OK) bReturn = FALSE;
     pifI2c_sigEndRead(pstOwner, bReturn);
     return bReturn;
 }
 
-BOOL actAds1115Write(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
 {
 	BOOL bReturn = TRUE;
 
-	if (HAL_I2C_Master_Transmit(&hi2c1, pstOwner->ucAddr << 1, pstOwner->pucData, usSize, 1000) != HAL_OK) bReturn = FALSE;
+	if (HAL_I2C_Master_Transmit(&hi2c1, pstOwner->addr << 1, pstOwner->p_data, usSize, 1000) != HAL_OK) bReturn = FALSE;
     pifI2c_sigEndWrite(pstOwner, bReturn);
     return bReturn;
 }
@@ -133,28 +133,28 @@ BOOL actAds1115Write(PIF_stI2c *pstOwner, uint16_t usSize)
 
 #ifdef USE_INTERRUPT
 
-BOOL actAds1115Read(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
 {
-	return HAL_I2C_Master_Receive_IT(&hi2c1, (pstOwner->ucAddr << 1) | 1, pstOwner->pucData, usSize) == HAL_OK;
+	return HAL_I2C_Master_Receive_IT(&hi2c1, (pstOwner->addr << 1) | 1, pstOwner->p_data, usSize) == HAL_OK;
 }
 
-BOOL actAds1115Write(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
 {
-	return HAL_I2C_Master_Transmit_IT(&hi2c1, pstOwner->ucAddr << 1, pstOwner->pucData, usSize) == HAL_OK;
+	return HAL_I2C_Master_Transmit_IT(&hi2c1, pstOwner->addr << 1, pstOwner->p_data, usSize) == HAL_OK;
 }
 
 #endif
 
 #ifdef USE_DMA
 
-BOOL actAds1115Read(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
 {
-	return HAL_I2C_Master_Receive_DMA(&hi2c1, (pstOwner->ucAddr << 1) | 1, pstOwner->pucData, usSize) == HAL_OK;
+	return HAL_I2C_Master_Receive_DMA(&hi2c1, (pstOwner->addr << 1) | 1, pstOwner->p_data, usSize) == HAL_OK;
 }
 
-BOOL actAds1115Write(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
 {
-	return HAL_I2C_Master_Transmit_DMA(&hi2c1, pstOwner->ucAddr << 1, pstOwner->pucData, usSize) == HAL_OK;
+	return HAL_I2C_Master_Transmit_DMA(&hi2c1, pstOwner->addr << 1, pstOwner->p_data, usSize) == HAL_OK;
 }
 
 #endif

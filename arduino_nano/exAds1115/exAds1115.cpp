@@ -25,40 +25,40 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-BOOL actAds1115Write(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
 {
 	uint16_t i;
 	BOOL bResult = TRUE;
 
-	Wire.beginTransmission(pstOwner->ucAddr);
+	Wire.beginTransmission(pstOwner->addr);
     for (i = 0; i < usSize; i++) {
-    	Wire.write(pstOwner->pucData[i]);
+    	Wire.write(pstOwner->p_data[i]);
     }
     uint8_t status_ = Wire.endTransmission();
     if (status_ != 0) {
-    	pifLog_Printf(LT_enInfo, "I2CW(%d): C=%u, S=%u", pstOwner->pucData[0], usSize);
+    	pifLog_Printf(LT_enInfo, "I2CW(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
         bResult = FALSE;
     }
     pifI2c_sigEndWrite(pstOwner, bResult);
     return bResult;
 }
 
-BOOL actAds1115Read(PIF_stI2c *pstOwner, uint16_t usSize)
+BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
 {
 	uint16_t i;
 	uint8_t count;
 
-    count = Wire.requestFrom(pstOwner->ucAddr, (uint8_t)usSize);
+    count = Wire.requestFrom(pstOwner->addr, (uint8_t)usSize);
     if (count < usSize) goto fail;
 
     for (i = 0; i < usSize; i++) {
-    	pstOwner->pucData[i] = Wire.read();
+    	pstOwner->p_data[i] = Wire.read();
     }
     pifI2c_sigEndRead(pstOwner, TRUE);
     return TRUE;
 
 fail:
-	pifLog_Printf(LT_enInfo, "I2CR(%d): C=%u, S=%u:%u", pstOwner->pucData[0], usSize, count);
+	pifLog_Printf(LT_enInfo, "I2CR(%d): C=%u, S=%u:%u", pstOwner->p_data[0], usSize, count);
     pifI2c_sigEndRead(pstOwner, FALSE);
 	return FALSE;
 }
