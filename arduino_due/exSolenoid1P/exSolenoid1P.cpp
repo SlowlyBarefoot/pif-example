@@ -17,7 +17,7 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actSolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir)
+void actSolenoidOrder(SWITCH swOrder, PifSolenoidDir enDir)
 {
 	(void)enDir;
 

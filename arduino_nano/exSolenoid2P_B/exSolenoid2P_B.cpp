@@ -21,16 +21,16 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actSolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir)
+void actSolenoidOrder(SWITCH swOrder, PifSolenoidDir enDir)
 {
 	if (swOrder) {
 		switch (enDir) {
-		case SD_enLeft:
+		case SD_LEFT:
 			digitalWrite(PIN_L298N_IN3, HIGH);
 			digitalWrite(PIN_L298N_IN4, LOW);
 			break;
 
-		case SD_enRight:
+		case SD_RIGHT:
 			digitalWrite(PIN_L298N_IN3, LOW);
 			digitalWrite(PIN_L298N_IN4, HIGH);
 			break;

@@ -5,15 +5,15 @@
 
 
 typedef struct {
-	PIF_enSolenoidDir enDir;
-    PIF_stSolenoid *pstSolenoid;
+	PifSolenoidDir enDir;
+    PifSolenoid *pstSolenoid;
     PifPulseItem *pstTimerItem;
 } ST_SolenoidTest;
 
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static ST_SolenoidTest s_stSolenoidTest = { SD_enLeft, NULL, NULL };
+static ST_SolenoidTest s_stSolenoidTest = { SD_LEFT, NULL, NULL };
 
 
 static void _evtSolenoidFinish(void *pvParam)
@@ -26,7 +26,7 @@ static void _evtSolenoidFinish(void *pvParam)
 
 	pifLog_Printf(LT_enInfo, "_evtSolenoidFinish(%d)", pstParam->enDir);
 
-	pstParam->enDir = pstParam->enDir == SD_enRight ? SD_enLeft : SD_enRight;
+	pstParam->enDir = pstParam->enDir == SD_RIGHT ? SD_LEFT : SD_RIGHT;
 }
 
 void appSetup()
@@ -48,7 +48,7 @@ void appSetup()
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_stSolenoidTest.pstSolenoid = pifSolenoid_Create(PIF_ID_AUTO, g_pstTimer1ms,
-    		ST_en2Point, 30, actSolenoidOrder);										// 30ms
+    		ST_2POINT, 30, actSolenoidOrder);										// 30ms
     if (!s_stSolenoidTest.pstSolenoid) return;
     if (!pifSolenoid_SetBuffer(s_stSolenoidTest.pstSolenoid, 4)) return;
 

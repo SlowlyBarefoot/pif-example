@@ -5,7 +5,7 @@
 
 
 typedef struct {
-    PIF_stSolenoid *pstSolenoid;
+    PifSolenoid *pstSolenoid;
     PifPulseItem *pstTimerItem;
 } ST_SolenoidTest;
 
@@ -45,7 +45,7 @@ void appSetup()
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_stSolenoidTest.pstSolenoid = pifSolenoid_Create(PIF_ID_AUTO, g_pstTimer1ms,
-    		ST_en1Point, 300, actSolenoidOrder);										// 300ms
+    		ST_1POINT, 300, actSolenoidOrder);										// 300ms
     if (!s_stSolenoidTest.pstSolenoid) return;
     if (!pifSolenoid_SetBuffer(s_stSolenoidTest.pstSolenoid, 4)) return;
 
