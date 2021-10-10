@@ -9,7 +9,7 @@
 
 extern PIF_stAds1x1x *g_pstAds1x1x;
 extern PIF_stComm *g_pstCommLog;
-extern PIF_stPulse *g_pstTimer1ms;
+extern PifPulse *g_pstTimer1ms;
 
 
 void appSetup(PifActTimer1us act_timer1us);

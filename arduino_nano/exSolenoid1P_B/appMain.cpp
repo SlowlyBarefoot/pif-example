@@ -6,11 +6,11 @@
 
 typedef struct {
     PIF_stSolenoid *pstSolenoid;
-    PIF_stPulseItem *pstTimerItem;
+    PifPulseItem *pstTimerItem;
 } ST_SolenoidTest;
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static ST_SolenoidTest s_stSolenoidTest = {	NULL, NULL };
 
@@ -49,7 +49,7 @@ void appSetup()
     if (!s_stSolenoidTest.pstSolenoid) return;
     if (!pifSolenoid_SetBuffer(s_stSolenoidTest.pstSolenoid, 4)) return;
 
-    s_stSolenoidTest.pstTimerItem = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
+    s_stSolenoidTest.pstTimerItem = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
     if (!s_stSolenoidTest.pstTimerItem) return;
     pifPulse_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _evtSolenoidFinish, &s_stSolenoidTest);
     pifPulse_StartItem(s_stSolenoidTest.pstTimerItem, 1000);							// 1000ms

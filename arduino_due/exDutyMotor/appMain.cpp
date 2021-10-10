@@ -6,7 +6,7 @@
 #include "pifLog.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stDutyMotor *s_pstMotor = NULL;
 

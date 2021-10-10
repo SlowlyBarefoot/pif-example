@@ -17,7 +17,7 @@
 #define UART_FRAME_SIZE			8
 
 
-extern PIF_stPulse *g_pstTimer1ms;
+extern PifPulse *g_pstTimer1ms;
 extern PIF_stComm *g_pstCommLog;
 
 

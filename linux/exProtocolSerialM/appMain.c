@@ -7,7 +7,7 @@
 #include "pifProtocol.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stComm *s_pstCommLog = NULL;
 static PIF_stComm *s_pstSerial = NULL;
@@ -32,7 +32,7 @@ const PIF_stProtocolRequest stProtocolRequestTable[] = {
 };
 
 static struct {
-	PIF_stPulseItem *pstDelay;
+	PifPulseItem *pstDelay;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 } s_stProtocolTest[2] = {
@@ -152,7 +152,7 @@ BOOL appInit()
     s_pstProtocol->evtError = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
-    	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
+    	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
 		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }

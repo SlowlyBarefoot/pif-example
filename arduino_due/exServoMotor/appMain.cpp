@@ -6,9 +6,9 @@
 #include "pifPulse.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
-PIF_stPulse *g_pstTimer100us = NULL;
-PIF_stPulseItem *g_pstPwm = NULL;
+PifPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer100us = NULL;
+PifPulseItem *g_pstPwm = NULL;
 
 static BOOL s_bStart = FALSE;
 
@@ -26,7 +26,7 @@ static uint16_t _taskServoMotor(PifTask *pstTask)
 		s_bStart = TRUE;
 	}
 
-	if (g_pstPwm->_enStep == PS_enStop) return 0;
+	if (g_pstPwm->_step == PS_STOP) return 0;
 
     if (dir) {
         duty -= 5;
@@ -71,7 +71,7 @@ void appSetup()
     if (!pifLed_AttachBlink(pstLedL, 500)) return;										// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
-    g_pstPwm = pifPulse_AddItem(g_pstTimer100us, PT_enPwm);
+    g_pstPwm = pifPulse_AddItem(g_pstTimer100us, PT_PWM);
     if (!g_pstPwm) return;
     pifPulse_AttachAction(g_pstPwm, actPulsePwm);
 

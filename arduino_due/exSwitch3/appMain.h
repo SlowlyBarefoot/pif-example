@@ -7,7 +7,7 @@
 
 extern PIF_stSensor *g_pstPushSwitch;
 extern PIF_stSensor *g_pstTiltSwitch;
-extern PIF_stPulse *g_pstTimer1ms;
+extern PifPulse *g_pstTimer1ms;
 
 
 void appSetup();

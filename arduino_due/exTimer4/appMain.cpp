@@ -4,12 +4,12 @@
 #include "pifLed.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedRGB = NULL;
-static PIF_stPulseItem *s_pstTimer1msRed = NULL;
-static PIF_stPulseItem *s_pstTimer1msYellow = NULL;
-static PIF_stPulseItem *s_pstTimer1msGreen = NULL;
+static PifPulseItem *s_pstTimer1msRed = NULL;
+static PifPulseItem *s_pstTimer1msYellow = NULL;
+static PifPulseItem *s_pstTimer1msGreen = NULL;
 
 
 static void _evtLedRedToggle(void *pvIssuer)
@@ -23,7 +23,7 @@ static void _evtLedRedToggle(void *pvIssuer)
 	count++;
 	if (count >= 10) {
 		count = 0;
-		pifPulse_StopItem((PIF_stPulseItem *)pvIssuer);
+		pifPulse_StopItem((PifPulseItem *)pvIssuer);
 		pifPulse_StartItem(s_pstTimer1msYellow, 500);	// 500 * 1ms = 0.5sec
 	}
 }
@@ -39,7 +39,7 @@ static void _evtLedYellowToggle(void *pvIssuer)
 	count++;
 	if (count >= 10) {
 		count = 0;
-		pifPulse_StopItem((PIF_stPulseItem *)pvIssuer);
+		pifPulse_StopItem((PifPulseItem *)pvIssuer);
 		pifPulse_StartItem(s_pstTimer1msGreen, 1000);	// 1000 * 1ms = 1sec
 	}
 }
@@ -55,7 +55,7 @@ static void _evtLedGreenToggle(void *pvIssuer)
 	count++;
 	if (count >= 10) {
 		count = 0;
-		pifPulse_StopItem((PIF_stPulseItem *)pvIssuer);
+		pifPulse_StopItem((PifPulseItem *)pvIssuer);
 		pifPulse_StartItem(s_pstTimer1msRed, 200);		// 200 * 1ms = 0.2sec
 	}
 }
@@ -68,16 +68,16 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;	// 100%
 
-    s_pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
+    s_pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
     if (!s_pstTimer1msRed) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msRed, _evtLedRedToggle, s_pstTimer1msRed);
     pifPulse_StartItem(s_pstTimer1msRed, 200);								// 200ms
 
-    s_pstTimer1msYellow = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
+    s_pstTimer1msYellow = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
     if (!s_pstTimer1msYellow) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msYellow, _evtLedYellowToggle, s_pstTimer1msYellow);
 
-    s_pstTimer1msGreen = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
+    s_pstTimer1msGreen = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
     if (!s_pstTimer1msGreen) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msGreen, _evtLedGreenToggle, s_pstTimer1msGreen);
 

@@ -5,7 +5,7 @@
 #include "pifLog.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 const char c_cKeys[ROWS * COLS] = {
 	'1', '2', '3', 'A',

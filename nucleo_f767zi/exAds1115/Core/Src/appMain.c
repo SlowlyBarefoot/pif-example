@@ -10,7 +10,7 @@
 
 PIF_stAds1x1x *g_pstAds1x1x = NULL;
 PIF_stComm *g_pstCommLog = NULL;
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
 

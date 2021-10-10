@@ -11,7 +11,7 @@
 
 
 PIF_stDutyMotor *g_pstMotor = NULL;
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
 

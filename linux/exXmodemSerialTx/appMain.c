@@ -5,7 +5,7 @@
 #include "pifXmodem.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stComm *s_pstCommLog = NULL;
 static PIF_stComm *s_pstSerial = NULL;

@@ -10,8 +10,8 @@
 #define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
-PIF_stPulse *g_pstTimer200us = NULL;
+PifPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer200us = NULL;
 
 static PIF_stStepMotor *s_pstMotor = NULL;
 

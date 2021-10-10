@@ -9,7 +9,7 @@
 #define SINGLE_SHOT
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stPmlcdI2c *s_pstPmlcdI2c = NULL;
 static PIF_stLed *s_pstLedL = NULL;

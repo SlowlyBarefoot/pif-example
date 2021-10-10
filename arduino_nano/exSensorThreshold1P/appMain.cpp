@@ -7,7 +7,7 @@
 #define USE_FILTER_AVERAGE		0
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 PIF_stSensor *g_pstSensor = NULL;
 
 #if USE_FILTER_AVERAGE

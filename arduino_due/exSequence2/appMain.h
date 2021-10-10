@@ -12,7 +12,7 @@
 #define PIF_ID_SWITCH			0x120
 
 
-extern PIF_stPulse *g_pstTimer1ms;
+extern PifPulse *g_pstTimer1ms;
 
 
 void appSetup(PifActTimer1us act_timer1us);

@@ -4,7 +4,7 @@
 #include "pifLog.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 
 static void evtLedToggle(void *pvIssuer)
@@ -22,7 +22,7 @@ static void evtLedToggle(void *pvIssuer)
 void appSetup()
 {
 	PIF_stComm *pstCommLog;
-	PIF_stPulseItem *pstTimer1ms;
+	PifPulseItem *pstTimer1ms;
 
 	pif_Init(NULL);
 	pifLog_Init();
@@ -38,7 +38,7 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;	// 100%
 
-    pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
+    pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
     if (!pstTimer1ms) return;
     pifPulse_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
     pifPulse_StartItem(pstTimer1ms, 500);									// 500ms

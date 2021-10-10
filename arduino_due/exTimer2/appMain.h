@@ -5,8 +5,8 @@
 #include "pifPulse.h"
 
 
-extern PIF_stPulse *g_pstTimer1ms;
-extern PIF_stPulse *g_pstTimer100us;
+extern PifPulse *g_pstTimer1ms;
+extern PifPulse *g_pstTimer100us;
 
 
 void appSetup();

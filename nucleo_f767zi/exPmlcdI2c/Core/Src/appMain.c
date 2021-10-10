@@ -10,7 +10,7 @@
 
 PIF_stComm *g_pstCommLog = NULL;
 PIF_stPmlcdI2c *g_pstPmlcdI2c = NULL;
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
 

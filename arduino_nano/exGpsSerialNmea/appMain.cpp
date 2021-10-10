@@ -7,7 +7,7 @@
 #include "pifSensorSwitch.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 BOOL g_bPrintRawData = FALSE;
 
 static PIF_stComm *s_pstCommGps = NULL;

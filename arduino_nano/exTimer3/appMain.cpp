@@ -4,12 +4,12 @@
 #include "pifLed.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedRGB = NULL;
-static PIF_stPulseItem *s_pstTimer1msRed = NULL;
-static PIF_stPulseItem *s_pstTimer1msYellow = NULL;
-static PIF_stPulseItem *s_pstTimer1msGreen = NULL;
+static PifPulseItem *s_pstTimer1msRed = NULL;
+static PifPulseItem *s_pstTimer1msYellow = NULL;
+static PifPulseItem *s_pstTimer1msGreen = NULL;
 
 
 static void _evtLedRedToggle(void *pvIssuer)
@@ -47,16 +47,16 @@ void appSetup()
     if (!g_pstTimer1ms) return;
     if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;	// 100%
 
-    s_pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
+    s_pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
     if (!s_pstTimer1msRed) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msRed, _evtLedRedToggle, NULL);
     pifPulse_StartItem(s_pstTimer1msRed, 200);								// 200ms
 
-    s_pstTimer1msYellow = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
+    s_pstTimer1msYellow = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
     if (!s_pstTimer1msYellow) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msYellow, _evtLedYellowToggle, NULL);
 
-    s_pstTimer1msGreen = pifPulse_AddItem(g_pstTimer1ms, PT_enOnce);
+    s_pstTimer1msGreen = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
     if (!s_pstTimer1msGreen) return;
     pifPulse_AttachEvtFinish(s_pstTimer1msGreen, _evtLedGreenToggle, NULL);
 

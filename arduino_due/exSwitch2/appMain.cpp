@@ -7,7 +7,7 @@
 
 PIF_stSensor *g_pstPushSwitch = NULL;
 PIF_stSensor *g_pstTiltSwitch = NULL;
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stLed *s_pstLedL = NULL;
 
@@ -15,7 +15,7 @@ static PIF_stLed *s_pstLedL = NULL;
 void appSetup()
 {
 	PIF_stComm *pstCommLog;
-	PIF_stPulseItem *pstTimerSwitch;
+	PifPulseItem *pstTimerSwitch;
 
     pif_Init(NULL);
     pifLog_Init();
@@ -36,7 +36,7 @@ void appSetup()
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;								// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
-    pstTimerSwitch = pifPulse_AddItem(g_pstTimer1ms, PT_enRepeat);
+    pstTimerSwitch = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
     if (!pstTimerSwitch) return;
     pifPulse_AttachEvtFinish(pstTimerSwitch, evtSwitchAcquire, NULL);
 

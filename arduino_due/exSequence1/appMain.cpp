@@ -5,7 +5,7 @@
 #include "pifSequence.h"
 
 
-PIF_stPulse *g_pstTimer1ms = NULL;
+PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stSequence *s_pstSequence = NULL;
 
