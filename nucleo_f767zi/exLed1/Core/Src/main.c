@@ -110,7 +110,7 @@ void actLedRGBState(PifId usPifId, uint32_t unState)
   HAL_GPIO_WritePin(GPIOD, LDRed_Pin, unState & 1);
   HAL_GPIO_WritePin(GPIOD, LDGreen_Pin, (unState >> 1) & 1);
   HAL_GPIO_WritePin(GPIOD, LDBlue_Pin, (unState >> 2) & 1);
-  pifLog_Printf(LT_enInfo, "RGB:%u S:%xh", __LINE__, unState);
+  pifLog_Printf(LT_INFO, "RGB:%u S:%xh", __LINE__, unState);
 }
 
 /* USER CODE END 0 */

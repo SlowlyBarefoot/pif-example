@@ -111,7 +111,7 @@ const uint8_t font8x8_basic[96][8] = {
 
 static void _evtDotMatrixShiftFinish(PifId usPifId)
 {
-	pifLog_Printf(LT_enInfo, "_DotMatrixEventShiftFinish(%d)", usPifId);
+	pifLog_Printf(LT_INFO, "_DotMatrixEventShiftFinish(%d)", usPifId);
 }
 
 static uint16_t _taskDotMatrixTest(PifTask *pstTask)

@@ -44,7 +44,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	else {
 		s_stSequenceTest[index].bSequenceParam = TRUE;
 	}
-	pifLog_Printf(LT_enInfo, "Switch(%d): %d", usPifId, usLevel);
+	pifLog_Printf(LT_INFO, "Switch(%d): %d", usPifId, usLevel);
 }
 
 static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
@@ -97,7 +97,7 @@ static void _evtSequenceError(PIF_stSequence *pstOwner)
 {
 	(void)pstOwner;
 
-	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_error);
+	pifLog_Printf(LT_ERROR, "Sequence Error: %d", pif_error);
 }
 
 void appSetup(PifActTimer1us act_timer1us)

@@ -108,7 +108,7 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	(void)usPifId;
 
 	HAL_GPIO_WritePin(GPIOB, LD2_Pin, unState & 1);
-	pifLog_Printf(LT_enInfo, "LED State=%u ", unState);
+	pifLog_Printf(LT_INFO, "LED State=%u ", unState);
 }
 
 /* USER CODE END 0 */

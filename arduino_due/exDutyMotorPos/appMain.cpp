@@ -17,7 +17,7 @@ static PIF_stSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
 
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
-const PIF_stLogCmdEntry c_psCmdTable[] = {
+const PifLogCmdEntry c_psCmdTable[] = {
 	{ "mt", CmdDutyMotorTest, "\nMotor Test" },
 
 	{ NULL, NULL, NULL }
@@ -71,7 +71,7 @@ static ST_DutyMotorTest s_stDutyMotorTest = { 0, 0 };
 static int CmdDutyMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Stage: %d", s_stDutyMotorTest.ucStage);
+		pifLog_Printf(LT_NONE, "\n  Stage: %d", s_stDutyMotorTest.ucStage);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -89,7 +89,7 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 					}
 				}
 				else {
-					pifLog_Printf(LT_enNone, "\nError: Stage=%d", s_stDutyMotorTest.ucStage);
+					pifLog_Printf(LT_NONE, "\nError: Stage=%d", s_stDutyMotorTest.ucStage);
 				}
 				return PIF_LOG_CMD_NO_ERROR;
 			}
@@ -98,19 +98,19 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 	}
 	else if (argc > 1) {
 		if (!strcmp(argv[1], "off")) {
-			pifLog_Printf(LT_enInfo, "Stop");
+			pifLog_Printf(LT_INFO, "Stop");
 			s_stDutyMotorTest.ucStage = 0;
 			pifDutyMotorPos_Stop(g_pstMotor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[1], "em")) {
-			pifLog_Printf(LT_enInfo, "Emergency");
+			pifLog_Printf(LT_INFO, "Emergency");
 			s_stDutyMotorTest.ucStage = 0;
 			pifDutyMotorPos_Emergency(g_pstMotor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[1], "init")) {
-			pifLog_Printf(LT_enInfo, "Init Pos");
+			pifLog_Printf(LT_INFO, "Init Pos");
 		    s_stDutyMotorTest.ucInitPos = 1;
 			return PIF_LOG_CMD_NO_ERROR;
 		}
@@ -123,7 +123,7 @@ static void _evtStable(PIF_stDutyMotor *pstOwner)
 {
 	PIF_stDutyMotorPos* pstChild = (PIF_stDutyMotorPos*)pstOwner;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
 }
 
 static void _evtStop(PIF_stDutyMotor *pstOwner)
@@ -131,7 +131,7 @@ static void _evtStop(PIF_stDutyMotor *pstOwner)
 	PIF_stDutyMotorPos* pstChild = (PIF_stDutyMotorPos*)pstOwner;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
 }
 
 static void _evtError(PIF_stDutyMotor *pstOwner)
@@ -139,7 +139,7 @@ static void _evtError(PIF_stDutyMotor *pstOwner)
 	PIF_stDutyMotorPos* pstChild = (PIF_stDutyMotorPos*)pstOwner;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
 }
 
 static uint16_t _taskInitPos(PifTask *pstTask)
@@ -153,13 +153,13 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 		unTime = 200;
 		s_stDutyMotorTest.ucStage = 0;
 		s_stDutyMotorTest.ucInitPos = 2;
-		pifLog_Printf(LT_enInfo, "InitPos: Start");
+		pifLog_Printf(LT_INFO, "InitPos: Start");
 		break;
 
 	case 2:
 		if (!s_stDutyMotorTest.ucStage) {
 			if (s_pstSwitch[0]->_swCurrState == ON) {
-				pifLog_Printf(LT_enInfo, "InitPos: Find");
+				pifLog_Printf(LT_INFO, "InitPos: Find");
 				s_stDutyMotorTest.ucInitPos = 0;
 			}
 			else {
@@ -189,7 +189,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 		break;
 
 	case 4:
-		pifLog_Printf(LT_enError, "InitPos: Error");
+		pifLog_Printf(LT_ERROR, "InitPos: Error");
 		s_stDutyMotorTest.ucInitPos = 0;
 		break;
 	}

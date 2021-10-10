@@ -17,7 +17,7 @@ static PIF_stStepMotor *s_pstMotor = NULL;
 
 static int CmdStepMotorTest(int argc, char *argv[]);
 
-const PIF_stLogCmdEntry c_psCmdTable[] = {
+const PifLogCmdEntry c_psCmdTable[] = {
 	{ "mt", CmdStepMotorTest, "\nMotor Test" },
 
 	{ NULL, NULL, NULL }
@@ -35,13 +35,13 @@ static ST_StepMotorTest s_stStepMotorTest = { 0, 1000, 200 };
 static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Method: %d", s_pstMotor->_enMethod);
-		pifLog_Printf(LT_enNone, "\n  Operation: %d", s_pstMotor->_enOperation);
-		pifLog_Printf(LT_enNone, "\n  Direction: %d", s_pstMotor->_ucDirection);
-		pifLog_Printf(LT_enNone, "\n  P/S: %u", s_pstMotor->_usCurrentPps);
-		pifLog_Printf(LT_enNone, "\n  R/M: %2f", pifStepMotor_GetRpm(s_pstMotor));
-		pifLog_Printf(LT_enNone, "\n  Step Count: %d", s_stStepMotorTest.unStepCount);
-		pifLog_Printf(LT_enNone, "\n  Break Time: %d", s_stStepMotorTest.usBreakTime);
+		pifLog_Printf(LT_NONE, "\n  Method: %d", s_pstMotor->_enMethod);
+		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_pstMotor->_enOperation);
+		pifLog_Printf(LT_NONE, "\n  Direction: %d", s_pstMotor->_ucDirection);
+		pifLog_Printf(LT_NONE, "\n  P/S: %u", s_pstMotor->_usCurrentPps);
+		pifLog_Printf(LT_NONE, "\n  R/M: %2f", pifStepMotor_GetRpm(s_pstMotor));
+		pifLog_Printf(LT_NONE, "\n  Step Count: %d", s_stStepMotorTest.unStepCount);
+		pifLog_Printf(LT_NONE, "\n  Break Time: %d", s_stStepMotorTest.usBreakTime);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -65,7 +65,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			float value = atof(argv[2]);
 			if (value > 0) {
 				if (!pifStepMotor_SetPps(s_pstMotor, value)) {
-					pifLog_Printf(LT_enError, "\n  Invalid Parameter: %d", value);
+					pifLog_Printf(LT_ERROR, "\n  Invalid Parameter: %d", value);
 				}
 				return PIF_LOG_CMD_NO_ERROR;
 			}
@@ -74,7 +74,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			float value = atof(argv[2]);
 			if (value > 0) {
 				if (!pifStepMotor_SetRpm(s_pstMotor, value)) {
-					pifLog_Printf(LT_enError, "\n  Invalid Parameter: %d", value);
+					pifLog_Printf(LT_ERROR, "\n  Invalid Parameter: %d", value);
 				}
 				return PIF_LOG_CMD_NO_ERROR;
 			}

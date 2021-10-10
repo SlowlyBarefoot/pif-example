@@ -16,7 +16,7 @@ static void evtLedToggle(void *pvIssuer)
 	actLedL(sw);
 	sw ^= 1;
 
-	pifLog_Printf(LT_enInfo, "LED: %u", sw);
+	pifLog_Printf(LT_INFO, "LED: %u", sw);
 }
 
 void appSetup()

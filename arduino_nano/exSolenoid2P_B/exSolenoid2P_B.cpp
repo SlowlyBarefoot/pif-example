@@ -43,7 +43,7 @@ void actSolenoidOrder(SWITCH swOrder, PifSolenoidDir enDir)
 	else {
 		analogWrite(PIN_L298N_ENB_PWM, 0);
 	}
-	pifLog_Printf(LT_enInfo, "_SolenoidOrder(%d, %d)", enDir, swOrder);
+	pifLog_Printf(LT_INFO, "_SolenoidOrder(%d, %d)", enDir, swOrder);
 }
 
 uint16_t taskLedToggle(PifTask *pstTask)

@@ -22,7 +22,7 @@ uint16_t _taskPmlcdI2c(PifTask *pstTask)
 
 	(void)pstTask;
 
-	pifLog_Printf(LT_enInfo, "Task:%u(%u) %lu", __LINE__, nStep, (*pif_act_timer1us)());
+	pifLog_Printf(LT_INFO, "Task:%u(%u) %lu", __LINE__, nStep, (*pif_act_timer1us)());
 	switch (nStep) {
 	case 0:
 		pifPmlcdI2c_LeftToRight(g_pstPmlcdI2c);

@@ -44,16 +44,16 @@ static struct {
 static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName)
 {
 	if (pstPacket) {
-		pifLog_Printf(LT_enInfo, "%s: PID=%d CNT=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
+		pifLog_Printf(LT_INFO, "%s: PID=%d CNT=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
 		if (pstPacket->usDataCount) {
-			pifLog_Printf(LT_enNone, "\nData:");
+			pifLog_Printf(LT_NONE, "\nData:");
 			for (uint16_t i = 0; i < pstPacket->usDataCount; i++) {
-				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
+				pifLog_Printf(LT_NONE, " %u", pstPacket->pucData[i]);
 			}
 		}
 	}
 	else {
-		pifLog_Printf(LT_enInfo, pcName);
+		pifLog_Printf(LT_INFO, pcName);
 	}
 }
 
@@ -66,7 +66,7 @@ static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket)
 	}
 
 	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "Question30: PID=%d Error=%d", pstPacket->ucPacketId, pif_error);
+		pifLog_Printf(LT_INFO, "Question30: PID=%d Error=%d", pstPacket->ucPacketId, pif_error);
 	}
 	else {
 		pifPulse_StartItem(s_stProtocolTest[0].pstDelay, 500);
@@ -93,12 +93,12 @@ static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
 {
 	(void)pstPacket;
 
-	pifLog_Printf(LT_enInfo, "Response21: ACK");
+	pifLog_Printf(LT_INFO, "Response21: ACK");
 }
 
 static void _evtProtocolError(PifId usPifId)
 {
-	pifLog_Printf(LT_enError, "eventProtocolError DC=%d", usPifId);
+	pifLog_Printf(LT_ERROR, "eventProtocolError DC=%d", usPifId);
 }
 
 static void _evtDelay(void *pvIssuer)
@@ -112,14 +112,14 @@ static void _evtDelay(void *pvIssuer)
 	int index = pstOwner->ucCommand & 0x0F;
 
 	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-		pifLog_Printf(LT_enError, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_error);
+		pifLog_Printf(LT_ERROR, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_error);
 	}
 	else {
-		pifLog_Printf(LT_enInfo, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);
+		pifLog_Printf(LT_INFO, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);
 		if (s_stProtocolTest[index].ucDataCount) {
-			pifLog_Printf(LT_enNone, "\nData:");
+			pifLog_Printf(LT_NONE, "\nData:");
 			for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
-				pifLog_Printf(LT_enNone, " %u", s_stProtocolTest[index].ucData[i]);
+				pifLog_Printf(LT_NONE, " %u", s_stProtocolTest[index].ucData[i]);
 			}
 		}
 	}

@@ -19,7 +19,7 @@ static void _evtSensorThreshold(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 {
 	(void)pvIssuer;
 
-	pifLog_Printf(LT_enInfo, "Sensor: DC:%u SW:%u", usPifId, usLevel);
+	pifLog_Printf(LT_INFO, "Sensor: DC:%u SW:%u", usPifId, usLevel);
 }
 
 void appSetup()

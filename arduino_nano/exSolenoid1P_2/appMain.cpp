@@ -29,7 +29,7 @@ static void _evtSolenoidFinish(void *pvParam)
 
 	pifPulse_StartItem(pstParam->pstTimerItem, 1000);	// 1000 * 1ms = 1sec
 
-	pifLog_Printf(LT_enInfo, "_evtSolenoidFinish(%d)", pstParam->nSwitch);
+	pifLog_Printf(LT_INFO, "_evtSolenoidFinish(%d)", pstParam->nSwitch);
 
 	pstParam->nSwitch ^= 1;
 }

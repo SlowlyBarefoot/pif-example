@@ -16,7 +16,7 @@ static PifLed *s_pstLedL = NULL;
 static int _cmdPrintRawData(int argc, char *argv[]);
 static int _cmdRequest(int argc, char *argv[]);
 
-const PIF_stLogCmdEntry c_psCmdTable[] = {
+const PifLogCmdEntry c_psCmdTable[] = {
 	{ "raw", _cmdPrintRawData, "\nPrint RawData" },
 	{ "req", _cmdRequest, "\nRequest" },
 
@@ -27,7 +27,7 @@ const PIF_stLogCmdEntry c_psCmdTable[] = {
 static int _cmdPrintRawData(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Print RawData: %d", g_bPrintRawData);
+		pifLog_Printf(LT_NONE, "\n  Print RawData: %d", g_bPrintRawData);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
@@ -61,25 +61,25 @@ static int _cmdRequest(int argc, char *argv[])
 		switch (command) {
 		case NMEA_MESSAGE_ID_GBQ:
 			if (!pifGpsNmea_PollRequestGBQ(s_pstGpsNmea, argv[2])) {
-				pifLog_Printf(LT_enError, "Error: %u", pif_error);
+				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GLQ:
 			if (!pifGpsNmea_PollRequestGLQ(s_pstGpsNmea, argv[2])) {
-				pifLog_Printf(LT_enError, "Error: %u", pif_error);
+				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GNQ:
 			if (!pifGpsNmea_PollRequestGNQ(s_pstGpsNmea, argv[2])) {
-				pifLog_Printf(LT_enError, "Error: %u", pif_error);
+				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 			break;
 
 		case NMEA_MESSAGE_ID_GPQ:
 			if (!pifGpsNmea_PollRequestGPQ(s_pstGpsNmea, argv[2])) {
-				pifLog_Printf(LT_enError, "Error: %u", pif_error);
+				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 			break;
 
@@ -95,7 +95,7 @@ static void _evtGpsNmeaText(PIF_stGpsNmeaTxt *pstTxt)
 {
 	const char *acType[4] = { "Error", "Warning", "Notice", "User" };
 
-	pifLog_Printf(LT_enInfo, "Text: Total=%u Num=%u Type=%s:%s", pstTxt->ucTotal, pstTxt->ucNum, acType[pstTxt->ucType], pstTxt->acText);
+	pifLog_Printf(LT_INFO, "Text: Total=%u Num=%u Type=%s:%s", pstTxt->ucTotal, pstTxt->ucNum, acType[pstTxt->ucType], pstTxt->acText);
 }
 
 static void _evtGpsReceive(PIF_stGps *pstOwner)
@@ -112,22 +112,22 @@ static void _evtGpsReceive(PIF_stGps *pstOwner)
 	pifGps_ConvertLongitude2DegMinSec(pstOwner, &stLonDegMinSec);
 
 	if (!g_bPrintRawData) {
-		pifLog_Printf(LT_enInfo, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
+		pifLog_Printf(LT_INFO, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
 				2000 + pstOwner->_stDateTime.year, pstOwner->_stDateTime.month, pstOwner->_stDateTime.day,
 				pstOwner->_stDateTime.hour, pstOwner->_stDateTime.minute, pstOwner->_stDateTime.second, pstOwner->_stDateTime.millisecond);
-		pifLog_Printf(LT_enInfo, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
+		pifLog_Printf(LT_INFO, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
 				pstOwner->_dCoordDeg[GPS_LON], stLonDegMin.usDegree, stLonDegMin.dMinute,
 				stLonDegMinSec.usDegree, stLonDegMinSec.usMinute, stLonDegMinSec.dSecond);
-		pifLog_Printf(LT_enInfo, "Latitude: %f` - %u`%f' - %u`%u'%f\"",
+		pifLog_Printf(LT_INFO, "Latitude: %f` - %u`%f' - %u`%u'%f\"",
 				pstOwner->_dCoordDeg[GPS_LAT], stLatDegMin.usDegree, stLatDegMin.dMinute,
 				stLatDegMinSec.usDegree, stLatDegMinSec.usMinute, stLatDegMinSec.dSecond);
-		pifLog_Printf(LT_enInfo, "NumSat: %u", pstOwner->_ucNumSat);
-		pifLog_Printf(LT_enInfo, "Altitude: %f m", pstOwner->_dAltitude);
-		pifLog_Printf(LT_enInfo, "Speed: %f knots %f m/s %f km/h", pstOwner->_dSpeedN, pifGps_ConvertKnots2MpS(pstOwner->_dSpeedN), pstOwner->_dSpeedK);
-		pifLog_Printf(LT_enInfo, "Ground Course: %f deg", pstOwner->_dGroundCourse);
-		pifLog_Printf(LT_enInfo, "Fix: %u", pstOwner->_ucFix);
+		pifLog_Printf(LT_INFO, "NumSat: %u", pstOwner->_ucNumSat);
+		pifLog_Printf(LT_INFO, "Altitude: %f m", pstOwner->_dAltitude);
+		pifLog_Printf(LT_INFO, "Speed: %f knots %f m/s %f km/h", pstOwner->_dSpeedN, pifGps_ConvertKnots2MpS(pstOwner->_dSpeedN), pstOwner->_dSpeedK);
+		pifLog_Printf(LT_INFO, "Ground Course: %f deg", pstOwner->_dGroundCourse);
+		pifLog_Printf(LT_INFO, "Fix: %u", pstOwner->_ucFix);
 	}
-	pifLog_Printf(LT_enNone, "\n");
+	pifLog_Printf(LT_NONE, "\n");
 }
 
 void appSetup()

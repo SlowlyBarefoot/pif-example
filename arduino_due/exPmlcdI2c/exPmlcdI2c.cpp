@@ -35,7 +35,7 @@ BOOL actPmlcdI2cWrite(PifI2c *pstOwner, uint16_t usSize)
     }
     uint8_t status_ = Wire.endTransmission();
     if (status_ != 0) {
-    	pifLog_Printf(LT_enInfo, "I2CW(%xh): C=%u, S=%u", pstOwner->addr, pstOwner->p_data[0], usSize);
+    	pifLog_Printf(LT_INFO, "I2CW(%xh): C=%u, S=%u", pstOwner->addr, pstOwner->p_data[0], usSize);
         bResult = FALSE;
     }
     pifI2c_sigEndWrite(pstOwner, bResult);

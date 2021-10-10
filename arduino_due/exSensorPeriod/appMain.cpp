@@ -17,7 +17,7 @@ static PIF_stSensorDigitalFilter s_stFilter;
 
 static void _evtSensorPeriod(PifId usPifId, uint16_t usLevel)
 {
-	pifLog_Printf(LT_enInfo, "Sensor: DC:%u L:%u", usPifId, usLevel);
+	pifLog_Printf(LT_INFO, "Sensor: DC:%u L:%u", usPifId, usLevel);
 }
 
 void appSetup()

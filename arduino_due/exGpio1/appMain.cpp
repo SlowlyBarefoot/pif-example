@@ -24,7 +24,7 @@ static uint16_t _taskGpioTest(PifTask *pstTask)
 	pifGpio_WriteAll(s_pstGpioRG, ucLedRG);
 	ucLedRG = (ucLedRG + 1) & 3;
 
-	pifLog_Printf(LT_enInfo, "Sw:%u", pifGpio_ReadAll(s_pstGpioSwitch));
+	pifLog_Printf(LT_INFO, "Sw:%u", pifGpio_ReadAll(s_pstGpioSwitch));
 	return 0;
 }
 

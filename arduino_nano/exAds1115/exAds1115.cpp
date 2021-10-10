@@ -36,7 +36,7 @@ BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
     }
     uint8_t status_ = Wire.endTransmission();
     if (status_ != 0) {
-    	pifLog_Printf(LT_enInfo, "I2CW(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
+    	pifLog_Printf(LT_INFO, "I2CW(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
         bResult = FALSE;
     }
     pifI2c_sigEndWrite(pstOwner, bResult);
@@ -58,7 +58,7 @@ BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
     return TRUE;
 
 fail:
-	pifLog_Printf(LT_enInfo, "I2CR(%d): C=%u, S=%u:%u", pstOwner->p_data[0], usSize, count);
+	pifLog_Printf(LT_INFO, "I2CR(%d): C=%u, S=%u:%u", pstOwner->p_data[0], usSize, count);
     pifI2c_sigEndRead(pstOwner, FALSE);
 	return FALSE;
 }

@@ -33,14 +33,14 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 			pifFnd_SetString(s_pstFnd, (char *)"BBBB");
 		}
 
-		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
+		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
 	}
 	else {
 		s_pstFnd->ucSubNumericDigits = 1;
 		double dValue = (rand() % 11000 - 1000) / 10.0;
 		pifFnd_SetFloat(s_pstFnd, dValue);
 
-		pifLog_Printf(LT_enInfo, "Blink:%d Float:%d Value:%1f", swBlink, swFloat, dValue);
+		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%1f", swBlink, swFloat, dValue);
 	}
 	swFloat ^= 1;
 	nBlink = (nBlink + 1) % 20;

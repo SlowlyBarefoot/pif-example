@@ -60,11 +60,11 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 		break;
 	}
 	if (s_stXmodemTest.step) {
-		pifLog_Printf(LT_enInfo, "C=%u PN=%u L=%u P=%u S=%u DT=%2xh", ucCode, ucPacketNo, s_stXmodemTest.usLength,
+		pifLog_Printf(LT_INFO, "C=%u PN=%u L=%u P=%u S=%u DT=%2xh", ucCode, ucPacketNo, s_stXmodemTest.usLength,
 				s_stXmodemTest.usPos, s_stXmodemTest.step, s_stXmodemTest.aucData[0]);
 	}
 	else {
-		pifLog_Printf(LT_enInfo, "C=%u", ucCode);
+		pifLog_Printf(LT_INFO, "C=%u", ucCode);
 	}
 }
 

@@ -17,22 +17,22 @@ const char c_cKeys[ROWS * COLS] = {
 
 static void _evtKeypadPressed(char cChar)
 {
-	pifLog_Printf(LT_enInfo, "Keypad:Pressed %c", cChar);
+	pifLog_Printf(LT_INFO, "Keypad:Pressed %c", cChar);
 }
 
 static void _evtKeypadReleased(char cChar, uint32_t unOnTime)
 {
-	pifLog_Printf(LT_enInfo, "Keypad:Released %c T:%lu", cChar, unOnTime);
+	pifLog_Printf(LT_INFO, "Keypad:Released %c T:%lu", cChar, unOnTime);
 }
 
 static void _evtKeypadLongReleased(char cChar, uint32_t unOnTime)
 {
-	pifLog_Printf(LT_enInfo, "Keypad:LongReleased %c T:%lu", cChar, unOnTime);
+	pifLog_Printf(LT_INFO, "Keypad:LongReleased %c T:%lu", cChar, unOnTime);
 }
 
 static void _evtKeypadDoublePressed(char cChar)
 {
-	pifLog_Printf(LT_enInfo, "Keypad:DoublePressed %c", cChar);
+	pifLog_Printf(LT_INFO, "Keypad:DoublePressed %c", cChar);
 }
 
 void appSetup()

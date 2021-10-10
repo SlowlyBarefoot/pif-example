@@ -23,7 +23,7 @@ void actSolenoidOrder(SWITCH swOrder, PifSolenoidDir enDir)
 
 	digitalWrite(PIN_RELAY_1CH, swOrder);
 
-	pifLog_Printf(LT_enInfo, "_SolenoidOrder(%d)", swOrder);
+	pifLog_Printf(LT_INFO, "_SolenoidOrder(%d)", swOrder);
 }
 
 uint16_t taskLedToggle(PifTask *pstTask)

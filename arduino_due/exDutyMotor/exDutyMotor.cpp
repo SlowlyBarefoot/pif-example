@@ -35,7 +35,7 @@ BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 void actSetDuty(uint16_t usDuty)
 {
 	analogWrite(PIN_L298N_ENB_PWM, usDuty);
-	pifLog_Printf(LT_enInfo, "SetDuty(%d)", usDuty);
+	pifLog_Printf(LT_INFO, "SetDuty(%d)", usDuty);
 }
 
 void actSetDirection(uint8_t ucDir)
@@ -48,7 +48,7 @@ void actSetDirection(uint8_t ucDir)
 		digitalWrite(PIN_L298N_IN1, HIGH);
 		digitalWrite(PIN_L298N_IN2, LOW);
 	}
-	pifLog_Printf(LT_enInfo, "SetDirection(%d)", ucDir);
+	pifLog_Printf(LT_INFO, "SetDirection(%d)", ucDir);
 }
 
 void actOperateBreak(uint8_t ucState)
@@ -61,7 +61,7 @@ void actOperateBreak(uint8_t ucState)
 	else {
 		analogWrite(PIN_L298N_ENB_PWM, 0);
 	}
-	pifLog_Printf(LT_enInfo, "OperateBreak(%d)", ucState);
+	pifLog_Printf(LT_INFO, "OperateBreak(%d)", ucState);
 }
 
 void actLedLState(PifId usPifId, uint32_t unState)

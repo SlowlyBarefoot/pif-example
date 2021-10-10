@@ -25,7 +25,7 @@ static PIF_enSequenceResult _fnSequence1(PIF_stSequence *pstOwner)
 	switch (pstOwner->ucStep) {
 	case PIF_SEQUENCE_STEP_INIT:
 		pstOwner->ucStep = 1;
-		pifLog_Printf(LT_enInfo, "Sequence1: %d", pstOwner->ucStep);
+		pifLog_Printf(LT_INFO, "Sequence1: %d", pstOwner->ucStep);
 		break;
 
 	case 1:
@@ -48,7 +48,7 @@ static PIF_enSequenceResult _fnSequence2(PIF_stSequence *pstOwner)
 	case PIF_SEQUENCE_STEP_INIT:
 	case 2:
 		pstOwner->ucStep++;
-		pifLog_Printf(LT_enInfo, "Sequence2: %d", pstOwner->ucStep);
+		pifLog_Printf(LT_INFO, "Sequence2: %d", pstOwner->ucStep);
 		break;
 
 	case 1:
@@ -77,13 +77,13 @@ static PIF_enSequenceResult _fnSequence3(PIF_stSequence *pstOwner)
 		// Set processing time limit for this Phase, for this Phase.
 		pifSequence_SetTimeout(pstOwner, 1000);
 		pstOwner->ucStep++;
-		pifLog_Printf(LT_enInfo, "Sequence3: %d", pstOwner->ucStep);
+		pifLog_Printf(LT_INFO, "Sequence3: %d", pstOwner->ucStep);
 		break;
 
 	case 2:
 	case 4:
 		pstOwner->ucStep++;
-		pifLog_Printf(LT_enInfo, "Sequence3: %d", pstOwner->ucStep);
+		pifLog_Printf(LT_INFO, "Sequence3: %d", pstOwner->ucStep);
 		break;
 
 	case 1:
@@ -92,7 +92,7 @@ static PIF_enSequenceResult _fnSequence3(PIF_stSequence *pstOwner)
 		break;
 
 	case 6:
-		pifLog_Printf(LT_enInfo, "Sequence3: Complete");
+		pifLog_Printf(LT_INFO, "Sequence3: Complete");
 		return SR_enNext;
 
 	default:
@@ -107,7 +107,7 @@ static void _evtSequenceError(PIF_stSequence *pstOwner)
 {
 	(void)pstOwner;
 
-	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_error);
+	pifLog_Printf(LT_ERROR, "Sequence Error: %d", pif_error);
 }
 
 static uint16_t _taskSequence(PifTask *pstTask)
@@ -119,7 +119,7 @@ static uint16_t _taskSequence(PifTask *pstTask)
 		switch (s_pstSequence->ucStep) {
 		case 1:
 			s_pstSequence->ucStep++;
-			pifLog_Printf(LT_enInfo, "Sequence: %d", s_pstSequence->ucStep);
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->ucStep);
 			break;
 		}
 		break;
@@ -129,7 +129,7 @@ static uint16_t _taskSequence(PifTask *pstTask)
 		case 1:
 		case 3:
 			s_pstSequence->ucStep++;
-			pifLog_Printf(LT_enInfo, "Sequence: %d", s_pstSequence->ucStep);
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->ucStep);
 			break;
 		}
 		break;
@@ -140,7 +140,7 @@ static uint16_t _taskSequence(PifTask *pstTask)
 		case 3:
 		case 5:
 			s_pstSequence->ucStep++;
-			pifLog_Printf(LT_enInfo, "Sequence: %d", s_pstSequence->ucStep);
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->ucStep);
 			break;
 		}
 		break;

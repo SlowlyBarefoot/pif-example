@@ -23,11 +23,11 @@ uint16_t _taskAds1115(PifTask *pstTask)
 	static int channel = ACM_enSINGLE_0;
 
 	uint16_t usData = pifAds1x1x_ReadMux(g_pstAds1x1x, (PIF_enAds1x1xConfigMux)channel);
-	pifLog_Printf(LT_enInfo, "ADC(%d): %u, Vol: %f", channel, usData, usData * g_pstAds1x1x->dConvertVoltage);
+	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, usData, usData * g_pstAds1x1x->dConvertVoltage);
 	if (channel == ACM_enSINGLE_3) channel = ACM_enSINGLE_0; else channel++;
 #else
 	uint16_t usData = pifAds1x1x_Read(g_pstAds1x1x);
-	pifLog_Printf(LT_enInfo, "ADC: %u, Vol: %f", usData, usData * g_pstAds1x1x->dConvertVoltage);
+	pifLog_Printf(LT_INFO, "ADC: %u, Vol: %f", usData, usData * g_pstAds1x1x->dConvertVoltage);
 #endif
 	return 0;
 }

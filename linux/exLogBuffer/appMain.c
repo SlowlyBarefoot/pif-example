@@ -22,7 +22,7 @@ BOOL appInit()
 
     if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
 
-	pifLog_Printf(LT_enInfo, "Start");
+	pifLog_Printf(LT_INFO, "Start");
 
     pifLog_Disable();
     return TRUE;

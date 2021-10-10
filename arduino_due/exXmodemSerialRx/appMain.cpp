@@ -16,10 +16,10 @@ static PIF_stXmodem *s_pstXmodem = NULL;
 static void _evtXmodemRxReceive(uint8_t ucCode, PIF_stXmodemPacket *pstPacket)
 {
 	if (ucCode == ASCII_SOH) {
-		pifLog_Printf(LT_enInfo, "Code=%u PN=%u DT=%2xh", ucCode, (unsigned int)pstPacket->aucPacketNo[0], pstPacket->pucData[0]);
+		pifLog_Printf(LT_INFO, "Code=%u PN=%u DT=%2xh", ucCode, (unsigned int)pstPacket->aucPacketNo[0], pstPacket->pucData[0]);
 	}
 	else {
-		pifLog_Printf(LT_enInfo, "Code=%u", ucCode);
+		pifLog_Printf(LT_INFO, "Code=%u", ucCode);
 	}
 }
 

@@ -25,7 +25,7 @@ static void _TimerHandler()
 
     if (nTimer) nTimer--;
     else {
-    	pifLog_Printf(LT_enInfo, "1sec Timer");
+    	pifLog_Printf(LT_INFO, "1sec Timer");
     	nTimer = 1000 - 1;
     }
 }

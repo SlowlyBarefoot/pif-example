@@ -62,7 +62,7 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
-	pifLog_Printf(LT_enInfo, "LED State=%u", unState);
+	pifLog_Printf(LT_INFO, "LED State=%u", unState);
 }
 
 static void sysTickHook()

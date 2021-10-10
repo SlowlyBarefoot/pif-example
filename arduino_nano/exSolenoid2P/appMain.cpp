@@ -24,7 +24,7 @@ static void _evtSolenoidFinish(void *pvParam)
 
 	pifPulse_StartItem(pstParam->pstTimerItem, 1000);	// 1000 * 1ms = 1sec
 
-	pifLog_Printf(LT_enInfo, "_evtSolenoidFinish(%d)", pstParam->enDir);
+	pifLog_Printf(LT_INFO, "_evtSolenoidFinish(%d)", pstParam->enDir);
 
 	pstParam->enDir = pstParam->enDir == SD_RIGHT ? SD_LEFT : SD_RIGHT;
 }

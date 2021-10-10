@@ -21,7 +21,7 @@ static PIF_stSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
 
 static int CmdStepMotorTest(int argc, char *argv[]);
 
-const PIF_stLogCmdEntry c_psCmdTable[] = {
+const PifLogCmdEntry c_psCmdTable[] = {
 	{ "mt", CmdStepMotorTest, "\nMotor Test" },
 
 	{ NULL, NULL, NULL }
@@ -85,9 +85,9 @@ static ST_StepMotorTest s_stStepMotorTest = { 0, 0, 0, 0 };
 static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Stage: %d", s_stStepMotorTest.ucStage);
-		pifLog_Printf(LT_enNone, "\n  Method: %d", s_pstMotor->_enMethod);
-		pifLog_Printf(LT_enNone, "\n  Operation: %d", s_pstMotor->_enOperation);
+		pifLog_Printf(LT_NONE, "\n  Stage: %d", s_stStepMotorTest.ucStage);
+		pifLog_Printf(LT_NONE, "\n  Method: %d", s_pstMotor->_enMethod);
+		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_pstMotor->_enOperation);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -120,7 +120,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 					pifStepMotorPos_Start(s_pstMotor, s_stStepMotorTest.ucStage - 1, 2000);
 				}
 				else {
-					pifLog_Printf(LT_enNone, "\nError: Stage=%d", s_stStepMotorTest.ucStage);
+					pifLog_Printf(LT_NONE, "\nError: Stage=%d", s_stStepMotorTest.ucStage);
 				}
 				return PIF_LOG_CMD_NO_ERROR;
 			}
@@ -151,7 +151,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			pifStepMotorPos_Emergency(s_pstMotor);
 		}
 		else if (!strcmp(argv[1], "init")) {
-			pifLog_Printf(LT_enInfo, "Init Pos");
+			pifLog_Printf(LT_INFO, "Init Pos");
 		    s_stStepMotorTest.ucInitPos = 1;
 			return PIF_LOG_CMD_NO_ERROR;
 		}
@@ -164,7 +164,7 @@ static void _evtStable(PIF_stStepMotor *pstOwner)
 {
 	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
 
-	pifLog_Printf(LT_enInfo, "EventStable(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
 }
 
 static void _evtStop(PIF_stStepMotor *pstOwner)
@@ -172,7 +172,7 @@ static void _evtStop(PIF_stStepMotor *pstOwner)
 	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventStop(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
 }
 
 static void _evtError(PIF_stStepMotor *pstOwner)
@@ -180,7 +180,7 @@ static void _evtError(PIF_stStepMotor *pstOwner)
 	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
 }
 
 static uint16_t _taskInitPos(PifTask *pstTask)
@@ -194,13 +194,13 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 		unTime = 500;
 		s_stStepMotorTest.ucStage = 0;
 		s_stStepMotorTest.ucInitPos = 2;
-		pifLog_Printf(LT_enInfo, "InitPos: Start");
+		pifLog_Printf(LT_INFO, "InitPos: Start");
 		break;
 
 	case 2:
 		if (!s_stStepMotorTest.ucStage) {
 			if (s_pstSwitch[0]->_swCurrState == ON) {
-				pifLog_Printf(LT_enInfo, "InitPos: Find");
+				pifLog_Printf(LT_INFO, "InitPos: Find");
 				s_stStepMotorTest.ucInitPos = 0;
 			}
 			else {
@@ -230,7 +230,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 		break;
 
 	case 4:
-		pifLog_Printf(LT_enError, "InitPos: Error");
+		pifLog_Printf(LT_ERROR, "InitPos: Error");
 		s_stStepMotorTest.ucInitPos = 0;
 		break;
 	}
@@ -245,7 +245,7 @@ static uint16_t _taskRepeat(PifTask *pstTask)
 	case 1:
 		s_stStepMotorTest.ucStage = 0;
 		s_stStepMotorTest.ucRepeat = 2;
-		pifLog_Printf(LT_enInfo, "Repeat: Start");
+		pifLog_Printf(LT_INFO, "Repeat: Start");
 		break;
 
 	case 2:
@@ -279,13 +279,13 @@ static uint16_t _taskRepeat(PifTask *pstTask)
 		break;
 
 	case 4:
-		pifLog_Printf(LT_enError, "Repeat: Error");
+		pifLog_Printf(LT_ERROR, "Repeat: Error");
 		s_stStepMotorTest.ucRepeat = 0;
 		s_stStepMotorTest.ucRepeatStop = 0;
 		break;
 
 	case 5:
-		pifLog_Printf(LT_enError, "Repeat: Stop");
+		pifLog_Printf(LT_ERROR, "Repeat: Stop");
 		s_stStepMotorTest.ucRepeat = 0;
 		s_stStepMotorTest.ucRepeatStop = 0;
 		break;

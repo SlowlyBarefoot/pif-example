@@ -45,7 +45,7 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 		swBlink ^= 1;
 	}
 
-	pifLog_Printf(LT_enInfo, "%d", i);
+	pifLog_Printf(LT_INFO, "%d", i);
 	return 0;
 }
 

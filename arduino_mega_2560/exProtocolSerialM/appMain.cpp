@@ -44,16 +44,16 @@ static struct {
 static void _fnProtocolPrint(PIF_stProtocolPacket *pstPacket, const char *pcName)
 {
 	if (pstPacket) {
-		pifLog_Printf(LT_enInfo, "%s: PID=%d CNT=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
+		pifLog_Printf(LT_INFO, "%s: PID=%d CNT=%u", pcName, pstPacket->ucPacketId, pstPacket->usDataCount);
 		if (pstPacket->usDataCount) {
-			pifLog_Printf(LT_enNone, "\nData:");
+			pifLog_Printf(LT_NONE, "\nData:");
 			for (int i = 0; i < pstPacket->usDataCount; i++) {
-				pifLog_Printf(LT_enNone, " %u", pstPacket->pucData[i]);
+				pifLog_Printf(LT_NONE, " %u", pstPacket->pucData[i]);
 			}
 		}
 	}
 	else {
-		pifLog_Printf(LT_enInfo, pcName);
+		pifLog_Printf(LT_INFO, pcName);
 	}
 }
 
@@ -66,14 +66,14 @@ static void _fnCompareData(PIF_stProtocolPacket *pstPacket, uint8_t ucIndex)
 			if (pstPacket->pucData[i] != s_stProtocolTest[ucIndex].ucData[i]) break;
 		}
 		if (i < pstPacket->usDataCount) {
-			pifLog_Printf(LT_enInfo, "Different data");
+			pifLog_Printf(LT_INFO, "Different data");
 		}
 		else {
-			pifLog_Printf(LT_enInfo, "Same data");
+			pifLog_Printf(LT_INFO, "Same data");
 		}
 	}
 	else {
-		pifLog_Printf(LT_enError, "Different count: %u != %u", s_stProtocolTest[ucIndex].ucDataCount, pstPacket->usDataCount);
+		pifLog_Printf(LT_ERROR, "Different count: %u != %u", s_stProtocolTest[ucIndex].ucDataCount, pstPacket->usDataCount);
 	}
 }
 
@@ -83,7 +83,7 @@ static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket)
 	_fnProtocolPrint(pstPacket, "Question20");
 
 	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
-		pifLog_Printf(LT_enInfo, "Question20: PID=%d Error=%d", pstPacket->ucPacketId, pif_error);
+		pifLog_Printf(LT_INFO, "Question20: PID=%d Error=%d", pstPacket->ucPacketId, pif_error);
 	}
 }
 
@@ -102,12 +102,12 @@ static void _fnProtocolResponse31(PIF_stProtocolPacket *pstPacket)
 {
 	(void)pstPacket;
 
-	pifLog_Printf(LT_enInfo, "Response31: ACK");
+	pifLog_Printf(LT_INFO, "Response31: ACK");
 }
 
 static void _evtProtocolError(PifId usPifId)
 {
-	pifLog_Printf(LT_enError, "ProtocolError DC=%d", usPifId);
+	pifLog_Printf(LT_ERROR, "ProtocolError DC=%d", usPifId);
 }
 
 static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
@@ -120,14 +120,14 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 		s_stProtocolTest[index].ucDataCount = rand() % 8;
 		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
 		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-			pifLog_Printf(LT_enError, "PushSwitchChange(%d): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_error);
+			pifLog_Printf(LT_ERROR, "PushSwitchChange(%d): DC=%d E=%d", index, s_pstProtocol->_usPifId, pif_error);
 		}
 		else {
-			pifLog_Printf(LT_enInfo, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);
+			pifLog_Printf(LT_INFO, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_pstProtocol->_usPifId, s_stProtocolTest[index].ucDataCount);
 			if (s_stProtocolTest[index].ucDataCount) {
-				pifLog_Printf(LT_enNone, "\nData:");
+				pifLog_Printf(LT_NONE, "\nData:");
 				for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
-					pifLog_Printf(LT_enNone, " %u", s_stProtocolTest[index].ucData[i]);
+					pifLog_Printf(LT_NONE, " %u", s_stProtocolTest[index].ucData[i]);
 				}
 			}
 		}

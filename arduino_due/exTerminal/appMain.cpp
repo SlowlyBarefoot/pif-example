@@ -18,7 +18,7 @@ static int nPeriod = 500;
 
 static int _CmdLedControl(int argc, char *argv[]);
 
-const PIF_stLogCmdEntry c_psCmdTable[] = {
+const PifLogCmdEntry c_psCmdTable[] = {
 	{ "led", _CmdLedControl, "\nLED Control" },
 
 	{ NULL, NULL, NULL }
@@ -28,8 +28,8 @@ const PIF_stLogCmdEntry c_psCmdTable[] = {
 static int _CmdLedControl(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_enNone, "\n  Blink=%u", bBlink);
-		pifLog_Printf(LT_enNone, "\n  Period=%u", nPeriod);
+		pifLog_Printf(LT_NONE, "\n  Blink=%u", bBlink);
+		pifLog_Printf(LT_NONE, "\n  Period=%u", nPeriod);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
