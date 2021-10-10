@@ -10,7 +10,7 @@
 #define PIN_LED_YELLOW			3
 
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -21,7 +21,7 @@ uint16_t taskLedToggle(PIF_stTask *pstTask)
 	return 0;
 }
 
-uint16_t taskLedRedToggle(PIF_stTask *pstTask)
+uint16_t taskLedRedToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -32,7 +32,7 @@ uint16_t taskLedRedToggle(PIF_stTask *pstTask)
 	return 0;
 }
 
-uint16_t taskLedYellowToggle(PIF_stTask *pstTask)
+uint16_t taskLedYellowToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 

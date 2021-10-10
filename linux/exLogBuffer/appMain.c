@@ -20,7 +20,7 @@ BOOL appInit()
 
 	if (!pifLog_AttachComm(pstCommLog)) return FALSE;
 
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return FALSE;	// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
 
 	pifLog_Printf(LT_enInfo, "Start");
 
@@ -31,4 +31,5 @@ BOOL appInit()
 void appExit()
 {
 	pifLog_Clear();
+    pif_Exit();
 }

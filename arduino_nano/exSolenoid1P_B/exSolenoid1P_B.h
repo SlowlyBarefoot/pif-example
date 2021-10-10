@@ -19,7 +19,7 @@
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actSolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir);
-uint16_t taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PifTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exSolenoid1P_B_H_ */

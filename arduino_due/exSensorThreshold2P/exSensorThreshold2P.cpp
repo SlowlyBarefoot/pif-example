@@ -14,7 +14,7 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -25,7 +25,7 @@ uint16_t taskLedToggle(PIF_stTask *pstTask)
 	return 0;
 }
 
-uint16_t taskSensorAcquisition(PIF_stTask *pstTask)
+uint16_t taskSensorAcquisition(PifTask *pstTask)
 {
 	(void)pstTask;
 

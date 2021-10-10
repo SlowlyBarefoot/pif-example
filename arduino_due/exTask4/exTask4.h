@@ -16,9 +16,9 @@
 
 //add your function definitions for the project exTask4 here
 
-uint16_t taskLedToggle(PIF_stTask *pstTask);
-uint16_t taskLedRedToggle(PIF_stTask *pstTask);
-uint16_t taskLedYellowToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PifTask *pstTask);
+uint16_t taskLedRedToggle(PifTask *pstTask);
+uint16_t taskLedYellowToggle(PifTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exTask4_H_ */

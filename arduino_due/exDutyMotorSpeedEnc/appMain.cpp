@@ -138,7 +138,7 @@ static void _evtError(PIF_stDutyMotor *pstOwner)
 	pifLog_Printf(LT_enInfo, "EventError(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
 }
 
-static uint16_t _taskInitPos(PIF_stTask *pstTask)
+static uint16_t _taskInitPos(PifTask *pstTask)
 {
 	static uint32_t unTime;
 
@@ -202,11 +202,11 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);										// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;					// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;					// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;					// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
@@ -221,7 +221,7 @@ void appSetup()
     for (int i = 0; i < SWITCH_COUNT; i++) {
 		s_pstSwitch[i] = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
 		if (!s_pstSwitch[i]) return;
-	    if (!pifSensorSwitch_AttachTask(s_pstSwitch[i], TM_enPeriodMs, 1, TRUE)) return;	// 1ms
+	    if (!pifSensorSwitch_AttachTask(s_pstSwitch[i], TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
@@ -233,7 +233,7 @@ void appSetup()
     g_pstMotor->evtError = _evtError;
     pifPidControl_Init(pifDutyMotorSpeedEnc_GetPidControl(g_pstMotor), 0.1, 0, 0, 100);
 
-    if (!pifLog_AttachTask(TM_enPeriodMs, 20, TRUE)) return;								// 20ms
+    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;								// 20ms
 
-    if (!pifTaskManager_Add(TM_enPeriodMs, 10, _taskInitPos, NULL, TRUE)) return;			// 10ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE)) return;			// 10ms
 }

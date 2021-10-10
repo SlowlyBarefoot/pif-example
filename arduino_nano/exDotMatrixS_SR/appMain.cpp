@@ -23,7 +23,7 @@ const uint8_t font8x8_basic[10][8] = {
 };
 
 
-static uint16_t _taskDotMatrixTest(PIF_stTask *pstTask)
+static uint16_t _taskDotMatrixTest(PifTask *pstTask)
 {
 	static int nBlink = 0;
 	static int index = 0;
@@ -57,25 +57,25 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);										// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;					// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;					// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;					// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_enRatio, 5, TRUE)) return;				// 5%
+	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_RATIO, 5, TRUE)) return;				// 5%
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 10)) return;
     for (int i = 0; i < 10; i++) {
     	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 8, (uint8_t *)font8x8_basic[i])) return;
     }
 
-    if (!pifTaskManager_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
-	if (!pifTaskManager_Add(TM_enPeriodMs, 1000, _taskDotMatrixTest, NULL, TRUE)) return;	// 1000ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
+	if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskDotMatrixTest, NULL, TRUE)) return;	// 1000ms
 
 	pifDotMatrix_Start(s_pstDotMatrix);
 }

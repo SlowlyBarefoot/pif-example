@@ -67,11 +67,11 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);									// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;				// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;				// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;				// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -83,13 +83,13 @@ void appSetup()
 
 	pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, 0);
 	if (!pstPushSwitch) return;
-    if (!pifSensorSwitch_AttachTask(pstPushSwitch, TM_enPeriodMs, 10, TRUE)) return;	// 10m
+    if (!pifSensorSwitch_AttachTask(pstPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10m
 	pifSensor_AttachAction(pstPushSwitch, actPushSwitchAcquire);
 	pifSensor_AttachEvtChange(pstPushSwitch, _evtPushSwitchChange, NULL);
 
 	s_pstCommGps = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommGps) return;
-    if (!pifComm_AttachTask(s_pstCommGps, TM_enPeriodMs, 1, TRUE)) return;				// 1ms
+    if (!pifComm_AttachTask(s_pstCommGps, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActReceiveData(s_pstCommGps, actGpsReceiveData);
 	pifComm_AttachActSendData(s_pstCommGps, actGpsSendData);
 

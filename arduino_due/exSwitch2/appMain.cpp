@@ -22,11 +22,11 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;			// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;			// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -42,12 +42,12 @@ void appSetup()
 
     g_pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, OFF);
     if (!g_pstPushSwitch) return;
-    if (!pifSensorSwitch_AttachTask(g_pstPushSwitch, TM_enRatio, 3, TRUE)) return;	// 3%
+    if (!pifSensorSwitch_AttachTask(g_pstPushSwitch, TM_RATIO, 3, TRUE)) return;	// 3%
     pifSensor_AttachEvtChange(g_pstPushSwitch, evtPushSwitchChange, NULL);
 
     g_pstTiltSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, OFF);
 	if (!g_pstTiltSwitch) return;
-    if (!pifSensorSwitch_AttachTask(g_pstTiltSwitch, TM_enRatio, 3, TRUE)) return;	// 3%
+    if (!pifSensorSwitch_AttachTask(g_pstTiltSwitch, TM_RATIO, 3, TRUE)) return;	// 3%
 	pifSensor_AttachEvtChange(g_pstTiltSwitch, evtTiltSwitchChange, NULL);
 
     pifPulse_StartItem(pstTimerSwitch, 20);											// 20ms

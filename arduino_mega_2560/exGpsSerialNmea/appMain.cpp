@@ -140,11 +140,11 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;	// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;	// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
@@ -158,7 +158,7 @@ void appSetup()
 
 	s_pstCommGps = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommGps) return;
-    if (!pifComm_AttachTask(s_pstCommGps, TM_enPeriodMs, 1, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(s_pstCommGps, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
 	pifComm_AttachActReceiveData(s_pstCommGps, actGpsReceiveData);
 	pifComm_AttachActSendData(s_pstCommGps, actGpsSendData);
 
@@ -170,5 +170,5 @@ void appSetup()
 	pifGpsNmea_AttachEvtText(s_pstGpsNmea, _evtGpsNmeaText);
 	pifGps_AttachEvent(&s_pstGpsNmea->_stGps, _evtGpsReceive);
 
-    if (!pifLog_AttachTask(TM_enPeriodMs, 20, TRUE)) return;				// 20ms
+    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;				// 20ms
 }

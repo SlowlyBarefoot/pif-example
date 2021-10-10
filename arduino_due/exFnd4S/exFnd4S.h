@@ -18,7 +18,7 @@
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit);
-uint16_t taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PifTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exFnd4S_H_ */

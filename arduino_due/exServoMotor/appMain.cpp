@@ -13,7 +13,7 @@ PIF_stPulseItem *g_pstPwm = NULL;
 static BOOL s_bStart = FALSE;
 
 
-static uint16_t _taskServoMotor(PIF_stTask *pstTask)
+static uint16_t _taskServoMotor(PifTask *pstTask)
 {
 	static uint16_t duty = 75;						// 75 = 1.5ms / 20ms * 1000
 	static BOOL dir = FALSE;
@@ -54,11 +54,11 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);									// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;				// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;				// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;				// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -75,5 +75,5 @@ void appSetup()
     if (!g_pstPwm) return;
     pifPulse_AttachAction(g_pstPwm, actPulsePwm);
 
-    if (!pifTaskManager_Add(TM_enPeriodMs, 700, _taskServoMotor, NULL, TRUE)) return;	// 1000ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 700, _taskServoMotor, NULL, TRUE)) return;	// 1000ms
 }

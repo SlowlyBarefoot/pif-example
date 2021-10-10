@@ -18,7 +18,7 @@
 
 uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData);
-uint16_t taskLedToggle(PIF_stTask *pstTask);
+uint16_t taskLedToggle(PifTask *pstTask);
 
 //Do not add code below this line
 #endif /* _exDotMatrixS_HS_H_ */

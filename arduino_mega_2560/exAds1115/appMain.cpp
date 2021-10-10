@@ -15,7 +15,7 @@ static PIF_stAds1x1x *s_pstAds1x1x = NULL;
 static PIF_stLed *s_pstLedL = NULL;
 
 
-uint16_t _taskAds1115(PIF_stTask *pstTask)
+uint16_t _taskAds1115(PifTask *pstTask)
 {
 	static int channel = ACM_enSINGLE_0;
 
@@ -42,11 +42,11 @@ void appSetup(PifActTimer1us act_timer1us)
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;			// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;			// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -84,5 +84,5 @@ void appSetup(PifActTimer1us act_timer1us)
     pifAds1x1x_SetLoThreshVoltage(s_pstAds1x1x, 1.0);
     pifAds1x1x_SetHiThreshVoltage(s_pstAds1x1x, 2.0);
 
-    if (!pifTaskManager_Add(TM_enPeriodMs, 1000, _taskAds1115, NULL, TRUE)) return;	// 1000ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskAds1115, NULL, TRUE)) return;	// 1000ms
 }

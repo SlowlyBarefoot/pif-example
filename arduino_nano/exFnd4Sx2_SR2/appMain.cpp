@@ -12,7 +12,7 @@ static PIF_stFnd *s_pstFnd = NULL;
 const uint8_t c_ucUserChar[] = { 0x01, 0x08 };
 
 
-static uint16_t _taskFndTest(PIF_stTask *pstTask)
+static uint16_t _taskFndTest(PifTask *pstTask)
 {
 	static int nBlink = 0;
 	static BOOL swBlink = FALSE;
@@ -65,11 +65,11 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;			// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;			// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -77,11 +77,11 @@ void appSetup()
     pifFnd_SetUserChar(c_ucUserChar, 2);
     s_pstFnd = pifFnd_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, actFndDisplay);
     if (!s_pstFnd) return;
-    if (!pifFnd_AttachTask(s_pstFnd, TM_enRatio, 5, TRUE)) return;					// 5%
+    if (!pifFnd_AttachTask(s_pstFnd, TM_RATIO, 5, TRUE)) return;					// 5%
     pifFnd_SetControlPeriod(s_pstFnd, 16);											// 16ms
 
-    if (!pifTaskManager_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
-    if (!pifTaskManager_Add(TM_enPeriodMs, 3000, _taskFndTest, NULL, TRUE)) return;	// 3000ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 3000, _taskFndTest, NULL, TRUE)) return;	// 3000ms
 
     pifFnd_Start(s_pstFnd);
 }

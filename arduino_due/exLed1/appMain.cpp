@@ -11,7 +11,7 @@ static PIF_stLed *s_pstLedL = NULL;
 static PIF_stLed *s_pstLedRGB = NULL;
 
 
-static uint16_t _taskLed(PIF_stTask *pstTask)
+static uint16_t _taskLed(PifTask *pstTask)
 {
 	static uint16_t usStep = 0;
 	static uint16_t usTimer = 0;
@@ -108,11 +108,11 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);							// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;		// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;		// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;		// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -126,5 +126,5 @@ void appSetup()
     if (!s_pstLedRGB) return;
     if (!pifLed_AttachBlink(s_pstLedRGB, 100)) return;							// 100ms
 
-    if (!pifTaskManager_Add(TM_enPeriodMs, 100, _taskLed, NULL, TRUE)) return;	// 100ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLed, NULL, TRUE)) return;	// 100ms
 }

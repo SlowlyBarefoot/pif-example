@@ -25,7 +25,7 @@ void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 	digitalWrite(PIN_74HC595_LATCH, HIGH);
 }
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PifTask *pstTask)
 {
 	static BOOL swLed = LOW;
 

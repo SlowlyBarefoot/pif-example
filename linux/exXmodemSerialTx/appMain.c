@@ -75,7 +75,7 @@ BOOL appInit()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return FALSE;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return FALSE;	// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return FALSE;	// 100%
 
     s_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommLog) return FALSE;
@@ -87,7 +87,7 @@ BOOL appInit()
 	if (!s_pstSerial) return FALSE;
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
-    if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return FALSE;		// 1ms
+    if (!pifComm_AttachTask(s_pstSerial, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
     s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_enCRC);
     if (!s_pstXmodem) return FALSE;
@@ -98,10 +98,10 @@ BOOL appInit()
 
 void appExit()
 {
-	pifTaskManager_Destroy();
 	pifXmodem_Destroy(&s_pstXmodem);
 	pifPulse_Destroy(&g_pstTimer1ms);
 	pifComm_Destroy(&s_pstSerial);
 	pifComm_Destroy(&s_pstCommLog);
     pifLog_Clear();
+    pif_Exit();
 }

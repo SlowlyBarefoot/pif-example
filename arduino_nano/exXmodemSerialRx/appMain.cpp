@@ -31,7 +31,7 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);									// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;				// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;				// 100%
 
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
@@ -40,13 +40,13 @@ void appSetup()
 
 	pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, 0);
 	if (!pstPushSwitch) return;
-    if (!pifSensorSwitch_AttachTask(pstPushSwitch, TM_enPeriodMs, 10, TRUE)) return;	// 10ms
+    if (!pifSensorSwitch_AttachTask(pstPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
 	pifSensor_AttachAction(pstPushSwitch, actPushSwitchAcquire);
 	pifSensor_AttachEvtChange(pstPushSwitch, _evtPushSwitchChange, NULL);
 
     s_pstSerial = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
-    if (!pifComm_AttachTask(s_pstSerial, TM_enPeriodMs, 1, TRUE)) return;				// 1ms
+    if (!pifComm_AttachTask(s_pstSerial, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActReceiveData(s_pstSerial, actXmodemReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actXmodemSendData);
 

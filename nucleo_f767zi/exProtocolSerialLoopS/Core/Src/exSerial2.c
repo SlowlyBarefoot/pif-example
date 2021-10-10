@@ -131,7 +131,7 @@ BOOL exSerial2_Setup()
 {
 	g_pstSerial2 = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstSerial2) return FALSE;
-    if (!pifComm_AttachTask(g_pstSerial2, TM_enPeriodMs, 1, TRUE)) return FALSE;	// 1ms
+    if (!pifComm_AttachTask(g_pstSerial2, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
 	if (!pifComm_AllocRxBuffer(g_pstSerial2, 64)) return FALSE;
 	if (!pifComm_AllocTxBuffer(g_pstSerial2, 64)) return FALSE;
 	pifComm_AttachActStartTransfer(g_pstSerial2, actUart2StartTransfer);

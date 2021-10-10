@@ -47,7 +47,7 @@ void evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
 	digitalWrite(PIN_LED_YELLOW, usLevel);
 }
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PifTask *pstTask)
 {
 	static BOOL swLed = LOW;
 

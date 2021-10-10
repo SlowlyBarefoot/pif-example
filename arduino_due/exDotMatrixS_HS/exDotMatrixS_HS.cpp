@@ -47,7 +47,7 @@ void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 	row = ucRow;
 }
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PifTask *pstTask)
 {
 	static BOOL swLed = LOW;
 

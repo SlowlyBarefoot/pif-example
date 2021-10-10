@@ -4,7 +4,7 @@
 #include "pifTask.h"
 
 
-static uint16_t _taskLedRedToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedRedToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -21,7 +21,7 @@ static uint16_t _taskLedRedToggle(PIF_stTask *pstTask)
     return 0;
 }
 
-static uint16_t _taskLedYellowToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedYellowToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -38,7 +38,7 @@ static uint16_t _taskLedYellowToggle(PIF_stTask *pstTask)
     return 0;
 }
 
-static uint16_t _taskLedGreenToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedGreenToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -59,7 +59,7 @@ void appSetup()
 {
 	pif_Init(NULL);
 
-    if (!pifTaskManager_Add(TM_enRatio, 30, _taskLedRedToggle, NULL, TRUE)) return;		// 30%
-    if (!pifTaskManager_Add(TM_enRatio, 60, _taskLedYellowToggle, NULL, TRUE)) return;	// 60%
-    if (!pifTaskManager_Add(TM_enRatio, 100, _taskLedGreenToggle, NULL, TRUE)) return;	// 100%
+    if (!pifTaskManager_Add(TM_RATIO, 30, _taskLedRedToggle, NULL, TRUE)) return;		// 30%
+    if (!pifTaskManager_Add(TM_RATIO, 60, _taskLedYellowToggle, NULL, TRUE)) return;	// 60%
+    if (!pifTaskManager_Add(TM_RATIO, 100, _taskLedGreenToggle, NULL, TRUE)) return;	// 100%
 }

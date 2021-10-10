@@ -26,7 +26,7 @@ void actSolenoidOrder(SWITCH swOrder, PIF_enSolenoidDir enDir)
 	pifLog_Printf(LT_enInfo, "_SolenoidOrder(%d)", swOrder);
 }
 
-uint16_t taskLedToggle(PIF_stTask *pstTask)
+uint16_t taskLedToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 

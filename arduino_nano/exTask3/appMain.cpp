@@ -4,10 +4,10 @@
 #include "pifTask.h"
 
 
-static PIF_stTask *s_pstTask[3];
+static PifTask *s_pstTask[3];
 
 
-static uint16_t _taskLedRedToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedRedToggle(PifTask *pstTask)
 {
 	static int nCount = 0, nToggle = 0;
 	static BOOL sw = LOW;
@@ -19,8 +19,8 @@ static uint16_t _taskLedRedToggle(PIF_stTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pstTask->bPause = TRUE;
-			s_pstTask[1]->bPause = FALSE;
+			pstTask->pause = TRUE;
+			s_pstTask[1]->pause = FALSE;
 		}
 
 		nCount = 9999;
@@ -29,7 +29,7 @@ static uint16_t _taskLedRedToggle(PIF_stTask *pstTask)
     return 0;
 }
 
-static uint16_t _taskLedYellowToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedYellowToggle(PifTask *pstTask)
 {
 	static int nCount = 0, nToggle = 0;
 	static BOOL sw = LOW;
@@ -41,8 +41,8 @@ static uint16_t _taskLedYellowToggle(PIF_stTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pstTask->bPause = TRUE;
-			s_pstTask[2]->bPause = FALSE;
+			pstTask->pause = TRUE;
+			s_pstTask[2]->pause = FALSE;
 		}
 
 		nCount = 9999;
@@ -51,7 +51,7 @@ static uint16_t _taskLedYellowToggle(PIF_stTask *pstTask)
     return 0;
 }
 
-static uint16_t _taskLedGreenToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedGreenToggle(PifTask *pstTask)
 {
 	static int nCount = 0, nToggle = 0;
 	static BOOL sw = LOW;
@@ -63,8 +63,8 @@ static uint16_t _taskLedGreenToggle(PIF_stTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pstTask->bPause = TRUE;
-			s_pstTask[0]->bPause = FALSE;
+			pstTask->pause = TRUE;
+			s_pstTask[0]->pause = FALSE;
 		}
 
 		nCount = 9999;
@@ -77,12 +77,12 @@ void appSetup()
 {
 	pif_Init(NULL);
 
-    s_pstTask[0] = pifTaskManager_Add(TM_enRatio, 30, _taskLedRedToggle, NULL, TRUE);		// 30%
+    s_pstTask[0] = pifTaskManager_Add(TM_RATIO, 30, _taskLedRedToggle, NULL, TRUE);		// 30%
     if (!s_pstTask[0]) return;
 
-    s_pstTask[1] = pifTaskManager_Add(TM_enRatio, 60, _taskLedYellowToggle, NULL, FALSE);	// 60%
+    s_pstTask[1] = pifTaskManager_Add(TM_RATIO, 60, _taskLedYellowToggle, NULL, FALSE);	// 60%
     if (!s_pstTask[1]) return;
 
-    s_pstTask[2] = pifTaskManager_Add(TM_enRatio, 100, _taskLedGreenToggle, NULL, FALSE);	// 100%
+    s_pstTask[2] = pifTaskManager_Add(TM_RATIO, 100, _taskLedGreenToggle, NULL, FALSE);	// 100%
     if (!s_pstTask[2]) return;
 }

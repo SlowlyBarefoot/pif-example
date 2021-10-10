@@ -4,7 +4,7 @@
 #include "pifTask.h"
 
 
-static uint16_t _taskLedToggle(PIF_stTask *pstTask)
+static uint16_t _taskLedToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = OFF;
@@ -25,5 +25,5 @@ void appSetup()
 {
 	pif_Init(NULL);
 
-    if (!pifTaskManager_Add(TM_enRatio, 50, _taskLedToggle, NULL, TRUE)) return;	// 50%
+    if (!pifTaskManager_Add(TM_RATIO, 50, _taskLedToggle, NULL, TRUE)) return;	// 50%
 }

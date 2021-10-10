@@ -113,7 +113,7 @@ static void _evtSequenceError(PIF_stSequence *pstOwner)
 	pifLog_Printf(LT_enError, "Sequence Error: %d", pif_error);
 }
 
-static uint16_t _taskSequence(PIF_stTask *pstTask)
+static uint16_t _taskSequence(PifTask *pstTask)
 {
 	(void)pstTask;
 
@@ -160,22 +160,22 @@ void appSetup(PifActTimer1us act_timer1us)
 
 	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_enRatio, 100, TRUE)) return;			// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;			// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_enPeriodMs, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_pstSequence = pifSequence_Create(PIF_ID_AUTO, g_pstTimer1ms, s_astSequencePhaseList, NULL);
     if (!s_pstSequence) return;
-    if (!pifSequence_AttachTask(s_pstSequence, TM_enPeriodMs, 10, TRUE)) return;	// 10ms
+    if (!pifSequence_AttachTask(s_pstSequence, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
     s_pstSequence->evtError = _evtSequenceError;
 
-    if (!pifTaskManager_Add(TM_enPeriodMs, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
-    if (!pifTaskManager_Add(TM_enPeriodMs, 500, _taskSequence, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskSequence, NULL, TRUE)) return;	// 500ms
 
     pifSequence_Start(s_pstSequence);
 }
