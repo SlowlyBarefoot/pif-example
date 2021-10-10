@@ -70,7 +70,7 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 void appSetup()
 {
 	PIF_stComm *pstCommLog;
-	PIF_stLed *pstLedL;
+	PifLed *pstLedL;
 
 	pif_Init(NULL);
 	pifLog_Init();

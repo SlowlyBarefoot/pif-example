@@ -93,7 +93,7 @@ static void _evtDelay(void *pvIssuer)
 
 void appSetup()
 {
-	PIF_stLed *pstLedL;
+	PifLed *pstLedL;
 
     pif_Init(NULL);
 

@@ -13,7 +13,7 @@ PIF_stComm *g_pstCommLog = NULL;
 
 void appSetup()
 {
-	PIF_stLed *pstLedL;
+	PifLed *pstLedL;
 
 	pif_Init(NULL);
     pifLog_Init();

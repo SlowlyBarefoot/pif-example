@@ -24,7 +24,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 
 void appSetup()
 {
-	PIF_stLed *pstLedL;
+	PifLed *pstLedL;
 	PIF_stSensor *pstPushSwitch;
 
     pif_Init(NULL);

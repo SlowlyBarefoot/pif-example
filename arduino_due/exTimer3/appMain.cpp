@@ -6,7 +6,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stLed *s_pstLedRGB = NULL;
+static PifLed *s_pstLedRGB = NULL;
 static PifPulseItem *s_pstTimer1msRed = NULL;
 static PifPulseItem *s_pstTimer1msYellow = NULL;
 static PifPulseItem *s_pstTimer1msGreen = NULL;

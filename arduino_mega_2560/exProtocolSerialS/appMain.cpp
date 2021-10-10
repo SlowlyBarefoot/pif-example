@@ -138,7 +138,7 @@ void appSetup()
 {
 	int i;
 	PIF_stComm *pstCommLog;
-	PIF_stLed *pstLedL;
+	PifLed *pstLedL;
 
     pif_Init(NULL);
     pifLog_Init();

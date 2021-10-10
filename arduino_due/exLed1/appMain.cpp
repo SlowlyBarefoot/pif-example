@@ -7,8 +7,8 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stLed *s_pstLedL = NULL;
-static PIF_stLed *s_pstLedRGB = NULL;
+static PifLed *s_pstLedL = NULL;
+static PifLed *s_pstLedRGB = NULL;
 
 
 static uint16_t _taskLed(PifTask *pstTask)

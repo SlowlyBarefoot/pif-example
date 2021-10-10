@@ -12,7 +12,7 @@ BOOL g_bPrintRawData = FALSE;
 
 static PIF_stComm *s_pstCommGps = NULL;
 static PIF_stGpsNmea *s_pstGpsNmea = NULL;
-static PIF_stLed *s_pstLedL = NULL;
+static PifLed *s_pstLedL = NULL;
 
 
 static void _evtGpsReceive(PIF_stGps *pstOwner)

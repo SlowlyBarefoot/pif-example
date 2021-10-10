@@ -95,7 +95,7 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 void appSetup()
 {
 	PIF_stComm *pstCommLog;
-	PIF_stLed *pstLedL;
+	PifLed *pstLedL;
 
     pif_Init(NULL);
     pifLog_Init();

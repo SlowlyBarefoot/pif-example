@@ -9,7 +9,7 @@ PIF_stSensor *g_pstPushSwitch = NULL;
 PIF_stSensor *g_pstTiltSwitch = NULL;
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stLed *s_pstLed = NULL;
+static PifLed *s_pstLed = NULL;
 static PIF_stSensorSwitchFilter s_stPushSwitchFilter;
 static PIF_stSensorSwitchFilter s_stTiltSwitchFilter;
 

@@ -12,7 +12,7 @@
 PifPulse *g_pstTimer1ms = NULL;
 
 static PIF_stPmlcdI2c *s_pstPmlcdI2c = NULL;
-static PIF_stLed *s_pstLedL = NULL;
+static PifLed *s_pstLedL = NULL;
 
 
 uint16_t _taskPmlcdI2c(PifTask *pstTask)

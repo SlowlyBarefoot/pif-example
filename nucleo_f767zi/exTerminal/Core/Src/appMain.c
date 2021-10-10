@@ -11,7 +11,7 @@ PifPulse *g_pstTimer1ms = NULL;
 PIF_stComm *g_pstCommLog = NULL;
 
 
-static PIF_stLed *s_pstLedL;
+static PifLed *s_pstLedL;
 
 static BOOL bBlink = TRUE;
 static int nPeriod = 500;

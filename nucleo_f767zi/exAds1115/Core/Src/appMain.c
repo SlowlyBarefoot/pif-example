@@ -12,7 +12,7 @@ PIF_stAds1x1x *g_pstAds1x1x = NULL;
 PIF_stComm *g_pstCommLog = NULL;
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stLed *s_pstLedL = NULL;
+static PifLed *s_pstLedL = NULL;
 
 
 uint16_t _taskAds1115(PifTask *pstTask)

@@ -195,7 +195,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 void appSetup()
 {
 	PIF_stComm *pstCommLog;
-	PIF_stLed *pstLedL;
+	PifLed *pstLedL;
 
 	pif_Init(NULL);
     pifLog_Init();

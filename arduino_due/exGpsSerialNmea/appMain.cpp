@@ -11,7 +11,7 @@ BOOL g_bPrintRawData = FALSE;
 
 static PIF_stComm *s_pstCommGps = NULL;
 static PIF_stGpsNmea *s_pstGpsNmea = NULL;
-static PIF_stLed *s_pstLedL = NULL;
+static PifLed *s_pstLedL = NULL;
 
 static int _cmdPrintRawData(int argc, char *argv[]);
 static int _cmdRequest(int argc, char *argv[]);

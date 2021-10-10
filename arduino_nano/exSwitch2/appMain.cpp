@@ -9,7 +9,7 @@ PIF_stSensor *g_pstPushSwitch = NULL;
 PIF_stSensor *g_pstTiltSwitch = NULL;
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stLed *s_pstLedL = NULL;
+static PifLed *s_pstLedL = NULL;
 
 
 void appSetup()
