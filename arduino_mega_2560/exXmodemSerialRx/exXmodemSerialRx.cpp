@@ -9,7 +9,7 @@
 #define PIN_PUSH_SWITCH			29
 
 
-uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
@@ -30,14 +30,14 @@ uint16_t actPushSwitchAcquire(PifId usPifId)
 	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-uint16_t actXmodemSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actXmodemSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
    	return Serial3.write((char *)pucBuffer, usSize);
 }
 
-BOOL actXmodemReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actXmodemReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 

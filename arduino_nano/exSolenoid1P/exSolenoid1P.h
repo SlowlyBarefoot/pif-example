@@ -17,7 +17,7 @@
 
 //add your function definitions for the project exSolenoid1P here
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actSolenoidOrder(SWITCH swOrder, PifSolenoidDir enDir);
 uint16_t taskLedToggle(PifTask *pstTask);
 

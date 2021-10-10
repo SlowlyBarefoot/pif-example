@@ -8,7 +8,7 @@
 #define PIN_LED_L				13
 
 
-uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
@@ -17,7 +17,7 @@ uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
 
 #ifdef __PIF_LOG_COMMAND__
 
-BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 

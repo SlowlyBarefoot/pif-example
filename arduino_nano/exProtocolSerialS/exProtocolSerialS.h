@@ -17,8 +17,8 @@
 //add your function definitions for the project exProtocolSerialS here
 
 void actLedLState(PifId usPifId, uint32_t unState);
-uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData);
+uint16_t actSerialSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actSerialReceiveData(PifComm *pstComm, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exProtocolSerialS_H_ */

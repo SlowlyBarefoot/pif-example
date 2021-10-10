@@ -17,14 +17,14 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData)
+BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData)
 {
 	int rxData;
 
@@ -38,14 +38,14 @@ BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData)
 	return FALSE;
 }
 
-uint16_t actGpsSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
     return Serial1.write((char *)pucBuffer, usSize);
 }
 
-BOOL actGpsReceiveData(PIF_stComm *pstOwner, uint8_t *pucData)
+BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData)
 {
 	int rxData;
 

@@ -12,7 +12,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stComm *s_pstSerial = NULL;
+static PifComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion20(PIF_stProtocolPacket *pstPacket);
@@ -140,7 +140,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 void appSetup()
 {
 	int i;
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PifLed *pstLedL;
 
     pif_Init(NULL);

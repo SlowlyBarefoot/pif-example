@@ -37,7 +37,7 @@ static void _evtKeypadDoublePressed(char cChar)
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PIF_stKeypad *pstKeypad;
 
 	pif_Init(NULL);

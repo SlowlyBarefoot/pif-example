@@ -34,7 +34,7 @@ uint16_t _taskAds1115(PifTask *pstTask)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PIF_stAds1x1xConfig stConfig;
 
     pif_Init(act_timer1us);

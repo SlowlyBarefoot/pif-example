@@ -13,7 +13,7 @@
 static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
-uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
@@ -32,14 +32,14 @@ uint16_t actPushSwitchAcquire(PifId usPifId)
 	return !digitalRead(s_ucPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerialSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
     return Serial3.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actSerialReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 

@@ -124,7 +124,7 @@ static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PIF_stSensor *pstPushSwitchCollect;
 	int i;
 

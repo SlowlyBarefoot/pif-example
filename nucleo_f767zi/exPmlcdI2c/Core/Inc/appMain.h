@@ -7,7 +7,7 @@
 #include "pifPulse.h"
 
 
-extern PIF_stComm *g_pstCommLog;
+extern PifComm *g_pstCommLog;
 extern PIF_stPmlcdI2c *g_pstPmlcdI2c;
 extern PifPulse *g_pstTimer1ms;
 

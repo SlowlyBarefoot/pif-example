@@ -21,8 +21,8 @@ void actGpioRGBState(PifId usPifId, uint8_t unState);
 void actLedCollectState(PifId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PifId usPifId);
 uint16_t actPushSwitchCollectAcquire(PifId usPifId);
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exCollectSignal1_H_ */

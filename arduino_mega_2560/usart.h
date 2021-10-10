@@ -29,8 +29,8 @@ extern "C" {
 
 void USART_Init(int port, uint32_t baud, uint8_t config, BOOL bRxInt);
 BOOL USART_StartTransfer(int port);
-void USART_Send(int port, PIF_stComm *pstComm);
-void USART_Receive(int port, PIF_stComm *pstComm);
+void USART_Send(int port, PifComm *pstComm);
+void USART_Receive(int port, PifComm *pstComm);
 
 #ifdef __cplusplus
 }

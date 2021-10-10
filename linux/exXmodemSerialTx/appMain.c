@@ -7,8 +7,8 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stComm *s_pstCommLog = NULL;
-static PIF_stComm *s_pstSerial = NULL;
+static PifComm *s_pstCommLog = NULL;
+static PifComm *s_pstSerial = NULL;
 static PIF_stXmodem *s_pstXmodem = NULL;
 
 

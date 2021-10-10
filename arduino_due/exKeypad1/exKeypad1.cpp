@@ -10,7 +10,7 @@ static uint8_t rowPins[ROWS] = { 40, 42, 44, 46 };   // R1, R2, R3, R4 단자가
 static uint8_t colPins[COLS] = { 38, 36, 34, 32 };   // C1, C2, C3, C4 단자가 연결된 아두이노 핀 번호
 
 
-uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 

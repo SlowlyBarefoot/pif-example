@@ -19,8 +19,8 @@
 //add your function definitions for the project exTerminal here
 
 #ifdef USE_SERIAL
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
 #endif
 #ifdef USE_USART
 BOOL actLogStartTransfer();

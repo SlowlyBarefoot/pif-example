@@ -11,7 +11,7 @@
 
 
 PifPulse *g_pstTimer1ms = NULL;
-PIF_stComm *g_pstCommLog = NULL;
+PifComm *g_pstCommLog = NULL;
 
 
 void appSetup()

@@ -102,7 +102,7 @@ static void _evtSequenceError(PIF_stSequence *pstOwner)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	int i;
 
 	pif_Init(act_timer1us);

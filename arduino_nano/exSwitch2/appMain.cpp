@@ -14,7 +14,7 @@ static PifLed *s_pstLedL = NULL;
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PifPulseItem *pstTimerSwitch;
 
     pif_Init(NULL);

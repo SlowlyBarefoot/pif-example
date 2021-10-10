@@ -9,7 +9,7 @@
 
 BOOL appInit()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 
     pif_Init(NULL);
     if (!pifLog_InitHeap(LOG_BUFFER_SIZE)) return FALSE;

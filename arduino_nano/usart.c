@@ -44,7 +44,7 @@ BOOL USART_StartTransfer()
 	return TRUE;
 }
 
-void USART_Send(PIF_stComm *pstComm)
+void USART_Send(PifComm *pstComm)
 {
 	uint8_t ucData, ucState;
 
@@ -63,7 +63,7 @@ void USART_Send(PIF_stComm *pstComm)
 	}
 }
 
-void USART_Receive(PIF_stComm *pstComm)
+void USART_Receive(PifComm *pstComm)
 {
 	if (!(*s_stUsart.ucsra & (1 << UPE0))) {
 		pifComm_ReceiveData(pstComm, *s_stUsart.udr);

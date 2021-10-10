@@ -48,7 +48,7 @@ BOOL USART_StartTransfer(int port)
 	return TRUE;
 }
 
-void USART_Send(int port, PIF_stComm *pstComm)
+void USART_Send(int port, PifComm *pstComm)
 {
 	stUsart *p_stUsart = &s_stUsart[port];
 	uint8_t ucData, ucState;
@@ -69,7 +69,7 @@ void USART_Send(int port, PIF_stComm *pstComm)
 	}
 }
 
-void USART_Receive(int port, PIF_stComm *pstComm)
+void USART_Receive(int port, PifComm *pstComm)
 {
 	stUsart *p_stUsart = &s_stUsart[port];
 

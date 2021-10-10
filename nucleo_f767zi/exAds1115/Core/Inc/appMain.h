@@ -8,7 +8,7 @@
 
 
 extern PIF_stAds1x1x *g_pstAds1x1x;
-extern PIF_stComm *g_pstCommLog;
+extern PifComm *g_pstCommLog;
 extern PifPulse *g_pstTimer1ms;
 
 

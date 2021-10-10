@@ -152,7 +152,7 @@ static uint16_t _taskDotMatrixTest(PifTask *pstTask)
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	char cPattern[] = "123456789";
 	static uint8_t ucPattern[9 * 8];
 	int n;

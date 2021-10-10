@@ -10,7 +10,7 @@
 //#define USE_SERIAL_3			// Other Anduino
 
 
-uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
@@ -31,7 +31,7 @@ uint16_t actPushSwitchAcquire(PifId usPifId)
 	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-uint16_t actXmodemSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actXmodemSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
@@ -43,7 +43,7 @@ uint16_t actXmodemSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usS
 #endif
 }
 
-BOOL actXmodemReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actXmodemReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 

@@ -15,14 +15,14 @@
 
 #ifdef USE_SERIAL
 
-uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actLogReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 

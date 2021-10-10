@@ -19,7 +19,7 @@
 //add your function definitions for the project exLed1 here
 
 #ifdef USE_SERIAL
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 #endif
 #ifdef USE_USART
 BOOL actLogStartTransfer();

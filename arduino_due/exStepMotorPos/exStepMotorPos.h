@@ -16,8 +16,8 @@
 
 //add your function definitions for the project exStepMotorPos here
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
 uint16_t actPhotoInterruptAcquire(PifId usPifId);
 void actSetStep(uint16_t usPhase);
 void actLedLState(PifId usPifId, uint32_t unState);

@@ -32,7 +32,7 @@ static void _evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PifPulseItem *pstTimerSwitch;
 
     pif_Init(NULL);

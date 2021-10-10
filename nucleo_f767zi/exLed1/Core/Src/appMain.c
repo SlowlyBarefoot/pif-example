@@ -6,7 +6,7 @@
 
 
 PifPulse *g_pstTimer1ms = NULL;
-PIF_stComm *g_pstCommLog = NULL;
+PifComm *g_pstCommLog = NULL;
 
 static PifLed *s_pstLedL = NULL;
 static PifLed *s_pstLedRGB = NULL;

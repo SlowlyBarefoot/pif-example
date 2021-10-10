@@ -28,7 +28,7 @@ static void _evtSolenoidFinish(void *pvParam)
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 
     pif_Init(NULL);
     pifLog_Init();

@@ -212,7 +212,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PifLed *pstLedL;
 
 	pif_Init(act_timer1us);

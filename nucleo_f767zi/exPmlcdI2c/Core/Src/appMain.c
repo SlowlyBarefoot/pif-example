@@ -8,7 +8,7 @@
 #define SINGLE_SHOT
 
 
-PIF_stComm *g_pstCommLog = NULL;
+PifComm *g_pstCommLog = NULL;
 PIF_stPmlcdI2c *g_pstPmlcdI2c = NULL;
 PifPulse *g_pstTimer1ms = NULL;
 

@@ -64,7 +64,7 @@ uint16_t _taskPmlcdI2c(PifTask *pstTask)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 
     pif_Init(act_timer1us);
     pifLog_Init();

@@ -7,7 +7,7 @@
 #include "pifProtocol.h"
 
 
-PIF_stComm *g_pstSerial2 = NULL;
+PifComm *g_pstSerial2 = NULL;
 
 static PIF_stProtocol *s_pstProtocol = NULL;
 

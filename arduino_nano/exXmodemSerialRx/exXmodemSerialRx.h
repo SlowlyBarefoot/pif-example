@@ -18,8 +18,8 @@
 
 void actLedLState(PifId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PifId usPifId);
-uint16_t actXmodemSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actXmodemReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+uint16_t actXmodemSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actXmodemReceiveData(PifComm *pstOwner, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exXmodemSerialRx_H_ */

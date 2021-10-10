@@ -18,7 +18,7 @@ static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITC
 
 #ifdef USE_SERIAL
 
-uint16_t actLogSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
@@ -55,14 +55,14 @@ uint16_t actPushSwitchAcquire(PifId usPifId)
 
 #ifdef USE_SERIAL
 
-uint16_t actSerial1SendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerial1SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
     return Serial1.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerial1ReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actSerial1ReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 
@@ -76,14 +76,14 @@ BOOL actSerial1ReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
 	return FALSE;
 }
 
-uint16_t actSerial2SendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerial2SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerial2ReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actSerial2ReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 

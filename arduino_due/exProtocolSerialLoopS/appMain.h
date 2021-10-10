@@ -16,7 +16,7 @@
 
 
 extern PifPulse *g_pstTimer1ms;
-extern PIF_stComm *g_pstCommLog;
+extern PifComm *g_pstCommLog;
 
 
 void appSetup();

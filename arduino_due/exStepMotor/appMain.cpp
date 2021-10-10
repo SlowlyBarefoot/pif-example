@@ -135,7 +135,7 @@ static void _evtStop(PIF_stStepMotor *pstOwner)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PifLed *pstLedL;
 
 	pif_Init(act_timer1us);

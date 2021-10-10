@@ -18,9 +18,9 @@
 
 void actLedLState(PifId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PifId usPifId);
-uint16_t actGpsSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actGpsReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 
 //Do not add code below this line
 #endif /* _exGpsSerialNmea_H_ */

@@ -9,7 +9,7 @@
 PifPulse *g_pstTimer1ms = NULL;
 BOOL g_bPrintRawData = FALSE;
 
-static PIF_stComm *s_pstCommGps = NULL;
+static PifComm *s_pstCommGps = NULL;
 static PIF_stGpsNmea *s_pstGpsNmea = NULL;
 static PifLed *s_pstLedL = NULL;
 
@@ -132,7 +132,7 @@ static void _evtGpsReceive(PIF_stGps *pstOwner)
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 
 	pif_Init(NULL);
     pifLog_Init();

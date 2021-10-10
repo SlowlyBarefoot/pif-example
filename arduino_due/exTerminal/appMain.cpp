@@ -62,7 +62,7 @@ static int _CmdLedControl(int argc, char *argv[])
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 
     pif_Init(act_timer1us);
     pifLog_Init();

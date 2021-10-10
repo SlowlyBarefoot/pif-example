@@ -15,14 +15,14 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actSerialSendData(PIF_stComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerialSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstComm;
 
 	return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PIF_stComm *pstComm, uint8_t *pucData)
+BOOL actSerialReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
 

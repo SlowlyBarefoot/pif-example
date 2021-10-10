@@ -6,7 +6,7 @@
 
 BOOL appInit()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 
     pif_Init(NULL);
     pifLog_Init();

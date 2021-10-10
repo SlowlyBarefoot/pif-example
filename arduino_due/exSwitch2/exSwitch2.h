@@ -16,7 +16,7 @@
 
 //add your function definitions for the project exSwitch2 here
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
 void evtSwitchAcquire(void *pvIssuer);
 void evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer);

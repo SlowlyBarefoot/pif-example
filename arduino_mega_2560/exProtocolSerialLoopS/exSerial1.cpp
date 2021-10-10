@@ -6,7 +6,7 @@
 #include "pifSensorSwitch.h"
 
 
-PIF_stComm *g_pstSerial1 = NULL;
+PifComm *g_pstSerial1 = NULL;
 
 static PIF_stProtocol *s_pstProtocol = NULL;
 

@@ -8,7 +8,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stComm *s_pstSerial = NULL;
+static PifComm *s_pstSerial = NULL;
 static PIF_stXmodem *s_pstXmodem = NULL;
 
 
@@ -94,7 +94,7 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PifLed *pstLedL;
 
     pif_Init(NULL);

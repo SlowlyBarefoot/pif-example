@@ -16,7 +16,7 @@
 
 //add your function definitions for the project exSensorPeriod here
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 uint16_t taskLedToggle(PifTask *pstTask);
 uint16_t taskSensorAcquisition(PifTask *pstTask);
 

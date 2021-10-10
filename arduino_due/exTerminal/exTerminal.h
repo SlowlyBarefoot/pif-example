@@ -16,9 +16,9 @@
 
 //add your function definitions for the project exTerminal here
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 #ifdef __PIF_LOG_COMMAND__
-BOOL actLogReceiveData(PIF_stComm *pstOwner, uint8_t *pucData);
+BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
 #endif
 void actLedLState(PifId usPifId, uint32_t unState);
 

@@ -8,7 +8,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stComm *s_pstSerial = NULL;
+static PifComm *s_pstSerial = NULL;
 static PIF_stProtocol *s_pstProtocol = NULL;
 
 static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket);

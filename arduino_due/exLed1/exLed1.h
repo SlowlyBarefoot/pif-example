@@ -16,7 +16,7 @@
 
 //add your function definitions for the project exLed1 here
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
 void actLedRGBState(PifId usPifId, uint32_t unState);
 

@@ -21,7 +21,7 @@ static void evtLedToggle(void *pvIssuer)
 
 void appSetup()
 {
-	PIF_stComm *pstCommLog;
+	PifComm *pstCommLog;
 	PifPulseItem *pstTimer1ms;
 
 	pif_Init(NULL);

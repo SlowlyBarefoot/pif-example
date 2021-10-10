@@ -17,7 +17,7 @@
 
 //add your function definitions for the project exAds1115 here
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
 BOOL actAds1115Read(PIF_stI2c *pstOwner, uint16_t usSize);
 BOOL actAds1115Write(PIF_stI2c *pstOwner, uint16_t usSize);

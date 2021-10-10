@@ -5,7 +5,7 @@
 #include "pifComm.h"
 
 
-uint16_t actLogSendData(PIF_stComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 
 
 #endif /* MAIN_H_ */
