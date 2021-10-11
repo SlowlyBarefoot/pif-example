@@ -38,7 +38,7 @@ static void _evtKeypadDoublePressed(char cChar)
 void appSetup()
 {
 	PifComm *pstCommLog;
-	PIF_stKeypad *pstKeypad;
+	PifKeypad *pstKeypad;
 
 	pif_Init(NULL);
 	pifLog_Init();
@@ -57,10 +57,10 @@ void appSetup()
     if (!pstKeypad) return;
     if (!pifKeypad_AttachTask(pstKeypad, TM_PERIOD_MS, 10, TRUE)) return;			// 10ms
     pifKeypad_AttachAction(pstKeypad, actKeypadAcquire);
-    pstKeypad->evtPressed = _evtKeypadPressed;
-    pstKeypad->evtReleased = _evtKeypadReleased;
-    pstKeypad->evtLongReleased = _evtKeypadLongReleased;
-    pstKeypad->evtDoublePressed = _evtKeypadDoublePressed;
+    pstKeypad->evt_pressed = _evtKeypadPressed;
+    pstKeypad->evt_released = _evtKeypadReleased;
+    pstKeypad->evt_long_released = _evtKeypadLongReleased;
+    pstKeypad->evt_double_pressed = _evtKeypadDoublePressed;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
 }
