@@ -10,8 +10,8 @@ PifSensor *g_pstTiltSwitch = NULL;
 PifPulse *g_pstTimer1ms = NULL;
 
 static PifLed *s_pstLed = NULL;
-static PIF_stSensorSwitchFilter s_stPushSwitchFilter;
-static PIF_stSensorSwitchFilter s_stTiltSwitchFilter;
+static PifSensorSwitchFilter s_stPushSwitchFilter;
+static PifSensorSwitchFilter s_stTiltSwitchFilter;
 
 
 static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)

@@ -162,7 +162,7 @@ void appSetup(PifActTimer1us act_timer1us)
     	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
 	    if (!pifSensorSwitch_AttachTask(s_stSequenceTest[i].pstPushSwitch, TM_PERIOD_MS, 5, TRUE)) return;	// 5ms
-	    pifSensorSwitch_SetCsFlagEach(s_stSequenceTest[i].pstPushSwitch, SSCsF_enFilterBit);
+	    pifSensorSwitch_SetCsFlagEach(s_stSequenceTest[i].pstPushSwitch, SS_CSF_FILTER_BIT);
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 

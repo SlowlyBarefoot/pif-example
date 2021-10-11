@@ -37,7 +37,7 @@ static struct {
 	PifSensor *pstPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
-	PIF_stSensorSwitchFilter stPushSwitchFilter;
+	PifSensorSwitchFilter stPushSwitchFilter;
 } s_stProtocolTest[SWITCH_COUNT] = {
 		{ NULL, 0, },
 		{ NULL, 0, }
