@@ -8,7 +8,7 @@
 
 
 PifPulse *g_pstTimer1ms = NULL;
-PIF_stSensor *g_pstSensor = NULL;
+PifSensor *g_pstSensor = NULL;
 
 #if USE_FILTER_AVERAGE
 static PIF_stSensorDigitalFilter s_stFilter;

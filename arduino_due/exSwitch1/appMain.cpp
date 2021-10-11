@@ -5,8 +5,8 @@
 #include "pifSensorSwitch.h"
 
 
-static PIF_stSensor *s_pstPushSwitch = NULL;
-static PIF_stSensor *s_pstTiltSwitch = NULL;
+static PifSensor *s_pstPushSwitch = NULL;
+static PifSensor *s_pstTiltSwitch = NULL;
 
 
 void appSetup()

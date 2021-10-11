@@ -5,8 +5,8 @@
 #include "pifSensorSwitch.h"
 
 
-extern PIF_stSensor *g_pstPushSwitch;
-extern PIF_stSensor *g_pstTiltSwitch;
+extern PifSensor *g_pstPushSwitch;
+extern PifSensor *g_pstTiltSwitch;
 extern PifPulse *g_pstTimer1ms;
 
 

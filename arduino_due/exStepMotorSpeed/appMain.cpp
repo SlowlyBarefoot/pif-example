@@ -17,7 +17,7 @@ PifPulse *g_pstTimer1ms = NULL;
 PifPulse *g_pstTimer200us = NULL;
 
 static PIF_stStepMotor *s_pstMotor = NULL;
-static PIF_stSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
+static PifSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
 
 static int CmdStepMotorTest(int argc, char *argv[]);
 
@@ -172,7 +172,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 	case 2:
 		if (!s_stStepMotorTest.ucStage) {
-			if (s_pstSwitch[0]->_swCurrState == ON) {
+			if (s_pstSwitch[0]->_curr_state == ON) {
 				pifLog_Printf(LT_INFO, "InitPos: Find");
 				s_stStepMotorTest.ucInitPos = 0;
 			}

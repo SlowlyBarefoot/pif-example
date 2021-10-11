@@ -37,7 +37,7 @@ void appSetup()
 {
 	PifComm *pstCommLog;
 	PifLed *pstLedL;
-	PIF_stSensor *pstPushSwitch;
+	PifSensor *pstPushSwitch;
 
     pif_Init(NULL);
     pifLog_Init();

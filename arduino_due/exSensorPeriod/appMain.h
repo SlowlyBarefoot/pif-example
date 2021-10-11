@@ -6,7 +6,7 @@
 
 
 extern PifPulse *g_pstTimer1ms;
-extern PIF_stSensor *g_pstSensor;
+extern PifSensor *g_pstSensor;
 
 
 void appSetup();

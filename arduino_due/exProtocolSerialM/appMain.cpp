@@ -34,7 +34,7 @@ const PIF_stProtocolRequest stProtocolRequests[] = {
 };
 
 static struct {
-	PIF_stSensor *pstPushSwitch;
+	PifSensor *pstPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 	PIF_stSensorSwitchFilter stPushSwitchFilter;

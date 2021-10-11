@@ -61,7 +61,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 void appSetup()
 {
 	PifComm *pstCommLog;
-	PIF_stSensor *pstPushSwitch;
+	PifSensor *pstPushSwitch;
 
 	pif_Init(NULL);
     pifLog_Init();

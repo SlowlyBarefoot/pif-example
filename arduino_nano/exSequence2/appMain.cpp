@@ -23,7 +23,7 @@ const PifSequencePhase s_astSequencePhaseList[] = {
 };
 
 static struct {
-	PIF_stSensor *pstPushSwitch;
+	PifSensor *pstPushSwitch;
 	PifSequence *pstSequence;
 	BOOL bSequenceParam;
 } s_stSequenceTest[SEQUENCE_COUNT] = {

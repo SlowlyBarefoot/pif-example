@@ -28,7 +28,7 @@ const PifSequencePhase s_astSequencePhaseList[] = {
 static BOOL bCollect = FALSE;
 
 static struct {
-	PIF_stSensor *pstPushSwitch;
+	PifSensor *pstPushSwitch;
 	PifSequence *pstSequence;
 	BOOL bSequenceParam;
 } s_stSequenceTest[SEQUENCE_COUNT] = {
@@ -124,7 +124,7 @@ static PifSequenceResult _fnSequenceStop(PifSequence *pstOwner)
 void appSetup(PifActTimer1us act_timer1us)
 {
 	PifComm *pstCommLog;
-	PIF_stSensor *pstPushSwitchCollect;
+	PifSensor *pstPushSwitchCollect;
 	int i;
 
 	pif_Init(act_timer1us);

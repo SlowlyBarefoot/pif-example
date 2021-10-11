@@ -5,8 +5,8 @@
 #include "pifLog.h"
 
 
-PIF_stSensor *g_pstPushSwitch = NULL;
-PIF_stSensor *g_pstTiltSwitch = NULL;
+PifSensor *g_pstPushSwitch = NULL;
+PifSensor *g_pstTiltSwitch = NULL;
 PifPulse *g_pstTimer1ms = NULL;
 
 static PifLed *s_pstLedL = NULL;
