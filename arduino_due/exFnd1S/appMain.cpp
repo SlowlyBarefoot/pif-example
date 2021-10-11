@@ -7,7 +7,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stFnd *s_pstFnd = NULL;
+static PifFnd *s_pstFnd = NULL;
 
 const uint8_t c_ucUserChar[] = {
 		0x77, /*  A  */	0x7C, /*  b  */ 0x39, /*  C  */ 0x5E, /*  d  */ 	// 0

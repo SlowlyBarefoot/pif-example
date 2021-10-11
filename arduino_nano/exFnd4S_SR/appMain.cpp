@@ -7,7 +7,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stFnd *s_pstFnd = NULL;
+static PifFnd *s_pstFnd = NULL;
 
 const uint8_t c_ucUserChar[] = { 0x01, 0x08 };
 
@@ -21,7 +21,7 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	(void)pstTask;
 
 	if (swFloat) {
-		s_pstFnd->ucSubNumericDigits = 0;
+		s_pstFnd->sub_numeric_digits = 0;
 		int32_t nValue = rand() % 14000 - 2000;
 		if (nValue <= -1000) {
 			pifFnd_SetString(s_pstFnd, (char *)"AAAA");
@@ -36,7 +36,7 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
 	}
 	else {
-		s_pstFnd->ucSubNumericDigits = 1;
+		s_pstFnd->sub_numeric_digits = 1;
 		double dValue = (rand() % 11000 - 1000) / 10.0;
 		pifFnd_SetFloat(s_pstFnd, dValue);
 
