@@ -5,53 +5,50 @@
 #include "pifSequence.h"
 
 
-#define SEQUENCE_COUNT          1
-
-
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stSequence *s_pstSequence = NULL;
+static PifSequence *s_pstSequence = NULL;
 
-static PIF_enSequenceResult _fnSequence1(PIF_stSequence *pstOwner);
-static PIF_enSequenceResult _fnSequence2(PIF_stSequence *pstOwner);
-static PIF_enSequenceResult _fnSequence3(PIF_stSequence *pstOwner);
+static PifSequenceResult _fnSequence1(PifSequence *pstOwner);
+static PifSequenceResult _fnSequence2(PifSequence *pstOwner);
+static PifSequenceResult _fnSequence3(PifSequence *pstOwner);
 
-const PIF_stSequencePhase s_astSequencePhaseList[] = {
+const PifSequencePhase s_astSequencePhaseList[] = {
 		{ _fnSequence1, 1 },
 		{ _fnSequence2, 2 },
 		{ _fnSequence3, PIF_SEQUENCE_PHASE_NO_IDLE }
 };
 
 
-static PIF_enSequenceResult _fnSequence1(PIF_stSequence *pstOwner)
+static PifSequenceResult _fnSequence1(PifSequence *pstOwner)
 {
-	switch (pstOwner->ucStep) {
+	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
-		pstOwner->ucStep = 1;
-		pifLog_Printf(LT_INFO, "Sequence1: %d", pstOwner->ucStep);
+		pstOwner->step = 1;
+		pifLog_Printf(LT_INFO, "Sequence1: %d", pstOwner->step);
 		break;
 
 	case 1:
 		break;
 
 	case 2:
-		return SR_enNext;
+		return SR_NEXT;
 
 	default:
 		// 어떤 오류가 발생하면 오류 처리후 SR_enFinish로 return할 것.
 		// If any error occurs, return to SR_enFinish after processing the error.
-		return SR_enFinish;
+		return SR_FINISH;
 	}
-	return SR_enContinue;
+	return SR_CONTINUE;
 }
 
-static PIF_enSequenceResult _fnSequence2(PIF_stSequence *pstOwner)
+static PifSequenceResult _fnSequence2(PifSequence *pstOwner)
 {
-	switch (pstOwner->ucStep) {
+	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
 	case 2:
-		pstOwner->ucStep++;
-		pifLog_Printf(LT_INFO, "Sequence2: %d", pstOwner->ucStep);
+		pstOwner->step++;
+		pifLog_Printf(LT_INFO, "Sequence2: %d", pstOwner->step);
 		break;
 
 	case 1:
@@ -61,32 +58,32 @@ static PIF_enSequenceResult _fnSequence2(PIF_stSequence *pstOwner)
 	case 4:
 		// 다음 Phase를 처리하기 전 일정 시간 지연이 필요한 경우 설정함.
 		// Set if a delay is required before processing the next Phase.
-		pstOwner->unDelay1us = 100000UL;
-		return SR_enNext;
+		pstOwner->delay1us = 100000UL;
+		return SR_NEXT;
 
 	default:
 		// 어떤 오류가 발생하면 오류 처리후 SR_enFinish로 return할 것.
 		// If any error occurs, return to SR_enFinish after processing the error.
-		return SR_enFinish;
+		return SR_FINISH;
 	}
-	return SR_enContinue;
+	return SR_CONTINUE;
 }
 
-static PIF_enSequenceResult _fnSequence3(PIF_stSequence *pstOwner)
+static PifSequenceResult _fnSequence3(PifSequence *pstOwner)
 {
-	switch (pstOwner->ucStep) {
+	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
 		// 이 Phase의 처리 시간 제한을 설정함.
 		// Set processing time limit for this Phase, for this Phase.
 		pifSequence_SetTimeout(pstOwner, 1000);
-		pstOwner->ucStep++;
-		pifLog_Printf(LT_INFO, "Sequence3: %d", pstOwner->ucStep);
+		pstOwner->step++;
+		pifLog_Printf(LT_INFO, "Sequence3: %d", pstOwner->step);
 		break;
 
 	case 2:
 	case 4:
-		pstOwner->ucStep++;
-		pifLog_Printf(LT_INFO, "Sequence3: %d", pstOwner->ucStep);
+		pstOwner->step++;
+		pifLog_Printf(LT_INFO, "Sequence3: %d", pstOwner->step);
 		break;
 
 	case 1:
@@ -96,17 +93,17 @@ static PIF_enSequenceResult _fnSequence3(PIF_stSequence *pstOwner)
 
 	case 6:
 		pifLog_Printf(LT_INFO, "Sequence3: Complete");
-		return SR_enNext;
+		return SR_NEXT;
 
 	default:
 		// 어떤 오류가 발생하면 오류 처리후 SR_enFinish로 return할 것.
 		// If any error occurs, return to SR_enFinish after processing the error.
-		return SR_enFinish;
+		return SR_FINISH;
 	}
-	return SR_enContinue;
+	return SR_CONTINUE;
 }
 
-static void _evtSequenceError(PIF_stSequence *pstOwner)
+static void _evtSequenceError(PifSequence *pstOwner)
 {
 	(void)pstOwner;
 
@@ -117,33 +114,33 @@ static uint16_t _taskSequence(PifTask *pstTask)
 {
 	(void)pstTask;
 
-	switch (s_pstSequence->_ucPhaseNo) {
+	switch (s_pstSequence->_phase_no) {
 	case 0:
-		switch (s_pstSequence->ucStep) {
+		switch (s_pstSequence->step) {
 		case 1:
-			s_pstSequence->ucStep++;
-			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->ucStep);
+			s_pstSequence->step++;
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->step);
 			break;
 		}
 		break;
 
 	case 1:
-		switch (s_pstSequence->ucStep) {
+		switch (s_pstSequence->step) {
 		case 1:
 		case 3:
-			s_pstSequence->ucStep++;
-			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->ucStep);
+			s_pstSequence->step++;
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->step);
 			break;
 		}
 		break;
 
 	case 2:
-		switch (s_pstSequence->ucStep) {
+		switch (s_pstSequence->step) {
 		case 1:
 		case 3:
 		case 5:
-			s_pstSequence->ucStep++;
-			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->ucStep);
+			s_pstSequence->step++;
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->step);
 			break;
 		}
 		break;
@@ -172,7 +169,7 @@ void appSetup(PifActTimer1us act_timer1us)
     s_pstSequence = pifSequence_Create(PIF_ID_AUTO, g_pstTimer1ms, s_astSequencePhaseList, NULL);
     if (!s_pstSequence) return;
     if (!pifSequence_AttachTask(s_pstSequence, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
-    s_pstSequence->evtError = _evtSequenceError;
+    s_pstSequence->evt_error = _evtSequenceError;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskSequence, NULL, TRUE)) return;	// 500ms

@@ -12,11 +12,11 @@ PifPulse *g_pstTimer1ms = NULL;
 static PifLed *s_pstLedL = NULL;
 static PifLed *s_pstLedRGB = NULL;
 
-static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner);
-static PIF_enSequenceResult _fnSequenceRun(PIF_stSequence *pstOwner);
-static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner);
+static PifSequenceResult _fnSequenceStart(PifSequence *pstOwner);
+static PifSequenceResult _fnSequenceRun(PifSequence *pstOwner);
+static PifSequenceResult _fnSequenceStop(PifSequence *pstOwner);
 
-const PIF_stSequencePhase s_astSequencePhaseList[] = {
+const PifSequencePhase s_astSequencePhaseList[] = {
 		{ _fnSequenceStart, 1 },
 		{ _fnSequenceRun, 2 },
 		{ _fnSequenceStop, PIF_SEQUENCE_PHASE_NO_IDLE }
@@ -24,7 +24,7 @@ const PIF_stSequencePhase s_astSequencePhaseList[] = {
 
 static struct {
 	PIF_stSensor *pstPushSwitch;
-	PIF_stSequence *pstSequence;
+	PifSequence *pstSequence;
 	BOOL bSequenceParam;
 } s_stSequenceTest[SEQUENCE_COUNT] = {
 		{ NULL, NULL, FALSE },
@@ -47,53 +47,53 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	pifLog_Printf(LT_INFO, "Switch(%d): %d", usPifId, usLevel);
 }
 
-static PIF_enSequenceResult _fnSequenceStart(PIF_stSequence *pstOwner)
+static PifSequenceResult _fnSequenceStart(PifSequence *pstOwner)
 {
 	uint8_t index;
 
-	switch (pstOwner->ucStep) {
+	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
-		index = pstOwner->_usPifId - PIF_ID_SEQUENCE;
+		index = pstOwner->_id - PIF_ID_SEQUENCE;
 		pifLed_EachOn(s_pstLedRGB, index);
 		s_stSequenceTest[index].bSequenceParam = FALSE;
-		return SR_enNext;
+		return SR_NEXT;
 
 	default:
 		// 어떤 오류가 발생하면 오류 처리후 SR_enFinish로 return할 것.
 		// If any error occurs, return to SR_enFinish after processing the error.
-		return SR_enFinish;
+		return SR_FINISH;
 	}
-	return SR_enContinue;
+	return SR_CONTINUE;
 }
 
-static PIF_enSequenceResult _fnSequenceRun(PIF_stSequence *pstOwner)
+static PifSequenceResult _fnSequenceRun(PifSequence *pstOwner)
 {
-	if (*(BOOL *)pstOwner->pvParam) {
-		pstOwner->unDelay1us = 1000000UL;
-		return SR_enNext;
+	if (*(BOOL *)pstOwner->p_param) {
+		pstOwner->delay1us = 1000000UL;
+		return SR_NEXT;
 	}
-	return SR_enContinue;
+	return SR_CONTINUE;
 }
 
-static PIF_enSequenceResult _fnSequenceStop(PIF_stSequence *pstOwner)
+static PifSequenceResult _fnSequenceStop(PifSequence *pstOwner)
 {
 	uint8_t index;
 
-	switch (pstOwner->ucStep) {
+	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
-		index = pstOwner->_usPifId - PIF_ID_SEQUENCE;
+		index = pstOwner->_id - PIF_ID_SEQUENCE;
 		pifLed_EachOff(s_pstLedRGB, index);
-		return SR_enNext;
+		return SR_NEXT;
 
 	default:
 		// 어떤 오류가 발생하면 오류 처리후 SR_enFinish로 return할 것.
 		// If any error occurs, return to SR_enFinish after processing the error.
-		return SR_enFinish;
+		return SR_FINISH;
 	}
-	return SR_enContinue;
+	return SR_CONTINUE;
 }
 
-static void _evtSequenceError(PIF_stSequence *pstOwner)
+static void _evtSequenceError(PifSequence *pstOwner)
 {
 	(void)pstOwner;
 
@@ -138,6 +138,6 @@ void appSetup(PifActTimer1us act_timer1us)
 				&s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
 	    if (!pifSequence_AttachTask(s_stSequenceTest[i].pstSequence, TM_PERIOD_MS, 10, TRUE)) return;			// 10ms
-	    s_stSequenceTest[i].pstSequence->evtError = _evtSequenceError;
+	    s_stSequenceTest[i].pstSequence->evt_error = _evtSequenceError;
     }
 }
