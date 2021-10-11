@@ -10,7 +10,7 @@ PifPulse *g_pstTimer1ms = NULL;
 BOOL g_bPrintRawData = FALSE;
 
 static PifComm *s_pstCommGps = NULL;
-static PIF_stGpsNmea *s_pstGpsNmea = NULL;
+static PifGpsNmea *s_pstGpsNmea = NULL;
 static PifLed *s_pstLedL = NULL;
 
 static int _cmdPrintRawData(int argc, char *argv[]);
@@ -91,17 +91,17 @@ static int _cmdRequest(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static void _evtGpsNmeaText(PIF_stGpsNmeaTxt *pstTxt)
+static void _evtGpsNmeaText(PifGpsNmeaTxt *pstTxt)
 {
 	const char *acType[4] = { "Error", "Warning", "Notice", "User" };
 
-	pifLog_Printf(LT_INFO, "Text: Total=%u Num=%u Type=%s:%s", pstTxt->ucTotal, pstTxt->ucNum, acType[pstTxt->ucType], pstTxt->acText);
+	pifLog_Printf(LT_INFO, "Text: Total=%u Num=%u Type=%s:%s", pstTxt->total, pstTxt->num, acType[pstTxt->type], pstTxt->text);
 }
 
-static void _evtGpsReceive(PIF_stGps *pstOwner)
+static void _evtGpsReceive(PifGps *pstOwner)
 {
-	PIF_stDegMin stLatDegMin, stLonDegMin;
-	PIF_stDegMinSec stLatDegMinSec, stLonDegMinSec;
+	PifDegMin stLatDegMin, stLonDegMin;
+	PifDegMinSec stLatDegMinSec, stLonDegMinSec;
 
 	pifLed_EachToggle(s_pstLedL, 1);
 
@@ -113,19 +113,20 @@ static void _evtGpsReceive(PIF_stGps *pstOwner)
 
 	if (!g_bPrintRawData) {
 		pifLog_Printf(LT_INFO, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
-				2000 + pstOwner->_stDateTime.year, pstOwner->_stDateTime.month, pstOwner->_stDateTime.day,
-				pstOwner->_stDateTime.hour, pstOwner->_stDateTime.minute, pstOwner->_stDateTime.second, pstOwner->_stDateTime.millisecond);
+				2000 + pstOwner->_date_time.year, pstOwner->_date_time.month, pstOwner->_date_time.day,
+				pstOwner->_date_time.hour, pstOwner->_date_time.minute, pstOwner->_date_time.second, pstOwner->_date_time.millisecond);
 		pifLog_Printf(LT_INFO, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
-				pstOwner->_dCoordDeg[GPS_LON], stLonDegMin.usDegree, stLonDegMin.dMinute,
-				stLonDegMinSec.usDegree, stLonDegMinSec.usMinute, stLonDegMinSec.dSecond);
+				pstOwner->_coord_deg[GPS_LON], stLonDegMin.degree, stLonDegMin.minute,
+				stLonDegMinSec.degree, stLonDegMinSec.minute, stLonDegMinSec.second);
 		pifLog_Printf(LT_INFO, "Latitude: %f` - %u`%f' - %u`%u'%f\"",
-				pstOwner->_dCoordDeg[GPS_LAT], stLatDegMin.usDegree, stLatDegMin.dMinute,
-				stLatDegMinSec.usDegree, stLatDegMinSec.usMinute, stLatDegMinSec.dSecond);
-		pifLog_Printf(LT_INFO, "NumSat: %u", pstOwner->_ucNumSat);
-		pifLog_Printf(LT_INFO, "Altitude: %f m", pstOwner->_dAltitude);
-		pifLog_Printf(LT_INFO, "Speed: %f knots %f m/s %f km/h", pstOwner->_dSpeedN, pifGps_ConvertKnots2MpS(pstOwner->_dSpeedN), pstOwner->_dSpeedK);
-		pifLog_Printf(LT_INFO, "Ground Course: %f deg", pstOwner->_dGroundCourse);
-		pifLog_Printf(LT_INFO, "Fix: %u", pstOwner->_ucFix);
+				pstOwner->_coord_deg[GPS_LAT], stLatDegMin.degree, stLatDegMin.minute,
+				stLatDegMinSec.degree, stLatDegMinSec.minute, stLatDegMinSec.second);
+		pifLog_Printf(LT_INFO, "NumSat: %u", pstOwner->_num_sat);
+		pifLog_Printf(LT_INFO, "Altitude: %f m", pstOwner->_altitude);
+		pifLog_Printf(LT_INFO, "Speed: %f knots %f m/s %f km/h", pstOwner->_speed_n, pifGps_ConvertKnots2MpS(pstOwner->_speed_n),
+				pstOwner->_speed_k);
+		pifLog_Printf(LT_INFO, "Ground Course: %f deg", pstOwner->_ground_course);
+		pifLog_Printf(LT_INFO, "Fix: %u", pstOwner->_fix);
 	}
 	pifLog_Printf(LT_NONE, "\n");
 }
@@ -167,7 +168,7 @@ void appSetup()
 	pifGpsNmea_SetEventMessageId(s_pstGpsNmea, NMEA_MESSAGE_ID_GGA);
 	pifGpsNmea_AttachComm(s_pstGpsNmea, s_pstCommGps);
 	pifGpsNmea_AttachEvtText(s_pstGpsNmea, _evtGpsNmeaText);
-	pifGps_AttachEvent(&s_pstGpsNmea->_stGps, _evtGpsReceive);
+	pifGps_AttachEvent(&s_pstGpsNmea->_gps, _evtGpsReceive);
 
     if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;				// 20ms
 }
