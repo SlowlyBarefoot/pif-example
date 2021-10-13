@@ -164,14 +164,14 @@ BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	if (hi2c->Instance == I2C1) {
-	    pifI2c_sigEndRead(&g_pstAds1x1x->_stI2c, TRUE);
+		pifI2c_sigEndRead(&g_pstAds1x1x->_i2c, TRUE);
 	}
 }
 
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	if (hi2c->Instance == I2C1) {
-	    pifI2c_sigEndWrite(&g_pstAds1x1x->_stI2c, TRUE);
+	    pifI2c_sigEndWrite(&g_pstAds1x1x->_i2c, TRUE);
 	}
 }
 

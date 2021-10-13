@@ -11,23 +11,23 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stAds1x1x *s_pstAds1x1x = NULL;
+static PifAds1x1x *s_pstAds1x1x = NULL;
 static PifLed *s_pstLedL = NULL;
 
 
 uint16_t _taskAds1115(PifTask *pstTask)
 {
-	static int channel = ACM_enSINGLE_0;
+	static int channel = ACM_SINGLE_0;
 
 	(void)pstTask;
 
 #ifdef SINGLE_SHOT
-	uint16_t usData = pifAds1x1x_ReadMux(s_pstAds1x1x, (PIF_enAds1x1xConfigMux)channel);
-	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, usData, usData * s_pstAds1x1x->dConvertVoltage);
-	if (channel == ACM_enSINGLE_3) channel = ACM_enSINGLE_0; else channel++;
+	uint16_t usData = pifAds1x1x_ReadMux(s_pstAds1x1x, (PifAds1x1xConfigMux)channel);
+	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, usData, usData * s_pstAds1x1x->convert_voltage);
+	if (channel == ACM_SINGLE_3) channel = ACM_SINGLE_0; else channel++;
 #else
 	uint16_t usData = pifAds1x1x_Read(s_pstAds1x1x);
-	pifLog_Printf(LT_INFO, "ADC: %u, Vol: %f", usData, usData * s_pstAds1x1x->dConvertVoltage);
+	pifLog_Printf(LT_INFO, "ADC: %u, Vol: %f", usData, usData * s_pstAds1x1x->convert_voltage);
 #endif
 	return 0;
 }
@@ -35,7 +35,7 @@ uint16_t _taskAds1115(PifTask *pstTask)
 void appSetup(PifActTimer1us act_timer1us)
 {
 	PifComm *pstCommLog;
-	PIF_stAds1x1xConfig stConfig;
+	PifAds1x1xConfig stConfig;
 
     pif_Init(act_timer1us);
     pifLog_Init();
@@ -56,30 +56,30 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;								// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
-    s_pstAds1x1x = pifAds1x1x_Create(PIF_ID_AUTO, AT_en1115);
+    s_pstAds1x1x = pifAds1x1x_Create(PIF_ID_AUTO, AT_1115);
     if (!s_pstAds1x1x) return;
-    pifI2c_AttachAction(&s_pstAds1x1x->_stI2c, actAds1115Read, actAds1115Write);
+    pifI2c_AttachAction(&s_pstAds1x1x->_i2c, actAds1115Read, actAds1115Write);
 
     stConfig = pifAds1x1x_GetConfig(s_pstAds1x1x);
 #if 1
-    stConfig.bt.MUX = ACM_enSINGLE_3;
-    stConfig.bt.PGA = ACP_enFSR_6_144V;
+    stConfig.bt.mux = ACM_SINGLE_3;
+    stConfig.bt.pga = ACP_FSR_6_144V;
 #ifdef SINGLE_SHOT
-    stConfig.bt.MODE = ACM_enSINGLE_SHOT;
+    stConfig.bt.mode = ACM_SINGLE_SHOT;
 #else
-    stConfig.bt.MODE = ACM_enCONTINUOUS;
+    stConfig.bt.mode = ACM_CONTINUOUS;
 #endif
-    stConfig.bt.DR = ACD_enDR_16B_0128_SPS;
+    stConfig.bt.dr = ACD_DR_16B_0128_SPS;
     pifAds1x1x_SetConfig(s_pstAds1x1x, &stConfig);
 #else
-    pifAds1x1x_SetMux(s_pstAds1x1x, ACM_enSINGLE_3);
-    pifAds1x1x_SetGain(s_pstAds1x1x, ACP_enFSR_6_144V);
+    pifAds1x1x_SetMux(s_pstAds1x1x, ACM_SINGLE_3);
+    pifAds1x1x_SetGain(s_pstAds1x1x, ACP_FSR_6_144V);
 #ifdef SINGLE_SHOT
-    pifAds1x1x_SetMode(s_pstAds1x1x, ACM_enSINGLE_SHOT);
+    pifAds1x1x_SetMode(s_pstAds1x1x, ACM_SINGLE_SHOT);
 #else
-    pifAds1x1x_SetMode(s_pstAds1x1x, ACM_enCONTINUOUS);
+    pifAds1x1x_SetMode(s_pstAds1x1x, ACM_CONTINUOUS);
 #endif
-    pifAds1x1x_SetDataRate(s_pstAds1x1x, ACD_enDR_16B_0128_SPS);
+    pifAds1x1x_SetDataRate(s_pstAds1x1x, ACD_DR_16B_0128_SPS);
 #endif
     pifAds1x1x_SetLoThreshVoltage(s_pstAds1x1x, 1.0);
     pifAds1x1x_SetHiThreshVoltage(s_pstAds1x1x, 2.0);
