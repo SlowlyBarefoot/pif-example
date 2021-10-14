@@ -8,7 +8,7 @@
 
 
 extern PifComm *g_pstCommLog;
-extern PIF_stPmlcdI2c *g_pstPmlcdI2c;
+extern PifPmlcdI2c *g_pstPmlcdI2c;
 extern PifPulse *g_pstTimer1ms;
 
 

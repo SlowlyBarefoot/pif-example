@@ -9,7 +9,7 @@
 
 
 PifComm *g_pstCommLog = NULL;
-PIF_stPmlcdI2c *g_pstPmlcdI2c = NULL;
+PifPmlcdI2c *g_pstPmlcdI2c = NULL;
 PifPulse *g_pstTimer1ms = NULL;
 
 static PifLed *s_pstLedL = NULL;
@@ -67,13 +67,13 @@ void appSetup(PifActTimer1us act_timer1us)
     pif_Init(act_timer1us);
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);									// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;				// 100%
+    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;			// 100%
 
     g_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
-    if (!pifComm_AttachTask(g_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
+    if (!pifComm_AttachTask(g_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
 	if (!pifComm_AllocTxBuffer(g_pstCommLog, 64)) return;
 	pifComm_AttachActStartTransfer(g_pstCommLog, actLogStartTransfer);
 
@@ -81,14 +81,14 @@ void appSetup(PifActTimer1us act_timer1us)
 
     s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;									// 500ms
+    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;								// 500ms
     pifLed_BlinkOn(s_pstLedL, 0);
 
     g_pstPmlcdI2c = pifPmlcdI2c_Create(PIF_ID_AUTO, 0x27);
     if (!g_pstPmlcdI2c) return;
-    pifI2c_AttachAction(&g_pstPmlcdI2c->_stI2c, NULL, actPmlcdI2cWrite);
+    pifI2c_AttachAction(&g_pstPmlcdI2c->_i2c, NULL, actPmlcdI2cWrite);
 #if 0
-    pifI2c_ScanAddress(&g_pstPmlcdI2c->_stI2c);
+    pifI2c_ScanAddress(&g_pstPmlcdI2c->_i2c);
 #else
     pifPmlcdI2c_Begin(g_pstPmlcdI2c, 2, PIF_PMLCD_DS_5x8);
     pifPmlcdI2c_Backlight(g_pstPmlcdI2c);

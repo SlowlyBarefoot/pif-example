@@ -120,7 +120,7 @@ BOOL actPmlcdI2cWrite(PifI2c *pstOwner, uint16_t usSize)
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	if (hi2c->Instance == I2C1) {
-	    pifI2c_sigEndWrite(&g_pstPmlcdI2c->_stI2c, TRUE);
+	    pifI2c_sigEndWrite(&g_pstPmlcdI2c->_i2c, TRUE);
 	}
 }
 
