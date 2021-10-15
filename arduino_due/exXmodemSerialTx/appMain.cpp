@@ -9,7 +9,7 @@
 PifPulse *g_pstTimer1ms = NULL;
 
 static PifComm *s_pstSerial = NULL;
-static PIF_stXmodem *s_pstXmodem = NULL;
+static PifXmodem *s_pstXmodem = NULL;
 
 
 static struct {
@@ -122,7 +122,7 @@ void appSetup()
 	pifComm_AttachActReceiveData(s_pstSerial, actXmodemReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actXmodemSendData);
 
-    s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_enCRC);
+    s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_CRC);
 	if (!s_pstXmodem) return;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);

@@ -10,13 +10,13 @@
 PifPulse *g_pstTimer1ms = NULL;
 
 static PifComm *s_pstSerial = NULL;
-static PIF_stXmodem *s_pstXmodem = NULL;
+static PifXmodem *s_pstXmodem = NULL;
 
 
-static void _evtXmodemRxReceive(uint8_t ucCode, PIF_stXmodemPacket *pstPacket)
+static void _evtXmodemRxReceive(uint8_t ucCode, PifXmodemPacket *pstPacket)
 {
 	if (ucCode == ASCII_SOH) {
-		pifLog_Printf(LT_INFO, "Code=%u PN=%u DT=%2xh", ucCode, (unsigned int)pstPacket->aucPacketNo[0], pstPacket->pucData[0]);
+		pifLog_Printf(LT_INFO, "Code=%u PN=%u DT=%2xh", ucCode, (unsigned int)pstPacket->packet_no[0], pstPacket->p_data[0]);
 	}
 	else {
 		pifLog_Printf(LT_INFO, "Code=%u", ucCode);
@@ -70,7 +70,7 @@ void appSetup()
 	pifComm_AttachActReceiveData(s_pstSerial, actXmodemReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actXmodemSendData);
 
-    s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_enCRC);
+    s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_CRC);
     if (!s_pstXmodem) return;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvtRxReceive(s_pstXmodem, _evtXmodemRxReceive);
