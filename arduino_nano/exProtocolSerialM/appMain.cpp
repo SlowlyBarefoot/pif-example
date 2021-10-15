@@ -9,24 +9,24 @@
 PifPulse *g_pstTimer1ms = NULL;
 
 static PifComm *s_pstSerial = NULL;
-static PIF_stProtocol *s_pstProtocol = NULL;
+static PifProtocol *s_pstProtocol = NULL;
 
-static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolQuestion31(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket);
+static void _fnProtocolQuestion31(PifProtocolPacket *pstPacket);
 
-static void _fnProtocolResponse20(PIF_stProtocolPacket *pstPacket);
-static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket);
+static void _fnProtocolResponse20(PifProtocolPacket *pstPacket);
+static void _fnProtocolResponse21(PifProtocolPacket *pstPacket);
 
-const PIF_stProtocolQuestion stProtocolQuestions[] = {
-		{ 0x30, PF_enAnswer_Yes | PF_enDefault, _fnProtocolQuestion30 },
-		{ 0x31, PF_enAnswer_No | PF_enDefault, _fnProtocolQuestion31 },
-		{ 0, PF_enDefault, NULL }
+const PifProtocolQuestion stProtocolQuestions[] = {
+		{ 0x30, PF_ANSWER_YES | PF_DEFAULT, _fnProtocolQuestion30 },
+		{ 0x31, PF_ANSWER_NO | PF_DEFAULT, _fnProtocolQuestion31 },
+		{ 0, PF_DEFAULT, NULL }
 };
 
-const PIF_stProtocolRequest stProtocolRequestTable[] = {
-		{ 0x20, PF_enResponse_Yes, _fnProtocolResponse20, 3, 300 },
-		{ 0x21, PF_enResponse_No, _fnProtocolResponse21, 3, 300 },
-		{ 0, PF_enDefault, NULL, 0, 0 }
+const PifProtocolRequest stProtocolRequestTable[] = {
+		{ 0x20, PF_RESPONSE_YES, _fnProtocolResponse20, 3, 300 },
+		{ 0x21, PF_RESPONSE_NO, _fnProtocolResponse21, 3, 300 },
+		{ 0, PF_DEFAULT, NULL, 0, 0 }
 };
 
 static struct {
@@ -39,34 +39,34 @@ static struct {
 };
 
 
-static void _fnProtocolQuestion30(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket)
 {
-	s_stProtocolTest[0].ucDataCount = pstPacket->usDataCount;
-	if (pstPacket->usDataCount) {
-		memcpy(s_stProtocolTest[0].ucData, pstPacket->pucData, pstPacket->usDataCount);
+	s_stProtocolTest[0].ucDataCount = pstPacket->data_count;
+	if (pstPacket->data_count) {
+		memcpy(s_stProtocolTest[0].ucData, pstPacket->p_data, pstPacket->data_count);
 	}
 
-	if (pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].enFlags, NULL, 0)) {
+	if (pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].flags, NULL, 0)) {
 		pifPulse_StartItem(s_stProtocolTest[0].pstDelay, 500);
 	}
 }
 
-static void _fnProtocolQuestion31(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolQuestion31(PifProtocolPacket *pstPacket)
 {
-	s_stProtocolTest[1].ucDataCount = pstPacket->usDataCount;
-	if (pstPacket->usDataCount) {
-		memcpy(s_stProtocolTest[1].ucData, pstPacket->pucData, pstPacket->usDataCount);
+	s_stProtocolTest[1].ucDataCount = pstPacket->data_count;
+	if (pstPacket->data_count) {
+		memcpy(s_stProtocolTest[1].ucData, pstPacket->p_data, pstPacket->data_count);
 	}
 
 	pifPulse_StartItem(s_stProtocolTest[1].pstDelay, 500);
 }
 
-static void _fnProtocolResponse20(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolResponse20(PifProtocolPacket *pstPacket)
 {
 	(void)pstPacket;
 }
 
-static void _fnProtocolResponse21(PIF_stProtocolPacket *pstPacket)
+static void _fnProtocolResponse21(PifProtocolPacket *pstPacket)
 {
 	(void)pstPacket;
 }
@@ -78,8 +78,8 @@ static void _evtDelay(void *pvIssuer)
 		return;
 	}
 
-	const PIF_stProtocolRequest *pstOwner = (PIF_stProtocolRequest *)pvIssuer;
-	int index = pstOwner->ucCommand & 0x0F;
+	const PifProtocolRequest *pstOwner = (PifProtocolRequest *)pvIssuer;
+	int index = pstOwner->command & 0x0F;
 
 	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
 	}
@@ -118,7 +118,7 @@ void appSetup()
 	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
 	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
 
-    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_enMedium, stProtocolQuestions);
+    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_MEDIUM, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
 }
