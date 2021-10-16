@@ -10,7 +10,7 @@
 #define SWITCH_COUNT         	3
 
 
-PIF_stDutyMotor *g_pstMotor = NULL;
+PifDutyMotor *g_pstMotor = NULL;
 PifPulse *g_pstTimer1ms = NULL;
 
 static PifSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
@@ -115,27 +115,27 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static void _evtStable(PIF_stDutyMotor *pstOwner)
+static void _evtStable(PifDutyMotor *pstOwner)
 {
 	PIF_stDutyMotorSpeedEnc* pstChild = (PIF_stDutyMotorSpeedEnc*)pstOwner;
 
-	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
+	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u", pstOwner->_id, pstChild->_ucStageIndex);
 }
 
-static void _evtStop(PIF_stDutyMotor *pstOwner)
+static void _evtStop(PifDutyMotor *pstOwner)
 {
 	PIF_stDutyMotorSpeedEnc* pstChild = (PIF_stDutyMotorSpeedEnc*)pstOwner;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
+	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u", pstOwner->_id, pstChild->_ucStageIndex);
 }
 
-static void _evtError(PIF_stDutyMotor *pstOwner)
+static void _evtError(PifDutyMotor *pstOwner)
 {
 	PIF_stDutyMotorSpeedEnc* pstChild = (PIF_stDutyMotorSpeedEnc*)pstOwner;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u", pstOwner->_usPifId, pstChild->_ucStageIndex);
+	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u", pstOwner->_id, pstChild->_ucStageIndex);
 }
 
 static uint16_t _taskInitPos(PifTask *pstTask)
@@ -228,9 +228,9 @@ void appSetup()
     g_pstMotor = pifDutyMotorSpeedEnc_Create(PIF_ID_AUTO, g_pstTimer1ms, 255, 100);
     pifDutyMotorSpeedEnc_AddStages(g_pstMotor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
     pifDutyMotor_AttachAction(g_pstMotor, actSetDuty, actSetDirection, actOperateBreak);
-    g_pstMotor->evtStable = _evtStable;
-    g_pstMotor->evtStop = _evtStop;
-    g_pstMotor->evtError = _evtError;
+    g_pstMotor->evt_stable = _evtStable;
+    g_pstMotor->evt_stop = _evtStop;
+    g_pstMotor->evt_error = _evtError;
     pifPidControl_Init(pifDutyMotorSpeedEnc_GetPidControl(g_pstMotor), 0.1, 0, 0, 100);
 
     if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;								// 20ms

@@ -8,7 +8,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stDutyMotor *s_pstMotor = NULL;
+static PifDutyMotor *s_pstMotor = NULL;
 
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
@@ -28,8 +28,8 @@ static ST_DutyMotorTest s_stDutyMotorTest = { 128 };
 static int CmdDutyMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "\n  Duty: %d", s_pstMotor->_usCurrentDuty);
-		pifLog_Printf(LT_NONE, "\n  Direction: %d", s_pstMotor->_ucDirection);
+		pifLog_Printf(LT_NONE, "\n  Duty: %d", s_pstMotor->_current_duty);
+		pifLog_Printf(LT_NONE, "\n  Direction: %d", s_pstMotor->_direction);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {

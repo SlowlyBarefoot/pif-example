@@ -9,7 +9,7 @@
 #define PIF_ID_SWITCH		0x100
 
 
-extern PIF_stDutyMotor *g_pstMotor;
+extern PifDutyMotor *g_pstMotor;
 extern PifPulse *g_pstTimer1ms;
 
 
