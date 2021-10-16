@@ -69,7 +69,7 @@ void appSetup()
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -77,7 +77,7 @@ void appSetup()
     pifFnd_SetUserChar(c_ucUserChar, 2);
     s_pstFnd = pifFnd_Create(PIF_ID_AUTO, g_pstTimer1ms, 4, actFndDisplay);
     if (!s_pstFnd) return;
-    if (!pifFnd_AttachTask(s_pstFnd, TM_RATIO, 5, TRUE)) return;					// 5%
+    if (!pifFnd_AttachTask(s_pstFnd, TM_PERIOD_MS, 6, TRUE)) return;				// 25ms / 5 = 6ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return;	// 1000ms
