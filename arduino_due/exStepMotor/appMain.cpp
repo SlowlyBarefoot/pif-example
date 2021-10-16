@@ -46,7 +46,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	}
 	else if (argc > 2) {
 		if (!strcmp(argv[1], "mt")) {
-			if (s_pstMotor->_enState == MS_enIdle) {
+			if (s_pstMotor->_enState == MS_IDLE) {
 				int value = atoi(argv[2]);
 				if (value >= 0 && value <= 1) {
 					pifStepMotor_SetMethod(s_pstMotor, (PIF_enStepMotorMethod)value);

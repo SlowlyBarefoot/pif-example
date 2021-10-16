@@ -31,28 +31,28 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 const PIF_stStepMotorSpeedStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		{
-				MM_D_enCCW | MM_RT_enTime | MM_CFPS_enYes,
+				MM_D_CCW | MM_RT_TIME | MM_CFPS_YES,
 				NULL, NULL, &s_pstSwitch[0],
 				0, 0,
 				50, 0,
 				0, 0, 100
 		},
 		{
-				MM_D_enCW | MM_RT_enTime | MM_CFPS_enYes,
+				MM_D_CW | MM_RT_TIME | MM_CFPS_YES,
 				NULL, NULL, &s_pstSwitch[2],
 				0, 0,
 				50, 0,
 				0, 0, 100
 		},
 		{
-				MM_D_enCW,
+				MM_D_CW,
 				NULL, &s_pstSwitch[1], NULL,
 				100, 25,
 				500, 0,
 				100, 50, 100
 		},
 		{
-				MM_D_enCCW,
+				MM_D_CCW,
 				NULL, &s_pstSwitch[1], NULL,
 				100, 50,
 				500, 0,
@@ -78,7 +78,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	}
 	else if (argc > 2) {
 		if (!strcmp(argv[1], "mt")) {
-			if (s_pstMotor->_enState == MS_enIdle) {
+			if (s_pstMotor->_enState == MS_IDLE) {
 				int value = atoi(argv[2]);
 				if (value >= 0 && value <= 1) {
 					pifStepMotor_SetMethod(s_pstMotor, (PIF_enStepMotorMethod)value);

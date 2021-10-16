@@ -27,7 +27,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 const PIF_stDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 		{
-				MM_D_enCCW | MM_RT_enTime | MM_CFPS_enYes,
+				MM_D_CCW | MM_RT_TIME | MM_CFPS_YES,
 				NULL, NULL, &s_pstSwitch[0],
 				0, 0,
 				50, 0,
@@ -35,7 +35,7 @@ const PIF_stDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 				0
 		},
 		{
-				MM_D_enCW | MM_RT_enTime | MM_CFPS_enYes,
+				MM_D_CW | MM_RT_TIME | MM_CFPS_YES,
 				NULL, NULL, &s_pstSwitch[2],
 				0, 0,
 				50, 0,
@@ -43,7 +43,7 @@ const PIF_stDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 				0
 		},
 		{
-				MM_D_enCW | MM_PC_enYes | MM_CIAS_enYes,
+				MM_D_CW | MM_PC_YES | MM_CIAS_YES,
 				&s_pstSwitch[0], &s_pstSwitch[1], &s_pstSwitch[2],
 				50, 50,
 				200, 50000,
@@ -51,7 +51,7 @@ const PIF_stDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 				70000
 		},
 		{
-				MM_D_enCCW | MM_PC_enYes | MM_CIAS_enYes,
+				MM_D_CCW | MM_PC_YES | MM_CIAS_YES,
 				&s_pstSwitch[2], &s_pstSwitch[1], &s_pstSwitch[0],
 				50, 50,
 				200, 50000,
