@@ -7,7 +7,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stDotMatrix *s_pstDotMatrix = NULL;
+static PifDotMatrix *s_pstDotMatrix = NULL;
 
 const uint8_t font8x8_basic[10][8] = {
     { 0x3E, 0x63, 0x73, 0x7B, 0x6F, 0x67, 0x3E, 0x00},   // U+0030 (0)
@@ -61,14 +61,14 @@ void appSetup()
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_RATIO, 5, TRUE)) return;				// 5%
+	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_PERIOD_MS, 2, TRUE)) return;			// 2ms
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 10)) return;
     for (int i = 0; i < 10; i++) {
     	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 8, (uint8_t *)font8x8_basic[i])) return;

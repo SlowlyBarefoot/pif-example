@@ -7,7 +7,7 @@
 
 PifPulse *g_pstTimer1ms = NULL;
 
-static PIF_stDotMatrix *s_pstDotMatrix = NULL;
+static PifDotMatrix *s_pstDotMatrix = NULL;
 
 const uint8_t font8x8_basic[96][8] = {
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},   // U+0020 (space)
@@ -123,23 +123,23 @@ static uint16_t _taskDotMatrixTest(PifTask *pstTask)
 	nShift++;
 	switch (nShift) {
 	case 2:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enLeft), 200, 3);
+		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_LEFT, DMSM_ONCE, 200, 3);
 		break;
 
 	case 4:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enRight), 200, 3);
+		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_RIGHT, DMSM_ONCE, 200, 3);
 		break;
 
 	case 10:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enLeft | DMS_enRepeatHor), 200, 0);
+		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_LEFT, DMSM_REPEAT_HOR, 200, 0);
 		break;
 
 	case 20:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enRight | DMS_enRepeatHor), 200, 0);
+		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_RIGHT, DMSM_REPEAT_HOR, 200, 0);
 		break;
 
 	case 30:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, (PIF_enDotMatrixShift)(DMS_enLeft | DMS_enPingPongHor), 200, 0);
+		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_LEFT, DMSM_PING_PONG_HOR, 200, 0);
 		break;
 
 	case 50:
@@ -166,7 +166,7 @@ void appSetup()
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -181,8 +181,8 @@ void appSetup()
 
     s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_RATIO, 5, TRUE)) return;				// 5%
-    s_pstDotMatrix->evtShiftFinish = _evtDotMatrixShiftFinish;
+	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_PERIOD_MS, 2, TRUE)) return;			// 2ms
+    s_pstDotMatrix->evt_shift_finish = _evtDotMatrixShiftFinish;
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;
    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 5 * 8, 8, ucPattern)) return;
 
