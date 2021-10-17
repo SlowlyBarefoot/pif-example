@@ -16,7 +16,7 @@
 PifPulse *g_pstTimer1ms = NULL;
 PifPulse *g_pstTimer200us = NULL;
 
-static PIF_stStepMotor *s_pstMotor = NULL;
+static PifStepMotor *s_pstMotor = NULL;
 static PifSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
 
 static int CmdStepMotorTest(int argc, char *argv[]);
@@ -72,24 +72,24 @@ static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
 		pifLog_Printf(LT_NONE, "\n  Stage: %d", s_stStepMotorTest.ucStage);
-		pifLog_Printf(LT_NONE, "\n  Method: %d", s_pstMotor->_enMethod);
-		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_pstMotor->_enOperation);
+		pifLog_Printf(LT_NONE, "\n  Method: %d", s_pstMotor->_method);
+		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_pstMotor->_operation);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
 		if (!strcmp(argv[1], "mt")) {
-			if (s_pstMotor->_enState == MS_IDLE) {
+			if (s_pstMotor->_state == MS_IDLE) {
 				int value = atoi(argv[2]);
 				if (value >= 0 && value <= 1) {
-					pifStepMotor_SetMethod(s_pstMotor, (PIF_enStepMotorMethod)value);
+					pifStepMotor_SetMethod(s_pstMotor, (PifStepMotorMethod)value);
 					return PIF_LOG_CMD_NO_ERROR;
 				}
 			}
 		}
 		else if (!strcmp(argv[1], "op")) {
 			int value = atoi(argv[2]);
-			if (value >= SMO_en2P_4W_1S && value <= SMO_en2P_4W_1_2S) {
-				pifStepMotor_SetOperation(s_pstMotor, (PIF_enStepMotorOperation)value);
+			if (value >= SMO_2P_4W_1S && value <= SMO_2P_4W_1_2S) {
+				pifStepMotor_SetOperation(s_pstMotor, (PifStepMotorOperation)value);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
@@ -133,27 +133,27 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static void _evtStable(PIF_stStepMotor *pstOwner)
+static void _evtStable(PifStepMotor *pstOwner)
 {
 	PIF_stStepMotorSpeed* pstChild = (PIF_stStepMotorSpeed*)pstOwner;
 
-	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstOwner->_current_pulse);
 }
 
-static void _evtStop(PIF_stStepMotor *pstOwner)
+static void _evtStop(PifStepMotor *pstOwner)
 {
 	PIF_stStepMotorSpeed* pstChild = (PIF_stStepMotorSpeed *)pstOwner;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstOwner->_current_pulse);
 }
 
-static void _evtError(PIF_stStepMotor *pstOwner)
+static void _evtError(PifStepMotor *pstOwner)
 {
 	PIF_stStepMotorSpeed* pstChild = (PIF_stStepMotorSpeed*)pstOwner;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_usPifId, pstChild->_ucStageIndex, pstOwner->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstOwner->_current_pulse);
 }
 
 static uint16_t _taskInitPos(PifTask *pstTask)
@@ -248,13 +248,13 @@ void appSetup(PifActTimer1us act_timer1us)
     }
 
     s_pstMotor = pifStepMotorSpeed_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION,
-    		SMO_en2P_4W_1S, 100);																	// 100ms
+    		SMO_2P_4W_1S, 100);																	// 100ms
     if (!s_pstMotor) return;
     if (!pifStepMotor_AttachTask(s_pstMotor, TM_PERIOD_US, 200, FALSE)) return;					// 200us
     pifStepMotor_AttachAction(s_pstMotor, actSetStep);
-    s_pstMotor->evtStable = _evtStable;
-    s_pstMotor->evtStop = _evtStop;
-    s_pstMotor->evtError = _evtError;
+    s_pstMotor->evt_stable = _evtStable;
+    s_pstMotor->evt_stop = _evtStop;
+    s_pstMotor->evt_error = _evtError;
     pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
     pifStepMotorSpeed_AddStages(s_pstMotor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 

@@ -13,7 +13,7 @@
 PifPulse *g_pstTimer1ms = NULL;
 PifPulse *g_pstTimer200us = NULL;
 
-static PIF_stStepMotor *s_pstMotor = NULL;
+static PifStepMotor *s_pstMotor = NULL;
 
 static int CmdStepMotorTest(int argc, char *argv[]);
 
@@ -35,10 +35,10 @@ static ST_StepMotorTest s_stStepMotorTest = { 0, 1000, 200 };
 static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "\n  Method: %d", s_pstMotor->_enMethod);
-		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_pstMotor->_enOperation);
-		pifLog_Printf(LT_NONE, "\n  Direction: %d", s_pstMotor->_ucDirection);
-		pifLog_Printf(LT_NONE, "\n  P/S: %u", s_pstMotor->_usCurrentPps);
+		pifLog_Printf(LT_NONE, "\n  Method: %d", s_pstMotor->_method);
+		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_pstMotor->_operation);
+		pifLog_Printf(LT_NONE, "\n  Direction: %d", s_pstMotor->_direction);
+		pifLog_Printf(LT_NONE, "\n  P/S: %u", s_pstMotor->_current_pps);
 		pifLog_Printf(LT_NONE, "\n  R/M: %2f", pifStepMotor_GetRpm(s_pstMotor));
 		pifLog_Printf(LT_NONE, "\n  Step Count: %d", s_stStepMotorTest.unStepCount);
 		pifLog_Printf(LT_NONE, "\n  Break Time: %d", s_stStepMotorTest.usBreakTime);
@@ -46,18 +46,18 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	}
 	else if (argc > 2) {
 		if (!strcmp(argv[1], "mt")) {
-			if (s_pstMotor->_enState == MS_IDLE) {
+			if (s_pstMotor->_state == MS_IDLE) {
 				int value = atoi(argv[2]);
 				if (value >= 0 && value <= 1) {
-					pifStepMotor_SetMethod(s_pstMotor, (PIF_enStepMotorMethod)value);
+					pifStepMotor_SetMethod(s_pstMotor, (PifStepMotorMethod)value);
 					return PIF_LOG_CMD_NO_ERROR;
 				}
 			}
 		}
 		else if (!strcmp(argv[1], "op")) {
 			int value = atoi(argv[2]);
-			if (value >= SMO_en2P_4W_1S && value <= SMO_en2P_4W_1_2S) {
-				pifStepMotor_SetOperation(s_pstMotor, (PIF_enStepMotorOperation)value);
+			if (value >= SMO_2P_4W_1S && value <= SMO_2P_4W_1_2S) {
+				pifStepMotor_SetOperation(s_pstMotor, (PifStepMotorOperation)value);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
@@ -127,7 +127,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static void _evtStop(PIF_stStepMotor *pstOwner)
+static void _evtStop(PifStepMotor *pstOwner)
 {
 	s_stStepMotorTest.nMode = 0;
 	pifStepMotor_BreakRelease(pstOwner, s_stStepMotorTest.usBreakTime);
@@ -163,11 +163,11 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_AttachBlink(pstLedL, 500)) return;									// 500ms
     pifLed_BlinkOn(pstLedL, 0);
 
-    s_pstMotor = pifStepMotor_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION, SMO_en2P_4W_1S);
+    s_pstMotor = pifStepMotor_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S);
     if (!s_pstMotor) return;
     if (!pifStepMotor_AttachTask(s_pstMotor, TM_PERIOD_US, 200, FALSE)) return;	// 200us
     pifStepMotor_AttachAction(s_pstMotor, actSetStep);
-    s_pstMotor->evtStop = _evtStop;
+    s_pstMotor->evt_stop = _evtStop;
     pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
 	pifStepMotor_SetPps(s_pstMotor, 200);
 
