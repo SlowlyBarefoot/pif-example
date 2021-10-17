@@ -29,7 +29,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 #define STEP_MOTOR_STAGE_COUNT	5
 
-const PIF_stStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
+const PifStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		{
 				MM_D_CCW | MM_RT_TIME | MM_CFPS_YES,
 				NULL, NULL, &s_pstSwitch[0],
@@ -162,25 +162,25 @@ static int CmdStepMotorTest(int argc, char *argv[])
 
 static void _evtStable(PifStepMotor *pstOwner)
 {
-	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
+	PifStepMotorPos* pstChild = (PifStepMotorPos*)pstOwner;
 
-	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstOwner->_current_pulse);
+	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u P=%u", pstOwner->_id, pstChild->_stage_index, pstOwner->_current_pulse);
 }
 
 static void _evtStop(PifStepMotor *pstOwner)
 {
-	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
+	PifStepMotorPos* pstChild = (PifStepMotorPos*)pstOwner;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstOwner->_current_pulse);
+	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u P=%u", pstOwner->_id, pstChild->_stage_index, pstOwner->_current_pulse);
 }
 
 static void _evtError(PifStepMotor *pstOwner)
 {
-	PIF_stStepMotorPos* pstChild = (PIF_stStepMotorPos*)pstOwner;
+	PifStepMotorPos* pstChild = (PifStepMotorPos*)pstOwner;
 
 	s_stStepMotorTest.ucStage = 0;
-	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstOwner->_current_pulse);
+	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_id, pstChild->_stage_index, pstOwner->_current_pulse);
 }
 
 static uint16_t _taskInitPos(PifTask *pstTask)
