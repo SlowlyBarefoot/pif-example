@@ -25,7 +25,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 #define DUTY_MOTOR_STAGE_COUNT	4
 
-const PIF_stDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
+const PifDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 		{
 				MM_D_CCW | MM_RT_TIME | MM_CFPS_YES,
 				NULL, NULL, &s_pstSwitch[0],
@@ -121,25 +121,25 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 
 static void _evtStable(PifDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorPos* pstChild = (PIF_stDutyMotorPos*)pstOwner;
+	PifDutyMotorPos* pstChild = (PifDutyMotorPos*)pstOwner;
 
-	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventStable(%d) : S=%u P=%u", pstOwner->_id, pstChild->_stage_index, pstChild->_current_pulse);
 }
 
 static void _evtStop(PifDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorPos* pstChild = (PIF_stDutyMotorPos*)pstOwner;
+	PifDutyMotorPos* pstChild = (PifDutyMotorPos*)pstOwner;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventStop(%d) : S=%u P=%u", pstOwner->_id, pstChild->_stage_index, pstChild->_current_pulse);
 }
 
 static void _evtError(PifDutyMotor *pstOwner)
 {
-	PIF_stDutyMotorPos* pstChild = (PIF_stDutyMotorPos*)pstOwner;
+	PifDutyMotorPos* pstChild = (PifDutyMotorPos*)pstOwner;
 
 	s_stDutyMotorTest.ucStage = 0;
-	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_id, pstChild->_ucStageIndex, pstChild->_unCurrentPulse);
+	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_id, pstChild->_stage_index, pstChild->_current_pulse);
 }
 
 static uint16_t _taskInitPos(PifTask *pstTask)
