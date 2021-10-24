@@ -180,7 +180,6 @@ void appSetup()
 
     s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_PERIOD_MS, 2, TRUE)) return;			// 2ms
     s_pstDotMatrix->evt_shift_finish = _evtDotMatrixShiftFinish;
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;
    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 9 * 8, ucPattern)) return;

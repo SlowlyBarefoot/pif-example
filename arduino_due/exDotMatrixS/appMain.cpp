@@ -113,8 +113,27 @@ static uint16_t _taskDotMatrixTest(PifTask *pstTask)
 {
 	static int nBlink = 0;
 	static int index = 0;
+	static int nRun = 0;
+	static BOOL swRun = FALSE;
 
 	(void)pstTask;
+
+	if (swRun) {
+		nRun++;
+		if (nRun >= 30) {
+			pifDotMatrix_Stop(s_pstDotMatrix);
+			swRun = FALSE;
+			nRun = 0;
+		}
+	}
+	else {
+		nRun++;
+		if (nRun >= 3) {
+			pifDotMatrix_Start(s_pstDotMatrix);
+			swRun = TRUE;
+			nRun = 0;
+		}
+	}
 
 	pifDotMatrix_SelectPattern(s_pstDotMatrix, index);
 	index++;
@@ -153,7 +172,6 @@ void appSetup()
 
     s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_PERIOD_MS, 2, TRUE)) return;			// 2ms
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 96)) return;
     for (int i = 0; i < 96; i++) {
     	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 8, (uint8_t *)font8x8_basic[i])) return;
@@ -161,6 +179,4 @@ void appSetup()
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskDotMatrixTest, NULL, TRUE)) return;	// 1000ms
-
-	pifDotMatrix_Start(s_pstDotMatrix);
 }

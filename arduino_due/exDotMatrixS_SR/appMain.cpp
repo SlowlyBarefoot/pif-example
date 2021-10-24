@@ -153,7 +153,6 @@ void appSetup()
 
     s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
     if (!s_pstDotMatrix) return;
-	if (!pifDotMatrix_AttachTask(s_pstDotMatrix, TM_PERIOD_MS, 2, TRUE)) return;			// 2ms
     if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 96)) return;
     for (int i = 0; i < 96; i++) {
     	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 8, (uint8_t *)font8x8_basic[i])) return;
