@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "appMain.h"
+#include "app_main.h"
 
 #include "pif_log.h"
 
@@ -69,7 +69,7 @@ BOOL actLogStartTransfer()
 	uint8_t *pucData, ucState;
 
 	s_usLogTx = 0;
-	ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
+	ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
 		return TRUE;
@@ -82,13 +82,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *pucData, ucState;
 
   if (huart->Instance == USART3) {
-		ucState = pifComm_EndSendDatas(g_pstCommLog, s_usLogTx);
+		ucState = pifComm_EndSendDatas(&g_comm_log, s_usLogTx);
 		if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
-			pifComm_FinishTransfer(g_pstCommLog);
+			pifComm_FinishTransfer(&g_comm_log);
 		}
 		else {
 			s_usLogTx = 0;
-			ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
+			ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
 			}
@@ -96,21 +96,21 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	}
 }
 
-void actLedLState(PifId usPifId, uint32_t unState)
+void actLedLState(PifId id, uint32_t state)
 {
-	(void)usPifId;
+	(void)id;
 
-	HAL_GPIO_WritePin(GPIOB, LD2_Pin, unState & 1);
+	HAL_GPIO_WritePin(GPIOB, LD2_Pin, state & 1);
 }
 
-void actLedRGBState(PifId usPifId, uint32_t unState)
+void actLedRGBState(PifId id, uint32_t state)
 {
-  (void)usPifId;
+  (void)id;
 
-  HAL_GPIO_WritePin(GPIOD, LDRed_Pin, unState & 1);
-  HAL_GPIO_WritePin(GPIOD, LDGreen_Pin, (unState >> 1) & 1);
-  HAL_GPIO_WritePin(GPIOD, LDBlue_Pin, (unState >> 2) & 1);
-  pifLog_Printf(LT_INFO, "RGB:%u S:%xh", __LINE__, unState);
+  HAL_GPIO_WritePin(GPIOD, LDRed_Pin, state & 1);
+  HAL_GPIO_WritePin(GPIOD, LDGreen_Pin, (state >> 1) & 1);
+  HAL_GPIO_WritePin(GPIOD, LDBlue_Pin, (state >> 2) & 1);
+  pifLog_Printf(LT_INFO, "RGB:%u S:%xh", __LINE__, state);
 }
 
 /* USER CODE END 0 */

@@ -1,0 +1,131 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Module:NUCLEO144-F767ZI U1
+U 1 1 6174F718
+P 5650 2550
+F 0 "U1" V 5604 6394 50  0000 L CNN
+F 1 "NUCLEO144-F767ZI" V 5695 6394 50  0000 L CNN
+F 2 "Module:ST_Morpho_Connector_144_STLink" H 6500 -1100 50  0001 L CNN
+F 3 "https://www.st.com/resource/en/user_manual/dm00244518-stm32-nucleo144-boards-stmicroelectronics.pdf" H 4750 2850 50  0001 C CNN
+	1    5650 2550
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:LED LDBlue
+U 1 1 61756070
+P 2900 4750
+F 0 "LDBlue" V 2939 4632 50  0000 R CNN
+F 1 "LED" V 2848 4632 50  0000 R CNN
+F 2 "" H 2900 4750 50  0001 C CNN
+F 3 "~" H 2900 4750 50  0001 C CNN
+	1    2900 4750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R3
+U 1 1 61756C74
+P 2900 4250
+F 0 "R3" H 2970 4296 50  0000 L CNN
+F 1 "220" H 2970 4205 50  0000 L CNN
+F 2 "" V 2830 4250 50  0001 C CNN
+F 3 "~" H 2900 4250 50  0001 C CNN
+	1    2900 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED LDGreen
+U 1 1 61762FEE
+P 3450 4750
+F 0 "LDGreen" V 3489 4632 50  0000 R CNN
+F 1 "LED" V 3398 4632 50  0000 R CNN
+F 2 "" H 3450 4750 50  0001 C CNN
+F 3 "~" H 3450 4750 50  0001 C CNN
+	1    3450 4750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R2
+U 1 1 61762FF4
+P 3450 4250
+F 0 "R2" H 3520 4296 50  0000 L CNN
+F 1 "220" H 3520 4205 50  0000 L CNN
+F 2 "" V 3380 4250 50  0001 C CNN
+F 3 "~" H 3450 4250 50  0001 C CNN
+	1    3450 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED LDRed
+U 1 1 617635A2
+P 3950 4750
+F 0 "LDRed" V 3989 4632 50  0000 R CNN
+F 1 "LED" V 3898 4632 50  0000 R CNN
+F 2 "" H 3950 4750 50  0001 C CNN
+F 3 "~" H 3950 4750 50  0001 C CNN
+	1    3950 4750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R1
+U 1 1 617635A8
+P 3950 4250
+F 0 "R1" H 4020 4296 50  0000 L CNN
+F 1 "220" H 4020 4205 50  0000 L CNN
+F 2 "" V 3880 4250 50  0001 C CNN
+F 3 "~" H 3950 4250 50  0001 C CNN
+	1    3950 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3450 3850 3450 4100
+Wire Wire Line
+	3350 3850 3350 4000
+Wire Wire Line
+	2900 4000 2900 4100
+Wire Wire Line
+	3550 3850 3550 4000
+Wire Wire Line
+	2900 4400 2900 4600
+Wire Wire Line
+	3450 4400 3450 4600
+Wire Wire Line
+	3950 4400 3950 4600
+Wire Wire Line
+	3950 4900 3950 5100
+Wire Wire Line
+	1650 5100 1650 3150
+Wire Wire Line
+	1650 3150 1850 3150
+Wire Wire Line
+	2900 4900 2900 5100
+Wire Wire Line
+	3450 4900 3450 5100
+Connection ~ 2900 5100
+Wire Wire Line
+	2900 5100 1650 5100
+Wire Wire Line
+	2900 5100 3450 5100
+Wire Wire Line
+	2900 4000 3350 4000
+Wire Wire Line
+	3950 4000 3950 4100
+Wire Wire Line
+	3550 4000 3950 4000
+Wire Wire Line
+	3450 5100 3950 5100
+Connection ~ 3450 5100
+$EndSCHEMATC

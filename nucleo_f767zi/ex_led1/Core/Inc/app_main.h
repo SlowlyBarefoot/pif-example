@@ -6,8 +6,8 @@
 #include "pif_comm.h"
 
 
-extern PifPulse *g_pstTimer1ms;
-extern PifComm *g_pstCommLog;
+extern PifPulse g_timer1ms;
+extern PifComm g_comm_log;
 
 
 void appSetup();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>exLed1</name>
+	<name>ex_led1</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -63,12 +63,12 @@
 		<link>
 			<name>Core/pif/core/include/pif_led.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_led.h</locationURI>
+			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/include/pif_led.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/include/pif_list.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/include/pif_list.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_list.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/include/pif_log.h</name>
@@ -78,7 +78,7 @@
 		<link>
 			<name>Core/pif/core/include/pif_pulse.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_pulse.h</locationURI>
+			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/include/pif_pulse.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/include/pif_ring_buffer.h</name>
@@ -88,7 +88,7 @@
 		<link>
 			<name>Core/pif/core/include/pif_task.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_task.h</locationURI>
+			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/include/pif_task.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/source/pif.c</name>
@@ -103,12 +103,12 @@
 		<link>
 			<name>Core/pif/core/source/pif_led.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_led.c</locationURI>
+			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/source/pif_led.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/source/pif_list.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/source/pif_list.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_list.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/source/pif_log.c</name>
@@ -118,7 +118,7 @@
 		<link>
 			<name>Core/pif/core/source/pif_pulse.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_pulse.c</locationURI>
+			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/source/pif_pulse.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/source/pif_ring_buffer.c</name>
@@ -128,7 +128,7 @@
 		<link>
 			<name>Core/pif/core/source/pif_task.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_task.c</locationURI>
+			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/source/pif_task.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

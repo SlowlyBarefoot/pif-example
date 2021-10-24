@@ -23,7 +23,7 @@
 #include "stm32f7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "appMain.h"
+#include "app_main.h"
 
 /* USER CODE END Includes */
 
@@ -192,7 +192,7 @@ void SysTick_Handler(void)
   sw ^= 1;
 
   pif_sigTimer1ms();
-  pifPulse_sigTick(g_pstTimer1ms);
+  pifPulse_sigTick(&g_timer1ms);
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
