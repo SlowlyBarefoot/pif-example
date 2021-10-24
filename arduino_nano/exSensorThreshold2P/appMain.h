@@ -2,7 +2,7 @@
 #define APP_MAIN_H
 
 
-#include "pifSensorDigital.h"
+#include "pif_sensor_digital.h"
 
 
 extern PifPulse *g_pstTimer1ms;

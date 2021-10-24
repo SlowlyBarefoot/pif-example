@@ -1,10 +1,10 @@
 #include "appMain.h"
 #include "exProtocolSerialS.h"
 
-#include "pifLed.h"
-#include "pifLog.h"
-#include "pifProtocol.h"
-#include "pifSensorSwitch.h"
+#include "pif_led.h"
+#include "pif_log.h"
+#include "pif_protocol.h"
+#include "pif_sensor_switch.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;

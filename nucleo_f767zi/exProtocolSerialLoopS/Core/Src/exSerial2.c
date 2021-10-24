@@ -3,8 +3,8 @@
 #include "main.h"
 #include "appMain.h"
 
-#include "pifLog.h"
-#include "pifProtocol.h"
+#include "pif_log.h"
+#include "pif_protocol.h"
 
 
 PifComm *g_pstSerial2 = NULL;

@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "main.h"
 
-#include "pifLog.h"
-#include "pifXmodem.h"
+#include "pif_log.h"
+#include "pif_xmodem.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;

@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "exSwitch1.h"
 
-#include "pifLog.h"
-#include "pifSensorSwitch.h"
+#include "pif_log.h"
+#include "pif_sensor_switch.h"
 
 
 static PifSensor *s_pstPushSwitch = NULL;

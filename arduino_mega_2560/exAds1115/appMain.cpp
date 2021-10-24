@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exAds1115.h"
 
-#include "pifAds1x1x.h"
-#include "pifLed.h"
-#include "pifLog.h"
+#include "pif_ads1x1x.h"
+#include "pif_led.h"
+#include "pif_log.h"
 
 
 #define SINGLE_SHOT

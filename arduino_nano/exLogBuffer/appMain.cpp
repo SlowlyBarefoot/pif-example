@@ -1,7 +1,7 @@
 #include "appMain.h"
 #include "exLogBuffer.h"
 
-#include "pifLog.h"
+#include "pif_log.h"
 
 
 #define LOG_BUFFER_SIZE			0x200

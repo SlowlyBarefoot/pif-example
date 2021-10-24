@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "exDotMatrixS.h"
 
-#include "pifDotMatrix.h"
-#include "pifLog.h"
+#include "pif_dot_matrix.h"
+#include "pif_log.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;

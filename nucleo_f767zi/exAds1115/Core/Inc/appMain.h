@@ -2,9 +2,9 @@
 #define APP_MAIN_H
 
 
-#include "pifAds1x1x.h"
-#include "pifComm.h"
-#include "pifPulse.h"
+#include "pif_ads1x1x.h"
+#include "pif_comm.h"
+#include "pif_pulse.h"
 
 
 extern PifAds1x1x *g_pstAds1x1x;

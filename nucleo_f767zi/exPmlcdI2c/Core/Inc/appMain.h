@@ -2,9 +2,9 @@
 #define APP_MAIN_H
 
 
-#include "pifComm.h"
-#include "pifPmlcdI2c.h"
-#include "pifPulse.h"
+#include "pif_comm.h"
+#include "pif_pmlcd_i2c.h"
+#include "pif_pulse.h"
 
 
 extern PifComm *g_pstCommLog;

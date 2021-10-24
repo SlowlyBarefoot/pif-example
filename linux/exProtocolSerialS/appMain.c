@@ -3,8 +3,8 @@
 #include "appMain.h"
 #include "main.h"
 
-#include "pifLog.h"
-#include "pifProtocol.h"
+#include "pif_log.h"
+#include "pif_protocol.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;

@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exGpsSerialNmea.h"
 
-#include "pifGpsNmea.h"
-#include "pifLed.h"
-#include "pifLog.h"
+#include "pif_gps_nmea.h"
+#include "pif_led.h"
+#include "pif_log.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;

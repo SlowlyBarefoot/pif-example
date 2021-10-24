@@ -1,7 +1,7 @@
 #include "appMain.h"
 #include "exSensorThreshold1P.h"
 
-#include "pifLog.h"
+#include "pif_log.h"
 
 
 #define USE_FILTER_AVERAGE		0

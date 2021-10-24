@@ -9,8 +9,8 @@
 #include "Arduino.h"
 //add your includes for the project exPmlcdI2c here
 
-#include "pifComm.h"
-#include "pifI2c.h"
+#include "pif_comm.h"
+#include "pif_i2c.h"
 
 //end of add your includes here
 

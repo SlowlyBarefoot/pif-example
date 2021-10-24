@@ -1,12 +1,12 @@
 #include "appMain.h"
 #include "exCollectSignal2.h"
 
-#include "pifCollectSignal.h"
-#include "pifGpio.h"
-#include "pifLed.h"
-#include "pifLog.h"
-#include "pifSensorSwitch.h"
-#include "pifSequence.h"
+#include "pif_collect_signal.h"
+#include "pif_gpio.h"
+#include "pif_led.h"
+#include "pif_log.h"
+#include "pif_sensor_switch.h"
+#include "pif_sequence.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;
@@ -136,7 +136,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;									// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;										// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 

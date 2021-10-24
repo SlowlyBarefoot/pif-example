@@ -67,19 +67,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pifLed.h</name>
+			<name>pif/core/include/pif_led.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifLed.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifPulse.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifPulse.h</locationURI>
-		</link>
-		<link>
-			<name>pif/core/include/pifTask.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pifTask.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_led.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/include/pif_list.h</name>
@@ -87,29 +77,39 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_list.h</locationURI>
 		</link>
 		<link>
+			<name>pif/core/include/pif_pulse.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_pulse.h</locationURI>
+		</link>
+		<link>
+			<name>pif/core/include/pif_task.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_task.h</locationURI>
+		</link>
+		<link>
 			<name>pif/core/source/pif.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pifLed.c</name>
+			<name>pif/core/source/pif_led.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifLed.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifPulse.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifPulse.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pifTask.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pifTask.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_led.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pif_list.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_list.c</locationURI>
+		</link>
+		<link>
+			<name>pif/core/source/pif_pulse.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_pulse.c</locationURI>
+		</link>
+		<link>
+			<name>pif/core/source/pif_task.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_task.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

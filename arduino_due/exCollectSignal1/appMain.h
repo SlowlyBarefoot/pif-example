@@ -2,7 +2,7 @@
 #define APP_MAIN_H
 
 
-#include "pifPulse.h"
+#include "pif_pulse.h"
 
 
 #define SEQUENCE_COUNT          2

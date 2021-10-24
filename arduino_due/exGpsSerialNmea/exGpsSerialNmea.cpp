@@ -2,7 +2,7 @@
 #include "exGpsSerialNmea.h"
 #include "appMain.h"
 
-#include "pifLog.h"
+#include "pif_log.h"
 
 
 #define PIN_LED_L				13

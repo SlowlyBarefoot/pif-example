@@ -1,10 +1,10 @@
 #include "appMain.h"
 #include "exStepMotorSpeed.h"
 
-#include "pifLed.h"
-#include "pifLog.h"
-#include "pifSensorSwitch.h"
-#include "pifStepMotorSpeed.h"
+#include "pif_led.h"
+#include "pif_log.h"
+#include "pif_sensor_switch.h"
+#include "pif_step_motor_speed.h"
 
 
 #define SWITCH_COUNT         	3

@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exStepMotor.h"
 
-#include "pifLed.h"
-#include "pifLog.h"
-#include "pifStepMotor.h"
+#include "pif_led.h"
+#include "pif_log.h"
+#include "pif_step_motor.h"
 
 
 #define STEP_MOTOR_RESOLUTION				200

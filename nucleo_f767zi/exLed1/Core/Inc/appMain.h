@@ -2,8 +2,8 @@
 #define APP_MAIN_H
 
 
-#include "pifPulse.h"
-#include "pifComm.h"
+#include "pif_pulse.h"
+#include "pif_comm.h"
 
 
 extern PifPulse *g_pstTimer1ms;

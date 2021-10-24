@@ -1,12 +1,12 @@
 #include "appMain.h"
 #include "exCollectSignal1.h"
 
-#include "pifCollectSignal.h"
-#include "pifGpio.h"
-#include "pifLed.h"
-#include "pifLog.h"
-#include "pifSensorSwitch.h"
-#include "pifSequence.h"
+#include "pif_collect_signal.h"
+#include "pif_gpio.h"
+#include "pif_led.h"
+#include "pif_log.h"
+#include "pif_sensor_switch.h"
+#include "pif_sequence.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;
@@ -132,6 +132,8 @@ void appSetup(PifActTimer1us act_timer1us)
     pifLog_Init();
 
     pifCollectSignal_Init("example");
+    if (!pifCollectSignal_ChangeScale(CSS_1S)) return;
+//    if (!pifCollectSignal_ChangeScale(CSS_1US)) return;
 
 	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);														// 1000us
     if (!g_pstTimer1ms) return;

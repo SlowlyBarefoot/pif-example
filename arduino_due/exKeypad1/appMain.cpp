@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "exKeypad1.h"
 
-#include "pifKeypad.h"
-#include "pifLog.h"
+#include "pif_keypad.h"
+#include "pif_log.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;

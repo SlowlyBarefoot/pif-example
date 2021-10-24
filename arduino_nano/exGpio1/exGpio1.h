@@ -12,7 +12,7 @@
 
 //end of add your includes here
 
-#include "pifComm.h"
+#include "pif_comm.h"
 
 //add your function definitions for the project exGpio1 here
 

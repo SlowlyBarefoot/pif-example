@@ -2,7 +2,7 @@
 #define APP_MAIN_H
 
 
-#include "pifSensorSwitch.h"
+#include "pif_sensor_switch.h"
 
 
 extern PifSensor *g_pstPushSwitch;

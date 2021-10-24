@@ -2,7 +2,7 @@
 #define EXSERIAL2_H_
 
 
-#include "pifComm.h"
+#include "pif_comm.h"
 
 
 extern PifComm *g_pstSerial2;

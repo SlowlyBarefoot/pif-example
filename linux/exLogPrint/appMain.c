@@ -1,7 +1,7 @@
 #include "appMain.h"
 #include "main.h"
 
-#include "pifLog.h"
+#include "pif_log.h"
 
 
 BOOL appInit()

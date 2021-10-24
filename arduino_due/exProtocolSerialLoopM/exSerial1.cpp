@@ -1,9 +1,9 @@
 #include "exProtocolSerialLoopM.h"
 #include "appMain.h"
 
-#include "pifLog.h"
-#include "pifProtocol.h"
-#include "pifSensorSwitch.h"
+#include "pif_log.h"
+#include "pif_protocol.h"
+#include "pif_sensor_switch.h"
 
 
 PifComm *g_pstSerial1 = NULL;

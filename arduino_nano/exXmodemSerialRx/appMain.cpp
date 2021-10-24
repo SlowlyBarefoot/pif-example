@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exXmodemSerialRx.h"
 
-#include "pifLed.h"
-#include "pifSensorSwitch.h"
-#include "pifXmodem.h"
+#include "pif_led.h"
+#include "pif_sensor_switch.h"
+#include "pif_xmodem.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;

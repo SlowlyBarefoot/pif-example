@@ -1,7 +1,7 @@
 #include "appMain.h"
 #include "exLogPrint.h"
 
-#include "pifLog.h"
+#include "pif_log.h"
 
 
 PifPulse *g_pstTimer1ms = NULL;

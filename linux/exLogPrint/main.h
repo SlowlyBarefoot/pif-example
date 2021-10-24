@@ -2,7 +2,7 @@
 #define MAIN_H_
 
 
-#include "pifComm.h"
+#include "pif_comm.h"
 
 
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
