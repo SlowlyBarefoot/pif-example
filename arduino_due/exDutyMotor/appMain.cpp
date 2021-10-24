@@ -77,11 +77,10 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;	// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
 	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
@@ -97,5 +96,5 @@ void appSetup()
     if (!s_pstMotor) return;
     pifDutyMotor_AttachAction(s_pstMotor, actSetDuty, actSetDirection, actOperateBreak);
 
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;				// 20ms
+    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;					// 20ms
 }

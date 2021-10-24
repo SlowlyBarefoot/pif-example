@@ -65,7 +65,6 @@ void appSetup(PifActTimer1us act_timer1us)
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;	// 100%
 
     g_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
@@ -89,5 +88,5 @@ void appSetup(PifActTimer1us act_timer1us)
     pifLed_BlinkOn(s_pstLedL, 0);
     bBlink = TRUE;
 
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;				// 20ms
+    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;					// 20ms
 }

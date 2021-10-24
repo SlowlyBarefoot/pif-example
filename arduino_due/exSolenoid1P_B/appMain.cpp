@@ -35,17 +35,16 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;			// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_stSolenoidTest.pstSolenoid = pifSolenoid_Create(PIF_ID_AUTO, g_pstTimer1ms,
-    		ST_1POINT, 300, actSolenoidOrder);									// 300ms
+    		ST_1POINT, 300, actSolenoidOrder);										// 300ms
     if (!s_stSolenoidTest.pstSolenoid) return;
     if (!pifSolenoid_SetBuffer(s_stSolenoidTest.pstSolenoid, 4)) return;
 

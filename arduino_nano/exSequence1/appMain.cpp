@@ -157,18 +157,17 @@ void appSetup(PifActTimer1us act_timer1us)
 
 	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;			// 100%
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_pstSequence = pifSequence_Create(PIF_ID_AUTO, g_pstTimer1ms, s_astSequencePhaseList, NULL);
     if (!s_pstSequence) return;
-    if (!pifSequence_AttachTask(s_pstSequence, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
+    if (!pifSequence_AttachTask(s_pstSequence, TM_PERIOD_MS, 10, TRUE)) return;		// 10ms
     s_pstSequence->evt_error = _evtSequenceError;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms

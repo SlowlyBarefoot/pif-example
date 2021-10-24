@@ -99,7 +99,6 @@ void appSetup()
 
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
     if (!g_pstTimer1ms) return;
-    if (!pifPulse_AttachTask(g_pstTimer1ms, TM_RATIO, 100, TRUE)) return;	// 100%
 
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
