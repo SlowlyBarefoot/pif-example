@@ -76,7 +76,6 @@ void appSetup()
     pifFnd_SetUserChar(c_ucUserChar, 2);
     s_pstFnd = pifFnd_Create(PIF_ID_AUTO, g_pstTimer1ms, 4, actFndDisplay);
     if (!s_pstFnd) return;
-    if (!pifFnd_AttachTask(s_pstFnd, TM_RATIO, 5, TRUE)) return;					// 5%
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return;	// 1000ms
