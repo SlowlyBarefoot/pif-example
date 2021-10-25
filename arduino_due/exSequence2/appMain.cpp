@@ -133,10 +133,9 @@ void appSetup(PifActTimer1us act_timer1us)
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, s_astSequencePhaseList,
-				&s_stSequenceTest[i].bSequenceParam);
+		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, 10,			// 10ms
+				s_astSequencePhaseList, &s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
-	    if (!pifSequence_AttachTask(s_stSequenceTest[i].pstSequence, TM_PERIOD_MS, 10, TRUE)) return;			// 10ms
 	    s_stSequenceTest[i].pstSequence->evt_error = _evtSequenceError;
     }
 }
