@@ -55,7 +55,6 @@ void appSetup()
 
     pstKeypad = pifKeypad_Create(PIF_ID_AUTO, ROWS, COLS, c_cKeys);
     if (!pstKeypad) return;
-    if (!pifKeypad_AttachTask(pstKeypad, TM_PERIOD_MS, 10, TRUE)) return;			// 10ms
     pifKeypad_AttachAction(pstKeypad, actKeypadAcquire);
     pstKeypad->evt_pressed = _evtKeypadPressed;
     pstKeypad->evt_released = _evtKeypadReleased;
