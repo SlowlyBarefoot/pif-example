@@ -81,6 +81,4 @@ void appSetup()
     if (!pifLed_AttachBlink(s_pstLedL, nPeriod)) return;
     pifLed_BlinkOn(s_pstLedL, 0);
     bBlink = TRUE;
-
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;				// 20ms
 }

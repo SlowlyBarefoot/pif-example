@@ -157,6 +157,4 @@ void appSetup(PifActTimer1us act_timer1us)
     s_pstMotor->evt_stop = _evtStop;
     pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
 	pifStepMotor_SetPps(s_pstMotor, 200);
-
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;						// 20ms
 }

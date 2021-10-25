@@ -232,7 +232,5 @@ void appSetup()
     g_pstMotor->evt_error = _evtError;
     pifPidControl_Init(pifDutyMotorSpeedEnc_GetPidControl(g_pstMotor), 0.1, 0, 0, 100);
 
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;								// 20ms
-
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE)) return;		// 10ms
 }

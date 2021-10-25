@@ -235,7 +235,5 @@ void appSetup()
     g_pstMotor->evt_stop = _evtStop;
     g_pstMotor->evt_error = _evtError;
 
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;								// 20ms
-
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE)) return;		// 10ms
 }

@@ -95,6 +95,4 @@ void appSetup()
     s_pstMotor = pifDutyMotor_Create(PIF_ID_AUTO, g_pstTimer1ms, 255);
     if (!s_pstMotor) return;
     pifDutyMotor_AttachAction(s_pstMotor, actSetDuty, actSetDirection, actOperateBreak);
-
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;					// 20ms
 }

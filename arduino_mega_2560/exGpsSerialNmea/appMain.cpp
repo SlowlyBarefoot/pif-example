@@ -168,6 +168,4 @@ void appSetup()
 	pifGpsNmea_AttachComm(s_pstGpsNmea, s_pstCommGps);
 	pifGpsNmea_AttachEvtText(s_pstGpsNmea, _evtGpsNmeaText);
 	pifGps_AttachEvent(&s_pstGpsNmea->_gps, _evtGpsReceive);
-
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;					// 20ms
 }

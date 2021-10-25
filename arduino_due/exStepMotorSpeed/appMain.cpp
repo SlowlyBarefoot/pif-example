@@ -244,7 +244,5 @@ void appSetup(PifActTimer1us act_timer1us)
     pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
     pifStepMotorSpeed_AddStages(s_pstMotor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 
-    if (!pifLog_AttachTask(TM_PERIOD_MS, 20, TRUE)) return;										// 20ms
-
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE)) return;				// 10ms
 }
