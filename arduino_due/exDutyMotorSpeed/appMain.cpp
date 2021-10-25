@@ -245,10 +245,9 @@ void appSetup()
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
-    g_pstMotor = pifDutyMotorSpeed_Create(PIF_ID_AUTO, g_pstTimer1ms, 255);
+    g_pstMotor = pifDutyMotorSpeed_Create(PIF_ID_AUTO, g_pstTimer1ms, 255, 100);		// 100ms
     pifDutyMotorSpeed_AddStages(g_pstMotor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
     pifDutyMotor_AttachAction(g_pstMotor, actSetDuty, actSetDirection, actOperateBreak);
-    pifDutyMotor_AttachTask(g_pstMotor, TM_PERIOD_MS, 100);								// 100ms
     g_pstMotor->evt_stable = _evtStable;
     g_pstMotor->evt_stop = _evtStop;
     g_pstMotor->evt_error = _evtError;

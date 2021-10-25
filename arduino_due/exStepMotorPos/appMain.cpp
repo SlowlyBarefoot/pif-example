@@ -318,9 +318,8 @@ void appSetup(PifActTimer1us act_timer1us)
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
-    s_pstMotor = pifStepMotorPos_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S);
+    s_pstMotor = pifStepMotorPos_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S, 100);	// 100ms
     if (!s_pstMotor) return;
-    if (!pifStepMotor_AttachTask(s_pstMotor, TM_PERIOD_MS, 100)) return;					// 100ms
     pifStepMotor_AttachAction(s_pstMotor, actSetStep);
     s_pstMotor->evt_stable = _evtStable;
     s_pstMotor->evt_stop = _evtStop;
