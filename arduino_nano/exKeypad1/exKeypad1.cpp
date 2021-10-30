@@ -32,21 +32,23 @@ uint16_t taskLedToggle(PifTask *pstTask)
 
 void actKeypadAcquire(uint16_t *pusState)
 {
-	int r, c;
+	int row, col, i, block, cell;
 
-	for (c = 0; c < COLS; c++) {
-		pinMode(colPins[c], OUTPUT);
-		digitalWrite(colPins[c], LOW);
-		for (r = 0; r < ROWS; r++) {
-			if (!digitalRead(rowPins[r])) {
-				pusState[r] |= 1UL << c;
+	for (i = col = 0; col < COLS; col++) {
+		pinMode(colPins[col], OUTPUT);
+		digitalWrite(colPins[col], LOW);
+		for (row = 0; row < ROWS; row++, i++) {
+			block = i / 16;
+			cell = i & 15;
+			if (!digitalRead(rowPins[row])) {
+				pusState[block] |= 1UL << cell;
 			}
 			else {
-				pusState[r] &= ~(1UL << c);
+				pusState[block] &= ~(1UL << cell);
 			}
 		}
-		digitalWrite(colPins[c], HIGH);
-		pinMode(colPins[c],INPUT);
+		digitalWrite(colPins[col], HIGH);
+		pinMode(colPins[col],INPUT);
 	}
 }
 

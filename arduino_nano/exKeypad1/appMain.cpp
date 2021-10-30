@@ -8,10 +8,10 @@
 PifPulse *g_pstTimer1ms = NULL;
 
 const char c_cKeys[ROWS * COLS] = {
-	'1', '2', '3', 'A',
-	'4', '5', '6', 'B',
-	'7', '8', '9', 'C',
-	'*', '0', '#', 'D'
+	'1', '4', '7', '*',
+	'2', '5', '8', '0',
+	'3', '6', '9', '#',
+	'A', 'B', 'C', 'D'
 };
 
 
@@ -45,7 +45,7 @@ void appSetup()
 
 	pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
 	pifComm_AttachActSendData(pstCommLog, actLogSendData);
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -53,7 +53,7 @@ void appSetup()
     g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
     if (!g_pstTimer1ms) return;
 
-    pstKeypad = pifKeypad_Create(PIF_ID_AUTO, ROWS, COLS, c_cKeys);
+    pstKeypad = pifKeypad_Create(PIF_ID_AUTO, ROWS * COLS, c_cKeys);
     if (!pstKeypad) return;
     pifKeypad_AttachAction(pstKeypad, actKeypadAcquire);
     pstKeypad->evt_pressed = _evtKeypadPressed;
