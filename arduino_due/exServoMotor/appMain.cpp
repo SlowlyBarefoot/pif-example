@@ -58,7 +58,7 @@ void appSetup()
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
@@ -72,7 +72,7 @@ void appSetup()
 
     g_pstPwm = pifPulse_AddItem(g_pstTimer100us, PT_PWM);
     if (!g_pstPwm) return;
-    pifPulse_AttachAction(g_pstPwm, actPulsePwm);
+    g_pstPwm->act_pwm = actPulsePwm;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 700, _taskServoMotor, NULL, TRUE)) return;	// 1000ms
 }

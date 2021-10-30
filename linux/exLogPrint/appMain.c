@@ -13,7 +13,7 @@ BOOL appInit()
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return FALSE;
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return FALSE;
 

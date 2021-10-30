@@ -144,8 +144,8 @@ void appSetup()
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
-	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	pstCommLog->act_receive_data = actLogReceiveData;
+	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
@@ -158,14 +158,14 @@ void appSetup()
 	s_pstCommGps = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommGps) return;
     if (!pifComm_AttachTask(s_pstCommGps, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
-	pifComm_AttachActReceiveData(s_pstCommGps, actGpsReceiveData);
-	pifComm_AttachActSendData(s_pstCommGps, actGpsSendData);
+	s_pstCommGps->act_receive_data = actGpsReceiveData;
+	s_pstCommGps->act_send_data = actGpsSendData;
 
 	s_pstGpsNmea = pifGpsNmea_Create(PIF_ID_AUTO);
 	if (!s_pstGpsNmea) return;
 	if (!pifGpsNmea_SetProcessMessageId(s_pstGpsNmea, 4, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_TXT, NMEA_MESSAGE_ID_VTG, NMEA_MESSAGE_ID_ZDA)) return;
 	pifGpsNmea_SetEventMessageId(s_pstGpsNmea, NMEA_MESSAGE_ID_GGA);
 	pifGpsNmea_AttachComm(s_pstGpsNmea, s_pstCommGps);
-	pifGpsNmea_AttachEvtText(s_pstGpsNmea, _evtGpsNmeaText);
+	s_pstGpsNmea->evt_text = _evtGpsNmeaText;
 	pifGps_AttachEvent(&s_pstGpsNmea->_gps, _evtGpsReceive);
 }

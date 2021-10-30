@@ -217,8 +217,8 @@ void appSetup(PifActTimer1us act_timer1us)
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;							// 1ms
-	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	pstCommLog->act_receive_data = actLogReceiveData;
+	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
@@ -237,7 +237,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
     s_pstMotor = pifStepMotorSpeed_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S, 100);	// 100ms
     if (!s_pstMotor) return;
-    pifStepMotor_AttachAction(s_pstMotor, actSetStep);
+    s_pstMotor->act_set_step = actSetStep;
     s_pstMotor->evt_stable = _evtStable;
     s_pstMotor->evt_stop = _evtStop;
     s_pstMotor->evt_error = _evtError;

@@ -135,14 +135,14 @@ BOOL appInit()
 
     s_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommLog) return FALSE;
-	pifComm_AttachActSendData(s_pstCommLog, actLogSendData);
+	s_pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(s_pstCommLog)) return FALSE;
 
     s_pstSerial = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstSerial) return FALSE;
-	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
-	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
+	s_pstSerial->act_receive_data = actSerialReceiveData;
+	s_pstSerial->act_send_data = actSerialSendData;
     if (!pifComm_AttachTask(s_pstSerial, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
     s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_MEDIUM, stProtocolQuestions);

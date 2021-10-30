@@ -74,9 +74,9 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
 #ifdef __PIF_LOG_COMMAND__
-	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
+	pstCommLog->act_receive_data = actLogReceiveData;
 #endif
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 #ifdef __PIF_LOG_COMMAND__

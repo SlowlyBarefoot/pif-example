@@ -25,11 +25,11 @@ void appSetup()
 	if (!g_pstCommLog) return;
     if (!pifComm_AttachTask(g_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
 #ifdef USE_SERIAL
-	pifComm_AttachActSendData(g_pstCommLog, actLogSendData);
+	g_pstCommLog->act_send_data = actLogSendData;
 #endif
 #ifdef USE_USART
 	if (!pifComm_AllocTxBuffer(g_pstCommLog, 64)) return;
-	pifComm_AttachActStartTransfer(g_pstCommLog, actLogStartTransfer);
+	g_pstCommLog->act_start_transfer = actLogStartTransfer;
 #endif
 
 	if (!pifLog_AttachComm(g_pstCommLog)) return;

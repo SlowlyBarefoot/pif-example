@@ -114,8 +114,8 @@ void appSetup()
     s_pstSerial = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
     if (!pifComm_AttachTask(s_pstSerial, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
-	pifComm_AttachActReceiveData(s_pstSerial, actSerialReceiveData);
-	pifComm_AttachActSendData(s_pstSerial, actSerialSendData);
+	s_pstSerial->act_receive_data = actSerialReceiveData;
+	s_pstSerial->act_send_data = actSerialSendData;
 
     s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions);
     if (!s_pstProtocol) return;

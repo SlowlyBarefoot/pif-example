@@ -70,13 +70,13 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!g_pstCommLog) return;
     if (!pifComm_AttachTask(g_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
 #ifdef USE_SERIAL
-	pifComm_AttachActReceiveData(g_pstCommLog, actLogReceiveData);
-	pifComm_AttachActSendData(g_pstCommLog, actLogSendData);
+	g_pstCommLog->act_receive_data = actLogReceiveData;
+	g_pstCommLog->act_send_data = actLogSendData;
 #endif
 #ifdef USE_USART
 	if (!pifComm_AllocRxBuffer(g_pstCommLog, 64)) return;
 	if (!pifComm_AllocTxBuffer(g_pstCommLog, 64)) return;
-	pifComm_AttachActStartTransfer(g_pstCommLog, actLogStartTransfer);
+	g_pstCommLog->act_start_transfer = actLogStartTransfer;
 #endif
 
 	if (!pifLog_AttachComm(g_pstCommLog)) return;

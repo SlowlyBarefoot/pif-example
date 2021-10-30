@@ -153,7 +153,7 @@ BOOL exSerial1_Setup()
     if (!pifComm_AttachTask(g_pstSerial1, TM_PERIOD_MS, 1, TRUE)) return FALSE;									// 1ms
 	if (!pifComm_AllocRxBuffer(g_pstSerial1, 64)) return FALSE;
 	if (!pifComm_AllocTxBuffer(g_pstSerial1, 64)) return FALSE;
-	pifComm_AttachActStartTransfer(g_pstSerial1, actUart1StartTransfer);
+	g_pstSerial1->act_start_transfer = actUart1StartTransfer;
 
     s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions1);
     if (!s_pstProtocol) return FALSE;

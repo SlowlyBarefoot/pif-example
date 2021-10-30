@@ -27,7 +27,7 @@ void appSetup()
     g_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstCommLog) return;
     if (!pifComm_AttachTask(g_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
-	pifComm_AttachActSendData(g_pstCommLog, actLogSendData);
+	g_pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(g_pstCommLog)) return;
 

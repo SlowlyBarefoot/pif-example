@@ -150,13 +150,13 @@ BOOL exSerial1_Setup()
 	if (!g_pstSerial1) return FALSE;
     if (!pifComm_AttachTask(g_pstSerial1, TM_PERIOD_MS, 1, TRUE)) return FALSE;									// 1ms
 #ifdef USE_SERIAL
-	pifComm_AttachActReceiveData(g_pstSerial1, actSerial1ReceiveData);
-	pifComm_AttachActSendData(g_pstSerial1, actSerial1SendData);
+	g_pstSerial1->act_receive_data = actSerial1ReceiveData;
+	g_pstSerial1->act_send_data = actSerial1SendData;
 #endif
 #ifdef USE_USART
 	if (!pifComm_AllocRxBuffer(g_pstSerial1, 64)) return FALSE;
 	if (!pifComm_AllocTxBuffer(g_pstSerial1, 64)) return FALSE;
-	pifComm_AttachActStartTransfer(g_pstSerial1, actUart1StartTransfer);
+	g_pstSerial1->act_start_transfer = actUart1StartTransfer;
 #endif
 
     s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions1);

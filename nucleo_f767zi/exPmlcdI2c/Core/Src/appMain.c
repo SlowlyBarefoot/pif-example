@@ -74,7 +74,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!g_pstCommLog) return;
     if (!pifComm_AttachTask(g_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
 	if (!pifComm_AllocTxBuffer(g_pstCommLog, 64)) return;
-	pifComm_AttachActStartTransfer(g_pstCommLog, actLogStartTransfer);
+	g_pstCommLog->act_start_transfer = actLogStartTransfer;
 
 	if (!pifLog_AttachComm(g_pstCommLog)) return;
 
@@ -85,7 +85,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
     g_pstPmlcdI2c = pifPmlcdI2c_Create(PIF_ID_AUTO, 0x27);
     if (!g_pstPmlcdI2c) return;
-    pifI2c_AttachAction(&g_pstPmlcdI2c->_i2c, NULL, actPmlcdI2cWrite);
+    g_pstPmlcdI2c->_i2c.act_write = actPmlcdI2cWrite;
 #if 0
     pifI2c_ScanAddress(&g_pstPmlcdI2c->_i2c);
 #else

@@ -81,8 +81,8 @@ void appSetup()
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
-	pifComm_AttachActReceiveData(pstCommLog, actLogReceiveData);
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	pstCommLog->act_receive_data = actLogReceiveData;
+	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
@@ -94,5 +94,7 @@ void appSetup()
 
     s_pstMotor = pifDutyMotor_Create(PIF_ID_AUTO, g_pstTimer1ms, 255);
     if (!s_pstMotor) return;
-    pifDutyMotor_AttachAction(s_pstMotor, actSetDuty, actSetDirection, actOperateBreak);
+    s_pstMotor->act_set_duty = actSetDuty;
+    s_pstMotor->act_set_direction = actSetDirection;
+    s_pstMotor->act_operate_break = actOperateBreak;
 }

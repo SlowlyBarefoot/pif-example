@@ -114,7 +114,7 @@ void appSetup(PifActTimer1us act_timer1us)
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
     if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;											// 1ms
-	pifComm_AttachActSendData(pstCommLog, actLogSendData);
+	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 

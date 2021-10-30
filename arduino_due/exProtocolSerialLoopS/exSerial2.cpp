@@ -130,8 +130,8 @@ BOOL exSerial2_Setup()
 	g_pstSerial2 = pifComm_Create(PIF_ID_AUTO);
 	if (!g_pstSerial2) return FALSE;
     if (!pifComm_AttachTask(g_pstSerial2, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
-	pifComm_AttachActReceiveData(g_pstSerial2, actSerial2ReceiveData);
-	pifComm_AttachActSendData(g_pstSerial2, actSerial2SendData);
+	g_pstSerial2->act_receive_data = actSerial2ReceiveData;
+	g_pstSerial2->act_send_data = actSerial2SendData;
 
     s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions2);
     if (!s_pstProtocol) return FALSE;
