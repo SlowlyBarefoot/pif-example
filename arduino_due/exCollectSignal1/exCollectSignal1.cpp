@@ -2,6 +2,8 @@
 #include "exCollectSignal1.h"
 #include "appMain.h"
 
+#include "pif_log.h"
+
 
 #define PIN_LED_L				13
 #define PIN_LED_RED				23
@@ -32,8 +34,8 @@ void actGpioRGBState(PifId usPifId, uint8_t unState)
 {
 	(void)usPifId;
 
-	digitalWrite(s_stSequenceTest[0].ucPinLed, unState & 1);
-	digitalWrite(s_stSequenceTest[1].ucPinLed, (unState >> 1) & 1);
+	digitalWrite(PIN_LED_RED, unState & 1);
+	digitalWrite(PIN_LED_YELLOW, (unState >> 1) & 1);
 }
 
 void actLedCollectState(PifId usPifId, uint32_t unState)

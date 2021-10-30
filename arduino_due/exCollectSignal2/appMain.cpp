@@ -141,8 +141,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-	pifCollectSignal_InitHeap("example", 0x1000);
-    if (!pifCollectSignal_AttachTask(TM_PERIOD_MS, 10, TRUE)) return;										// 10ms
+	if (!pifCollectSignal_InitHeap("example", 0x1000)) return;
 
     s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
@@ -165,10 +164,9 @@ void appSetup(PifActTimer1us act_timer1us)
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, s_astSequencePhaseList,
-				&s_stSequenceTest[i].bSequenceParam);
+		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, 10,
+				s_astSequencePhaseList,	&s_stSequenceTest[i].bSequenceParam);								// 10ms
 	    if (!s_stSequenceTest[i].pstSequence) return;
-	    if (!pifSequence_AttachTask(s_stSequenceTest[i].pstSequence, TM_PERIOD_MS, 10, TRUE)) return;		// 10ms
     }
     pifSequence_SetCsFlagAll(SQ_CSF_ALL_BIT);
 
