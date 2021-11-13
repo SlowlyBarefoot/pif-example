@@ -79,9 +79,12 @@ void appSetup()
 	PifComm *pstCommLog;
 
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(5)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);							// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -98,4 +101,6 @@ void appSetup()
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return;	// 1000ms
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

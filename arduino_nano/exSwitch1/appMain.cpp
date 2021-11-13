@@ -14,6 +14,9 @@ void appSetup()
 	PifComm *pstCommLog;
 
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(4)) return;
+
     pifLog_Init();
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -36,4 +39,6 @@ void appSetup()
 	pifSensor_AttachEvtChange(s_pstTiltSwitch, evtTiltSwitchChange, NULL);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
+
+	pifLog_Printf(LT_INFO, "Task=%d\n", pifTaskManager_Count());
 }

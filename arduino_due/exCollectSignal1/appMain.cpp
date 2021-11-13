@@ -129,12 +129,15 @@ void appSetup(PifActTimer1us act_timer1us)
 	int i;
 
 	pif_Init(act_timer1us);
+
+	if (!pifTaskManager_Init(7)) return;
+
     pifLog_Init();
 
     pifCollectSignal_Init("example");
     if (!pifCollectSignal_ChangeScale(CSS_1MS)) return;
 
-	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);														// 1000us
+	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 4);													// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -148,7 +151,6 @@ void appSetup(PifActTimer1us act_timer1us)
     s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;														// 500ms
-    pifLed_BlinkOn(s_pstLedL, 0);
 
     s_pstGpioRGB = pifGpio_Create(PIF_ID_AUTO, SEQUENCE_COUNT);
     if (!s_pstGpioRGB) return;
@@ -177,4 +179,8 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifSensorSwitch_AttachTask(pstPushSwitchCollect, TM_PERIOD_MS, 5, TRUE)) return;					// 5ms
 	pifSensor_AttachAction(pstPushSwitchCollect, actPushSwitchCollectAcquire);
 	pifSensor_AttachEvtChange(pstPushSwitchCollect, _evtPushSwitchCollectChange, NULL);
+
+	pifLed_BlinkOn(s_pstLedL, 0);
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

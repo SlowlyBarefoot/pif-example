@@ -63,12 +63,12 @@
 		<link>
 			<name>Core/pif/core/include/pif_pulse.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/include/pif_pulse.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_pulse.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/include/pif_task.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/include/pif_task.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_task.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/source/pif.c</name>
@@ -83,12 +83,12 @@
 		<link>
 			<name>Core/pif/core/source/pif_pulse.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/source/pif_pulse.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_pulse.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/source/pif_task.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/source/pif_task.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_task.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

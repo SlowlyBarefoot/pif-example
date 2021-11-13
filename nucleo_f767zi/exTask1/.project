@@ -53,7 +53,7 @@
 		<link>
 			<name>Core/pif/core/include/pif.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/include/pif.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/include/pif_list.h</name>
@@ -68,7 +68,7 @@
 		<link>
 			<name>Core/pif/core/source/pif.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-ECLIPSE_HOME/github/pif/core/source/pif.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/core/source/pif_list.c</name>

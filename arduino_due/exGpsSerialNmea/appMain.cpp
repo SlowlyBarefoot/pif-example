@@ -136,9 +136,12 @@ void appSetup()
 	PifComm *pstCommLog;
 
 	pif_Init(NULL);
+
+    if (!pifTaskManager_Init(4)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);					// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -153,7 +156,6 @@ void appSetup()
     s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 2, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;						// 500ms
-    pifLed_BlinkOn(s_pstLedL, 0);
 
 	s_pstCommGps = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommGps) return;
@@ -168,4 +170,8 @@ void appSetup()
 	pifGpsNmea_AttachComm(s_pstGpsNmea, s_pstCommGps);
 	s_pstGpsNmea->evt_text = _evtGpsNmeaText;
 	pifGps_AttachEvent(&s_pstGpsNmea->_gps, _evtGpsReceive);
+
+    pifLed_BlinkOn(s_pstLedL, 0);
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

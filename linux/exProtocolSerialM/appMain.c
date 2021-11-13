@@ -128,14 +128,18 @@ static void _evtDelay(void *pvIssuer)
 BOOL appInit()
 {
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(3)) return FALSE;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 4);							// 1000us
     if (!g_pstTimer1ms) return FALSE;
 
     s_pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstCommLog) return FALSE;
 	s_pstCommLog->act_send_data = actLogSendData;
+    if (!pifComm_AttachTask(s_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
 	if (!pifLog_AttachComm(s_pstCommLog)) return FALSE;
 
@@ -155,6 +159,8 @@ BOOL appInit()
 		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
     return TRUE;
 }
 

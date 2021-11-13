@@ -25,6 +25,9 @@ void appSetup()
 	PifPulseItem *pstTimer1ms;
 
 	pif_Init(NULL);
+
+    if (!pifTaskManager_Init(2)) return;
+
 	pifLog_Init();
 
 	pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -34,11 +37,13 @@ void appSetup()
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);					// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);				// 1000us
     if (!g_pstTimer1ms) return;
 
     pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
     if (!pstTimer1ms) return;
     pifPulse_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
     pifPulse_StartItem(pstTimer1ms, 500);								// 500ms
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

@@ -31,9 +31,12 @@ void appSetup()
 	PifComm *pstCommLog;
 
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(3)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 3);							// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -53,4 +56,6 @@ void appSetup()
     pifPulse_StartItem(s_stSolenoidTest.pstTimerItem, 1000);						// 1000ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

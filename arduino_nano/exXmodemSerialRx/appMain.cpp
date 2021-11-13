@@ -29,13 +29,14 @@ void appSetup()
 
     pif_Init(NULL);
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
+    if (!pifTaskManager_Init(4)) return;
+
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 3);							// 1000us
     if (!g_pstTimer1ms) return;
 
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;									// 500ms
-    pifLed_BlinkOn(pstLedL, 0);
 
 	pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, 0);
 	if (!pstPushSwitch) return;
@@ -52,4 +53,6 @@ void appSetup()
     s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_CRC);
     if (!s_pstXmodem) return;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
+
+    pifLed_BlinkOn(pstLedL, 0);
 }

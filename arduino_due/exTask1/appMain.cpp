@@ -25,5 +25,7 @@ void appSetup()
 {
 	pif_Init(NULL);
 
+    if (!pifTaskManager_Init(1)) return;
+
 	if (!pifTaskManager_Add(TM_RATIO, 50, _taskLedToggle, NULL, TRUE)) return;	// 50%
 }

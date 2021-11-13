@@ -61,9 +61,12 @@ static int _CmdLedControl(int argc, char *argv[])
 void appSetup()
 {
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(3)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);					// 1000us
     if (!g_pstTimer1ms) return;
 
     g_pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -81,4 +84,6 @@ void appSetup()
     if (!pifLed_AttachBlink(s_pstLedL, nPeriod)) return;
     pifLed_BlinkOn(s_pstLedL, 0);
     bBlink = TRUE;
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

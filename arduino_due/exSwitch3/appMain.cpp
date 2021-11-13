@@ -36,9 +36,12 @@ void appSetup()
 	PifPulseItem *pstTimerSwitch;
 
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(4)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 2);							// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -51,7 +54,6 @@ void appSetup()
     s_pstLed = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 3, actLedState);
     if (!s_pstLed) return;
     if (!pifLed_AttachBlink(s_pstLed, 500)) return;									// 500ms
-    pifLed_BlinkOn(s_pstLed, 0);
 
     pstTimerSwitch = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
     if (!pstTimerSwitch) return;
@@ -69,5 +71,9 @@ void appSetup()
 	pifSensor_AttachEvtChange(g_pstTiltSwitch, _evtTiltSwitchChange, NULL);
     if (!pifSensorSwitch_AttachFilter(g_pstTiltSwitch, PIF_SENSOR_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
 
+    pifLed_BlinkOn(s_pstLed, 0);
+
     pifPulse_StartItem(pstTimerSwitch, 20);											// 20ms
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

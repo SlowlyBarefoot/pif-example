@@ -5,8 +5,6 @@
 #include "pif_log.h"
 
 
-PifPulse *g_pstTimer1ms = NULL;
-
 const char c_cKeys[ROWS * COLS] = {
 	'1', '4', '7', '*',
 	'2', '5', '8', '0',
@@ -41,6 +39,9 @@ void appSetup()
 	PifKeypad *pstKeypad;
 
 	pif_Init(NULL);
+
+    if (!pifTaskManager_Init(3)) return;
+
 	pifLog_Init();
 
 	pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -49,9 +50,6 @@ void appSetup()
 	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
-
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
-    if (!g_pstTimer1ms) return;
 
     pstKeypad = pifKeypad_Create(PIF_ID_AUTO, ROWS * COLS, c_cKeys);
     if (!pstKeypad) return;
@@ -62,4 +60,6 @@ void appSetup()
     pstKeypad->evt_double_pressed = _evtKeypadDoublePressed;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
+
+	pifLog_Printf(LT_INFO, "Task=%d\n", pifTaskManager_Count());
 }

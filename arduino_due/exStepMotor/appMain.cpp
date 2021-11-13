@@ -129,12 +129,15 @@ void appSetup(PifActTimer1us act_timer1us)
 	PifLed *pstLedL;
 
 	pif_Init(act_timer1us);
+
+    if (!pifTaskManager_Init(4)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);							// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);						// 1000us
     if (!g_pstTimer1ms) return;
 
-    g_pstTimer200us = pifPulse_Create(PIF_ID_AUTO, 200);						// 200us
+    g_pstTimer200us = pifPulse_Create(PIF_ID_AUTO, 200, 1);						// 200us
     if (!g_pstTimer200us) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -149,7 +152,6 @@ void appSetup(PifActTimer1us act_timer1us)
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;								// 500ms
-    pifLed_BlinkOn(pstLedL, 0);
 
     s_pstMotor = pifStepMotor_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_2S);
     if (!s_pstMotor) return;
@@ -157,4 +159,9 @@ void appSetup(PifActTimer1us act_timer1us)
     s_pstMotor->evt_stop = _evtStop;
     pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
 	pifStepMotor_SetPps(s_pstMotor, 200);
+
+    pifLed_BlinkOn(pstLedL, 0);
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse1ms=%d Pulse200us=%d\n", pifTaskManager_Count(),
+			pifPulse_Count(g_pstTimer1ms), pifPulse_Count(g_pstTimer200us));
 }

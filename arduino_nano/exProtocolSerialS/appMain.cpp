@@ -97,13 +97,14 @@ void appSetup()
 
     pif_Init(NULL);
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
+    if (!pifTaskManager_Init(5)) return;
+
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 3);					// 1000us
     if (!g_pstTimer1ms) return;
 
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
-    pifLed_BlinkOn(pstLedL, 0);
 
     for (int i = 0; i < 2; i++) {
     	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
@@ -120,4 +121,6 @@ void appSetup()
     s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions);
     if (!s_pstProtocol) return;
     pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
+
+    pifLed_BlinkOn(pstLedL, 0);
 }

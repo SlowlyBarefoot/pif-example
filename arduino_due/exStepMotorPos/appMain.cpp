@@ -289,12 +289,15 @@ void appSetup(PifActTimer1us act_timer1us)
 	PifLed *pstLedL;
 
 	pif_Init(act_timer1us);
+
+    if (!pifTaskManager_Init(10)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);										// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);									// 1000us
     if (!g_pstTimer1ms) return;
 
-    g_pstTimer200us = pifPulse_Create(PIF_ID_AUTO, 200);									// 200us
+    g_pstTimer200us = pifPulse_Create(PIF_ID_AUTO, 200, 3);									// 200us
     if (!g_pstTimer200us) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -309,7 +312,6 @@ void appSetup(PifActTimer1us act_timer1us)
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;											// 500ms
-    pifLed_BlinkOn(pstLedL, 0);
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
 		s_pstSwitch[i] = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
@@ -318,7 +320,8 @@ void appSetup(PifActTimer1us act_timer1us)
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
-    s_pstMotor = pifStepMotorPos_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S, 100);	// 100ms
+    s_pstMotor = pifStepMotorPos_Create(PIF_ID_AUTO, g_pstTimer200us,
+    		STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S, 100);										// 100ms
     if (!s_pstMotor) return;
     s_pstMotor->act_set_step = actSetStep;
     s_pstMotor->evt_stable = _evtStable;
@@ -329,4 +332,9 @@ void appSetup(PifActTimer1us act_timer1us)
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE)) return;			// 10ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskRepeat, NULL, TRUE)) return;				// 10ms
+
+    pifLed_BlinkOn(pstLedL, 0);
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse1ms=%d Pulse200us=%d\n", pifTaskManager_Count(),
+			pifPulse_Count(g_pstTimer1ms), pifPulse_Count(g_pstTimer200us));
 }

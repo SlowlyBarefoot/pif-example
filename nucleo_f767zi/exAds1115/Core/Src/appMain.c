@@ -37,9 +37,12 @@ void appSetup(PifActTimer1us act_timer1us)
 	PifAds1x1xConfig stConfig;
 
     pif_Init(act_timer1us);
+
+    if (!pifTaskManager_Init(3)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);							// 1000us
     if (!g_pstTimer1ms) return;
 
     g_pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -53,7 +56,6 @@ void appSetup(PifActTimer1us act_timer1us)
     s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, 500)) return;								// 500ms
-    pifLed_BlinkOn(s_pstLedL, 0);
 
     g_pstAds1x1x = pifAds1x1x_Create(PIF_ID_AUTO, AT_1115);
     if (!g_pstAds1x1x) return;
@@ -85,4 +87,8 @@ void appSetup(PifActTimer1us act_timer1us)
     pifAds1x1x_SetHiThreshVoltage(g_pstAds1x1x, 2.0);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskAds1115, NULL, TRUE)) return;	// 1000ms
+
+    pifLed_BlinkOn(s_pstLedL, 0);
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

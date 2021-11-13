@@ -33,6 +33,9 @@ void appSetup()
 	PifComm *pstCommLog;
 
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(2)) return;
+
     pifLog_Init();
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -55,4 +58,6 @@ void appSetup()
     pifGpio_AttachActIn(s_pstGpioSwitch, actGpioSwitch);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskGpioTest, NULL, TRUE)) return;	// 500ms
+
+	pifLog_Printf(LT_INFO, "Task=%d\n", pifTaskManager_Count());
 }

@@ -103,9 +103,12 @@ static uint16_t _taskLed(PifTask *p_task)
 void appSetup()
 {
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(3)) return;
+
     pifLog_Init();
 
-    if (!pifPulse_Init(&g_timer1ms, PIF_ID_AUTO, 1000)) return;					// 1000us
+    if (!pifPulse_Init(&g_timer1ms, PIF_ID_AUTO, 1000, 2)) return;				// 1000us
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
     if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
@@ -116,10 +119,13 @@ void appSetup()
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer1ms, 1, actLedLState)) return;
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;								// 500ms
-    pifLed_BlinkOn(&s_led_l, 0);
 
     if (!pifLed_Init(&s_led_rgb, PIF_ID_AUTO, &g_timer1ms, 3, actLedRGBState)) return;
     if (!pifLed_AttachBlink(&s_led_rgb, 100)) return;							// 100ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLed, NULL, TRUE)) return;	// 100ms
+
+    pifLed_BlinkOn(&s_led_l, 0);
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(&g_timer1ms));
 }

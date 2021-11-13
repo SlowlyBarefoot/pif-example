@@ -13,10 +13,12 @@ void appSetup()
 
     pif_Init(NULL);
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);							// 1000us
+    if (!pifTaskManager_Init(2)) return;
+
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);						// 1000us
     if (!g_pstTimer1ms) return;
 
-    g_pstTimer100us = pifPulse_Create(PIF_ID_AUTO, 100);						// 100us
+    g_pstTimer100us = pifPulse_Create(PIF_ID_AUTO, 100, 1);						// 100us
     if (!g_pstTimer100us) return;
 
     pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);

@@ -8,13 +8,13 @@
 
 
 PifPulse *g_pstTimer1ms = NULL;
+PifComm *g_pstCommLog = NULL;
+
 
 static PifLed *s_pstLedL;
 
 static BOOL bBlink = TRUE;
 static int nPeriod = 500;
-
-#ifdef __PIF_LOG_COMMAND__
 
 static int _CmdLedControl(int argc, char *argv[]);
 
@@ -58,34 +58,31 @@ static int _CmdLedControl(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-#endif
-
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PifComm *pstCommLog;
-
     pif_Init(act_timer1us);
+
+    if (!pifTaskManager_Init(3)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);					// 1000us
     if (!g_pstTimer1ms) return;
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
-#ifdef __PIF_LOG_COMMAND__
-	pstCommLog->act_receive_data = actLogReceiveData;
-#endif
-	pstCommLog->act_send_data = actLogSendData;
+    g_pstCommLog = pifComm_Create(PIF_ID_AUTO);
+	if (!g_pstCommLog) return;
+    if (!pifComm_AttachTask(g_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
+	g_pstCommLog->act_receive_data = actLogReceiveData;
+	g_pstCommLog->act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
-#ifdef __PIF_LOG_COMMAND__
+	if (!pifLog_AttachComm(g_pstCommLog)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
-#endif
 
     s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
     if (!pifLed_AttachBlink(s_pstLedL, nPeriod)) return;
     pifLed_BlinkOn(s_pstLedL, 0);
     bBlink = TRUE;
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

@@ -15,8 +15,6 @@ uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-#ifdef __PIF_LOG_COMMAND__
-
 BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 {
 	int rxData;
@@ -30,8 +28,6 @@ BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 	}
 	return FALSE;
 }
-
-#endif
 
 void actLedLState(PifId usPifId, uint32_t unState)
 {

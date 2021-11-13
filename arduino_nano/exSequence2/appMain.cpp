@@ -106,22 +106,24 @@ void appSetup(PifActTimer1us act_timer1us)
 	int i;
 
 	pif_Init(act_timer1us);
+
+    if (!pifTaskManager_Init(6)) return;
+
     pifLog_Init();
 
-	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);														// 1000us
+	g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 4);														// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;										// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;											// 1ms
 	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
     s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;														// 500ms
-    pifLed_BlinkOn(s_pstLedL, 0);
+    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;															// 500ms
 
     s_pstLedRGB = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, SEQUENCE_COUNT, actLedRGBState);
     if (!s_pstLedRGB) return;
@@ -129,13 +131,17 @@ void appSetup(PifActTimer1us act_timer1us)
     for (i = 0; i < SEQUENCE_COUNT; i++) {
     	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
 		if (!s_stSequenceTest[i].pstPushSwitch) return;
-	    if (!pifSensorSwitch_AttachTask(s_stSequenceTest[i].pstPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
+	    if (!pifSensorSwitch_AttachTask(s_stSequenceTest[i].pstPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;		// 10ms
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, 10,		// 10ms
+		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, 10,			// 10ms
 				s_astSequencePhaseList, &s_stSequenceTest[i].bSequenceParam);
 	    if (!s_stSequenceTest[i].pstSequence) return;
 	    s_stSequenceTest[i].pstSequence->evt_error = _evtSequenceError;
     }
+
+    pifLed_BlinkOn(s_pstLedL, 0);
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

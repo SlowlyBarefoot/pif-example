@@ -98,9 +98,12 @@ void appSetup()
 	PifLed *pstLedL;
 
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(3)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 3);					// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -113,7 +116,6 @@ void appSetup()
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
     if (!pstLedL) return;
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
-    pifLed_BlinkOn(pstLedL, 0);
 
     s_pstSerial = pifComm_Create(PIF_ID_AUTO);
 	if (!s_pstSerial) return;
@@ -125,4 +127,8 @@ void appSetup()
 	if (!s_pstXmodem) return;
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);
+
+    pifLed_BlinkOn(pstLedL, 0);
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

@@ -9,6 +9,9 @@ BOOL appInit()
 	PifComm *pstCommLog;
 
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(1)) return FALSE;
+
     pifLog_Init();
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -18,6 +21,8 @@ BOOL appInit()
 	if (!pifLog_AttachComm(pstCommLog)) return FALSE;
 
     if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
+
+	pifLog_Printf(LT_INFO, "Task=%d\n", pifTaskManager_Count());
     return TRUE;
 }
 

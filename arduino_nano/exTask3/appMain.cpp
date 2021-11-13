@@ -77,6 +77,8 @@ void appSetup()
 {
 	pif_Init(NULL);
 
+    if (!pifTaskManager_Init(3)) return;
+
     s_pstTask[0] = pifTaskManager_Add(TM_RATIO, 30, _taskLedRedToggle, NULL, TRUE);		// 30%
     if (!s_pstTask[0]) return;
 

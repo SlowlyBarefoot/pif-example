@@ -25,14 +25,17 @@ void appSetup()
 	PifComm *pstCommLog;
 
 	pif_Init(NULL);
+
+    if (!pifTaskManager_Init(5)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);										// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);									// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
 	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
+    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
 	pstCommLog->act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
@@ -49,4 +52,6 @@ void appSetup()
     if (!pifTaskManager_Add(TM_PERIOD_MS, 100, taskSensorAcquisition, NULL, TRUE)) return;	// 100ms
 
     if (!pifSensorDigital_StartPeriod(g_pstSensor, 500)) return;							// 500ms
+
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }

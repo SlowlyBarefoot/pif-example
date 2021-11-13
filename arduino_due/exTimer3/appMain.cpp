@@ -43,7 +43,9 @@ void appSetup()
 {
 	pif_Init(NULL);
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);						// 1000us
+    if (!pifTaskManager_Init(1)) return;
+
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 3);					// 1000us
     if (!g_pstTimer1ms) return;
 
     s_pstTimer1msRed = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);

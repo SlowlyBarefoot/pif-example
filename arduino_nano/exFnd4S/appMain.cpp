@@ -17,9 +17,27 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	static int nBlink = 0;
 	static BOOL swBlink = FALSE;
 	static BOOL swFloat = FALSE;
+	static int nRun = 0;
+	static BOOL swRun = FALSE;
 
 	(void)pstTask;
 
+	if (swRun) {
+		nRun++;
+		if (nRun >= 30) {
+			pifFnd_Stop(s_pstFnd);
+			swRun = FALSE;
+			nRun = 0;
+		}
+	}
+	else {
+		nRun++;
+		if (nRun >= 3) {
+			pifFnd_Start(s_pstFnd);
+			swRun = TRUE;
+			nRun = 0;
+		}
+	}
 	if (swFloat) {
 		s_pstFnd->sub_numeric_digits = 0;
 		int32_t nValue = rand() % 14000 - 2000;
@@ -61,9 +79,12 @@ void appSetup()
 	PifComm *pstCommLog;
 
     pif_Init(NULL);
+
+    if (!pifTaskManager_Init(5)) return;
+
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000);								// 1000us
+    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);							// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -76,9 +97,10 @@ void appSetup()
     pifFnd_SetUserChar(c_ucUserChar, 2);
     s_pstFnd = pifFnd_Create(PIF_ID_AUTO, g_pstTimer1ms, 4, actFndDisplay);
     if (!s_pstFnd) return;
+    pifFnd_SetPeriodPerDigit(s_pstFnd, 20);											// 20ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return;	// 1000ms
 
-    pifFnd_Start(s_pstFnd);
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
 }
