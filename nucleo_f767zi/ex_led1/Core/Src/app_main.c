@@ -5,7 +5,7 @@
 #include "pif_log.h"
 
 
-PifPulse g_timer1ms;
+PifTimerManager g_timer1ms;
 PifComm g_comm_log;
 
 static PifLed s_led_l;
@@ -108,7 +108,7 @@ void appSetup()
 
     pifLog_Init();
 
-    if (!pifPulse_Init(&g_timer1ms, PIF_ID_AUTO, 1000, 2)) return;				// 1000us
+    if (!pifTimerManager_Init(&g_timer1ms, PIF_ID_AUTO, 1000, 2)) return;		// 1000us
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
     if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
@@ -127,5 +127,5 @@ void appSetup()
 
     pifLed_BlinkOn(&s_led_l, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(&g_timer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer1ms));
 }

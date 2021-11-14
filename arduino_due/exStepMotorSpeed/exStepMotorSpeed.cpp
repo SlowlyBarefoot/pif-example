@@ -70,14 +70,14 @@ extern "C" {
 	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-		pifPulse_sigTick(g_pstTimer1ms);
+		pifTimerManager_sigTick(g_pstTimer1ms);
 		return 0;
 	}
 }
 
 static void _sigTimer200us()
 {
-	pifPulse_sigTick(g_pstTimer200us);
+	pifTimerManager_sigTick(g_pstTimer200us);
 }
 
 //The setup function is called once at startup of the sketch

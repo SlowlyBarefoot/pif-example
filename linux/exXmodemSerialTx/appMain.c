@@ -5,7 +5,7 @@
 #include "pif_xmodem.h"
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 
 static PifComm *s_pstCommLog = NULL;
 static PifComm *s_pstSerial = NULL;
@@ -76,7 +76,7 @@ BOOL appInit()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 2);							// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 2);							// 1000us
     if (!g_pstTimer1ms) return FALSE;
 
     s_pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -97,14 +97,14 @@ BOOL appInit()
     pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
     pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
     return TRUE;
 }
 
 void appExit()
 {
 	pifXmodem_Destroy(&s_pstXmodem);
-	pifPulse_Destroy(&g_pstTimer1ms);
+	pifTimerManager_Destroy(&g_pstTimer1ms);
 	pifComm_Destroy(&s_pstSerial);
 	pifComm_Destroy(&s_pstCommLog);
     pifLog_Clear();

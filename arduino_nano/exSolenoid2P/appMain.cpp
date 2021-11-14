@@ -7,11 +7,11 @@
 typedef struct {
 	PifSolenoidDir enDir;
     PifSolenoid *pstSolenoid;
-    PifPulseItem *pstTimerItem;
+    PifTimer *pstTimerItem;
 } ST_SolenoidTest;
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 
 static ST_SolenoidTest s_stSolenoidTest = { SD_LEFT, NULL, NULL };
 
@@ -22,7 +22,7 @@ static void _evtSolenoidFinish(void *pvParam)
 
     pifSolenoid_ActionOnDir(pstParam->pstSolenoid, 0, pstParam->enDir);
 
-	pifPulse_StartItem(pstParam->pstTimerItem, 1000);	// 1000 * 1ms = 1sec
+	pifTimer_Start(pstParam->pstTimerItem, 1000);	// 1000 * 1ms = 1sec
 
 	pifLog_Printf(LT_INFO, "_evtSolenoidFinish(%d)", pstParam->enDir);
 
@@ -39,7 +39,7 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 3);							// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 3);					// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -53,12 +53,12 @@ void appSetup()
     		ST_2POINT, 30, actSolenoidOrder);										// 30ms
     if (!s_stSolenoidTest.pstSolenoid) return;
 
-    s_stSolenoidTest.pstTimerItem = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
+    s_stSolenoidTest.pstTimerItem = pifTimerManager_Add(g_pstTimer1ms, TT_ONCE);
     if (!s_stSolenoidTest.pstTimerItem) return;
-    pifPulse_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _evtSolenoidFinish, &s_stSolenoidTest);
-    pifPulse_StartItem(s_stSolenoidTest.pstTimerItem, 1000);						// 1000ms
+    pifTimer_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _evtSolenoidFinish, &s_stSolenoidTest);
+    pifTimer_Start(s_stSolenoidTest.pstTimerItem, 1000);					    	// 1000ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
 }

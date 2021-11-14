@@ -9,7 +9,7 @@
 #define SINGLE_SHOT
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 
 static PifAds1x1x *s_pstAds1x1x = NULL;
 static PifLed *s_pstLedL = NULL;
@@ -43,7 +43,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);							// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);					// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -90,5 +90,5 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifLed_BlinkOn(s_pstLedL, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
 }

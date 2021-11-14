@@ -3,10 +3,10 @@
 
 
 #include "pif_comm.h"
-#include "pif_pulse.h"
+#include "pif_timer.h"
 
 
-extern PifPulse *g_pstTimer1ms;
+extern PifTimerManager *g_pstTimer1ms;
 extern PifComm *g_pstCommLog;
 
 

@@ -7,7 +7,7 @@
 #include "pif_sensor_switch.h"
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 BOOL g_bPrintRawData = FALSE;
 
 static PifComm *s_pstCommGps = NULL;
@@ -69,7 +69,7 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);								// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);						// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -104,5 +104,5 @@ void appSetup()
 
     pifLed_BlinkOn(s_pstLedL, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
 }

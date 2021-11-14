@@ -6,7 +6,7 @@
 #include "pif_protocol.h"
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 
 static PifComm *s_pstSerial = NULL;
 static PifProtocol *s_pstProtocol = NULL;
@@ -30,7 +30,7 @@ const PifProtocolRequest stProtocolRequestTable[] = {
 };
 
 static struct {
-	PifPulseItem *pstDelay;
+	PifTimer *pstDelay;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 } s_stProtocolTest[2] = {
@@ -47,7 +47,7 @@ static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket)
 	}
 
 	if (pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].flags, NULL, 0)) {
-		pifPulse_StartItem(s_stProtocolTest[0].pstDelay, 500);
+		pifTimer_Start(s_stProtocolTest[0].pstDelay, 500);
 	}
 }
 
@@ -58,7 +58,7 @@ static void _fnProtocolQuestion31(PifProtocolPacket *pstPacket)
 		memcpy(s_stProtocolTest[1].ucData, pstPacket->p_data, pstPacket->data_count);
 	}
 
-	pifPulse_StartItem(s_stProtocolTest[1].pstDelay, 500);
+	pifTimer_Start(s_stProtocolTest[1].pstDelay, 500);
 }
 
 static void _fnProtocolResponse20(PifProtocolPacket *pstPacket)
@@ -99,7 +99,7 @@ void appSetup()
 
     if (!pifTaskManager_Init(5)) return;
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 3);					// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 3);			// 1000us
     if (!g_pstTimer1ms) return;
 
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
@@ -107,9 +107,9 @@ void appSetup()
     if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
 
     for (int i = 0; i < 2; i++) {
-    	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
+    	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(g_pstTimer1ms, TT_ONCE);
 		if (!s_stProtocolTest[i].pstDelay) return;
-		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
+		pifTimer_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
     s_pstSerial = pifComm_Create(PIF_ID_AUTO);

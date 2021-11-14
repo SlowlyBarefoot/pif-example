@@ -4,7 +4,7 @@
 #include "pif_log.h"
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 
 
 static void evtLedToggle(void *pvIssuer)
@@ -22,7 +22,7 @@ static void evtLedToggle(void *pvIssuer)
 void appSetup()
 {
 	PifComm *pstCommLog;
-	PifPulseItem *pstTimer1ms;
+	PifTimer *pstTimer1ms;
 
 	pif_Init(NULL);
 
@@ -37,13 +37,13 @@ void appSetup()
 
 	if (!pifLog_AttachComm(pstCommLog)) return;
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);				// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);		// 1000us
     if (!g_pstTimer1ms) return;
 
-    pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
+    pstTimer1ms = pifTimerManager_Add(g_pstTimer1ms, TT_REPEAT);
     if (!pstTimer1ms) return;
-    pifPulse_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
-    pifPulse_StartItem(pstTimer1ms, 500);								// 500ms
+    pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
+    pifTimer_Start(pstTimer1ms, 500);									// 500ms
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
 }

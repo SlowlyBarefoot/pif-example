@@ -6,7 +6,7 @@
 #include "pif_xmodem.h"
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 
 static PifComm *s_pstSerial = NULL;
 static PifXmodem *s_pstXmodem = NULL;
@@ -31,7 +31,7 @@ void appSetup()
 
     if (!pifTaskManager_Init(4)) return;
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 3);							// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 3);					// 1000us
     if (!g_pstTimer1ms) return;
 
     pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);

@@ -2,10 +2,10 @@
 #define APPMAIN_H_
 
 
-#include "pif_pulse.h"
+#include "pif_timer.h"
 
 
-extern PifPulse *g_pstTimer1ms;
+extern PifTimerManager *g_pstTimer1ms;
 
 
 BOOL appInit();

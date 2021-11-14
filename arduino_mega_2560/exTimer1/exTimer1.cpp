@@ -20,7 +20,7 @@ static void sysTickHook()
 {
 	pif_sigTimer1ms();
 
-	pifPulse_sigTick(g_pstTimer1ms);
+	pifTimerManager_sigTick(g_pstTimer1ms);
 }
 
 void evtLedToggle(void *pvIssuer)

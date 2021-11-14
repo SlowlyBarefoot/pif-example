@@ -2,22 +2,22 @@
 #include "main.h"
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 
 
 void appSetup()
 {
-	PifPulseItem *pstTimer1ms;
+	PifTimer *pstTimer1ms;
 
 	pif_Init(NULL);
 
     if (!pifTaskManager_Init(1)) return;
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);					// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);		// 1000us
     if (!g_pstTimer1ms) return;
 
-    pstTimer1ms = pifPulse_AddItem(g_pstTimer1ms, PT_REPEAT);
+    pstTimer1ms = pifTimerManager_Add(g_pstTimer1ms, TT_REPEAT);
     if (!pstTimer1ms) return;
-    pifPulse_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
-    pifPulse_StartItem(pstTimer1ms, 500);									// 500ms
+    pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
+    pifTimer_Start(pstTimer1ms, 500);									// 500ms
 }

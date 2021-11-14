@@ -37,7 +37,7 @@ extern "C" {
 	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-		pifPulse_sigTick(g_pstTimer1ms);
+		pifTimerManager_sigTick(g_pstTimer1ms);
 		return 0;
 	}
 }

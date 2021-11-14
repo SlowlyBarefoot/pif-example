@@ -30,7 +30,7 @@ const PifProtocolRequest stProtocolRequest2[] = {
 };
 
 static struct {
-	PifPulseItem *pstDelay;
+	PifTimer *pstDelay;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 } s_stProtocolTest[2] = {
@@ -69,7 +69,7 @@ static void _fnProtocolAnswer30(PifProtocolPacket *pstPacket)
 		pifLog_Printf(LT_INFO, "Answer30: Error=%d", pif_error);
 	}
 	else {
-		pifPulse_StartItem(s_stProtocolTest[0].pstDelay, 500);
+		pifTimer_Start(s_stProtocolTest[0].pstDelay, 500);
 	}
 }
 
@@ -81,7 +81,7 @@ static void _fnProtocolAnswer31(PifProtocolPacket *pstPacket)
 		memcpy(s_stProtocolTest[1].ucData, pstPacket->p_data, pstPacket->data_count);
 	}
 
-	pifPulse_StartItem(s_stProtocolTest[1].pstDelay, 500);
+	pifTimer_Start(s_stProtocolTest[1].pstDelay, 500);
 }
 
 static void _fnProtocolResponse20(PifProtocolPacket *pstPacket)
@@ -145,9 +145,9 @@ BOOL exSerial2_Setup()
     s_pstProtocol->evt_error = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
-    	s_stProtocolTest[i].pstDelay = pifPulse_AddItem(g_pstTimer1ms, PT_ONCE);
+    	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(g_pstTimer1ms, TT_ONCE);
 		if (!s_stProtocolTest[i].pstDelay) return FALSE;
-		pifPulse_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequest2[i]);
+		pifTimer_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequest2[i]);
     }
 
     return TRUE;

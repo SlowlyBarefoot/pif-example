@@ -97,11 +97,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_motor.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_pulse.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_pulse.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pif_ring_buffer.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_ring_buffer.h</locationURI>
@@ -110,6 +105,11 @@
 			<name>pif/core/include/pif_task.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_task.h</locationURI>
+		</link>
+		<link>
+			<name>pif/core/include/pif_timer.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_timer.h</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pif.c</name>
@@ -147,11 +147,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_motor.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_pulse.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_pulse.c</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pif_ring_buffer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_ring_buffer.c</locationURI>
@@ -160,6 +155,11 @@
 			<name>pif/core/source/pif_task.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_task.c</locationURI>
+		</link>
+		<link>
+			<name>pif/core/source/pif_timer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_timer.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

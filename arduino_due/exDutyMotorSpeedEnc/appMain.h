@@ -3,14 +3,14 @@
 
 
 #include "pif_duty_motor.h"
-#include "pif_pulse.h"
+#include "pif_timer.h"
 
 
 #define PIF_ID_SWITCH		0x100
 
 
 extern PifDutyMotor *g_pstMotor;
-extern PifPulse *g_pstTimer1ms;
+extern PifTimerManager *g_pstTimer1ms;
 
 
 void appSetup();

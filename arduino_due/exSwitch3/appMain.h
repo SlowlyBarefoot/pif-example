@@ -3,11 +3,12 @@
 
 
 #include "pif_sensor_switch.h"
+#include "pif_timer.h"
 
 
 extern PifSensor *g_pstPushSwitch;
 extern PifSensor *g_pstTiltSwitch;
-extern PifPulse *g_pstTimer1ms;
+extern PifTimerManager *g_pstTimer1ms;
 
 
 void appSetup();

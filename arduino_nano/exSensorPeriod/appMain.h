@@ -5,7 +5,7 @@
 #include "pif_sensor_digital.h"
 
 
-extern PifPulse *g_pstTimer1ms;
+extern PifTimerManager *g_pstTimer1ms;
 extern PifSensor *g_pstSensor;
 
 

@@ -7,7 +7,7 @@
 #define USE_FILTER_AVERAGE		0
 
 
-PifPulse *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
 PifSensor *g_pstSensor = NULL;
 
 #if USE_FILTER_AVERAGE
@@ -30,7 +30,7 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);									// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);							// 1000us
     if (!g_pstTimer1ms) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -53,5 +53,5 @@ void appSetup()
 
     if (!pifSensorDigital_StartPeriod(g_pstSensor, 500)) return;							// 500ms
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifPulse_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
 }

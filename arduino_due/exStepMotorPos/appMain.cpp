@@ -13,8 +13,8 @@
 #define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
 
 
-PifPulse *g_pstTimer1ms = NULL;
-PifPulse *g_pstTimer200us = NULL;
+PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager *g_pstTimer200us = NULL;
 
 static PifStepMotor *s_pstMotor = NULL;
 static PifSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
@@ -294,10 +294,10 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifPulse_Create(PIF_ID_AUTO, 1000, 1);									// 1000us
+    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);							// 1000us
     if (!g_pstTimer1ms) return;
 
-    g_pstTimer200us = pifPulse_Create(PIF_ID_AUTO, 200, 3);									// 200us
+    g_pstTimer200us = pifTimerManager_Create(PIF_ID_AUTO, 200, 3);							// 200us
     if (!g_pstTimer200us) return;
 
     pstCommLog = pifComm_Create(PIF_ID_AUTO);
@@ -336,5 +336,5 @@ void appSetup(PifActTimer1us act_timer1us)
     pifLed_BlinkOn(pstLedL, 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Pulse1ms=%d Pulse200us=%d\n", pifTaskManager_Count(),
-			pifPulse_Count(g_pstTimer1ms), pifPulse_Count(g_pstTimer200us));
+			pifTimerManager_Count(g_pstTimer1ms), pifTimerManager_Count(g_pstTimer200us));
 }

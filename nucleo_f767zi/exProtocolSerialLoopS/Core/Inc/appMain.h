@@ -2,7 +2,7 @@
 #define APP_MAIN_H
 
 
-#include "pif_pulse.h"
+#include "pif_timer.h"
 
 #include "exSerial1.h"
 #include "exSerial2.h"
@@ -17,7 +17,7 @@
 #define UART_FRAME_SIZE			8
 
 
-extern PifPulse *g_pstTimer1ms;
+extern PifTimerManager *g_pstTimer1ms;
 extern PifComm *g_pstCommLog;
 
 
