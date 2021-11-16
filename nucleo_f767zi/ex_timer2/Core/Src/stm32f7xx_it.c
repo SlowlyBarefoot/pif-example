@@ -187,7 +187,7 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
   pif_sigTimer1ms();
-  pifTimerManager_sigTick(g_pstTimer1ms);
+  pifTimerManager_sigTick(&g_timer_1ms);
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
@@ -209,7 +209,7 @@ void SysTick_Handler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
-  pifTimerManager_sigTick(g_pstTimer100us);
+  pifTimerManager_sigTick(&g_timer_100us);
 
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);

@@ -91,7 +91,7 @@ BOOL actLogStartTransfer()
 	uint8_t *pucData, ucState;
 
 	s_usLogTx = 0;
-	ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
+	ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
 		return TRUE;
@@ -118,7 +118,7 @@ BOOL actUart1StartTransfer()
 	uint8_t *pucData, ucState;
 
 	s_usSerial1Tx = UART_FRAME_SIZE;
-	ucState = pifComm_StartSendDatas(g_pstSerial1, &pucData, &s_usSerial1Tx);
+	ucState = pifComm_StartSendDatas(&g_serial1, &pucData, &s_usSerial1Tx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 #ifdef USE_INTERRUPT
 		HAL_UART_Transmit_IT(&huart4, pucData, s_usSerial1Tx);
@@ -137,7 +137,7 @@ BOOL actUart2StartTransfer()
 	uint8_t *pucData, ucState;
 
 	s_usSerial2Tx = UART_FRAME_SIZE;
-	ucState = pifComm_StartSendDatas(g_pstSerial2, &pucData, &s_usSerial2Tx);
+	ucState = pifComm_StartSendDatas(&g_serial2, &pucData, &s_usSerial2Tx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 #ifdef USE_INTERRUPT
 		HAL_UART_Transmit_IT(&huart5, pucData, s_usSerial2Tx);
@@ -156,26 +156,26 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *pucData, ucState;
 
 	if (huart->Instance == USART3) {
-		ucState = pifComm_EndSendDatas(g_pstCommLog, s_usLogTx);
+		ucState = pifComm_EndSendDatas(&g_comm_log, s_usLogTx);
 		if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
-			pifComm_FinishTransfer(g_pstCommLog);
+			pifComm_FinishTransfer(&g_comm_log);
 		}
 		else {
 			s_usLogTx = 0;
-			ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
+			ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
 			}
 		}
 	}
 	else if (huart->Instance == UART4) {
-		ucState = pifComm_EndSendDatas(g_pstSerial1, s_usSerial1Tx);
+		ucState = pifComm_EndSendDatas(&g_serial1, s_usSerial1Tx);
 		if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
-			pifComm_FinishTransfer(g_pstSerial1);
+			pifComm_FinishTransfer(&g_serial1);
 		}
 		else {
 			s_usSerial1Tx = UART_FRAME_SIZE;
-			ucState = pifComm_StartSendDatas(g_pstSerial1, &pucData, &s_usSerial1Tx);
+			ucState = pifComm_StartSendDatas(&g_serial1, &pucData, &s_usSerial1Tx);
 			if (ucState & 1) {
 #ifdef USE_INTERRUPT
 				HAL_UART_Transmit_IT(huart, pucData, s_usSerial1Tx);
@@ -188,13 +188,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 		}
 	}
 	else if (huart->Instance == UART5) {
-		ucState = pifComm_EndSendDatas(g_pstSerial2, s_usSerial2Tx);
+		ucState = pifComm_EndSendDatas(&g_serial2, s_usSerial2Tx);
 		if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
-			pifComm_FinishTransfer(g_pstSerial2);
+			pifComm_FinishTransfer(&g_serial2);
 		}
 		else {
 			s_usSerial2Tx = UART_FRAME_SIZE;
-			ucState = pifComm_StartSendDatas(g_pstSerial2, &pucData, &s_usSerial2Tx);
+			ucState = pifComm_StartSendDatas(&g_serial2, &pucData, &s_usSerial2Tx);
 			if (ucState & 1) {
 #ifdef USE_INTERRUPT
 				HAL_UART_Transmit_IT(huart, pucData, s_usSerial2Tx);
@@ -211,12 +211,12 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART3) {
-		pifComm_ReceiveData(g_pstCommLog, s_ucLogRx);
+		pifComm_ReceiveData(&g_comm_log, s_ucLogRx);
 		HAL_UART_Receive_IT(huart, &s_ucLogRx, 1);
 	}
 	else if (huart->Instance == UART4) {
 #ifdef USE_INTERRUPT
-		pifComm_ReceiveData(g_pstSerial1, s_ucSerial1Rx);
+		pifComm_ReceiveData(&g_serial1, s_ucSerial1Rx);
 		HAL_UART_Receive_IT(huart, &s_ucSerial1Rx, 1);
 #endif
 
@@ -227,7 +227,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
 	else if (huart->Instance == UART5) {
 #ifdef USE_INTERRUPT
-		pifComm_ReceiveData(g_pstSerial2, s_ucSerial2Rx);
+		pifComm_ReceiveData(&g_serial2, s_ucSerial2Rx);
 		HAL_UART_Receive_IT(huart, &s_ucSerial2Rx, 1);
 #endif
 

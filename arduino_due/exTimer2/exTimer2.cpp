@@ -23,14 +23,14 @@ extern "C" {
 	int sysTickHook()
 	{
 		pif_sigTimer1ms();
-		pifTimerManager_sigTick(g_pstTimer1ms);
+		pifTimerManager_sigTick(&g_timer_1ms);
 		return 0;
 	}
 }
 
 static void timer_100us()
 {
-	pifTimerManager_sigTick(g_pstTimer100us);
+	pifTimerManager_sigTick(&g_timer_100us);
 }
 
 void evtLedRedToggle(void *pvIssuer)

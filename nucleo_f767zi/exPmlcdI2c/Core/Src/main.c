@@ -78,7 +78,7 @@ BOOL actLogStartTransfer()
 	uint8_t *pucData, ucState;
 
 	s_usLogTx = 0;
-	ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
+	ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
 		return TRUE;
@@ -91,13 +91,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *pucData, ucState;
 
   if (huart->Instance == USART3) {
-		ucState = pifComm_EndSendDatas(g_pstCommLog, s_usLogTx);
+		ucState = pifComm_EndSendDatas(&g_comm_log, s_usLogTx);
 		if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
-			pifComm_FinishTransfer(g_pstCommLog);
+			pifComm_FinishTransfer(&g_comm_log);
 		}
 		else {
 			s_usLogTx = 0;
-			ucState = pifComm_StartSendDatas(g_pstCommLog, &pucData, &s_usLogTx);
+			ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
 			}
@@ -120,7 +120,7 @@ BOOL actPmlcdI2cWrite(PifI2c *pstOwner, uint16_t usSize)
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	if (hi2c->Instance == I2C1) {
-	    pifI2c_sigEndWrite(&g_pstPmlcdI2c->_i2c, TRUE);
+	    pifI2c_sigEndWrite(&g_pmlcd_i2c._i2c, TRUE);
 	}
 }
 

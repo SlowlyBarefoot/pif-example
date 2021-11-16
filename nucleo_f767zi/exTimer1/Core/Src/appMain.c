@@ -2,7 +2,7 @@
 #include "main.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
 
 void appSetup()
@@ -13,11 +13,10 @@ void appSetup()
 
     if (!pifTaskManager_Init(1)) return;
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);		// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;	// 1000us
 
-    pstTimer1ms = pifTimerManager_Add(g_pstTimer1ms, TT_REPEAT);
+    pstTimer1ms = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!pstTimer1ms) return;
     pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
-    pifTimer_Start(pstTimer1ms, 500);									// 500ms
+    pifTimer_Start(pstTimer1ms, 500);										// 500ms
 }

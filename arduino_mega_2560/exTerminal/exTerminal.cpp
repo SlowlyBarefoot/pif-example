@@ -47,12 +47,12 @@ BOOL actLogStartTransfer()
 
 ISR(USART0_UDRE_vect)
 {
-	USART_Send(0, g_pstCommLog);
+	USART_Send(0, &g_comm_log);
 }
 
 ISR(USART0_RX_vect)
 {
-	USART_Receive(0, g_pstCommLog);
+	USART_Receive(0, &g_comm_log);
 }
 
 #endif
@@ -68,7 +68,7 @@ void actLedLState(PifId usPifId, uint32_t unState)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-	pifTimerManager_sigTick(g_pstTimer1ms);
+	pifTimerManager_sigTick(&g_timer_1ms);
 }
 
 //The setup function is called once at startup of the sketch

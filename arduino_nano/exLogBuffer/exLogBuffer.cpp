@@ -23,7 +23,7 @@ void actLedL(SWITCH sw)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-	pifTimerManager_sigTick(g_pstTimer1ms);
+	pifTimerManager_sigTick(&g_timer_1ms);
 }
 
 //The setup function is called once at startup of the sketch

@@ -13,8 +13,8 @@
 #define PIF_ID_SWITCH			0x100
 
 
-extern PifTimerManager *g_pstTimer1ms;
-extern PifComm *g_pstCommLog;
+extern PifTimerManager g_timer_1ms;
+extern PifComm g_comm_log;
 
 
 void appSetup();

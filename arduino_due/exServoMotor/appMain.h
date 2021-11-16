@@ -5,8 +5,8 @@
 #include "pif_timer.h"
 
 
-extern PifTimerManager *g_pstTimer1ms;
-extern PifTimerManager *g_pstTimer100us;
+extern PifTimerManager g_timer_1ms;
+extern PifTimerManager g_timer_100us;
 
 
 void appSetup();

@@ -7,9 +7,9 @@
 #include "pif_timer.h"
 
 
-extern PifAds1x1x *g_pstAds1x1x;
-extern PifComm *g_pstCommLog;
-extern PifTimerManager *g_pstTimer1ms;
+extern PifAds1x1x g_ads1x1x;
+extern PifComm g_comm_log;
+extern PifTimerManager g_timer_1ms;
 
 
 void appSetup(PifActTimer1us act_timer1us);

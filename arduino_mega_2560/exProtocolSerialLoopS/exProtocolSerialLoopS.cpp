@@ -36,7 +36,7 @@ BOOL actLogStartTransfer()
 
 ISR(USART0_UDRE_vect)
 {
-	USART_Send(0, g_pstCommLog);
+	USART_Send(0, &g_comm_log);
 }
 
 #endif
@@ -108,12 +108,12 @@ BOOL actUart1StartTransfer()
 
 ISR(USART1_UDRE_vect)
 {
-	USART_Send(1, g_pstSerial1);
+	USART_Send(1, &g_serial1);
 }
 
 ISR(USART1_RX_vect)
 {
-	USART_Receive(1, g_pstSerial1);
+	USART_Receive(1, &g_serial1);
 }
 
 BOOL actUart2StartTransfer()
@@ -123,12 +123,12 @@ BOOL actUart2StartTransfer()
 
 ISR(USART2_UDRE_vect)
 {
-	USART_Send(2, g_pstSerial2);
+	USART_Send(2, &g_serial2);
 }
 
 ISR(USART2_RX_vect)
 {
-	USART_Receive(2, g_pstSerial2);
+	USART_Receive(2, &g_serial2);
 }
 
 #endif
@@ -136,7 +136,7 @@ ISR(USART2_RX_vect)
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
-	pifTimerManager_sigTick(g_pstTimer1ms);
+	pifTimerManager_sigTick(&g_timer_1ms);
 }
 
 //The setup function is called once at startup of the sketch

@@ -6,9 +6,9 @@
 #include "pif_task.h"
 
 
-static PifGpio *s_pstGpioL = NULL;
-static PifGpio *s_pstGpioRG = NULL;
-static PifGpio *s_pstGpioSwitch = NULL;
+static PifGpio s_gpio_l;
+static PifGpio s_gpio_rg;
+static PifGpio s_gpio_switch;
 
 
 static uint16_t _taskGpioTest(PifTask *pstTask)
@@ -18,19 +18,19 @@ static uint16_t _taskGpioTest(PifTask *pstTask)
 
 	(void)pstTask;
 
-	pifGpio_WriteAll(s_pstGpioL, swLedL);
+	pifGpio_WriteAll(&s_gpio_l, swLedL);
 	swLedL ^= 1;
 
-	pifGpio_WriteAll(s_pstGpioRG, ucLedRG);
+	pifGpio_WriteAll(&s_gpio_rg, ucLedRG);
 	ucLedRG = (ucLedRG + 1) & 3;
 
-	pifLog_Printf(LT_INFO, "Sw:%u", pifGpio_ReadAll(s_pstGpioSwitch));
+	pifLog_Printf(LT_INFO, "Sw:%u", pifGpio_ReadAll(&s_gpio_switch));
 	return 0;
 }
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
     pif_Init(NULL);
 
@@ -38,24 +38,20 @@ void appSetup()
 
     pifLog_Init();
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		    	// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;		    // 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    s_pstGpioL = pifGpio_Create(PIF_ID_AUTO, 1);
-    if (!s_pstGpioL) return;
-    pifGpio_AttachActOut(s_pstGpioL, actGpioLedL);
+    if (!pifGpio_Init(&s_gpio_l, PIF_ID_AUTO, 1)) return;
+    pifGpio_AttachActOut(&s_gpio_l, actGpioLedL);
 
-    s_pstGpioRG = pifGpio_Create(PIF_ID_AUTO, 2);
-    if (!s_pstGpioRG) return;
-    pifGpio_AttachActOut(s_pstGpioRG, actGpioLedRG);
+    if (!pifGpio_Init(&s_gpio_rg, PIF_ID_AUTO, 2)) return;
+    pifGpio_AttachActOut(&s_gpio_rg, actGpioLedRG);
 
-    s_pstGpioSwitch = pifGpio_Create(PIF_ID_AUTO, 1);
-    if (!s_pstGpioSwitch) return;
-    pifGpio_AttachActIn(s_pstGpioSwitch, actGpioSwitch);
+    if (!pifGpio_Init(&s_gpio_switch, PIF_ID_AUTO, 1)) return;
+    pifGpio_AttachActIn(&s_gpio_switch, actGpioSwitch);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskGpioTest, NULL, TRUE)) return;	// 500ms
 

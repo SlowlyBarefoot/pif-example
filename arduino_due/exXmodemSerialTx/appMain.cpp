@@ -6,10 +6,10 @@
 #include "pif_xmodem.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifComm *s_pstSerial = NULL;
-static PifXmodem *s_pstXmodem = NULL;
+static PifComm s_serial;
+static PifXmodem s_xmodem;
 
 
 static struct {
@@ -33,7 +33,7 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 		ucPacketNo++;
 		s_stXmodemTest.usLength = 128;
 		for (i = 0; i < s_stXmodemTest.usLength; i++) s_stXmodemTest.aucData[i] = rand() & 0xFF;
-		pifXmodem_SendData(s_pstXmodem, ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
+		pifXmodem_SendData(&s_xmodem, ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
 		s_stXmodemTest.retry = 3;
 		break;
 
@@ -46,11 +46,11 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 				s_stXmodemTest.usLength = s_stXmodemTest.usTotal - s_stXmodemTest.usPos;
 				if (s_stXmodemTest.usLength > 128) s_stXmodemTest.usLength = 128;
 				for (i = 0; i < s_stXmodemTest.usLength; i++) s_stXmodemTest.aucData[i] = rand() & 0xFF;
-				pifXmodem_SendData(s_pstXmodem, ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
+				pifXmodem_SendData(&s_xmodem, ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
 				s_stXmodemTest.retry = 3;
 			}
 			else {
-				pifXmodem_SendEot(s_pstXmodem);
+				pifXmodem_SendEot(&s_xmodem);
 				s_stXmodemTest.step = 2;
 			}
 			break;
@@ -64,8 +64,8 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 	case ASCII_NAK:
 		if (s_stXmodemTest.retry) {
 			s_stXmodemTest.retry--;
-			pifXmodem_SendData(s_pstXmodem, ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
-//			pifXmodem_SendCancel(s_pstXmodem);
+			pifXmodem_SendData(&s_xmodem, ucPacketNo, s_stXmodemTest.aucData, s_stXmodemTest.usLength);
+//			pifXmodem_SendCancel(&s_xmodem);
 		}
 		else {
 			pifLog_Printf(LT_ERROR, "Send failed");
@@ -94,8 +94,8 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
-	PifLed *pstLedL;
+	static PifComm s_comm_log;
+	static PifLed s_led_l;
 
     pif_Init(NULL);
 
@@ -103,32 +103,27 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 3);			// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;	// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
-    if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_AttachBlink(&s_led_l, 500)) return;							// 500ms
 
-    s_pstSerial = pifComm_Create(PIF_ID_AUTO);
-	if (!s_pstSerial) return;
-    if (!pifComm_AttachTask(s_pstSerial, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
-	s_pstSerial->act_receive_data = actXmodemReceiveData;
-	s_pstSerial->act_send_data = actXmodemSendData;
+	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
+    s_serial.act_receive_data = actXmodemReceiveData;
+    s_serial.act_send_data = actXmodemSendData;
 
-    s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_CRC);
-	if (!s_pstXmodem) return;
-    pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
-    pifXmodem_AttachEvtTxReceive(s_pstXmodem, _evtXmodemTxReceive);
+	if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return;
+    pifXmodem_AttachComm(&s_xmodem, &s_serial);
+    pifXmodem_AttachEvtTxReceive(&s_xmodem, _evtXmodemTxReceive);
 
-    pifLed_BlinkOn(pstLedL, 0);
+    pifLed_BlinkOn(&s_led_l, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

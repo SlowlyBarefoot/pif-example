@@ -5,10 +5,12 @@
 #include "pif_timer.h"
 
 
+#define SWITCH_COUNT          	2
+
 #define PIF_ID_SWITCH			0x100
 
 
-extern PifTimerManager *g_pstTimer1ms;
+extern PifTimerManager g_timer_1ms;
 
 
 void appSetup();

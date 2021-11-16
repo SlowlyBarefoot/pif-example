@@ -13,8 +13,8 @@
 #define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
-PifTimerManager *g_pstTimer200us = NULL;
+PifTimerManager g_timer_1ms;
+PifTimerManager g_timer_200us;
 
 static PifStepMotor *s_pstMotor = NULL;
 static PifSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
@@ -202,8 +202,8 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PifComm *pstCommLog;
-	PifLed *pstLedL;
+	static PifComm s_comm_log;
+	static PifLed s_led_l;
 
 	pif_Init(act_timer1us);
 
@@ -211,24 +211,20 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);								// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;						// 1000us
 
-    g_pstTimer200us = pifTimerManager_Create(PIF_ID_AUTO, 200, 3);								// 200us
-    if (!g_pstTimer200us) return;
+    if (!pifTimerManager_Init(&g_timer_200us, PIF_ID_AUTO, 200, 3)) return;						// 200us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;							// 1ms
-	pstCommLog->act_receive_data = actLogReceiveData;
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
+	s_comm_log.act_receive_data = actLogReceiveData;
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
-    pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
-    if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;												// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_AttachBlink(&s_led_l, 500)) return;												// 500ms
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
 		s_pstSwitch[i] = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
@@ -237,7 +233,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
     }
 
-    s_pstMotor = pifStepMotorSpeed_Create(PIF_ID_AUTO, g_pstTimer200us, STEP_MOTOR_RESOLUTION, 
+    s_pstMotor = pifStepMotorSpeed_Create(PIF_ID_AUTO, &g_timer_200us, STEP_MOTOR_RESOLUTION,
 			SMO_2P_4W_1S, 100);																	// 100ms
     if (!s_pstMotor) return;
     s_pstMotor->act_set_step = actSetStep;
@@ -249,8 +245,8 @@ void appSetup(PifActTimer1us act_timer1us)
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE)) return;				// 10ms
 
-    pifLed_BlinkOn(pstLedL, 0);
+    pifLed_BlinkOn(&s_led_l, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse1ms=%d Pulse200us=%d\n", pifTaskManager_Count(),
-			pifTimerManager_Count(g_pstTimer1ms), pifTimerManager_Count(g_pstTimer200us));
+	pifLog_Printf(LT_INFO, "Task=%d Timer 1ms=%d Timer 200us=%d\n", pifTaskManager_Count(),
+			pifTimerManager_Count(&g_timer_1ms), pifTimerManager_Count(&g_timer_200us));
 }

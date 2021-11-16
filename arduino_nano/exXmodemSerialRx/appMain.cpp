@@ -6,10 +6,10 @@
 #include "pif_xmodem.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifComm *s_pstSerial = NULL;
-static PifXmodem *s_pstXmodem = NULL;
+static PifComm s_serial;
+static PifXmodem s_xmodem;
 
 
 static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
@@ -18,25 +18,23 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	(void)pvIssuer;
 
 	if (usLevel) {
-	    pifXmodem_ReadyReceive(s_pstXmodem);
+	    pifXmodem_ReadyReceive(&s_xmodem);
 	}
 }
 
 void appSetup()
 {
-	PifLed *pstLedL;
+	static PifLed s_led_l;
 	PifSensor *pstPushSwitch;
 
     pif_Init(NULL);
 
     if (!pifTaskManager_Init(4)) return;
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 3);					// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;			// 1000us
 
-    pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
-    if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;									// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
 
 	pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, 0);
 	if (!pstPushSwitch) return;
@@ -44,15 +42,13 @@ void appSetup()
 	pifSensor_AttachAction(pstPushSwitch, actPushSwitchAcquire);
 	pifSensor_AttachEvtChange(pstPushSwitch, _evtPushSwitchChange, NULL);
 
-    s_pstSerial = pifComm_Create(PIF_ID_AUTO);
-	if (!s_pstSerial) return;
-    if (!pifComm_AttachTask(s_pstSerial, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
-	s_pstSerial->act_receive_data = actXmodemReceiveData;
-	s_pstSerial->act_send_data = actXmodemSendData;
+	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
+    s_serial.act_receive_data = actXmodemReceiveData;
+    s_serial.act_send_data = actXmodemSendData;
 
-    s_pstXmodem = pifXmodem_Create(PIF_ID_AUTO, g_pstTimer1ms, XT_CRC);
-    if (!s_pstXmodem) return;
-    pifXmodem_AttachComm(s_pstXmodem, s_pstSerial);
+    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return;
+    pifXmodem_AttachComm(&s_xmodem, &s_serial);
 
-    pifLed_BlinkOn(pstLedL, 0);
+    pifLed_BlinkOn(&s_led_l, 0);
 }

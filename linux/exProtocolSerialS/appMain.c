@@ -7,11 +7,11 @@
 #include "pif_protocol.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifComm *s_pstCommLog = NULL;
-static PifComm *s_pstSerial = NULL;
-static PifProtocol *s_pstProtocol = NULL;
+static PifComm s_comm_log;
+static PifComm s_serial;
+static PifProtocol s_protocol;
 
 static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket);
 static void _fnProtocolQuestion31(PifProtocolPacket *pstPacket);
@@ -65,7 +65,7 @@ static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket)
 		memcpy(s_stProtocolTest[0].ucData, pstPacket->p_data, pstPacket->data_count);
 	}
 
-	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].flags, NULL, 0)) {
+	if (!pifProtocol_MakeAnswer(&s_protocol, pstPacket, stProtocolQuestions[0].flags, NULL, 0)) {
 		pifLog_Printf(LT_INFO, "Question30: Error=%d", pif_error);
 	}
 	else {
@@ -111,11 +111,11 @@ static void _evtDelay(void *pvIssuer)
 	const PifProtocolRequest *pstOwner = (PifProtocolRequest *)pvIssuer;
 	int index = pstOwner->command & 0x0F;
 
-	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-		pifLog_Printf(LT_ERROR, "Delay(%u): DC=%d E=%d", index, s_pstProtocol->_id, pif_error);
+	if (!pifProtocol_MakeRequest(&s_protocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
+		pifLog_Printf(LT_ERROR, "Delay(%u): DC=%d E=%d", index, s_protocol._id, pif_error);
 	}
 	else {
-		pifLog_Printf(LT_INFO, "Delay(%u): DC=%d CNT=%u", index, s_pstProtocol->_id, s_stProtocolTest[index].ucDataCount);
+		pifLog_Printf(LT_INFO, "Delay(%u): DC=%d CNT=%u", index, s_protocol._id, s_stProtocolTest[index].ucDataCount);
 		if (s_stProtocolTest[index].ucDataCount) {
 			pifLog_Printf(LT_NONE, "\nData:");
 			for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
@@ -133,43 +133,39 @@ BOOL appInit()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 4);						// 1000us
-    if (!g_pstTimer1ms) return FALSE;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 4)) return FALSE;	// 1000us
 
-    s_pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!s_pstCommLog) return FALSE;
-	s_pstCommLog->act_send_data = actLogSendData;
-    if (!pifComm_AttachTask(s_pstCommLog, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return FALSE;
+	s_comm_log.act_send_data = actLogSendData;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
-	if (!pifLog_AttachComm(s_pstCommLog)) return FALSE;
+	if (!pifLog_AttachComm(&s_comm_log)) return FALSE;
 
-    s_pstSerial = pifComm_Create(PIF_ID_AUTO);
-	if (!s_pstSerial) return FALSE;
-	s_pstSerial->act_receive_data = actSerialReceiveData;
-	s_pstSerial->act_send_data = actSerialSendData;
-    if (!pifComm_AttachTask(s_pstSerial, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
+	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return FALSE;
+	s_serial.act_receive_data = actSerialReceiveData;
+	s_serial.act_send_data = actSerialSendData;
+    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
-    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions);
-    if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
-    s_pstProtocol->evt_error = _evtProtocolError;
+    if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions)) return FALSE;
+    pifProtocol_AttachComm(&s_protocol, &s_serial);
+    s_protocol.evt_error = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
-    	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(g_pstTimer1ms, TT_ONCE);
+    	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
 		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifTimer_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
     return TRUE;
 }
 
 void appExit()
 {
-	pifProtocol_Destroy(&s_pstProtocol);
-	pifTimerManager_Destroy(&g_pstTimer1ms);
-	pifComm_Destroy(&s_pstSerial);
-	pifComm_Destroy(&s_pstCommLog);
+	pifProtocol_Clear(&s_protocol);
+	pifTimerManager_Clear(&g_timer_1ms);
+	pifComm_Clear(&s_serial);
+	pifComm_Clear(&s_comm_log);
     pifLog_Clear();
     pif_Exit();
 }

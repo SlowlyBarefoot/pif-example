@@ -7,9 +7,9 @@
 #include "pif_timer.h"
 
 
-extern PifComm *g_pstCommLog;
-extern PifPmlcdI2c *g_pstPmlcdI2c;
-extern PifTimerManager *g_pstTimer1ms;
+extern PifComm g_comm_log;
+extern PifPmlcdI2c g_pmlcd_i2c;
+extern PifTimerManager g_timer_1ms;
 
 
 void appSetup(PifActTimer1us act_timer1us);

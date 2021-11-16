@@ -6,10 +6,10 @@
 #include "pif_protocol.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifComm *s_pstSerial = NULL;
-static PifProtocol *s_pstProtocol = NULL;
+static PifComm s_serial;
+static PifProtocol s_protocol;
 
 static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket);
 static void _fnProtocolQuestion31(PifProtocolPacket *pstPacket);
@@ -33,7 +33,7 @@ static struct {
 	PifTimer *pstDelay;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
-} s_stProtocolTest[2] = {
+} s_stProtocolTest[SWITCH_COUNT] = {
 		{ NULL, 0, },
 		{ NULL, 0, }
 };
@@ -46,7 +46,7 @@ static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket)
 		memcpy(s_stProtocolTest[0].ucData, pstPacket->p_data, pstPacket->data_count);
 	}
 
-	if (pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions[0].flags, NULL, 0)) {
+	if (pifProtocol_MakeAnswer(&s_protocol, pstPacket, stProtocolQuestions[0].flags, NULL, 0)) {
 		pifTimer_Start(s_stProtocolTest[0].pstDelay, 500);
 	}
 }
@@ -81,7 +81,7 @@ static void _evtDelay(void *pvIssuer)
 	const PifProtocolRequest *pstOwner = (PifProtocolRequest *)pvIssuer;
 	int index = pstOwner->command & 0x0F;
 
-	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
+	if (!pifProtocol_MakeRequest(&s_protocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
 	}
 	else {
 		if (s_stProtocolTest[index].ucDataCount) {
@@ -93,34 +93,31 @@ static void _evtDelay(void *pvIssuer)
 
 void appSetup()
 {
-	PifLed *pstLedL;
+	int i;
+	static PifLed s_led_l;
 
     pif_Init(NULL);
 
     if (!pifTaskManager_Init(5)) return;
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 3);			// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;	// 1000us
 
-    pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
-    if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;							// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_AttachBlink(&s_led_l, 500)) return;							// 500ms
 
-    for (int i = 0; i < 2; i++) {
-    	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(g_pstTimer1ms, TT_ONCE);
+    for (i = 0; i < SWITCH_COUNT; i++) {
+    	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
 		if (!s_stProtocolTest[i].pstDelay) return;
 		pifTimer_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
-    s_pstSerial = pifComm_Create(PIF_ID_AUTO);
-	if (!s_pstSerial) return;
-    if (!pifComm_AttachTask(s_pstSerial, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
-	s_pstSerial->act_receive_data = actSerialReceiveData;
-	s_pstSerial->act_send_data = actSerialSendData;
+	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
+    s_serial.act_receive_data = actSerialReceiveData;
+    s_serial.act_send_data = actSerialSendData;
 
-    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions);
-    if (!s_pstProtocol) return;
-    pifProtocol_AttachComm(s_pstProtocol, s_pstSerial);
+    if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions)) return;
+    pifProtocol_AttachComm(&s_protocol, &s_serial);
 
-    pifLed_BlinkOn(pstLedL, 0);
+    pifLed_BlinkOn(&s_led_l, 0);
 }

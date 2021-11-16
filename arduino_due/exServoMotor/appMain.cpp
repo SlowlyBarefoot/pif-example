@@ -6,8 +6,8 @@
 #include "pif_timer.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
-PifTimerManager *g_pstTimer100us = NULL;
+PifTimerManager g_timer_1ms;
+PifTimerManager g_timer_100us;
 PifTimer *g_pstPwm = NULL;
 
 static BOOL s_bStart = FALSE;
@@ -46,8 +46,8 @@ static uint16_t _taskServoMotor(PifTask *pstTask)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
-	PifLed *pstLedL;
+	static PifComm s_comm_log;
+	static PifLed s_led_l;
 
 	pif_Init(NULL);
 
@@ -55,31 +55,27 @@ void appSetup()
 
 	pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);						// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;				// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    g_pstTimer100us = pifTimerManager_Create(PIF_ID_AUTO, 100, 1);						// 100us
-    if (!g_pstTimer100us) return;
+    if (!pifTimerManager_Init(&g_timer_100us, PIF_ID_AUTO, 100, 1)) return;				// 100us
 
-    pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
-    if (!pstLedL) return;
-    if (!pifLed_AttachBlink(pstLedL, 500)) return;										// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_AttachBlink(&s_led_l, 500)) return;										// 500ms
 
-    g_pstPwm = pifTimerManager_Add(g_pstTimer100us, TT_PWM);
+    g_pstPwm = pifTimerManager_Add(&g_timer_100us, TT_PWM);
     if (!g_pstPwm) return;
     g_pstPwm->act_pwm = actPulsePwm;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 700, _taskServoMotor, NULL, TRUE)) return;	// 1000ms
 
-    pifLed_BlinkOn(pstLedL, 0);
+    pifLed_BlinkOn(&s_led_l, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse1ms=%d Pulse100us=%d\n", pifTaskManager_Count(),
-			pifTimerManager_Count(g_pstTimer1ms), pifTimerManager_Count(g_pstTimer100us));
+	pifLog_Printf(LT_INFO, "Task=%d Timer 1ms=%d Timer 100us=%d\n", pifTaskManager_Count(),
+			pifTimerManager_Count(&g_timer_1ms), pifTimerManager_Count(&g_timer_100us));
 }

@@ -5,9 +5,9 @@
 #include "pif_log.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifDotMatrix *s_pstDotMatrix = NULL;
+static PifDotMatrix s_dot_matrix;
 
 const uint8_t font8x8_basic[96][8] = {
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},   // U+0020 (space)
@@ -123,27 +123,27 @@ static uint16_t _taskDotMatrixTest(PifTask *pstTask)
 	nShift++;
 	switch (nShift) {
 	case 2:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_LEFT, DMSM_ONCE, 200, 3);
+		pifDotMatrix_ShiftOn(&s_dot_matrix, DMSD_LEFT, DMSM_ONCE, 200, 3);
 		break;
 
 	case 4:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_RIGHT, DMSM_ONCE, 200, 3);
+		pifDotMatrix_ShiftOn(&s_dot_matrix, DMSD_RIGHT, DMSM_ONCE, 200, 3);
 		break;
 
 	case 10:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_LEFT, DMSM_REPEAT_HOR, 200, 0);
+		pifDotMatrix_ShiftOn(&s_dot_matrix, DMSD_LEFT, DMSM_REPEAT_HOR, 200, 0);
 		break;
 
 	case 20:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_RIGHT, DMSM_REPEAT_HOR, 200, 0);
+		pifDotMatrix_ShiftOn(&s_dot_matrix, DMSD_RIGHT, DMSM_REPEAT_HOR, 200, 0);
 		break;
 
 	case 30:
-		pifDotMatrix_ShiftOn(s_pstDotMatrix, DMSD_LEFT, DMSM_PING_PONG_HOR, 200, 0);
+		pifDotMatrix_ShiftOn(&s_dot_matrix, DMSD_LEFT, DMSM_PING_PONG_HOR, 200, 0);
 		break;
 
 	case 50:
-		pifDotMatrix_ShiftOff(s_pstDotMatrix);
+		pifDotMatrix_ShiftOff(&s_dot_matrix);
 		nShift = 0;
 		break;
 	}
@@ -152,7 +152,7 @@ static uint16_t _taskDotMatrixTest(PifTask *pstTask)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 	char cPattern[] = "Hello";
 	static uint8_t ucPattern[5 * 8];
 	int n;
@@ -163,15 +163,13 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 2);							// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;					// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
+    s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
 	n = 0;
 	for (int k = 0; k < 8; k++) {
@@ -181,16 +179,15 @@ void appSetup()
 		}
 	}
 
-    s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
-    if (!s_pstDotMatrix) return;
-    s_pstDotMatrix->evt_shift_finish = _evtDotMatrixShiftFinish;
-    if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 1)) return;
-   	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 5 * 8, 8, ucPattern)) return;
+    if (!pifDotMatrix_Init(&s_dot_matrix, PIF_ID_AUTO, &g_timer_1ms, 8, 8, actDotMatrixDisplay)) return;
+    s_dot_matrix.evt_shift_finish = _evtDotMatrixShiftFinish;
+    if (!pifDotMatrix_SetPatternSize(&s_dot_matrix, 1)) return;
+   	if (!pifDotMatrix_AddPattern(&s_dot_matrix, 5 * 8, 8, ucPattern)) return;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskDotMatrixTest, NULL, TRUE)) return;	// 1000ms
 
-	pifDotMatrix_Start(s_pstDotMatrix);
+	pifDotMatrix_Start(&s_dot_matrix);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

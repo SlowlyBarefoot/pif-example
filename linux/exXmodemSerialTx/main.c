@@ -43,7 +43,7 @@ static void _TimerHandler()
 {
     pif_sigTimer1ms();
 
-	pifTimerManager_sigTick(g_pstTimer1ms);
+	pifTimerManager_sigTick(&g_timer_1ms);
 }
 
 int main(int argc, char **argv)

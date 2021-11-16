@@ -5,9 +5,9 @@
 #include "pif_sequence.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifSequence *s_pstSequence = NULL;
+static PifSequence s_sequence;
 
 static PifSequenceResult _fnSequence1(PifSequence *pstOwner);
 static PifSequenceResult _fnSequence2(PifSequence *pstOwner);
@@ -114,33 +114,33 @@ static uint16_t _taskSequence(PifTask *pstTask)
 {
 	(void)pstTask;
 
-	switch (s_pstSequence->_phase_no) {
+	switch (s_sequence._phase_no) {
 	case 0:
-		switch (s_pstSequence->step) {
+		switch (s_sequence.step) {
 		case 1:
-			s_pstSequence->step++;
-			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->step);
+			s_sequence.step++;
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_sequence.step);
 			break;
 		}
 		break;
 
 	case 1:
-		switch (s_pstSequence->step) {
+		switch (s_sequence.step) {
 		case 1:
 		case 3:
-			s_pstSequence->step++;
-			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->step);
+			s_sequence.step++;
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_sequence.step);
 			break;
 		}
 		break;
 
 	case 2:
-		switch (s_pstSequence->step) {
+		switch (s_sequence.step) {
 		case 1:
 		case 3:
 		case 5:
-			s_pstSequence->step++;
-			pifLog_Printf(LT_INFO, "Sequence: %d", s_pstSequence->step);
+			s_sequence.step++;
+			pifLog_Printf(LT_INFO, "Sequence: %d", s_sequence.step);
 			break;
 		}
 		break;
@@ -150,7 +150,7 @@ static uint16_t _taskSequence(PifTask *pstTask)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
 	pif_Init(act_timer1us);
 
@@ -158,24 +158,22 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifLog_Init();
 
-	g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);										// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;									// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    s_pstSequence = pifSequence_Create(PIF_ID_AUTO, g_pstTimer1ms, 10, s_astSequencePhaseList, NULL);	// 10ms
-    if (!s_pstSequence) return;
-    s_pstSequence->evt_error = _evtSequenceError;
+    if (!pifSequence_Init(&s_sequence, PIF_ID_AUTO, &g_timer_1ms, 10,
+    		s_astSequencePhaseList, NULL)) return;									// 10ms
+    s_sequence.evt_error = _evtSequenceError;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;						// 500ms
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskSequence, NULL, TRUE)) return;						// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskSequence, NULL, TRUE)) return;	// 500ms
 
-    pifSequence_Start(s_pstSequence);
+    pifSequence_Start(&s_sequence);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

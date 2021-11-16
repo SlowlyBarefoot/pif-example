@@ -7,12 +7,12 @@
 #include "pif_sensor_switch.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 BOOL g_bPrintRawData = FALSE;
 
-static PifComm *s_pstCommGps = NULL;
-static PifGpsNmea *s_pstGpsNmea = NULL;
-static PifLed *s_pstLedL = NULL;
+static PifComm s_comm_gps;
+static PifGpsNmea s_gps_nmea;
+static PifLed s_led_l;
 
 
 static void _evtGpsReceive(PifGps *pstOwner)
@@ -20,7 +20,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 	PifDegMin stLatDegMin, stLonDegMin;
 	PifDegMinSec stLatDegMinSec, stLonDegMinSec;
 
-	pifLed_EachToggle(s_pstLedL, 1);
+	pifLed_EachToggle(&s_led_l, 1);
 
 	pifGps_ConvertLatitude2DegMin(pstOwner, &stLatDegMin);
 	pifGps_ConvertLongitude2DegMin(pstOwner, &stLonDegMin);
@@ -60,7 +60,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 	PifSensor *pstPushSwitch;
 
 	pif_Init(NULL);
@@ -69,19 +69,16 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);						// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;				// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 2, actLedLState);
-    if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;									// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
+    if (!pifLed_AttachBlink(&s_led_l, 500)) return;										// 500ms
 
 	pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, 0);
 	if (!pstPushSwitch) return;
@@ -89,20 +86,18 @@ void appSetup()
 	pifSensor_AttachAction(pstPushSwitch, actPushSwitchAcquire);
 	pifSensor_AttachEvtChange(pstPushSwitch, _evtPushSwitchChange, NULL);
 
-	s_pstCommGps = pifComm_Create(PIF_ID_AUTO);
-	if (!s_pstCommGps) return;
-    if (!pifComm_AttachTask(s_pstCommGps, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
-	s_pstCommGps->act_receive_data = actGpsReceiveData;
-	s_pstCommGps->act_send_data = actGpsSendData;
+	if (!pifComm_Init(&s_comm_gps, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_gps, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
+    s_comm_gps.act_receive_data = actGpsReceiveData;
+    s_comm_gps.act_send_data = actGpsSendData;
 
-	s_pstGpsNmea = pifGpsNmea_Create(PIF_ID_AUTO);
-	if (!s_pstGpsNmea) return;
-	if (!pifGpsNmea_SetProcessMessageId(s_pstGpsNmea, 2, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_VTG)) return;
-	pifGpsNmea_SetEventMessageId(s_pstGpsNmea, NMEA_MESSAGE_ID_GGA);
-	pifGpsNmea_AttachComm(s_pstGpsNmea, s_pstCommGps);
-	pifGps_AttachEvent(&s_pstGpsNmea->_gps, _evtGpsReceive);
+	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
+	if (!pifGpsNmea_SetProcessMessageId(&s_gps_nmea, 2, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_VTG)) return;
+	pifGpsNmea_SetEventMessageId(&s_gps_nmea, NMEA_MESSAGE_ID_GGA);
+	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
+	pifGps_AttachEvent(&s_gps_nmea._gps, _evtGpsReceive);
 
-    pifLed_BlinkOn(s_pstLedL, 0);
+    pifLed_BlinkOn(&s_led_l, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

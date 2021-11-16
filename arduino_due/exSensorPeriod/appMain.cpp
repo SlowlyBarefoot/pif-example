@@ -7,7 +7,7 @@
 #define USE_FILTER_AVERAGE		0
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 PifSensor *g_pstSensor = NULL;
 
 #if USE_FILTER_AVERAGE
@@ -22,7 +22,7 @@ static void _evtSensorPeriod(PifId usPifId, uint16_t usLevel)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
 	pif_Init(NULL);
 
@@ -30,17 +30,15 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);							// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;					// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    g_pstSensor = pifSensorDigital_Create(PIF_ID_AUTO, g_pstTimer1ms);
+    g_pstSensor = pifSensorDigital_Create(PIF_ID_AUTO, &g_timer_1ms);
     if (!g_pstSensor) return;
     if (!pifSensorDigital_AttachTask(g_pstSensor, TM_RATIO, 3, TRUE)) return;				// 3%
 #if USE_FILTER_AVERAGE
@@ -53,5 +51,5 @@ void appSetup()
 
     if (!pifSensorDigital_StartPeriod(g_pstSensor, 500)) return;							// 500ms
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

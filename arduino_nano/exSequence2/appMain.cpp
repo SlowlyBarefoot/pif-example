@@ -7,10 +7,10 @@
 #include "pif_sensor_switch.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifLed *s_pstLedL = NULL;
-static PifLed *s_pstLedRGB = NULL;
+static PifLed s_led_l;
+static PifLed s_led_rgb;
 
 static PifSequenceResult _fnSequenceStart(PifSequence *pstOwner);
 static PifSequenceResult _fnSequenceRun(PifSequence *pstOwner);
@@ -22,13 +22,13 @@ const PifSequencePhase s_astSequencePhaseList[] = {
 		{ _fnSequenceStop, PIF_SEQUENCE_PHASE_NO_IDLE }
 };
 
+static PifSequence s_sequence[SEQUENCE_COUNT];
 static struct {
 	PifSensor *pstPushSwitch;
-	PifSequence *pstSequence;
 	BOOL bSequenceParam;
 } s_stSequenceTest[SEQUENCE_COUNT] = {
-		{ NULL, NULL, FALSE },
-		{ NULL, NULL, FALSE }
+		{ NULL, FALSE },
+		{ NULL, FALSE }
 };
 
 
@@ -39,7 +39,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	(void)pvIssuer;
 
 	if (usLevel) {
-		pifSequence_Start(s_stSequenceTest[index].pstSequence);
+		pifSequence_Start(&s_sequence[index]);
 	}
 	else {
 		s_stSequenceTest[index].bSequenceParam = TRUE;
@@ -54,7 +54,7 @@ static PifSequenceResult _fnSequenceStart(PifSequence *pstOwner)
 	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
 		index = pstOwner->_id - PIF_ID_SEQUENCE;
-		pifLed_EachOn(s_pstLedRGB, index);
+		pifLed_EachOn(&s_led_rgb, index);
 		s_stSequenceTest[index].bSequenceParam = FALSE;
 		return SR_NEXT;
 
@@ -82,7 +82,7 @@ static PifSequenceResult _fnSequenceStop(PifSequence *pstOwner)
 	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
 		index = pstOwner->_id - PIF_ID_SEQUENCE;
-		pifLed_EachOff(s_pstLedRGB, index);
+		pifLed_EachOff(&s_led_rgb, index);
 		return SR_NEXT;
 
 	default:
@@ -102,7 +102,7 @@ static void _evtSequenceError(PifSequence *pstOwner)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 	int i;
 
 	pif_Init(act_timer1us);
@@ -111,22 +111,18 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifLog_Init();
 
-	g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 4);												// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 4)) return;										// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;											// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;										// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
-    if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;															// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_AttachBlink(&s_led_l, 500)) return;																// 500ms
 
-    s_pstLedRGB = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, SEQUENCE_COUNT, actLedRGBState);
-    if (!s_pstLedRGB) return;
+    if (!pifLed_Init(&s_led_rgb, PIF_ID_AUTO, &g_timer_1ms, SEQUENCE_COUNT, actLedRGBState)) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
     	s_stSequenceTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
@@ -135,13 +131,12 @@ void appSetup(PifActTimer1us act_timer1us)
 		pifSensor_AttachAction(s_stSequenceTest[i].pstPushSwitch, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(s_stSequenceTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
 
-		s_stSequenceTest[i].pstSequence = pifSequence_Create(PIF_ID_SEQUENCE + i, g_pstTimer1ms, 10,			// 10ms
-				s_astSequencePhaseList, &s_stSequenceTest[i].bSequenceParam);
-	    if (!s_stSequenceTest[i].pstSequence) return;
-	    s_stSequenceTest[i].pstSequence->evt_error = _evtSequenceError;
+	    if (!pifSequence_Init(&s_sequence[i], PIF_ID_SEQUENCE + i, &g_timer_1ms, 10,							// 10ms
+				s_astSequencePhaseList, &s_stSequenceTest[i].bSequenceParam)) return;
+	    s_sequence[i].evt_error = _evtSequenceError;
     }
 
-    pifLed_BlinkOn(s_pstLedL, 0);
+    pifLed_BlinkOn(&s_led_l, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

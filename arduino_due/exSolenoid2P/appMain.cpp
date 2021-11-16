@@ -11,9 +11,10 @@ typedef struct {
 } ST_SolenoidTest;
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static ST_SolenoidTest s_stSolenoidTest = { SD_LEFT, NULL, NULL };
+static PifSolenoid s_solenoid;
+static ST_SolenoidTest s_stSolenoidTest = { SD_LEFT, &s_solenoid, NULL };
 
 
 static void _evtSolenoidFinish(void *pvParam)
@@ -31,7 +32,7 @@ static void _evtSolenoidFinish(void *pvParam)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
     pif_Init(NULL);
 
@@ -39,26 +40,23 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 3);					// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;			// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    s_stSolenoidTest.pstSolenoid = pifSolenoid_Create(PIF_ID_AUTO, g_pstTimer1ms,
-    		ST_2POINT, 30, actSolenoidOrder);										// 30ms
-    if (!s_stSolenoidTest.pstSolenoid) return;
+    if (!pifSolenoid_Init(&s_solenoid, PIF_ID_AUTO, &g_timer_1ms,
+    		ST_2POINT, 30, actSolenoidOrder)) return;								// 30ms
 
-    s_stSolenoidTest.pstTimerItem = pifTimerManager_Add(g_pstTimer1ms, TT_ONCE);
+    s_stSolenoidTest.pstTimerItem = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
     if (!s_stSolenoidTest.pstTimerItem) return;
     pifTimer_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _evtSolenoidFinish, &s_stSolenoidTest);
     pifTimer_Start(s_stSolenoidTest.pstTimerItem, 1000);					    	// 1000ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

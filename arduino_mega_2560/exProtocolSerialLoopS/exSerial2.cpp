@@ -5,9 +5,9 @@
 #include "pif_protocol.h"
 
 
-PifComm *g_pstSerial2 = NULL;
+PifComm g_serial2;
 
-static PifProtocol *s_pstProtocol = NULL;
+static PifProtocol s_protocol;
 
 static void _fnProtocolAnswer30(PifProtocolPacket *pstPacket);
 static void _fnProtocolAnswer31(PifProtocolPacket *pstPacket);
@@ -63,7 +63,7 @@ static void _fnProtocolAnswer30(PifProtocolPacket *pstPacket)
 		memcpy(s_stProtocolTest[0].ucData, pstPacket->p_data, pstPacket->data_count);
 	}
 
-	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions2[0].flags, NULL, 0)) {
+	if (!pifProtocol_MakeAnswer(&s_protocol, pstPacket, stProtocolQuestions2[0].flags, NULL, 0)) {
 		pifLog_Printf(LT_INFO, "Answer30: Error=%d", pif_error);
 	}
 	else {
@@ -109,11 +109,11 @@ static void _evtDelay(void *pvIssuer)
 	const PifProtocolRequest *pstOwner = (PifProtocolRequest *)pvIssuer;
 	int index = pstOwner->command & 0x0F;
 
-	if (!pifProtocol_MakeRequest(s_pstProtocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-		pifLog_Printf(LT_ERROR, "Delay(%u): DC=%u E=%u", index, s_pstProtocol->_id, pif_error);
+	if (!pifProtocol_MakeRequest(&s_protocol, pstOwner, s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
+		pifLog_Printf(LT_ERROR, "Delay(%u): DC=%u E=%u", index, s_protocol._id, pif_error);
 	}
 	else {
-		pifLog_Printf(LT_INFO, "Delay(%u): DC=%u CNT=%u", index, s_pstProtocol->_id, s_stProtocolTest[index].ucDataCount);
+		pifLog_Printf(LT_INFO, "Delay(%u): DC=%u CNT=%u", index, s_protocol._id, s_stProtocolTest[index].ucDataCount);
 #ifdef PRINT_PACKET_DATA
 		if (s_stProtocolTest[index].ucDataCount) {
 			pifLog_Printf(LT_NONE, "\nData:");
@@ -127,26 +127,24 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL exSerial2_Setup()
 {
-	g_pstSerial2 = pifComm_Create(PIF_ID_AUTO);
-	if (!g_pstSerial2) return FALSE;
-    if (!pifComm_AttachTask(g_pstSerial2, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
+	if (!pifComm_Init(&g_serial2, PIF_ID_AUTO)) return FALSE;
+    if (!pifComm_AttachTask(&g_serial2, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
 #ifdef USE_SERIAL
-	g_pstSerial2->act_receive_data = actSerial2ReceiveData;
-	g_pstSerial2->act_send_data = actSerial2SendData;
+    g_serial2.act_receive_data = actSerial2ReceiveData;
+    g_serial2.act_send_data = actSerial2SendData;
 #endif
 #ifdef USE_USART
-	if (!pifComm_AllocRxBuffer(g_pstSerial2, 64)) return FALSE;
-	if (!pifComm_AllocTxBuffer(g_pstSerial2, 64)) return FALSE;
-	g_pstSerial2->act_start_transfer = actUart2StartTransfer;
+	if (!pifComm_AllocRxBuffer(&g_serial2, 64)) return FALSE;
+	if (!pifComm_AllocTxBuffer(&g_serial2, 64)) return FALSE;
+	g_serial2.act_start_transfer = actUart2StartTransfer;
 #endif
 
-    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions2);
-    if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial2);
-    s_pstProtocol->evt_error = _evtProtocolError;
+    if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions2)) return FALSE;
+    pifProtocol_AttachComm(&s_protocol, &g_serial2);
+    s_protocol.evt_error = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
-    	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(g_pstTimer1ms, TT_ONCE);
+    	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
 		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifTimer_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequest2[i]);
     }

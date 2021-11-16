@@ -6,7 +6,7 @@
 
 BOOL appInit()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
     pif_Init(NULL);
 
@@ -14,13 +14,12 @@ BOOL appInit()
 
     pifLog_Init();
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return FALSE;
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return FALSE;
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return FALSE;
+	if (!pifLog_AttachComm(&s_comm_log)) return FALSE;
 
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
 
 	pifLog_Printf(LT_INFO, "Task=%d\n", pifTaskManager_Count());
     return TRUE;

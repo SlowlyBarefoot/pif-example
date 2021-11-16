@@ -2,8 +2,8 @@
 #include "main.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
-PifTimerManager *g_pstTimer100us = NULL;
+PifTimerManager g_timer_1ms;
+PifTimerManager g_timer_100us;
 
 
 void appSetup()
@@ -15,19 +15,17 @@ void appSetup()
 
     if (!pifTaskManager_Init(2)) return;
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);			// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;		// 1000us
 
-    g_pstTimer100us = pifTimerManager_Create(PIF_ID_AUTO, 100, 1);			// 100us
-    if (!g_pstTimer100us) return;
+    if (!pifTimerManager_Init(&g_timer_100us, PIF_ID_AUTO, 100, 1)) return;		// 100us
 
-    pstTimer1ms = pifTimerManager_Add(g_pstTimer1ms, TT_REPEAT);
+    pstTimer1ms = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!pstTimer1ms) return;
     pifTimer_AttachEvtFinish(pstTimer1ms, evtLedRedToggle, NULL);
-    if (!pifTimer_Start(pstTimer1ms, 5)) return;							// 5 * 1ms = 5ms
+    if (!pifTimer_Start(pstTimer1ms, 5)) return;								// 5 * 1ms = 5ms
 
-    pstTimer100us = pifTimerManager_Add(g_pstTimer100us, TT_REPEAT);
+    pstTimer100us = pifTimerManager_Add(&g_timer_100us, TT_REPEAT);
     if (!pstTimer100us) return;
     pifTimer_AttachEvtFinish(pstTimer100us, evtLedYellowToggle, NULL);
-    if (!pifTimer_Start(pstTimer100us, 5)) return;							// 5 * 100us = 500us
+    if (!pifTimer_Start(pstTimer100us, 5)) return;								// 5 * 100us = 500us
 }

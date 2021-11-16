@@ -6,9 +6,9 @@
 #include "pif_sensor_switch.h"
 
 
-PifComm *g_pstSerial1 = NULL;
+PifComm g_serial1;
 
-static PifProtocol *s_pstProtocol = NULL;
+static PifProtocol s_protocol;
 
 static void _fnProtocolAnswer20(PifProtocolPacket *pstPacket);
 static void _fnProtocolAnswer21(PifProtocolPacket *pstPacket);
@@ -79,7 +79,7 @@ static void _fnProtocolAnswer20(PifProtocolPacket *pstPacket)
 	_fnCompareData(pstPacket, 0);
 	_fnProtocolPrint(pstPacket, "Answer20");
 
-	if (!pifProtocol_MakeAnswer(s_pstProtocol, pstPacket, stProtocolQuestions1[0].flags, NULL, 0)) {
+	if (!pifProtocol_MakeAnswer(&s_protocol, pstPacket, stProtocolQuestions1[0].flags, NULL, 0)) {
 		pifLog_Printf(LT_INFO, "Answer20: Error=%d", pif_error);
 	}
 }
@@ -116,11 +116,11 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	if (usLevel) {
 		s_stProtocolTest[index].ucDataCount = rand() % 8;
 		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
-		if (!pifProtocol_MakeRequest(s_pstProtocol, &stProtocolRequests1[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
-			pifLog_Printf(LT_ERROR, "PSC(%d): DC=%d E=%d", index, s_pstProtocol->_id, pif_error);
+		if (!pifProtocol_MakeRequest(&s_protocol, &stProtocolRequests1[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
+			pifLog_Printf(LT_ERROR, "PSC(%d): DC=%d E=%d", index, s_protocol._id, pif_error);
 		}
 		else {
-			pifLog_Printf(LT_INFO, "PSC(%d): DC=%d CNT=%u", index, s_pstProtocol->_id, s_stProtocolTest[index].ucDataCount);
+			pifLog_Printf(LT_INFO, "PSC(%d): DC=%d CNT=%u", index, s_protocol._id, s_stProtocolTest[index].ucDataCount);
 #ifdef PRINT_PACKET_DATA
 			if (s_stProtocolTest[index].ucDataCount) {
 				pifLog_Printf(LT_NONE, "\nData:");
@@ -146,16 +146,14 @@ BOOL exSerial1_Setup()
 	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
     }
 
-    g_pstSerial1 = pifComm_Create(PIF_ID_AUTO);
-	if (!g_pstSerial1) return FALSE;
-    if (!pifComm_AttachTask(g_pstSerial1, TM_PERIOD_MS, 1, TRUE)) return FALSE;									// 1ms
-	g_pstSerial1->act_receive_data = actSerial1ReceiveData;
-	g_pstSerial1->act_send_data = actSerial1SendData;
+	if (!pifComm_Init(&g_serial1, PIF_ID_AUTO)) return FALSE;
+    if (!pifComm_AttachTask(&g_serial1, TM_PERIOD_MS, 1, TRUE)) return FALSE;									// 1ms
+    g_serial1.act_receive_data = actSerial1ReceiveData;
+    g_serial1.act_send_data = actSerial1SendData;
 
-    s_pstProtocol = pifProtocol_Create(PIF_ID_AUTO, g_pstTimer1ms, PT_SMALL, stProtocolQuestions1);
-    if (!s_pstProtocol) return FALSE;
-    pifProtocol_AttachComm(s_pstProtocol, g_pstSerial1);
-    s_pstProtocol->evt_error = _evtProtocolError;
+    if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions1)) return FALSE;
+    pifProtocol_AttachComm(&s_protocol, &g_serial1);
+    s_protocol.evt_error = _evtProtocolError;
 
     return TRUE;
 }

@@ -8,7 +8,7 @@
 
 extern PifSensor *g_pstPushSwitch;
 extern PifSensor *g_pstTiltSwitch;
-extern PifTimerManager *g_pstTimer1ms;
+extern PifTimerManager g_timer_1ms;
 
 
 void appSetup();

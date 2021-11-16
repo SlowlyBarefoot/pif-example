@@ -7,14 +7,14 @@
 
 PifSensor *g_pstPushSwitch = NULL;
 PifSensor *g_pstTiltSwitch = NULL;
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifLed *s_pstLedL = NULL;
+static PifLed s_led_l;
 
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 	PifTimer *pstTimerSwitch;
 
     pif_Init(NULL);
@@ -23,21 +23,18 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 2);					// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;			// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    s_pstLedL = pifLed_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actLedLState);
-    if (!s_pstLedL) return;
-    if (!pifLed_AttachBlink(s_pstLedL, 500)) return;								// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
 
-    pstTimerSwitch = pifTimerManager_Add(g_pstTimer1ms, TT_REPEAT);
+    pstTimerSwitch = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!pstTimerSwitch) return;
     pifTimer_AttachEvtFinish(pstTimerSwitch, evtSwitchAcquire, NULL);
 
@@ -51,9 +48,9 @@ void appSetup()
     if (!pifSensorSwitch_AttachTask(g_pstTiltSwitch, TM_RATIO, 3, TRUE)) return;	// 3%
 	pifSensor_AttachEvtChange(g_pstTiltSwitch, evtTiltSwitchChange, NULL);
 
-    pifLed_BlinkOn(s_pstLedL, 0);
+    pifLed_BlinkOn(&s_led_l, 0);
 
     pifTimer_Start(pstTimerSwitch, 20);										    	// 20ms
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

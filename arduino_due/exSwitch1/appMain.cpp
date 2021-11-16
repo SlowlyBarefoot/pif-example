@@ -11,7 +11,7 @@ static PifSensor *s_pstTiltSwitch = NULL;
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
     pif_Init(NULL);
 
@@ -19,12 +19,11 @@ void appSetup()
 
     pifLog_Init();
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;		    	// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;		   	// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     s_pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, OFF);
     if (!s_pstPushSwitch) return;

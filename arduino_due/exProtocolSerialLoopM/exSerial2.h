@@ -5,7 +5,7 @@
 #include "pif_comm.h"
 
 
-extern PifComm *g_pstSerial2;
+extern PifComm g_serial2;
 
 
 BOOL exSerial2_Setup();

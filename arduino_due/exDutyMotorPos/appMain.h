@@ -10,7 +10,7 @@
 
 
 extern PifDutyMotor *g_pstMotor;
-extern PifTimerManager *g_pstTimer1ms;
+extern PifTimerManager g_timer_1ms;
 
 
 void appSetup();

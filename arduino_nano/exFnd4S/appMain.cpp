@@ -5,9 +5,9 @@
 #include "pif_log.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifFnd *s_pstFnd = NULL;
+static PifFnd s_fnd;
 
 const uint8_t c_ucUserChar[] = { 0x01, 0x08 };
 
@@ -25,7 +25,7 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	if (swRun) {
 		nRun++;
 		if (nRun >= 30) {
-			pifFnd_Stop(s_pstFnd);
+			pifFnd_Stop(&s_fnd);
 			swRun = FALSE;
 			nRun = 0;
 		}
@@ -33,30 +33,30 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	else {
 		nRun++;
 		if (nRun >= 3) {
-			pifFnd_Start(s_pstFnd);
+			pifFnd_Start(&s_fnd);
 			swRun = TRUE;
 			nRun = 0;
 		}
 	}
 	if (swFloat) {
-		s_pstFnd->sub_numeric_digits = 0;
+		s_fnd.sub_numeric_digits = 0;
 		int32_t nValue = rand() % 14000 - 2000;
 		if (nValue <= -1000) {
-			pifFnd_SetString(s_pstFnd, (char *)"AAAA");
+			pifFnd_SetString(&s_fnd, (char *)"AAAA");
 		}
 		else if (nValue < 10000) {
-			pifFnd_SetInterger(s_pstFnd, nValue);
+			pifFnd_SetInterger(&s_fnd, nValue);
 		}
 		else {
-			pifFnd_SetString(s_pstFnd, (char *)"BBBB");
+			pifFnd_SetString(&s_fnd, (char *)"BBBB");
 		}
 
 		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
 	}
 	else {
-		s_pstFnd->sub_numeric_digits = 1;
+		s_fnd.sub_numeric_digits = 1;
 		double dValue = (rand() % 11000 - 1000) / 10.0;
-		pifFnd_SetFloat(s_pstFnd, dValue);
+		pifFnd_SetFloat(&s_fnd, dValue);
 
 		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%1f", swBlink, swFloat, dValue);
 	}
@@ -64,10 +64,10 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	nBlink = (nBlink + 1) % 20;
 	if (!nBlink) {
 		if (swBlink) {
-		    pifFnd_BlinkOff(s_pstFnd);
+		    pifFnd_BlinkOff(&s_fnd);
 		}
 		else {
-		    pifFnd_BlinkOn(s_pstFnd, 200);
+		    pifFnd_BlinkOn(&s_fnd, 200);
 		}
 		swBlink ^= 1;
 	}
@@ -76,7 +76,7 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
     pif_Init(NULL);
 
@@ -84,23 +84,20 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);					// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+    s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     pifFnd_SetUserChar(c_ucUserChar, 2);
-    s_pstFnd = pifFnd_Create(PIF_ID_AUTO, g_pstTimer1ms, 4, actFndDisplay);
-    if (!s_pstFnd) return;
-    pifFnd_SetPeriodPerDigit(s_pstFnd, 20);											// 20ms
+    if (!pifFnd_Init(&s_fnd, PIF_ID_AUTO, &g_timer_1ms, 4, actFndDisplay)) return;
+    pifFnd_SetPeriodPerDigit(&s_fnd, 20);											// 20ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return;	// 1000ms
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

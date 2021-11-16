@@ -5,9 +5,9 @@
 #include "pif_log.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifFnd *s_pstFnd = NULL;
+static PifFnd s_fnd;
 
 const uint8_t c_ucUserChar[] = {
 		0x77, /*  A  */	0x7C, /*  b  */ 0x39, /*  C  */ 0x5E, /*  d  */ 	// 0
@@ -28,19 +28,19 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 
 	(void)pstTask;
 
-	if (i < 10) pifFnd_SetInterger(s_pstFnd, i);
+	if (i < 10) pifFnd_SetInterger(&s_fnd, i);
 	else {
 		buf[0] = 'A' + i - 10;
 		buf[1] = 0;
-		pifFnd_SetString(s_pstFnd, buf);
+		pifFnd_SetString(&s_fnd, buf);
 	}
 	i = (i + 1) % 36;
 	if (!i) {
 		if (swBlink) {
-		    pifFnd_BlinkOff(s_pstFnd);
+		    pifFnd_BlinkOff(&s_fnd);
 		}
 		else {
-		    pifFnd_BlinkOn(s_pstFnd, 200);
+		    pifFnd_BlinkOn(&s_fnd, 200);
 		}
 		swBlink ^= 1;
 	}
@@ -51,7 +51,7 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
     pif_Init(NULL);
 
@@ -59,24 +59,21 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 1);					// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+    s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     pifFnd_SetUserChar(c_ucUserChar, 26);
-    s_pstFnd = pifFnd_Create(PIF_ID_AUTO, g_pstTimer1ms, 1, actFndDisplay);
-    if (!s_pstFnd) return;
+    if (!pifFnd_Init(&s_fnd, PIF_ID_AUTO, &g_timer_1ms, 1, actFndDisplay)) return;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return;	// 1000ms
 
-    pifFnd_Start(s_pstFnd);
+    pifFnd_Start(&s_fnd);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

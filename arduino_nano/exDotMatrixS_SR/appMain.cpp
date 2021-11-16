@@ -5,9 +5,9 @@
 #include "pif_log.h"
 
 
-PifTimerManager *g_pstTimer1ms = NULL;
+PifTimerManager g_timer_1ms;
 
-static PifDotMatrix *s_pstDotMatrix = NULL;
+static PifDotMatrix s_dot_matrix;
 
 const uint8_t font8x8_basic[10][8] = {
     { 0x3E, 0x63, 0x73, 0x7B, 0x6F, 0x67, 0x3E, 0x00},   // U+0030 (0)
@@ -30,18 +30,18 @@ static uint16_t _taskDotMatrixTest(PifTask *pstTask)
 
 	(void)pstTask;
 
-	pifDotMatrix_SelectPattern(s_pstDotMatrix, index);
+	pifDotMatrix_SelectPattern(&s_dot_matrix, index);
 	index++;
 	if (index >= 10) index = 0;
 
 	nBlink++;
 	switch (nBlink) {
 	case 10:
-	    pifDotMatrix_BlinkOn(s_pstDotMatrix, 200);
+	    pifDotMatrix_BlinkOn(&s_dot_matrix, 200);
 	    break;
 
 	case 20:
-	    pifDotMatrix_BlinkOff(s_pstDotMatrix);
+	    pifDotMatrix_BlinkOff(&s_dot_matrix);
 	    nBlink = 0;
 	    break;
 	}
@@ -50,7 +50,7 @@ static uint16_t _taskDotMatrixTest(PifTask *pstTask)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
+	static PifComm s_comm_log;
 
     pif_Init(NULL);
 
@@ -58,27 +58,24 @@ void appSetup()
 
     pifLog_Init();
 
-    g_pstTimer1ms = pifTimerManager_Create(PIF_ID_AUTO, 1000, 2);							// 1000us
-    if (!g_pstTimer1ms) return;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;					// 1000us
 
-    pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
+    s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    s_pstDotMatrix = pifDotMatrix_Create(PIF_ID_AUTO, g_pstTimer1ms, 8, 8, actDotMatrixDisplay);
-    if (!s_pstDotMatrix) return;
-    if (!pifDotMatrix_SetPatternSize(s_pstDotMatrix, 10)) return;
+    if (!pifDotMatrix_Init(&s_dot_matrix, PIF_ID_AUTO, &g_timer_1ms, 8, 8, actDotMatrixDisplay)) return;
+    if (!pifDotMatrix_SetPatternSize(&s_dot_matrix, 10)) return;
     for (int i = 0; i < 10; i++) {
-    	if (!pifDotMatrix_AddPattern(s_pstDotMatrix, 8, 8, (uint8_t *)font8x8_basic[i])) return;
+    	if (!pifDotMatrix_AddPattern(&s_dot_matrix, 8, 8, (uint8_t *)font8x8_basic[i])) return;
     }
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskDotMatrixTest, NULL, TRUE)) return;	// 1000ms
 
-	pifDotMatrix_Start(s_pstDotMatrix);
+	pifDotMatrix_Start(&s_dot_matrix);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(g_pstTimer1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

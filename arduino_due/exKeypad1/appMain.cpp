@@ -35,8 +35,8 @@ static void _evtKeypadDoublePressed(char cChar)
 
 void appSetup()
 {
-	PifComm *pstCommLog;
-	PifKeypad *pstKeypad;
+	static PifComm s_comm_log;
+	static PifKeypad s_keypad;
 
 	pif_Init(NULL);
 
@@ -44,20 +44,18 @@ void appSetup()
 
 	pifLog_Init();
 
-	pstCommLog = pifComm_Create(PIF_ID_AUTO);
-	if (!pstCommLog) return;
-    if (!pifComm_AttachTask(pstCommLog, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
-	pstCommLog->act_send_data = actLogSendData;
+	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+	s_comm_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(pstCommLog)) return;
+	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    pstKeypad = pifKeypad_Create(PIF_ID_AUTO, ROWS * COLS, c_cKeys);
-    if (!pstKeypad) return;
-    pifKeypad_AttachAction(pstKeypad, actKeypadAcquire);
-    pstKeypad->evt_pressed = _evtKeypadPressed;
-    pstKeypad->evt_released = _evtKeypadReleased;
-    pstKeypad->evt_long_released = _evtKeypadLongReleased;
-    pstKeypad->evt_double_pressed = _evtKeypadDoublePressed;
+    if (!pifKeypad_Init(&s_keypad, PIF_ID_AUTO, ROWS * COLS, c_cKeys)) return;
+    pifKeypad_AttachAction(&s_keypad, actKeypadAcquire);
+    s_keypad.evt_pressed = _evtKeypadPressed;
+    s_keypad.evt_released = _evtKeypadReleased;
+    s_keypad.evt_long_released = _evtKeypadLongReleased;
+    s_keypad.evt_double_pressed = _evtKeypadDoublePressed;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
 
