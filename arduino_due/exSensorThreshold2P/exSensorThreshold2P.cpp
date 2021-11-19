@@ -29,7 +29,7 @@ uint16_t taskSensorAcquisition(PifTask *pstTask)
 {
 	(void)pstTask;
 
-	pifSensorDigital_sigData(g_pstSensor, analogRead(PIN_CDS));
+	pifSensorDigital_sigData(&g_sensor, analogRead(PIN_CDS));
 	return 0;
 }
 

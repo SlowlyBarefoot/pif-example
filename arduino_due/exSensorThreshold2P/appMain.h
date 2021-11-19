@@ -6,7 +6,7 @@
 
 
 extern PifTimerManager g_timer_1ms;
-extern PifSensor *g_pstSensor;
+extern PifSensorDigital g_sensor;
 
 
 void appSetup();

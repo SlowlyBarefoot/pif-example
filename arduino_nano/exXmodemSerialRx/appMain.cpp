@@ -25,7 +25,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 void appSetup()
 {
 	static PifLed s_led_l;
-	PifSensor *pstPushSwitch;
+	PifSensorSwitch stPushSwitch;
 
     pif_Init(NULL);
 
@@ -36,11 +36,10 @@ void appSetup()
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
 
-	pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, 0);
-	if (!pstPushSwitch) return;
-    if (!pifSensorSwitch_AttachTask(pstPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
-	pifSensor_AttachAction(pstPushSwitch, actPushSwitchAcquire);
-	pifSensor_AttachEvtChange(pstPushSwitch, _evtPushSwitchChange, NULL);
+	if (!pifSensorSwitch_Init(&stPushSwitch, PIF_ID_AUTO, 0)) return;
+    if (!pifSensorSwitch_AttachTask(&stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
+	pifSensor_AttachAction(&stPushSwitch.parent, actPushSwitchAcquire);
+	pifSensor_AttachEvtChange(&stPushSwitch.parent, _evtPushSwitchChange, NULL);
 
 	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
     if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms

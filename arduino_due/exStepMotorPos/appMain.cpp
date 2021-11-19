@@ -16,8 +16,8 @@
 PifTimerManager g_timer_1ms;
 PifTimerManager g_timer_200us;
 
-static PifStepMotor *s_pstMotor = NULL;
-static PifSensor *s_pstSwitch[SWITCH_COUNT] = { NULL, NULL, NULL };
+static PifStepMotorPos s_motor;
+static PifSensorSwitch s_switch[SWITCH_COUNT];
 
 static int CmdStepMotorTest(int argc, char *argv[]);
 
@@ -32,7 +32,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 const PifStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		{
 				MM_D_CCW | MM_RT_TIME | MM_CFPS_YES,
-				NULL, NULL, &s_pstSwitch[0],
+				NULL, NULL, &s_switch[0].parent,
 				0, 0,
 				50, 0,
 				0, 0, 100,
@@ -40,7 +40,7 @@ const PifStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		},
 		{
 				MM_D_CW | MM_RT_TIME | MM_CFPS_YES,
-				NULL, NULL, &s_pstSwitch[2],
+				NULL, NULL, &s_switch[2].parent,
 				0, 0,
 				50, 0,
 				0, 0, 100,
@@ -86,14 +86,14 @@ static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
 		pifLog_Printf(LT_NONE, "\n  Stage: %d", s_stStepMotorTest.ucStage);
-		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_pstMotor->_operation);
+		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_motor.parent._operation);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
 		if (!strcmp(argv[1], "op")) {
 			int value = atoi(argv[2]);
 			if (value >= SMO_2P_4W_1S && value <= SMO_2P_4W_1_2S) {
-				pifStepMotor_SetOperation(s_pstMotor, (PifStepMotorOperation)value);
+				pifStepMotor_SetOperation(&s_motor.parent, (PifStepMotorOperation)value);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
@@ -101,13 +101,13 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			int value = atoi(argv[2]);
 			if (!value) {
 				s_stStepMotorTest.ucStage = 0;
-				pifStepMotorPos_Stop(s_pstMotor);
+				pifStepMotorPos_Stop(&s_motor);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 			else if (value <= STEP_MOTOR_STAGE_COUNT) {
 				if (!s_stStepMotorTest.ucStage) {
 					s_stStepMotorTest.ucStage = value;
-					pifStepMotorPos_Start(s_pstMotor, s_stStepMotorTest.ucStage - 1, 2000);
+					pifStepMotorPos_Start(&s_motor, s_stStepMotorTest.ucStage - 1, 2000);
 				}
 				else {
 					pifLog_Printf(LT_NONE, "\nError: Stage=%d", s_stStepMotorTest.ucStage);
@@ -133,12 +133,12 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	else if (argc > 1) {
 		if (!strcmp(argv[1], "off")) {
 			s_stStepMotorTest.ucStage = 0;
-			pifStepMotorPos_Stop(s_pstMotor);
+			pifStepMotorPos_Stop(&s_motor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[1], "em")) {
 			s_stStepMotorTest.ucStage = 0;
-			pifStepMotorPos_Emergency(s_pstMotor);
+			pifStepMotorPos_Emergency(&s_motor);
 		}
 		else if (!strcmp(argv[1], "init")) {
 			pifLog_Printf(LT_INFO, "Init Pos");
@@ -189,12 +189,12 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 	case 2:
 		if (!s_stStepMotorTest.ucStage) {
-			if (s_pstSwitch[0]->_curr_state == ON) {
+			if (s_switch[0].parent._curr_state == ON) {
 				pifLog_Printf(LT_INFO, "InitPos: Find");
 				s_stStepMotorTest.ucInitPos = 0;
 			}
 			else {
-				if (pifStepMotorPos_Start(s_pstMotor, 0, unTime)) {
+				if (pifStepMotorPos_Start(&s_motor, 0, unTime)) {
 					s_stStepMotorTest.ucStage = 1;
 					s_stStepMotorTest.ucInitPos = 3;
 					unTime += 500;
@@ -208,7 +208,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 	case 3:
 		if (!s_stStepMotorTest.ucStage) {
-			if (pifStepMotorPos_Start(s_pstMotor, 1, unTime)) {
+			if (pifStepMotorPos_Start(&s_motor, 1, unTime)) {
 				s_stStepMotorTest.ucStage = 2;
 				s_stStepMotorTest.ucInitPos = 2;
 				unTime += 500;
@@ -243,7 +243,7 @@ static uint16_t _taskRepeat(PifTask *pstTask)
 			if (s_stStepMotorTest.ucRepeatStop) {
 				s_stStepMotorTest.ucRepeat = 5;
 			}
-			else if (pifStepMotorPos_Start(s_pstMotor, 2, 0)) {
+			else if (pifStepMotorPos_Start(&s_motor, 2, 0)) {
 				s_stStepMotorTest.ucStage = 3;
 				s_stStepMotorTest.ucRepeat = 3;
 			}
@@ -258,7 +258,7 @@ static uint16_t _taskRepeat(PifTask *pstTask)
 			if (s_stStepMotorTest.ucRepeatStop) {
 				s_stStepMotorTest.ucRepeat = 5;
 			}
-			if (pifStepMotorPos_Start(s_pstMotor, 3, 0)) {
+			if (pifStepMotorPos_Start(&s_motor, 3, 0)) {
 				s_stStepMotorTest.ucStage = 2;
 				s_stStepMotorTest.ucRepeat = 2;
 			}
@@ -310,21 +310,19 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;											// 500ms
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-		s_pstSwitch[i] = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
-		if (!s_pstSwitch[i]) return;
-	    if (!pifSensorSwitch_AttachTask(s_pstSwitch[i], TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
-	    pifSensor_AttachAction(s_pstSwitch[i], actPhotoInterruptAcquire);
+		if (!pifSensorSwitch_Init(&s_switch[i], PIF_ID_SWITCH + i, 0)) return;
+	    if (!pifSensorSwitch_AttachTask(&s_switch[i], TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
+	    pifSensor_AttachAction(&s_switch[i].parent, actPhotoInterruptAcquire);
     }
 
-    s_pstMotor = pifStepMotorPos_Create(PIF_ID_AUTO, &g_timer_200us,
-    		STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S, 100);										// 100ms
-    if (!s_pstMotor) return;
-    s_pstMotor->act_set_step = actSetStep;
-    s_pstMotor->evt_stable = _evtStable;
-    s_pstMotor->evt_stop = _evtStop;
-    s_pstMotor->evt_error = _evtError;
-    pifStepMotor_SetReductionGearRatio(s_pstMotor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
-    pifStepMotorPos_AddStages(s_pstMotor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
+    if (!pifStepMotorPos_Init(&s_motor, PIF_ID_AUTO, &g_timer_200us,
+    		STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S, 100)) return;								// 100ms
+    s_motor.parent.act_set_step = actSetStep;
+    s_motor.parent.evt_stable = _evtStable;
+    s_motor.parent.evt_stop = _evtStop;
+    s_motor.parent.evt_error = _evtError;
+    pifStepMotor_SetReductionGearRatio(&s_motor.parent, STEP_MOTOR_REDUCTION_GEAR_RATIO);
+    pifStepMotorPos_AddStages(&s_motor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE)) return;			// 10ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskRepeat, NULL, TRUE)) return;				// 10ms

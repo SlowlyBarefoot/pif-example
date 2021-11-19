@@ -8,7 +8,7 @@
 
 
 PifTimerManager g_timer_1ms;
-PifSensor *g_pstSensor = NULL;
+PifSensorDigital g_sensor;
 
 #if USE_FILTER_AVERAGE
 static PIF_stSensorDigitalFilter s_stFilter;
@@ -38,18 +38,17 @@ void appSetup()
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    g_pstSensor = pifSensorDigital_Create(PIF_ID_AUTO, &g_timer_1ms);
-    if (!g_pstSensor) return;
-    if (!pifSensorDigital_AttachTask(g_pstSensor, TM_RATIO, 3, TRUE)) return;				// 3%
+    if (!pifSensorDigital_Init(&g_sensor, PIF_ID_AUTO, &g_timer_1ms)) return;
+    if (!pifSensorDigital_AttachTask(&g_sensor, TM_RATIO, 3, TRUE)) return;					// 3%
 #if USE_FILTER_AVERAGE
-    pifSensorDigital_AttachFilter(g_pstSensor, PIF_SENSOR_DIGITAL_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
+    pifSensorDigital_AttachFilter(&g_sensor, PIF_SENSOR_DIGITAL_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
 #endif
-    if (!pifSensorDigital_AttachEvtPeriod(g_pstSensor, _evtSensorPeriod)) return;
+    if (!pifSensorDigital_AttachEvtPeriod(&g_sensor, _evtSensorPeriod)) return;
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 100, taskSensorAcquisition, NULL, TRUE)) return;	// 100ms
 
-    if (!pifSensorDigital_StartPeriod(g_pstSensor, 500)) return;							// 500ms
+    if (!pifSensorDigital_StartPeriod(&g_sensor, 500)) return;								// 500ms
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

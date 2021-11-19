@@ -6,8 +6,8 @@
 #include "pif_timer.h"
 
 
-extern PifSensor *g_pstPushSwitch;
-extern PifSensor *g_pstTiltSwitch;
+extern PifSensorSwitch g_push_switch;
+extern PifSensorSwitch g_tilt_switch;
 extern PifTimerManager g_timer_1ms;
 
 

@@ -86,5 +86,5 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifLed_BlinkOn(&s_led_l, 0);
 
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

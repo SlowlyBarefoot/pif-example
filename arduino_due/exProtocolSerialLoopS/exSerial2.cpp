@@ -31,10 +31,7 @@ static struct {
 	PifTimer *pstDelay;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
-} s_stProtocolTest[2] = {
-		{ NULL, 0, },
-		{ NULL, 0, }
-};
+} s_stProtocolTest[2];
 
 
 static void _fnProtocolPrint(PifProtocolPacket *pstPacket, const char *pcName)
@@ -140,6 +137,8 @@ BOOL exSerial2_Setup()
     	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
 		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifTimer_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequest2[i]);
+
+    	s_stProtocolTest[i].ucDataCount = 0;
     }
 
     return TRUE;

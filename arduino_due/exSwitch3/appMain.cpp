@@ -5,8 +5,8 @@
 #include "pif_log.h"
 
 
-PifSensor *g_pstPushSwitch = NULL;
-PifSensor *g_pstTiltSwitch = NULL;
+PifSensorSwitch g_push_switch;
+PifSensorSwitch g_tilt_switch;
 PifTimerManager g_timer_1ms;
 
 static PifLed s_led;
@@ -56,17 +56,15 @@ void appSetup()
     if (!pstTimerSwitch) return;
     pifTimer_AttachEvtFinish(pstTimerSwitch, evtSwitchAcquire, NULL);
 
-    g_pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, OFF);
-    if (!g_pstPushSwitch) return;
-    if (!pifSensorSwitch_AttachTask(g_pstPushSwitch, TM_RATIO, 3, TRUE)) return;	// 3%
-    pifSensor_AttachEvtChange(g_pstPushSwitch, _evtPushSwitchChange, NULL);
-    if (!pifSensorSwitch_AttachFilter(g_pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 5, &s_stPushSwitchFilter)) return;
+    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF)) return;
+    if (!pifSensorSwitch_AttachTask(&g_push_switch, TM_RATIO, 3, TRUE)) return;		// 3%
+    pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, NULL);
+    if (!pifSensorSwitch_AttachFilter(&g_push_switch, PIF_SENSOR_SWITCH_FILTER_COUNT, 5, &s_stPushSwitchFilter)) return;
 
-    g_pstTiltSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, OFF);
-	if (!g_pstTiltSwitch) return;
-    if (!pifSensorSwitch_AttachTask(g_pstTiltSwitch, TM_RATIO, 3, TRUE)) return;	// 3%
-	pifSensor_AttachEvtChange(g_pstTiltSwitch, _evtTiltSwitchChange, NULL);
-    if (!pifSensorSwitch_AttachFilter(g_pstTiltSwitch, PIF_SENSOR_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
+	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF)) return;
+    if (!pifSensorSwitch_AttachTask(&g_tilt_switch, TM_RATIO, 3, TRUE)) return;		// 3%
+	pifSensor_AttachEvtChange(&g_tilt_switch.parent, _evtTiltSwitchChange, NULL);
+    if (!pifSensorSwitch_AttachFilter(&g_tilt_switch, PIF_SENSOR_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
 
     pifLed_BlinkOn(&s_led, 0);
 

@@ -86,9 +86,7 @@ void actOperateBreak(uint8_t ucState)
 
 static void _isrEncoder()
 {
-	if (g_pstMotor) {
-		pifDutyMotorSpeedEnc_sigEncoder(g_pstMotor);
-	}
+	pifDutyMotorSpeedEnc_sigEncoder(&g_motor);
 }
 
 void actLedLState(PifId usPifId, uint32_t unState)

@@ -31,14 +31,11 @@ const PifProtocolRequest stProtocolRequests[] = {
 };
 
 static struct {
-	PifSensor *pstPushSwitch;
+	PifSensorSwitch stPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 	PifSensorSwitchFilter stPushSwitchFilter;
-} s_stProtocolTest[SWITCH_COUNT] = {
-		{ NULL, 0, },
-		{ NULL, 0, }
-};
+} s_stProtocolTest[SWITCH_COUNT];
 
 
 static void _fnProtocolPrint(PifProtocolPacket *pstPacket, const char *pcName)
@@ -47,7 +44,7 @@ static void _fnProtocolPrint(PifProtocolPacket *pstPacket, const char *pcName)
 		pifLog_Printf(LT_INFO, "%s: PID=%d CNT=%u", pcName, pstPacket->packet_id, pstPacket->data_count);
 		if (pstPacket->data_count) {
 			pifLog_Printf(LT_NONE, "\nData:");
-			for (int i = 0; i < pstPacket->data_count; i++) {
+			for (uint16_t i = 0; i < pstPacket->data_count; i++) {
 				pifLog_Printf(LT_NONE, " %u", pstPacket->p_data[i]);
 			}
 		}
@@ -158,12 +155,14 @@ void appSetup()
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;															// 500ms
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-    	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
-		if (!s_stProtocolTest[i].pstPushSwitch) return;
-	    if (!pifSensorSwitch_AttachTask(s_stProtocolTest[i].pstPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
-		pifSensor_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
-		pifSensor_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
-	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return;
+		if (!pifSensorSwitch_Init(&s_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0)) return;
+	    if (!pifSensorSwitch_AttachTask(&s_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
+		pifSensor_AttachAction(&s_stProtocolTest[i].stPushSwitch.parent, actPushSwitchAcquire);
+		pifSensor_AttachEvtChange(&s_stProtocolTest[i].stPushSwitch.parent, _evtPushSwitchChange, NULL);
+	    if (!pifSensorSwitch_AttachFilter(&s_stProtocolTest[i].stPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7,
+	    		&s_stProtocolTest[i].stPushSwitchFilter)) return;
+
+    	s_stProtocolTest[i].ucDataCount = 0;
     }
 
 	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;

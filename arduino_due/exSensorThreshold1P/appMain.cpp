@@ -8,7 +8,7 @@
 
 
 PifTimerManager g_timer_1ms;
-PifSensor *g_pstSensor = NULL;
+PifSensorDigital g_sensor;
 
 #if USE_FILTER_AVERAGE
 static PIF_stSensorDigitalFilter s_stFilter;
@@ -40,14 +40,13 @@ void appSetup()
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    g_pstSensor = pifSensorDigital_Create(PIF_ID_AUTO, &g_timer_1ms);
-    if (!g_pstSensor) return;
-    if (!pifSensorDigital_AttachTask(g_pstSensor, TM_PERIOD_MS, 100, TRUE)) return;			// 100ms
+    if (!pifSensorDigital_Init(&g_sensor, PIF_ID_AUTO, &g_timer_1ms)) return;
+    if (!pifSensorDigital_AttachTask(&g_sensor, TM_PERIOD_MS, 100, TRUE)) return;			// 100ms
 #if USE_FILTER_AVERAGE
-    pifSensorDigital_AttachFilter(g_pstSensor, PIF_SENSOR_DIGITAL_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
+    pifSensorDigital_AttachFilter(&g_sensor, PIF_SENSOR_DIGITAL_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
 #endif
-    pifSensorDigital_SetEventThreshold1P(g_pstSensor, 550);
-    pifSensor_AttachEvtChange(g_pstSensor, _evtSensorThreshold, NULL);
+    pifSensorDigital_SetEventThreshold1P(&g_sensor, 550);
+    pifSensor_AttachEvtChange(&g_sensor.parent, _evtSensorThreshold, NULL);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
     if (!pifTaskManager_Add(TM_PERIOD_MS, 100, taskSensorAcquisition, NULL, TRUE)) return;	// 100ms

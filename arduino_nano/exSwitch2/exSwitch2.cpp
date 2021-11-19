@@ -30,8 +30,8 @@ void evtSwitchAcquire(void *pvIssuer)
 {
 	(void)pvIssuer;
 
-	pifSensorSwitch_sigData(g_pstPushSwitch, !digitalRead(PIN_PUSH_SWITCH));
-	pifSensorSwitch_sigData(g_pstTiltSwitch, digitalRead(PIN_TILT_SWITCH));
+	pifSensorSwitch_sigData(&g_push_switch, !digitalRead(PIN_PUSH_SWITCH));
+	pifSensorSwitch_sigData(&g_tilt_switch, digitalRead(PIN_TILT_SWITCH));
 }
 
 void evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)

@@ -5,8 +5,8 @@
 #include "pif_sensor_switch.h"
 
 
-static PifSensor *s_pstPushSwitch = NULL;
-static PifSensor *s_pstTiltSwitch = NULL;
+static PifSensorSwitch s_push_switch;
+static PifSensorSwitch s_tilt_switch;
 
 
 void appSetup()
@@ -25,17 +25,15 @@ void appSetup()
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    s_pstPushSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, OFF);
-    if (!s_pstPushSwitch) return;
-    if (!pifSensorSwitch_AttachTask(s_pstPushSwitch, TM_RATIO, 3, TRUE)) return;	// 3%
-    pifSensor_AttachAction(s_pstPushSwitch, actPushSwitchAcquire);
-    pifSensor_AttachEvtChange(s_pstPushSwitch, evtPushSwitchChange, NULL);
+    if (!pifSensorSwitch_Init(&s_push_switch, PIF_ID_AUTO, OFF)) return;
+    if (!pifSensorSwitch_AttachTask(&s_push_switch, TM_RATIO, 3, TRUE)) return;	// 3%
+    pifSensor_AttachAction(&s_push_switch.parent, actPushSwitchAcquire);
+    pifSensor_AttachEvtChange(&s_push_switch.parent, evtPushSwitchChange, NULL);
 
-    s_pstTiltSwitch = pifSensorSwitch_Create(PIF_ID_AUTO, OFF);
-	if (!s_pstTiltSwitch) return;
-    if (!pifSensorSwitch_AttachTask(s_pstTiltSwitch, TM_RATIO, 3, TRUE)) return;	// 3%
-	pifSensor_AttachAction(s_pstTiltSwitch, actTiltSwitchAcquire);
-	pifSensor_AttachEvtChange(s_pstTiltSwitch, evtTiltSwitchChange, NULL);
+	if (!pifSensorSwitch_Init(&s_tilt_switch, PIF_ID_AUTO, OFF)) return;
+    if (!pifSensorSwitch_AttachTask(&s_tilt_switch, TM_RATIO, 3, TRUE)) return;	// 3%
+	pifSensor_AttachAction(&s_tilt_switch.parent, actTiltSwitchAcquire);
+	pifSensor_AttachEvtChange(&s_tilt_switch.parent, evtTiltSwitchChange, NULL);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
 

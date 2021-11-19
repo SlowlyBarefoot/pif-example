@@ -31,14 +31,11 @@ const PifProtocolRequest stProtocolRequests1[] = {
 };
 
 static struct {
-	PifSensor *pstPushSwitch;
+	PifSensorSwitch stPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 	PifSensorSwitchFilter stPushSwitchFilter;
-} s_stProtocolTest[SWITCH_COUNT] = {
-		{ NULL, 0, },
-		{ NULL, 0, }
-};
+} s_stProtocolTest[SWITCH_COUNT];
 
 
 static void _fnProtocolPrint(PifProtocolPacket *pstPacket, const char *pcName)
@@ -140,12 +137,13 @@ BOOL exSerial1_Setup()
 	int i;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-    	s_stProtocolTest[i].pstPushSwitch = pifSensorSwitch_Create(PIF_ID_SWITCH + i, 0);
-		if (!s_stProtocolTest[i].pstPushSwitch) return FALSE;
-	    if (!pifSensorSwitch_AttachTask(s_stProtocolTest[i].pstPushSwitch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
-		pifSensor_AttachAction(s_stProtocolTest[i].pstPushSwitch, actPushSwitchAcquire);
-		pifSensor_AttachEvtChange(s_stProtocolTest[i].pstPushSwitch, _evtPushSwitchChange, NULL);
-	    if (!pifSensorSwitch_AttachFilter(s_stProtocolTest[i].pstPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
+		if (!pifSensorSwitch_Init(&s_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0)) return FALSE;
+	    if (!pifSensorSwitch_AttachTask(&s_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
+		pifSensor_AttachAction(&s_stProtocolTest[i].stPushSwitch.parent, actPushSwitchAcquire);
+		pifSensor_AttachEvtChange(&s_stProtocolTest[i].stPushSwitch.parent, _evtPushSwitchChange, NULL);
+	    if (!pifSensorSwitch_AttachFilter(&s_stProtocolTest[i].stPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
+
+    	s_stProtocolTest[i].ucDataCount = 0;
     }
 
 	if (!pifComm_Init(&g_serial1, PIF_ID_AUTO)) return FALSE;
