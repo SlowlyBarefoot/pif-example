@@ -86,7 +86,7 @@ void actOperateBreak(uint8_t ucState)
 
 static void _isrEncoder()
 {
-	pifDutyMotorSpeedEnc_sigEncoder(&g_motor);
+	pifPulse_sigEdge(&g_encoder, digitalRead(PIN_ENCODER) ? PE_RISING : PE_FALLING);
 }
 
 void actLedLState(PifId usPifId, uint32_t unState)
@@ -117,11 +117,11 @@ void setup()
 	pinMode(PIN_PHOTO_INTERRUPT_3, INPUT_PULLUP);
 
 	pinMode(PIN_ENCODER, INPUT_PULLUP);
-	attachInterrupt(PIN_ENCODER, _isrEncoder, FALLING);
+	attachInterrupt(PIN_ENCODER, _isrEncoder, CHANGE);
 
 	Serial.begin(115200);
 
-	appSetup();
+	appSetup(micros);
 }
 
 // The loop function is called in an endless loop

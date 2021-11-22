@@ -153,14 +153,14 @@ void appSetup(PifActTimer1us act_timer1us)
 
     if (!pifGpio_Init(&s_gpio_rgb, PIF_ID_AUTO, SEQUENCE_COUNT)) return;
     pifGpio_AttachActOut(&s_gpio_rgb, actGpioRGBState);
-    pifGpio_SetCsFlagAll(GP_CSF_ALL_BIT);
+    pifGpioColSig_SetFlag(GP_CSF_ALL_BIT);
 
     if (!pifLed_Init(&s_led_collect, PIF_ID_AUTO, &g_timer_1ms, 1, actLedCollectState)) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
 		if (!pifSensorSwitch_Init(&s_test[i].stPushSwitch, PIF_ID_SWITCH + i, 0)) return;
 	    if (!pifSensorSwitch_AttachTask(&s_test[i].stPushSwitch, TM_PERIOD_MS, 5, TRUE)) return;	// 5ms
-	    pifSensorSwitch_SetCsFlagEach(&s_test[i].stPushSwitch, SS_CSF_RAW_BIT);
+	    pifSensorSwitch_SetCsFlag(&s_test[i].stPushSwitch, SS_CSF_RAW_BIT);
 		pifSensor_AttachAction(&s_test[i].stPushSwitch.parent, actPushSwitchAcquire);
 		pifSensor_AttachEvtChange(&s_test[i].stPushSwitch.parent, _evtPushSwitchChange, &s_test[i]);
 
@@ -169,7 +169,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
 	    s_test[i].bSequenceParam = FALSE;
     }
-    pifSequence_SetCsFlagAll(SQ_CSF_ALL_BIT);
+    pifSequenceColSig_SetFlag(SQ_CSF_ALL_BIT);
 
     if (!pifSensorSwitch_Init(&s_push_switch_collect, PIF_ID_AUTO, 0)) return;
     if (!pifSensorSwitch_AttachTask(&s_push_switch_collect, TM_PERIOD_MS, 5, TRUE)) return;			// 5ms

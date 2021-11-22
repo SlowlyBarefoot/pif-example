@@ -2,18 +2,18 @@
 #define APP_MAIN_H
 
 
-#include "pif_duty_motor_speed_enc.h"
+#include "pif_pulse.h"
 #include "pif_timer.h"
 
 
 #define PIF_ID_SWITCH		0x100
 
 
-extern PifDutyMotorSpeedEnc g_motor;
+extern PifPulse g_encoder;
 extern PifTimerManager g_timer_1ms;
 
 
-void appSetup();
+void appSetup(PifActTimer1us act_timer1us);
 
 
 #endif	// APP_MAIN_H
