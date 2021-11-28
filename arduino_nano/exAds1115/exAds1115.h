@@ -14,6 +14,7 @@
 
 //end of add your includes here
 
+//#define I2C_WIRE_LIB
 
 //add your function definitions for the project exAds1115 here
 

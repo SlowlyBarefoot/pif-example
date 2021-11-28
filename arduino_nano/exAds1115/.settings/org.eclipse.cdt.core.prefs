@@ -52,7 +52,7 @@ environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.MCU/oper
 environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.MCU/value=atmega328p
 environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.PATH/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.PATH/value=/home/wonjh/github/pif-example/arduino_nano/exAds1115/Release
+environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.PATH/value=/media/wonjh/work/github/pif-example/arduino_nano/exAds1115/Release
 environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.PROJECT_NAME/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.PROJECT_NAME/operation=replace
 environment/project/io.sloeber.core.toolChain.release.748275173/A.BUILD.PROJECT_NAME/value=${ProjName}
@@ -445,10 +445,10 @@ environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.BOARD_NAM
 environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.BOARD_NAME/value=Arduino Nano
 environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.COM_PORT/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.COM_PORT/operation=replace
-environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.COM_PORT/value=/dev/ttyUSB1
+environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.COM_PORT/value=/dev/ttyUSB0
 environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}/////
+environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}//////////
 environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.748275173/JANTJE.EXTRA.ALL/value=

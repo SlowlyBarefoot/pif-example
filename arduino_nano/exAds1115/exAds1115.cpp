@@ -1,11 +1,16 @@
 // Do not remove the include below
-#include <MsTimer2.h>
-#include <Wire.h>
-
 #include "exAds1115.h"
 #include "appMain.h"
+#ifndef I2C_WIRE_LIB
+	#include "../i2c.h"
+#endif
 
 #include "pif_log.h"
+
+#include <MsTimer2.h>
+#ifdef I2C_WIRE_LIB
+	#include <Wire.h>
+#endif
 
 
 #define PIN_LED_L				13
@@ -27,24 +32,31 @@ void actLedLState(PifId usPifId, uint32_t unState)
 
 BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
 {
+#ifdef I2C_WIRE_LIB
 	uint16_t i;
-	BOOL bResult = TRUE;
 
 	Wire.beginTransmission(pstOwner->addr);
     for (i = 0; i < usSize; i++) {
     	Wire.write(pstOwner->p_data[i]);
     }
-    uint8_t status_ = Wire.endTransmission();
-    if (status_ != 0) {
-    	pifLog_Printf(LT_INFO, "I2CW(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
-        bResult = FALSE;
-    }
-    pifI2c_sigEndWrite(pstOwner, bResult);
-    return bResult;
+    if (Wire.endTransmission() != 0) goto fail;
+#else
+	if (!I2C_Start(pstOwner->addr, I2C_MODE_WRITE)) goto fail;
+	if (!I2C_Write(pstOwner->p_data, usSize)) goto fail;
+	I2C_Stop(1);
+#endif
+    pifI2c_sigEndWrite(pstOwner, TRUE);
+    return TRUE;
+
+fail:
+	pifI2c_sigEndWrite(pstOwner, FALSE);
+	pifLog_Printf(LT_INFO, "I2CW(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
+	return FALSE;
 }
 
 BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
 {
+#ifdef I2C_WIRE_LIB
 	uint16_t i;
 	uint8_t count;
 
@@ -54,12 +66,17 @@ BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
     for (i = 0; i < usSize; i++) {
     	pstOwner->p_data[i] = Wire.read();
     }
+#else
+	if (!I2C_Start(pstOwner->addr, I2C_MODE_READ)) goto fail;
+	if (!I2C_Read(pstOwner->p_data, usSize)) goto fail;
+	I2C_Stop(1);
+#endif
     pifI2c_sigEndRead(pstOwner, TRUE);
     return TRUE;
 
 fail:
-	pifLog_Printf(LT_INFO, "I2CR(%d): C=%u, S=%u:%u", pstOwner->p_data[0], usSize, count);
-    pifI2c_sigEndRead(pstOwner, FALSE);
+	pifI2c_sigEndRead(pstOwner, FALSE);
+	pifLog_Printf(LT_INFO, "I2CR(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
 	return FALSE;
 }
 
@@ -79,7 +96,11 @@ void setup()
 
 	Serial.begin(115200);
 
+#ifdef I2C_WIRE_LIB
 	Wire.begin();
+#else
+	I2C_Init(I2C_CLOCK_400KHz);
+#endif
 
     appSetup(NULL);
     //appSetup(micros);

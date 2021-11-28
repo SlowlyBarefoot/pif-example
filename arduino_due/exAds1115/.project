@@ -32,6 +32,16 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>i2c.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/i2c.c</locationURI>
+		</link>
+		<link>
+			<name>i2c.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/i2c.h</locationURI>
+		</link>
+		<link>
 			<name>pif</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -45,11 +55,6 @@
 			<name>core/variant</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x</locationURI>
-		</link>
-		<link>
-			<name>libraries/ADS1x1x</name>
-			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/ADS1x1x/0.1.1</locationURI>
 		</link>
 		<link>
 			<name>libraries/Wire</name>
