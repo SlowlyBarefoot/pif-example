@@ -48,8 +48,6 @@ int main(int argc, char **argv)
 
     while (s_unTimer) {
         pif_Loop();
-
-        pifTaskManager_Loop();
     }
 
 fail:

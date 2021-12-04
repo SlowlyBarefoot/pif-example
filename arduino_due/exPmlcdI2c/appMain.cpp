@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exPmlcdI2c.h"
 
-#include "pif_pmlcd_i2c.h"
 #include "pif_led.h"
 #include "pif_log.h"
+#include "pif_pmlcd_i2c.h"
 
 
 #define SINGLE_SHOT
@@ -11,8 +11,9 @@
 
 PifTimerManager g_timer_1ms;
 
-static PifPmlcdI2c s_pmlcd_i2c;
+static PifI2cPort s_i2c_port;
 static PifLed s_led_l;
+static PifPmlcdI2c s_pmlcd_i2c;
 
 
 uint16_t _taskPmlcdI2c(PifTask *pstTask)
@@ -41,7 +42,7 @@ uint16_t _taskPmlcdI2c(PifTask *pstTask)
 		break;
 
 	case 3:
-		pifPmlcdI2c_Clear(&s_pmlcd_i2c);
+		pifPmlcdI2c_DisplayClear(&s_pmlcd_i2c);
 		break;
 
 	case 4:
@@ -53,7 +54,7 @@ uint16_t _taskPmlcdI2c(PifTask *pstTask)
 		break;
 
 	case 5:
-		pifPmlcdI2c_Clear(&s_pmlcd_i2c);
+		pifPmlcdI2c_DisplayClear(&s_pmlcd_i2c);
 		break;
 	}
 	nStep++;
@@ -83,15 +84,17 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
 
-    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, 0x27)) return;
-    s_pmlcd_i2c._i2c.act_write = actPmlcdI2cWrite;
-#if 0
-    pifI2c_ScanAddress(&s_pmlcd_i2c._i2c);
-#else
-    pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8);
-    pifPmlcdI2c_Backlight(&s_pmlcd_i2c);
+    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1)) return;
+    s_i2c_port.act_write = actI2cWrite;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 3000, _taskPmlcdI2c, NULL, TRUE)) return;	// 3000ms
+    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &s_i2c_port, 0x27)) return;
+#if 0
+    pifI2cPort_ScanAddress(&s_i2c_port);
+#else
+    if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) return;
+    if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) return;
+
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskPmlcdI2c, NULL, TRUE)) return;	// 1000ms
 #endif
 
     pifLed_BlinkOn(&s_led_l, 0);

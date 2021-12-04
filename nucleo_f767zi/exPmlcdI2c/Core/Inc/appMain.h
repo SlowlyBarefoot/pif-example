@@ -3,12 +3,12 @@
 
 
 #include "pif_comm.h"
-#include "pif_pmlcd_i2c.h"
+#include "pif_i2c.h"
 #include "pif_timer.h"
 
 
 extern PifComm g_comm_log;
-extern PifPmlcdI2c g_pmlcd_i2c;
+extern PifI2cPort g_i2c_port;
 extern PifTimerManager g_timer_1ms;
 
 

@@ -100,8 +100,6 @@ int main(int argc, char **argv)
 
     while (1) {
         pif_Loop();
-
-        pifTaskManager_Loop();
     }
 
 fail:

@@ -19,7 +19,7 @@
 
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
-BOOL actPmlcdI2cWrite(PifI2c *pstOwner, uint16_t usSize);
+PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize);
 
 //Do not add code below this line
 #endif /* _exPmlcdI2c_H_ */

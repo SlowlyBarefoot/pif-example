@@ -61,8 +61,8 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 BOOL actLogStartTransfer();
 void actLedLState(PifId usPifId, uint32_t unState);
-BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize);
-BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize);
+PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize);
+PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize);
 
 /* USER CODE END EFP */
 

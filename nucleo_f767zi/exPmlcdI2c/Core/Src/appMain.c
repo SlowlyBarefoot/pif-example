@@ -3,16 +3,18 @@
 
 #include "pif_led.h"
 #include "pif_log.h"
+#include "pif_pmlcd_i2c.h"
 
 
 #define SINGLE_SHOT
 
 
 PifComm g_comm_log;
-PifPmlcdI2c g_pmlcd_i2c;
+PifI2cPort g_i2c_port;
 PifTimerManager g_timer_1ms;
 
 static PifLed s_led_l;
+static PifPmlcdI2c s_pmlcd_i2c;
 
 
 uint16_t _taskPmlcdI2c(PifTask *pstTask)
@@ -25,35 +27,35 @@ uint16_t _taskPmlcdI2c(PifTask *pstTask)
 	pifLog_Printf(LT_INFO, "Task:%u(%u) %lu", __LINE__, nStep, (*pif_act_timer1us)());
 	switch (nStep) {
 	case 0:
-		pifPmlcdI2c_LeftToRight(&g_pmlcd_i2c);
-		pifPmlcdI2c_SetCursor(&g_pmlcd_i2c, 0, 0);
-		pifPmlcdI2c_Print(&g_pmlcd_i2c, "Hello World.");
-		pifPmlcdI2c_SetCursor(&g_pmlcd_i2c, 0, 1);
-		pifPmlcdI2c_Printf(&g_pmlcd_i2c, "Go Home : %d", nNumber);
+		pifPmlcdI2c_LeftToRight(&s_pmlcd_i2c);
+		pifPmlcdI2c_SetCursor(&s_pmlcd_i2c, 0, 0);
+		pifPmlcdI2c_Print(&s_pmlcd_i2c, "Hello World.");
+		pifPmlcdI2c_SetCursor(&s_pmlcd_i2c, 0, 1);
+		pifPmlcdI2c_Printf(&s_pmlcd_i2c, "Go Home : %d", nNumber);
 		break;
 
 	case 1:
-		pifPmlcdI2c_ScrollDisplayLeft(&g_pmlcd_i2c);
+		pifPmlcdI2c_ScrollDisplayLeft(&s_pmlcd_i2c);
 		break;
 
 	case 2:
-		pifPmlcdI2c_ScrollDisplayRight(&g_pmlcd_i2c);
+		pifPmlcdI2c_ScrollDisplayRight(&s_pmlcd_i2c);
 		break;
 
 	case 3:
-		pifPmlcdI2c_Clear(&g_pmlcd_i2c);
+		pifPmlcdI2c_DisplayClear(&s_pmlcd_i2c);
 		break;
 
 	case 4:
-		pifPmlcdI2c_RightToLeft(&g_pmlcd_i2c);
-		pifPmlcdI2c_SetCursor(&g_pmlcd_i2c, 15, 0);
-		pifPmlcdI2c_Print(&g_pmlcd_i2c, "Hello World.");
-		pifPmlcdI2c_SetCursor(&g_pmlcd_i2c, 15, 1);
-		pifPmlcdI2c_Printf(&g_pmlcd_i2c, "Go Home : %d", nNumber);
+		pifPmlcdI2c_RightToLeft(&s_pmlcd_i2c);
+		pifPmlcdI2c_SetCursor(&s_pmlcd_i2c, 15, 0);
+		pifPmlcdI2c_Print(&s_pmlcd_i2c, "Hello World.");
+		pifPmlcdI2c_SetCursor(&s_pmlcd_i2c, 15, 1);
+		pifPmlcdI2c_Printf(&s_pmlcd_i2c, "Go Home : %d", nNumber);
 		break;
 
 	case 5:
-		pifPmlcdI2c_Clear(&g_pmlcd_i2c);
+		pifPmlcdI2c_DisplayClear(&s_pmlcd_i2c);
 		break;
 	}
 	nStep++;
@@ -82,15 +84,17 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
 
-    if (!pifPmlcdI2c_Init(&g_pmlcd_i2c, PIF_ID_AUTO, 0x27)) return;
-    g_pmlcd_i2c._i2c.act_write = actPmlcdI2cWrite;
-#if 0
-    pifI2c_ScanAddress(&g_pmlcd_i2c._i2c);
-#else
-    pifPmlcdI2c_Begin(&g_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8);
-    pifPmlcdI2c_Backlight(&g_pmlcd_i2c);
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1)) return;
+    g_i2c_port.act_write = actI2cWrite;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 3000, _taskPmlcdI2c, NULL, TRUE)) return;	// 3000ms
+    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27)) return;
+#if 0
+    pifI2c_ScanAddress(&s_pmlcd_i2c._i2c);
+#else
+    if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) return;
+    if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) return;
+
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskPmlcdI2c, NULL, TRUE)) return;	// 1000ms
 #endif
 
     pifLed_BlinkOn(&s_led_l, 0);

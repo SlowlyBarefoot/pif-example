@@ -20,8 +20,8 @@
 
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
-BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize);
-BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize);
+PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize);
+PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize);
 
 //Do not add code below this line
 #endif /* _exAds1115_H_ */

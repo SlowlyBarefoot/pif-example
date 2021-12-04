@@ -30,7 +30,7 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize)
 {
 #ifdef I2C_WIRE_LIB
 	uint16_t i;
@@ -45,16 +45,14 @@ BOOL actAds1115Write(PifI2c *pstOwner, uint16_t usSize)
 	if (!I2C_Write(pstOwner->p_data, usSize)) goto fail;
 	I2C_Stop(1);
 #endif
-    pifI2c_sigEndWrite(pstOwner, TRUE);
-    return TRUE;
+    return IR_COMPLETE;
 
 fail:
-	pifI2c_sigEndWrite(pstOwner, FALSE);
 	pifLog_Printf(LT_INFO, "I2CW(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
-	return FALSE;
+	return IR_ERROR;
 }
 
-BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize)
 {
 #ifdef I2C_WIRE_LIB
 	uint16_t i;
@@ -71,13 +69,11 @@ BOOL actAds1115Read(PifI2c *pstOwner, uint16_t usSize)
 	if (!I2C_Read(pstOwner->p_data, usSize)) goto fail;
 	I2C_Stop(1);
 #endif
-    pifI2c_sigEndRead(pstOwner, TRUE);
-    return TRUE;
+    return IR_COMPLETE;
 
 fail:
-	pifI2c_sigEndRead(pstOwner, FALSE);
 	pifLog_Printf(LT_INFO, "I2CR(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
-	return FALSE;
+	return IR_ERROR;
 }
 
 static void sysTickHook()

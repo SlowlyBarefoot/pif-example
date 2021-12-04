@@ -12,13 +12,14 @@
 PifTimerManager g_timer_1ms;
 
 static PifAds1x1x s_ads1x1x;
+static PifI2cPort s_i2c_port;
 static PifLed s_led_l;
+
+static int channel = ACM_SINGLE_0;
 
 
 uint16_t _taskAds1115(PifTask *pstTask)
 {
-	static int channel = ACM_SINGLE_0;
-
 	(void)pstTask;
 
 #ifdef SINGLE_SHOT
@@ -54,13 +55,15 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
 
-    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, AT_1115)) return;
-    s_ads1x1x._i2c.act_read = actAds1115Read;
-    s_ads1x1x._i2c.act_write = actAds1115Write;
+    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1)) return;
+    s_i2c_port.act_read = actI2cRead;
+    s_i2c_port.act_write = actI2cWrite;
+
+    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, AT_1115, &s_i2c_port)) return;
 
     stConfig = pifAds1x1x_GetConfig(&s_ads1x1x);
 #if 1
-    stConfig.bt.mux = ACM_SINGLE_3;
+    stConfig.bt.mux = channel;
     stConfig.bt.pga = ACP_FSR_6_144V;
 #ifdef SINGLE_SHOT
     stConfig.bt.mode = ACM_SINGLE_SHOT;

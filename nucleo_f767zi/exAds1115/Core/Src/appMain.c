@@ -1,6 +1,7 @@
 #include "appMain.h"
 #include "main.h"
 
+#include "pif_ads1x1x.h"
 #include "pif_led.h"
 #include "pif_log.h"
 
@@ -8,11 +9,14 @@
 #define SINGLE_SHOT
 
 
-PifAds1x1x g_ads1x1x;
 PifComm g_comm_log;
+PifI2cPort g_i2c_port;
 PifTimerManager g_timer_1ms;
 
+static PifAds1x1x s_ads1x1x;
 static PifLed s_led_l;
+
+static int channel = ACM_SINGLE_0;
 
 
 uint16_t _taskAds1115(PifTask *pstTask)
@@ -20,14 +24,12 @@ uint16_t _taskAds1115(PifTask *pstTask)
 	(void)pstTask;
 
 #ifdef SINGLE_SHOT
-	static int channel = ACM_SINGLE_0;
-
-	uint16_t usData = pifAds1x1x_ReadMux(&g_ads1x1x, (PifAds1x1xConfigMux)channel);
-	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, usData, usData * g_ads1x1x.convert_voltage);
+	uint16_t usData = pifAds1x1x_ReadMux(&s_ads1x1x, (PifAds1x1xConfigMux)channel);
+	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, usData, usData * s_ads1x1x.convert_voltage);
 	if (channel == ACM_SINGLE_3) channel = ACM_SINGLE_0; else channel++;
 #else
-	uint16_t usData = pifAds1x1x_Read(&g_ads1x1x);
-	pifLog_Printf(LT_INFO, "ADC: %u, Vol: %f", usData, usData * g_ads1x1x.convert_voltage);
+	uint16_t usData = pifAds1x1x_Read(&s_ads1x1x);
+	pifLog_Printf(LT_INFO, "ADC: %u, Vol: %f", usData, usData * s_ads1x1x.convert_voltage);
 #endif
 	return 0;
 }
@@ -54,13 +56,15 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
 
-    if (!pifAds1x1x_Init(&g_ads1x1x, PIF_ID_AUTO, AT_1115)) return;
-    g_ads1x1x._i2c.act_read = actAds1115Read;
-    g_ads1x1x._i2c.act_write = actAds1115Write;
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1)) return;
+    g_i2c_port.act_read = actI2cRead;
+    g_i2c_port.act_write = actI2cWrite;
 
-    stConfig = pifAds1x1x_GetConfig(&g_ads1x1x);
+    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, AT_1115, &g_i2c_port)) return;
+
+    stConfig = pifAds1x1x_GetConfig(&s_ads1x1x);
 #if 1
-    stConfig.bt.mux = ACM_SINGLE_3;
+    stConfig.bt.mux = channel;
     stConfig.bt.pga = ACP_FSR_6_144V;
 #ifdef SINGLE_SHOT
     stConfig.bt.mode = ACM_SINGLE_SHOT;
@@ -68,19 +72,19 @@ void appSetup(PifActTimer1us act_timer1us)
     stConfig.bt.mode = ACM_CONTINUOUS;
 #endif
     stConfig.bt.dr = ACD_DR_16B_0128_SPS;
-    pifAds1x1x_SetConfig(&g_ads1x1x, &stConfig);
+    pifAds1x1x_SetConfig(&s_ads1x1x, &stConfig);
 #else
-    pifAds1x1x_SetMux(&g_ads1x1x, ACM_SINGLE_3);
-    pifAds1x1x_SetGain(&g_ads1x1x, ACP_FSR_6_144V);
+    pifAds1x1x_SetMux(&s_ads1x1x, ACM_SINGLE_3);
+    pifAds1x1x_SetGain(&s_ads1x1x, ACP_FSR_6_144V);
 #ifdef SINGLE_SHOT
-    pifAds1x1x_SetMode(&g_ads1x1x, ACM_SINGLE_SHOT);
+    pifAds1x1x_SetMode(&s_ads1x1x, ACM_SINGLE_SHOT);
 #else
-    pifAds1x1x_SetMode(&g_ads1x1x, ACM_CONTINUOUS);
+    pifAds1x1x_SetMode(&s_ads1x1x, ACM_CONTINUOUS);
 #endif
-    pifAds1x1x_SetDataRate(&g_ads1x1x, ACD_DR_16B_0128_SPS);
+    pifAds1x1x_SetDataRate(&s_ads1x1x, ACD_DR_16B_0128_SPS);
 #endif
-    pifAds1x1x_SetLoThreshVoltage(&g_ads1x1x, 1.0);
-    pifAds1x1x_SetHiThreshVoltage(&g_ads1x1x, 2.0);
+    pifAds1x1x_SetLoThreshVoltage(&s_ads1x1x, 1.0);
+    pifAds1x1x_SetHiThreshVoltage(&s_ads1x1x, 2.0);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskAds1115, NULL, TRUE)) return;	// 1000ms
 
