@@ -72,7 +72,6 @@ PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize)
     return IR_COMPLETE;
 
 fail:
-	pifI2cPort_sigEndWrite(pstOwner->__p_port, FALSE);
 	pifLog_Printf(LT_INFO, "I2CR(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
 	return IR_ERROR;
 }
@@ -99,8 +98,8 @@ void setup()
 	I2C_Init(I2C_CLOCK_400KHz);
 #endif
 
-    appSetup(NULL);
-    //appSetup(micros);
+    //appSetup(NULL);
+    appSetup(micros);
 }
 
 // The loop function is called in an endless loop
