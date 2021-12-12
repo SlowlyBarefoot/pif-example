@@ -16,7 +16,7 @@ PifTimerManager g_timer_1ms;
 static PifAds1x1x s_ads1x1x;
 static PifLed s_led_l;
 
-static int channel = ACM_SINGLE_0;
+static int channel = ADS1X1X_MUX_SINGLE_0;
 
 
 uint16_t _taskAds1115(PifTask *pstTask)
@@ -24,9 +24,9 @@ uint16_t _taskAds1115(PifTask *pstTask)
 	(void)pstTask;
 
 #ifdef SINGLE_SHOT
-	uint16_t usData = pifAds1x1x_ReadMux(&s_ads1x1x, (PifAds1x1xConfigMux)channel);
+	uint16_t usData = pifAds1x1x_ReadMux(&s_ads1x1x, (PifAds1x1xMux)channel);
 	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, usData, usData * s_ads1x1x.convert_voltage);
-	if (channel == ACM_SINGLE_3) channel = ACM_SINGLE_0; else channel++;
+	if (channel == ADS1X1X_MUX_SINGLE_3) channel = ADS1X1X_MUX_SINGLE_0; else channel++;
 #else
 	uint16_t usData = pifAds1x1x_Read(&s_ads1x1x);
 	pifLog_Printf(LT_INFO, "ADC: %u, Vol: %f", usData, usData * s_ads1x1x.convert_voltage);
@@ -60,28 +60,28 @@ void appSetup(PifActTimer1us act_timer1us)
     g_i2c_port.act_read = actI2cRead;
     g_i2c_port.act_write = actI2cWrite;
 
-    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, AT_1115, &g_i2c_port)) return;
+    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR_0)) return;
 
-    stConfig = pifAds1x1x_GetConfig(&s_ads1x1x);
+    stConfig = s_ads1x1x._config;
 #if 1
-    stConfig.bt.mux = channel;
-    stConfig.bt.pga = ACP_FSR_6_144V;
+    stConfig.bit.mux = channel;
+    stConfig.bit.pga = ADS1X1X_PGA_FSR_6_144V;
 #ifdef SINGLE_SHOT
-    stConfig.bt.mode = ACM_SINGLE_SHOT;
+    stConfig.bit.mode = ADS1X1X_MODE_SINGLE_SHOT;
 #else
-    stConfig.bt.mode = ACM_CONTINUOUS;
+    stConfig.bit.mode = ADS1X1X_MODE_CONTINUOUS;
 #endif
-    stConfig.bt.dr = ACD_DR_16B_0128_SPS;
+    stConfig.bit.dr = ADS1X1X_DR_16B_0128_SPS;
     pifAds1x1x_SetConfig(&s_ads1x1x, &stConfig);
 #else
-    pifAds1x1x_SetMux(&s_ads1x1x, ACM_SINGLE_3);
-    pifAds1x1x_SetGain(&s_ads1x1x, ACP_FSR_6_144V);
+    pifAds1x1x_SetMux(&s_ads1x1x, ADS1X1X_MUX_SINGLE_3);
+    pifAds1x1x_SetGain(&s_ads1x1x, ADS1X1X_PGA_FSR_6_144V);
 #ifdef SINGLE_SHOT
-    pifAds1x1x_SetMode(&s_ads1x1x, ACM_SINGLE_SHOT);
+    pifAds1x1x_SetMode(&s_ads1x1x, ADS1X1X_MODE_SINGLE_SHOT);
 #else
-    pifAds1x1x_SetMode(&s_ads1x1x, ACM_CONTINUOUS);
+    pifAds1x1x_SetMode(&s_ads1x1x, ADS1X1X_MODE_CONTINUOUS);
 #endif
-    pifAds1x1x_SetDataRate(&s_ads1x1x, ACD_DR_16B_0128_SPS);
+    pifAds1x1x_SetDataRate(&s_ads1x1x, ADS1X1X_DR_16B_0128_SPS);
 #endif
     pifAds1x1x_SetLoThreshVoltage(&s_ads1x1x, 1.0);
     pifAds1x1x_SetHiThreshVoltage(&s_ads1x1x, 2.0);

@@ -15,6 +15,7 @@ static BOOL _waitTransmission(uint8_t twcr)
 	    count--;
 	    if (count == 0) {              			// we are in a blocking state => we don't insist
 	    	TWCR = 0;                  			// and we force a reset on TWINT register
+	    	pif_error = E_TIMEOUT;
 	    	return FALSE;
 	    }
 	}

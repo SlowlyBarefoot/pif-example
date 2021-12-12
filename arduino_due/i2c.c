@@ -21,11 +21,15 @@ static BOOL TWI_WaitTransferComplete(Twi *_twi, uint32_t _timeout)
 
 		_status_reg = TWI_GetStatus(_twi);
 
-		if (_status_reg & TWI_SR_NACK)
+		if (_status_reg & TWI_SR_NACK) {
+			pif_error = E_RECEIVE_NACK;
 			return FALSE;
+		}
 
-		if (--_timeout == 0)
+		if (--_timeout == 0) {
+			pif_error = E_TIMEOUT;
 			return FALSE;
+		}
 	}
 	return TRUE;
 }
@@ -39,11 +43,15 @@ static BOOL TWI_WaitByteSent(Twi *_twi, uint32_t _timeout)
 
 		_status_reg = TWI_GetStatus(_twi);
 
-		if (_status_reg & TWI_SR_NACK)
+		if (_status_reg & TWI_SR_NACK) {
+			pif_error = E_RECEIVE_NACK;
 			return FALSE;
+		}
 
-		if (--_timeout == 0)
+		if (--_timeout == 0) {
+			pif_error = E_TIMEOUT;
 			return FALSE;
+		}
 	}
 
 	return TRUE;
@@ -58,11 +66,15 @@ static BOOL TWI_WaitByteReceived(Twi *_twi, uint32_t _timeout)
 
 		_status_reg = TWI_GetStatus(_twi);
 
-		if (_status_reg & TWI_SR_NACK)
+		if (_status_reg & TWI_SR_NACK) {
+			pif_error = E_RECEIVE_NACK;
 			return FALSE;
+		}
 
-		if (--_timeout == 0)
+		if (--_timeout == 0) {
+			pif_error = E_TIMEOUT;
 			return FALSE;
+		}
 	}
 
 	return TRUE;
@@ -123,28 +135,25 @@ void I2C_RecvTimeout(uint32_t timeout)
 
 BOOL I2C_Write(uint8_t address, uint8_t* p_data, uint8_t size)
 {
-	uint8_t error = 0;
+	pif_error = E_SUCCESS;
 
 	// transmit buffer (blocking)
 	TWI_StartWrite(twi, address, 0, 0, p_data[0]);
-	if (!TWI_WaitByteSent(twi, xmit_timeout))
-		error = 2;	// error, got NACK on address transmit
+	TWI_WaitByteSent(twi, xmit_timeout);
 
-	if (error == 0) {
+	if (pif_error == E_SUCCESS) {
 		uint16_t sent = 1;
 		while (sent < size) {
 			TWI_WriteByte(twi, p_data[sent++]);
-			if (!TWI_WaitByteSent(twi, xmit_timeout))
-				error = 3;	// error, got NACK during data transmmit
+			if (!TWI_WaitByteSent(twi, xmit_timeout)) break;
 		}
 	}
 
-	if (error == 0) {
+	if (pif_error == E_SUCCESS) {
 		TWI_Stop(twi);
-		if (!TWI_WaitTransferComplete(twi, xmit_timeout))
-			error = 4;	// error, finishing up
+		TWI_WaitTransferComplete(twi, xmit_timeout);
 	}
-	return TRUE;
+	return !pif_error;
 }
 
 BOOL I2C_Read(uint8_t address, uint8_t* p_data, uint8_t size)
@@ -163,6 +172,5 @@ BOOL I2C_Read(uint8_t address, uint8_t* p_data, uint8_t size)
 			break;
 	}
 	while (readed < size);
-	TWI_WaitTransferComplete(twi, recv_timeout);
-	return TRUE;
+	return TWI_WaitTransferComplete(twi, recv_timeout);
 }
