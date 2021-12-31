@@ -14,7 +14,7 @@
 //end of add your includes here
 
 #define STORAGE_SECTOR_SIZE		16
-#define STORAGE_VOLUME			1024
+#define STORAGE_VOLUME			4096
 
 //add your function definitions for the project ex_storage here
 

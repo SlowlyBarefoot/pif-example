@@ -65,5 +65,5 @@ void I2C_Stop(uint8_t delay_1ms)
 {
 	TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
 
-	pifTaskManager_YieldMs(delay_1ms);
+	if (delay_1ms) pifTaskManager_YieldMs(delay_1ms);
 }
