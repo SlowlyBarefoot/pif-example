@@ -37,14 +37,18 @@ void actLedL(SWITCH sw)
 	digitalWrite(PIN_LED_L, sw);
 }
 
-BOOL actStorageRead(uint8_t* dst, uint32_t src, size_t size)
+BOOL actStorageRead(uint8_t* dst, uint32_t src, size_t size, void* p_issuer)
 {
+	(void)p_issuer;
+
 	memcpy(dst, dueFlashStorage.readAddress(src), size);
 	return TRUE;
 }
 
-BOOL actStorageWrite(uint32_t dst, uint8_t* src, size_t size)
+BOOL actStorageWrite(uint32_t dst, uint8_t* src, size_t size, void* p_issuer)
 {
+	(void)p_issuer;
+
 	dueFlashStorage.write(dst, src, size);
 	return TRUE;
 }

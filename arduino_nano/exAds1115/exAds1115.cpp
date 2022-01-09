@@ -1,15 +1,14 @@
 // Do not remove the include below
 #include "exAds1115.h"
 #include "appMain.h"
-#ifndef I2C_WIRE_LIB
-	#include "../i2c.h"
-#endif
 
 #include "pif_log.h"
 
 #include <MsTimer2.h>
-#ifdef I2C_WIRE_LIB
+#ifdef USE_I2C_WIRE
 	#include <Wire.h>
+#else
+	#include "../i2c.h"
 #endif
 
 
@@ -30,49 +29,68 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-#ifdef I2C_WIRE_LIB
-	uint16_t i;
+	uint8_t error;
+#ifdef USE_I2C_WIRE
+	int i;
 
-	Wire.beginTransmission(pstOwner->addr);
-    for (i = 0; i < usSize; i++) {
-    	Wire.write(pstOwner->p_data[i]);
+	Wire.beginTransmission(addr);
+	if (isize > 0) {
+		for (i = isize - 1; i >= 0; i--) {
+			Wire.write((iaddr >> (i * 8)) & 0xFF);
+		}
+	}
+    for (i = 0; i < size; i++) {
+    	Wire.write(p_data[i]);
     }
-    if (Wire.endTransmission() != 0) goto fail;
+    error = Wire.endTransmission();
+    if (error != 0) goto fail;
 #else
-	if (!I2C_Start(pstOwner->addr, I2C_MODE_WRITE)) goto fail;
-	if (!I2C_Write(pstOwner->p_data, usSize)) goto fail;
-	I2C_Stop(1);
+	if (!I2C_WriteAddr(addr, iaddr, isize, p_data, size)) {
+		error = pif_error;
+		goto fail;
+	}
 #endif
     return IR_COMPLETE;
 
 fail:
-	pifLog_Printf(LT_INFO, "I2CW(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
+	pifLog_Printf(LT_ERROR, "I2CW(%Xh): C=%Xh, S=%u E=%u", p_data[0], size, error);
 	return IR_ERROR;
 }
 
-PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-#ifdef I2C_WIRE_LIB
-	uint16_t i;
+	uint8_t error;
+#ifdef USE_I2C_WIRE
+	int i;
 	uint8_t count;
 
-    count = Wire.requestFrom(pstOwner->addr, (uint8_t)usSize);
-    if (count < usSize) goto fail;
+	if (isize > 0) {
+		Wire.beginTransmission(addr);
+		for (i = isize - 1; i >= 0; i--) {
+			Wire.write((iaddr >> (i * 8)) & 0xFF);
+		}
+	    error = Wire.endTransmission();
+	    if (error != 0) goto fail;
+	}
 
-    for (i = 0; i < usSize; i++) {
-    	pstOwner->p_data[i] = Wire.read();
+    count = Wire.requestFrom(addr, (uint8_t)size);
+    if (count < size) goto fail;
+
+    for (i = 0; i < size; i++) {
+    	p_data[i] = Wire.read();
     }
 #else
-	if (!I2C_Start(pstOwner->addr, I2C_MODE_READ)) goto fail;
-	if (!I2C_Read(pstOwner->p_data, usSize)) goto fail;
-	I2C_Stop(1);
+	if (!I2C_ReadAddr(addr, iaddr, isize, p_data, size)) {
+		error = pif_error;
+		goto fail;
+	}
 #endif
     return IR_COMPLETE;
 
 fail:
-	pifLog_Printf(LT_INFO, "I2CR(%d): C=%u, S=%u", pstOwner->p_data[0], usSize);
+	pifLog_Printf(LT_ERROR, "I2CR(%Xh): C=%Xh S=%u E=%u", p_data[0], size, error);
 	return IR_ERROR;
 }
 
@@ -92,7 +110,7 @@ void setup()
 
 	Serial.begin(115200);
 
-#ifdef I2C_WIRE_LIB
+#ifdef USE_I2C_WIRE
 	Wire.begin();
 #else
 	I2C_Init(I2C_CLOCK_400KHz);

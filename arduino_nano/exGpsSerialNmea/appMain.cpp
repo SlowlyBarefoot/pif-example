@@ -94,7 +94,7 @@ void appSetup()
 	if (!pifGpsNmea_SetProcessMessageId(&s_gps_nmea, 2, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_VTG)) return;
 	pifGpsNmea_SetEventMessageId(&s_gps_nmea, NMEA_MESSAGE_ID_GGA);
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
-	pifGps_AttachEvent(&s_gps_nmea._gps, _evtGpsReceive);
+	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
     pifLed_BlinkOn(&s_led_l, 0);
 

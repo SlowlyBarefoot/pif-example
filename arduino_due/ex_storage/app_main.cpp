@@ -44,7 +44,7 @@ static int _CmdPrintInfo(int argc, char *argv[])
 	(void)argc;
 	(void)argv;
 
-	pifStorage_PrintInfo(&s_storage);
+	pifStorage_PrintInfo(&s_storage, FALSE);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
@@ -64,7 +64,7 @@ static int _CmdAlloc(int argc, char *argv[])
 			pifLog_Printf(LT_NONE, "\nalloc: failed");
 		}
 		else {
-			pifStorage_PrintInfo(&s_storage);
+			pifStorage_PrintInfo(&s_storage, FALSE);
 		}
 		return PIF_LOG_CMD_NO_ERROR;
 	}
@@ -85,7 +85,7 @@ static int _CmdFree(int argc, char *argv[])
 			pifLog_Printf(LT_NONE, "\nfree: failed");
 		}
 		else {
-			pifStorage_PrintInfo(&s_storage);
+			pifStorage_PrintInfo(&s_storage, FALSE);
 		}
 		return PIF_LOG_CMD_NO_ERROR;
 	}
@@ -194,7 +194,8 @@ void appSetup()
     pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
     pifTimer_Start(pstTimer1ms, 500);										// 500ms
 
-	if (!pifStorage_Init(&s_storage, PIF_ID_AUTO, actStorageRead, actStorageWrite, 16, STORAGE_SECTOR_SIZE, STORAGE_VOLUME)) return;
+	if (!pifStorage_Init(&s_storage, PIF_ID_AUTO, 16, STORAGE_SECTOR_SIZE, STORAGE_VOLUME,
+			actStorageRead, actStorageWrite, NULL)) return;
 	if (!s_storage._is_format) {
 		pifLog_Printf(LT_INFO, "Storage Init : EC=%d\n", pif_error);
 		if (!pifStorage_Format(&s_storage)) {
@@ -207,5 +208,5 @@ void appSetup()
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 
-	pifStorage_PrintInfo(&s_storage);
+	pifStorage_PrintInfo(&s_storage, FALSE);
 }

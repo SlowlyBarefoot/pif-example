@@ -133,12 +133,35 @@ void I2C_RecvTimeout(uint32_t timeout)
 	recv_timeout = timeout;
 }
 
-BOOL I2C_Write(uint8_t address, uint8_t* p_data, uint8_t size)
+BOOL I2C_ReadAddr(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint8_t size)
+{
+	int readed = 0;
+
+	TWI_StartRead(twi, addr, iaddr, isize);
+	do {
+		// Stop condition must be set during the reception of last byte
+		if (readed + 1 == size)
+			TWI_SendSTOPCondition( twi);
+
+		if (TWI_WaitByteReceived(twi, recv_timeout))
+			p_data[readed++] = TWI_ReadByte(twi);
+		else
+			break;
+	}
+	while (readed < size);
+	return TWI_WaitTransferComplete(twi, recv_timeout);
+}
+
+BOOL I2C_Read(uint8_t addr, uint8_t* p_data, uint8_t size)
+{
+	return I2C_ReadAddr(addr, 0, 0, p_data, size);
+}
+
+BOOL I2C_WriteAddr(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint8_t size)
 {
 	pif_error = E_SUCCESS;
 
-	// transmit buffer (blocking)
-	TWI_StartWrite(twi, address, 0, 0, p_data[0]);
+	TWI_StartWrite(twi, addr, iaddr, isize, p_data[0]);
 	TWI_WaitByteSent(twi, xmit_timeout);
 
 	if (pif_error == E_SUCCESS) {
@@ -153,24 +176,11 @@ BOOL I2C_Write(uint8_t address, uint8_t* p_data, uint8_t size)
 		TWI_Stop(twi);
 		TWI_WaitTransferComplete(twi, xmit_timeout);
 	}
-	return !pif_error;
+	return pif_error == E_SUCCESS;
 }
 
-BOOL I2C_Read(uint8_t address, uint8_t* p_data, uint8_t size)
+BOOL I2C_Write(uint8_t addr, uint8_t* p_data, uint8_t size)
 {
-	int readed = 0;
-
-	TWI_StartRead(twi, address, 0, 0);
-	do {
-		// Stop condition must be set during the reception of last byte
-		if (readed + 1 == size)
-			TWI_SendSTOPCondition( twi);
-
-		if (TWI_WaitByteReceived(twi, recv_timeout))
-			p_data[readed++] = TWI_ReadByte(twi);
-		else
-			break;
-	}
-	while (readed < size);
-	return TWI_WaitTransferComplete(twi, recv_timeout);
+	return I2C_WriteAddr(addr, 0, 0, p_data, size);
 }
+

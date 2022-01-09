@@ -165,7 +165,7 @@ void appSetup()
 	pifGpsNmea_SetEventMessageId(&s_gps_nmea, NMEA_MESSAGE_ID_GGA);
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
 	s_gps_nmea.evt_text = _evtGpsNmeaText;
-	pifGps_AttachEvent(&s_gps_nmea._gps, _evtGpsReceive);
+	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
     pifLed_BlinkOn(&s_led_l, 0);
 

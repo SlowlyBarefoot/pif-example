@@ -16,8 +16,11 @@ void I2C_Exit();
 void I2C_XmitTimeout(uint32_t timeout);
 void I2C_RecvTimeout(uint32_t timeout);
 
-BOOL I2C_Write(uint8_t address, uint8_t* p_data, uint8_t size);
-BOOL I2C_Read(uint8_t address, uint8_t* p_data, uint8_t size);
+BOOL I2C_ReadAddr(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint8_t size);
+BOOL I2C_Read(uint8_t addr, uint8_t* p_data, uint8_t size);
+
+BOOL I2C_WriteAddr(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint8_t size);
+BOOL I2C_Write(uint8_t addr, uint8_t* p_data, uint8_t size);
 
 #ifdef __cplusplus
 }

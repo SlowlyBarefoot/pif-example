@@ -21,8 +21,8 @@
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
 void actLedL(SWITCH sw);
-BOOL actStorageRead(uint8_t* dst, uint32_t src, size_t size);
-BOOL actStorageWrite(uint32_t dst, uint8_t* src, size_t size);
+BOOL actStorageRead(uint8_t* dst, uint32_t src, size_t size, void* p_issuer);
+BOOL actStorageWrite(uint32_t dst, uint8_t* src, size_t size, void* p_issuer);
 
 //Do not add code below this line
 #endif /* _ex_storage_H_ */

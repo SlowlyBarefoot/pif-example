@@ -24,17 +24,20 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	uint16_t i;
 
-	Wire.beginTransmission(pstOwner->addr);
-    for (i = 0; i < usSize; i++) {
-    	Wire.write(pstOwner->p_data[i]);
+	(void)iaddr;
+	(void)isize;
+
+	Wire.beginTransmission(addr);
+    for (i = 0; i < size; i++) {
+    	Wire.write(p_data[i]);
     }
     uint8_t status_ = Wire.endTransmission();
     if (status_ != 0) {
-    	pifLog_Printf(LT_INFO, "I2CW(%xh): C=%u, S=%u", pstOwner->addr, pstOwner->p_data[0], usSize);
+    	pifLog_Printf(LT_ERROR, "I2CW(%Xh): C=%Xh S=%u E=%u", addr, p_data[0], size, status_);
         return IR_ERROR;
     }
     return IR_COMPLETE;

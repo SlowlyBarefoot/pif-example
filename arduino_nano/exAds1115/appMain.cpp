@@ -55,7 +55,7 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
 
-    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1)) return;
+    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1, 16)) return;
     s_i2c_port.act_read = actI2cRead;
     s_i2c_port.act_write = actI2cWrite;
 

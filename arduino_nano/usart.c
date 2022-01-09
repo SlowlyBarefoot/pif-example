@@ -11,10 +11,11 @@ typedef struct {
 	volatile uint8_t *ucsrb;
 	volatile uint8_t *ucsrc;
 	volatile uint8_t *udr;
+	BOOL mpcm;					// multi processor communication mode
 } stUsart;
 
 static stUsart s_stUsart = {
-		&UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, &UCSR0C, &UDR0
+		&UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, &UCSR0C, &UDR0, FALSE
 };
 
 
@@ -38,6 +39,11 @@ void USART_Init(uint32_t baud, uint8_t config, BOOL bRxInt)
 	if (bRxInt)	*s_stUsart.ucsrb |= (1 << RXCIE0);
 }
 
+BOOL USART_SetMultiProcessCommMode(BOOL mpcm)
+{
+	s_stUsart.mpcm = mpcm;
+}
+
 BOOL USART_StartTransfer()
 {
 	*s_stUsart.ucsrb |= (1 << UDRIE0); // Enables the Interrupt
@@ -53,7 +59,7 @@ void USART_Send(PifComm *pstComm)
 		*s_stUsart.udr = ucData;
 
 #ifdef MPCM0
-		*s_stUsart.ucsra = (*s_stUsart.ucsra & ((1 << U2X0) | (1 << MPCM0))) | (1 << TXC0);
+		*s_stUsart.ucsra = (*s_stUsart.ucsra & ((1 << U2X0) | (s_stUsart.mpcm << MPCM0))) | (1 << TXC0);
 #else
 		*s_stUsart.ucsra = (*s_stUsart.ucsra & ((1 << U2X0) | (1 << TXC0)));
 #endif

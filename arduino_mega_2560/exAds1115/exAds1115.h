@@ -14,14 +14,14 @@
 
 //end of add your includes here
 
-//#define I2C_WIRE_LIB
+//#define USE_I2C_WIRE
 
 //add your function definitions for the project exAds1115 here
 
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
-PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize);
-PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize);
+PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size);
+PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size);
 
 //Do not add code below this line
 #endif /* _exAds1115_H_ */

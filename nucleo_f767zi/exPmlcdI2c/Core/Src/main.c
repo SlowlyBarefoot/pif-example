@@ -112,9 +112,14 @@ void actLedLState(PifId usPifId, uint32_t unState)
   HAL_GPIO_WritePin(GPIOB, LD2_Pin, unState & 1);
 }
 
-PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	return (HAL_I2C_Master_Transmit_IT(&hi2c1, pstOwner->addr << 1, pstOwner->p_data, usSize) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	if (isize) {
+		return (HAL_I2C_Mem_Write_IT(&hi2c1, addr << 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
+	else {
+		return (HAL_I2C_Master_Transmit_IT(&hi2c1, addr << 1, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
 }
 
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)

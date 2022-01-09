@@ -11,13 +11,14 @@ typedef struct {
 	volatile uint8_t *ucsrb;
 	volatile uint8_t *ucsrc;
 	volatile uint8_t *udr;
+	BOOL mpcm;					// multi processor communication mode
 } stUsart;
 
 static stUsart s_stUsart[4] = {
-		{ &UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, &UCSR0C, &UDR0 },
-		{ &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UCSR1C, &UDR1 },
-		{ &UBRR2H, &UBRR2L, &UCSR2A, &UCSR2B, &UCSR2C, &UDR2 },
-		{ &UBRR3H, &UBRR3L, &UCSR3A, &UCSR3B, &UCSR3C, &UDR3 }
+		{ &UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, &UCSR0C, &UDR0, FALSE },
+		{ &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UCSR1C, &UDR1, FALSE },
+		{ &UBRR2H, &UBRR2L, &UCSR2A, &UCSR2B, &UCSR2C, &UDR2, FALSE },
+		{ &UBRR3H, &UBRR3L, &UCSR3A, &UCSR3B, &UCSR3C, &UDR3, FALSE }
 };
 
 
@@ -42,6 +43,11 @@ void USART_Init(int port, uint32_t baud, uint8_t config, BOOL bRxInt)
 	if (bRxInt)	*p_stUsart->ucsrb |= (1 << RXCIE0);
 }
 
+BOOL USART_SetMultiProcessCommMode(int port, BOOL mpcm)
+{
+	s_stUsart[port].mpcm = mpcm;
+}
+
 BOOL USART_StartTransfer(int port)
 {
 	*s_stUsart[port].ucsrb |= (1 << UDRIE0); // Enables the Interrupt
@@ -58,7 +64,7 @@ void USART_Send(int port, PifComm *pstComm)
 		*p_stUsart->udr = ucData;
 
 #ifdef MPCM0
-		*p_stUsart->ucsra = (*p_stUsart->ucsra & ((1 << U2X0) | (1 << MPCM0))) | (1 << TXC0);
+		*p_stUsart->ucsra = (*p_stUsart->ucsra & ((1 << U2X0) | (p_stUsart->mpcm << MPCM0))) | (1 << TXC0);
 #else
 		*p_stUsart->ucsra = (*p_stUsart->ucsra & ((1 << U2X0) | (1 << TXC0)));
 #endif

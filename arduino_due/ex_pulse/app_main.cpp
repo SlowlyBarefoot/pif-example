@@ -16,6 +16,13 @@ static uint16_t _taskLedToggle(PifTask* p_task)
 
    	actLedL(sw);
 	sw ^= 1;
+}
+
+static uint16_t _taskPulse(PifTask* p_task)
+{
+	pifPulse_GetPeriod(&g_pulse);
+	pifPulse_GetLowLevelTime(&g_pulse);
+	pifPulse_GetHighLevelTime(&g_pulse);
 
 	pifLog_Printf(LT_INFO, "P:%luus(%dHz) L:%luus(%d%%) H:%luus(%d%%) R:%lu F:%lu",
 			g_pulse._period_1us, (int)pifPulse_GetFrequency(&g_pulse),
@@ -45,9 +52,10 @@ void appSetup(PifActTimer1us act_timer1us)
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
     pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_LOW_LEVEL_TIME | PIF_PMM_HIGH_LEVEL_TIME | PIF_PMM_FALLING_COUNT | PIF_PMM_RISING_COUNT);
-    pifPulse_AttachTask(&g_pulse, TM_PERIOD_MS, 20, TRUE);
 
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;	// 100ms
+
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 20, _taskPulse, NULL, TRUE)) return;		// 20ms
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

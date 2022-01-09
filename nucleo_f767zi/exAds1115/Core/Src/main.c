@@ -111,42 +111,72 @@ void actLedLState(PifId usPifId, uint32_t unState)
 
 #ifdef USE_POLLING
 
-PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	return (HAL_I2C_Master_Receive(&hi2c1, (pstOwner->addr << 1) | 1, pstOwner->p_data, usSize, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+	if (isize) {
+		return (HAL_I2C_Mem_Read(&hi2c1, (addr << 1) | 1, iaddr, isize, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+	}
+	else {
+		return (HAL_I2C_Master_Receive(&hi2c1, (addr << 1) | 1, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+	}
 }
 
-PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	return (HAL_I2C_Master_Transmit(&hi2c1, pstOwner->addr << 1, pstOwner->p_data, usSize, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+	if (isize) {
+		return (HAL_I2C_Mem_Write(&hi2c1, addr << 1, iaddr, isize, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+	}
+	else {
+		return (HAL_I2C_Master_Transmit(&hi2c1, addr << 1, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+	}
 }
 
 #endif
 
 #ifdef USE_INTERRUPT
 
-PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	return (HAL_I2C_Master_Receive_IT(&hi2c1, (pstOwner->addr << 1) | 1, pstOwner->p_data, usSize) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	if (isize) {
+		return (HAL_I2C_Mem_Read_IT(&hi2c1, (addr << 1) | 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
+	else {
+		return (HAL_I2C_Master_Receive_IT(&hi2c1, (addr << 1) | 1, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
 }
 
-PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	return (HAL_I2C_Master_Transmit_IT(&hi2c1, pstOwner->addr << 1, pstOwner->p_data, usSize) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	if (isize) {
+		return (HAL_I2C_Mem_Write_IT(&hi2c1, addr << 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
+	else {
+		return (HAL_I2C_Master_Transmit_IT(&hi2c1, addr << 1, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
 }
 
 #endif
 
 #ifdef USE_DMA
 
-PifI2cReturn actI2cRead(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	return (HAL_I2C_Master_Receive_DMA(&hi2c1, (pstOwner->addr << 1) | 1, pstOwner->p_data, usSize) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	if (isize) {
+		return (HAL_I2C_Mem_Read_DMA(&hi2c1, (addr << 1) | 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
+	else {
+		return (HAL_I2C_Master_Receive_DMA(&hi2c1, (addr << 1) | 1, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
 }
 
-PifI2cReturn actI2cWrite(PifI2cDevice *pstOwner, uint16_t usSize)
+PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	return (HAL_I2C_Master_Transmit_DMA(&hi2c1, pstOwner->addr << 1, pstOwner->p_data, usSize) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	if (isize) {
+		return (HAL_I2C_Mem_Write_DMA(&hi2c1, addr << 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
+	else {
+		return (HAL_I2C_Master_Transmit_DMA(&hi2c1, addr << 1, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
+	}
 }
 
 #endif
