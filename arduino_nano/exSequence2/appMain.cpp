@@ -52,7 +52,7 @@ static PifSequenceResult _fnSequenceStart(PifSequence *pstOwner)
 	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
 		index = pstOwner->_id - PIF_ID_SEQUENCE;
-		pifLed_EachOn(&s_led_rgb, index);
+		pifLed_PartOn(&s_led_rgb, 1 << index);
 		p_test->bSequenceParam = FALSE;
 		return SR_NEXT;
 
@@ -82,7 +82,7 @@ static PifSequenceResult _fnSequenceStop(PifSequence *pstOwner)
 	switch (pstOwner->step) {
 	case PIF_SEQUENCE_STEP_INIT:
 		index = pstOwner->_id - PIF_ID_SEQUENCE;
-		pifLed_EachOff(&s_led_rgb, index);
+		pifLed_PartOff(&s_led_rgb, 1 << index);
 		return SR_NEXT;
 
 	default:
@@ -120,7 +120,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;																// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;															// 500ms
 
     if (!pifLed_Init(&s_led_rgb, PIF_ID_AUTO, &g_timer_1ms, SEQUENCE_COUNT, actLedRGBState)) return;
 
@@ -137,7 +137,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	    s_stSequenceTest[i].bSequenceParam = FALSE;
     }
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

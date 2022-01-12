@@ -54,7 +54,7 @@ void appSetup()
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
 
 	if (!pifSensorSwitch_Init(&stPushSwitch, PIF_ID_AUTO, 0)) return;
     if (!pifSensorSwitch_AttachTask(&stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
@@ -70,7 +70,7 @@ void appSetup()
     pifXmodem_AttachComm(&s_xmodem, &s_serial);
     pifXmodem_AttachEvtRxReceive(&s_xmodem, _evtXmodemRxReceive);
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

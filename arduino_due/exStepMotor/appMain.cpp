@@ -147,7 +147,7 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;								// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;							// 500ms
 
     if (!pifStepMotor_Init(&s_motor, PIF_ID_AUTO, &g_timer_200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_2S)) return;
     s_motor.act_set_step = actSetStep;
@@ -155,7 +155,7 @@ void appSetup(PifActTimer1us act_timer1us)
     pifStepMotor_SetReductionGearRatio(&s_motor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
 	pifStepMotor_SetPps(&s_motor, 200);
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer 1ms=%d Timer200us=%d\n", pifTaskManager_Count(),
 			pifTimerManager_Count(&g_timer_1ms), pifTimerManager_Count(&g_timer_200us));

@@ -89,14 +89,14 @@ void appSetup()
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;							// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;						// 500ms
 
     if (!pifDutyMotor_Init(&s_motor, PIF_ID_AUTO, &g_timer_1ms, 255)) return;
     s_motor.act_set_duty = actSetDuty;
     s_motor.act_set_direction = actSetDirection;
     s_motor.act_operate_break = actOperateBreak;
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

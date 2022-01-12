@@ -103,7 +103,7 @@ void appSetup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;	// 1000us
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;							// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;						// 500ms
 
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
@@ -119,5 +119,5 @@ void appSetup()
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions)) return;
     pifProtocol_AttachComm(&s_protocol, &s_serial);
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 }

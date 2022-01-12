@@ -20,7 +20,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 	PifDegMin stLatDegMin, stLonDegMin;
 	PifDegMinSec stLatDegMinSec, stLonDegMinSec;
 
-	pifLed_EachToggle(&s_led_l, 1);
+	pifLed_PartToggle(&s_led_l, 1 << 1);
 
 	pifGps_ConvertLatitude2DegMin(pstOwner, &stLatDegMin);
 	pifGps_ConvertLongitude2DegMin(pstOwner, &stLonDegMin);
@@ -78,7 +78,7 @@ void appSetup()
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;										// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;									// 500ms
 
 	if (!pifSensorSwitch_Init(&s_push_switch, PIF_ID_AUTO, 0)) return;
     if (!pifSensorSwitch_AttachTask(&s_push_switch, TM_PERIOD_MS, 10, TRUE)) return;	// 10m
@@ -96,7 +96,7 @@ void appSetup()
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

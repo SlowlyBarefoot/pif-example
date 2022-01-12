@@ -66,7 +66,7 @@ void appSetup()
     if (!pifTimerManager_Init(&g_timer_100us, PIF_ID_AUTO, 100, 1)) return;				// 100us
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;										// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;									// 500ms
 
     g_pstPwm = pifTimerManager_Add(&g_timer_100us, TT_PWM);
     if (!g_pstPwm) return;
@@ -74,7 +74,7 @@ void appSetup()
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 700, _taskServoMotor, NULL, TRUE)) return;	// 1000ms
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer 1ms=%d Timer 100us=%d\n", pifTaskManager_Count(),
 			pifTimerManager_Count(&g_timer_1ms), pifTimerManager_Count(&g_timer_100us));

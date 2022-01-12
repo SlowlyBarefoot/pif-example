@@ -19,7 +19,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	(void)usPifId;
 	(void)pvIssuer;
 
-	pifLed_EachChange(&s_led, 1, usLevel);
+	pifLed_PartChange(&s_led, 1 << 1, usLevel);
 }
 
 static void _evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
@@ -27,7 +27,7 @@ static void _evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	(void)usPifId;
 	(void)pvIssuer;
 
-	pifLed_EachChange(&s_led, 2, usLevel);
+	pifLed_PartChange(&s_led, 1 << 2, usLevel);
 }
 
 void appSetup()
@@ -50,7 +50,7 @@ void appSetup()
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led, PIF_ID_AUTO, &g_timer_1ms, 3, actLedState)) return;
-    if (!pifLed_AttachBlink(&s_led, 500)) return;									// 500ms
+    if (!pifLed_AttachSBlink(&s_led, 500)) return;									// 500ms
 
     pstTimerSwitch = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!pstTimerSwitch) return;
@@ -66,7 +66,7 @@ void appSetup()
 	pifSensor_AttachEvtChange(&g_tilt_switch.parent, _evtTiltSwitchChange, NULL);
     if (!pifSensorSwitch_AttachFilter(&g_tilt_switch, PIF_SENSOR_SWITCH_FILTER_CONTINUE, 5, &s_stTiltSwitchFilter)) return;
 
-    pifLed_BlinkOn(&s_led, 0);
+    pifLed_SBlinkOn(&s_led, 1 << 0);
 
     pifTimer_Start(pstTimerSwitch, 20);											    // 20ms
 

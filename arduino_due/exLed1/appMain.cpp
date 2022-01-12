@@ -22,73 +22,73 @@ static uint16_t _taskLed(PifTask *pstTask)
 	if (!usTimer) {
 		switch (usStep) {
 		case 0:
-			pifLed_EachOn(&s_led_rgb, 0);
+			pifLed_PartOn(&s_led_rgb, 1 << 0);
 			usStep = 1;
 			usTimer = 6;
 			break;
 
 		case 1:
-			pifLed_EachOff(&s_led_rgb, 0);
-			pifLed_EachOn(&s_led_rgb, 1);
+			pifLed_PartOff(&s_led_rgb, 1 << 0);
+			pifLed_PartOn(&s_led_rgb, 1 << 1);
 			usStep = 2;
 			usTimer = 6;
 			break;
 
 		case 2:
-			pifLed_EachOff(&s_led_rgb, 1);
-			pifLed_EachOn(&s_led_rgb, 2);
+			pifLed_PartOff(&s_led_rgb, 1 << 1);
+			pifLed_PartOn(&s_led_rgb, 1 << 2);
 			usStep = 3;
 			usTimer = 6;
 			break;
 
 		case 3:
-			pifLed_EachOff(&s_led_rgb, 2);
-			pifLed_BlinkOn(&s_led_rgb, 0);
+			pifLed_PartOff(&s_led_rgb, 1 << 2);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 0, 0);
 			usStep = 4;
 			usTimer = 6;
 			break;
 
 		case 4:
-			pifLed_BlinkOff(&s_led_rgb, 0);
-			pifLed_BlinkOn(&s_led_rgb, 1);
+			pifLed_MBlinkOff(&s_led_rgb, 1 << 0, 0, OFF);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 1, 1);
 			usStep = 5;
 			usTimer = 6;
 			break;
 
 		case 5:
-			pifLed_BlinkOff(&s_led_rgb, 1);
-			pifLed_BlinkOn(&s_led_rgb, 2);
+			pifLed_MBlinkOff(&s_led_rgb, 1 << 1, 1, OFF);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 2, 2);
 			usStep = 6;
 			usTimer = 6;
 			break;
 
 		case 6:
-			pifLed_BlinkOn(&s_led_rgb, 1);
-			pifLed_BlinkOn(&s_led_rgb, 2);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 1, 1);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 2, 2);
 			usStep = 7;
 			usTimer = 6;
 			break;
 
 		case 7:
-			pifLed_BlinkOn(&s_led_rgb, 0);
-			pifLed_BlinkOn(&s_led_rgb, 1);
-			pifLed_BlinkOff(&s_led_rgb, 2);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 0, 0);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 1, 1);
+			pifLed_MBlinkOff(&s_led_rgb, 1 << 2, 2, OFF);
 			usStep = 8;
 			usTimer = 6;
 			break;
 
 		case 8:
-			pifLed_BlinkOn(&s_led_rgb, 0);
-			pifLed_BlinkOn(&s_led_rgb, 1);
-			pifLed_BlinkOn(&s_led_rgb, 2);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 0, 0);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 1, 1);
+			pifLed_MBlinkOn(&s_led_rgb, 1 << 2, 2);
 			usStep = 9;
 			usTimer = 6;
 			break;
 
 		case 9:
-			pifLed_BlinkOff(&s_led_rgb, 0);
-			pifLed_BlinkOff(&s_led_rgb, 1);
-			pifLed_BlinkOff(&s_led_rgb, 2);
+			pifLed_MBlinkOff(&s_led_rgb, 1 << 0, 0, OFF);
+			pifLed_MBlinkOff(&s_led_rgb, 1 << 1, 1, OFF);
+			pifLed_MBlinkOff(&s_led_rgb, 1 << 2, 2, OFF);
 			usStep = 0;
 			usTimer = 6;
 			break;
@@ -117,14 +117,14 @@ void appSetup()
 	if (!pifLog_AttachComm(&g_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;								// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;							// 500ms
 
     if (!pifLed_Init(&s_led_rgb, PIF_ID_AUTO, &g_timer_1ms, 3, actLedRGBState)) return;
-    if (!pifLed_AttachBlink(&s_led_rgb, 100)) return;							// 100ms
+    if (!pifLed_AttachMBlink(&s_led_rgb, 100, 3, 1, 2, 3)) return;				// 100ms
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLed, NULL, TRUE)) return;	// 100ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 200, _taskLed, NULL, TRUE)) return;	// 200ms
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

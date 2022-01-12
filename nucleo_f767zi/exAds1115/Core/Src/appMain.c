@@ -54,7 +54,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pifLog_AttachComm(&g_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
 
     if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 16)) return;
     g_i2c_port.act_read = actI2cRead;
@@ -88,7 +88,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskAds1115, NULL, TRUE)) return;	// 1000ms
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

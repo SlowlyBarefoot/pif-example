@@ -18,7 +18,7 @@ static void _evtLedRedToggle(void *pvIssuer)
 
 	(void)pvIssuer;
 
-	pifLed_EachToggle(&s_led_rgb, 0);
+	pifLed_PartToggle(&s_led_rgb, 1 << 0);
 
 	count++;
 	if (count >= 10) {
@@ -34,7 +34,7 @@ static void _evtLedYellowToggle(void *pvIssuer)
 
 	(void)pvIssuer;
 
-	pifLed_EachToggle(&s_led_rgb, 1);
+	pifLed_PartToggle(&s_led_rgb, 1 << 1);
 
 	count++;
 	if (count >= 10) {
@@ -50,7 +50,7 @@ static void _evtLedGreenToggle(void *pvIssuer)
 
 	(void)pvIssuer;
 
-	pifLed_EachToggle(&s_led_rgb, 2);
+	pifLed_PartToggle(&s_led_rgb, 1 << 2);
 
 	count++;
 	if (count >= 10) {

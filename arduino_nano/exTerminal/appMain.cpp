@@ -35,13 +35,13 @@ static int _CmdLedControl(int argc, char *argv[])
 		switch (argv[1][0]) {
 		case 'F':
 		case 'f':
-		    pifLed_BlinkOff(&s_led_l, 0);
+		    pifLed_SBlinkOff(&s_led_l, 1 << 0, OFF);
 		    bBlink = FALSE;
 			break;
 
 		case 'T':
 		case 't':
-		    pifLed_BlinkOn(&s_led_l, 0);
+		    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 		    bBlink = TRUE;
 			break;
 
@@ -83,8 +83,8 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, nPeriod)) return;
-    pifLed_BlinkOn(&s_led_l, 0);
+    if (!pifLed_AttachSBlink(&s_led_l, nPeriod)) return;
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
     bBlink = TRUE;
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));

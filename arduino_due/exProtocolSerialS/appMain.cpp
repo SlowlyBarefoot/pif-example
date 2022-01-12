@@ -152,7 +152,7 @@ void appSetup()
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;																// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;															// 500ms
 
     for (i = 0; i < SWITCH_COUNT; i++) {
 		if (!pifSensorSwitch_Init(&s_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0)) return;
@@ -174,7 +174,7 @@ void appSetup()
     pifProtocol_AttachComm(&s_protocol, &s_serial);
     s_protocol.evt_error = _evtProtocolError;
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

@@ -16,7 +16,7 @@ static void _evtLedRedToggle(void *pvIssuer)
 {
 	(void)pvIssuer;
 
-	pifLed_EachToggle(&s_led_rgb, 0);
+	pifLed_PartToggle(&s_led_rgb, 1 << 0);
 
 	pifTimer_Start(s_pstTimer1msYellow, 500);	// 500 * 1ms = 0.5sec
 }
@@ -25,7 +25,7 @@ static void _evtLedYellowToggle(void *pvIssuer)
 {
 	(void)pvIssuer;
 
-	pifLed_EachToggle(&s_led_rgb, 1);
+	pifLed_PartToggle(&s_led_rgb, 1 << 1);
 
 	pifTimer_Start(s_pstTimer1msGreen, 1000);	// 1000 * 1ms = 1sec
 }
@@ -34,7 +34,7 @@ static void _evtLedGreenToggle(void *pvIssuer)
 {
 	(void)pvIssuer;
 
-	pifLed_EachToggle(&s_led_rgb, 2);
+	pifLed_PartToggle(&s_led_rgb, 1 << 2);
 
 	pifTimer_Start(s_pstTimer1msRed, 200);		// 200 * 1ms = 0.2sec
 }

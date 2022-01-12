@@ -149,7 +149,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;													// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;												// 500ms
 
     if (!pifGpio_Init(&s_gpio_rgb, PIF_ID_AUTO, SEQUENCE_COUNT)) return;
     pifGpio_AttachActOut(&s_gpio_rgb, actGpioRGBState);
@@ -176,7 +176,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	pifSensor_AttachAction(&s_push_switch_collect.parent, actPushSwitchCollectAcquire);
 	pifSensor_AttachEvtChange(&s_push_switch_collect.parent, _evtPushSwitchCollectChange, NULL);
 
-	pifLed_BlinkOn(&s_led_l, 0);
+	pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

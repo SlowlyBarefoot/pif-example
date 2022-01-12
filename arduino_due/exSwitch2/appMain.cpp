@@ -32,7 +32,7 @@ void appSetup()
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachBlink(&s_led_l, 500)) return;									// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
 
     pstTimerSwitch = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!pstTimerSwitch) return;
@@ -46,7 +46,7 @@ void appSetup()
     if (!pifSensorSwitch_AttachTask(&g_tilt_switch, TM_RATIO, 3, TRUE)) return;		// 3%
 	pifSensor_AttachEvtChange(&g_tilt_switch.parent, evtTiltSwitchChange, NULL);
 
-    pifLed_BlinkOn(&s_led_l, 0);
+    pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
     pifTimer_Start(pstTimerSwitch, 20);										    	// 20ms
 
