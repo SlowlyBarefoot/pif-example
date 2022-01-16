@@ -11,6 +11,7 @@
 	#include "../i2c.h"
 #endif
 
+
 #define PIN_LED_L				13
 
 
@@ -80,8 +81,8 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
 {
 	uint8_t error;
 #ifdef USE_I2C_WIRE
-	uint16_t n;
 	int i;
+	uint16_t n;
 
 	Wire.beginTransmission(addr);
 	if (isize > 0) {

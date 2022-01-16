@@ -49,8 +49,7 @@ BOOL actStorageWrite(uint32_t dst, uint8_t* src, size_t size, void* p_issuer)
 {
 	(void)p_issuer;
 
-	dueFlashStorage.write(dst, src, size);
-	return TRUE;
+	return dueFlashStorage.write(dst, src, size);
 }
 
 extern "C" {

@@ -14,8 +14,8 @@
 
 //end of add your includes here
 
-#define STORAGE_SECTOR_SIZE		256
-#define STORAGE_VOLUME			DATA_LENGTH
+#define STORAGE_SECTOR_SIZE		IFLASH1_PAGE_SIZE
+#define STORAGE_VOLUME			IFLASH1_SIZE
 
 //add your function definitions for the project ex_storage here
 

@@ -5,7 +5,7 @@
 #include "pif_eeprom_i2c.h"
 
 
-#define ATMEL_I2C_ADDRESS		0x54
+#define ATMEL_I2C_ADDRESS		0x50
 
 //#define EEPROM_AT24C08
 #define EEPROM_AT24C256
@@ -21,7 +21,6 @@ PifTimerManager g_timer_1ms;
 
 static PifI2cPort s_i2c_port;
 static PifEepromI2c s_eeprom_i2c;
-static uint8_t s_buffer[512];
 
 static int _CmdFormat(int argc, char *argv[]);
 static int _CmdAlloc(int argc, char *argv[]);
@@ -68,9 +67,8 @@ static int _CmdAlloc(int argc, char *argv[])
 	else if (argc > 2) {
 		id = atoi(argv[1]);
 		size = atoi(argv[2]);
-		if (size > 512) return PIF_LOG_CMD_INVALID_ARG;
 		if (!pifStorage_Alloc(&s_eeprom_i2c._storage, id, size)) {
-			pifLog_Printf(LT_NONE, "\nalloc: failed %d", pif_error);
+			pifLog_Printf(LT_NONE, "\nalloc: failed E=%d", pif_error);
 		}
 #ifdef __PIF_DEBUG__
 		else {
@@ -93,7 +91,7 @@ static int _CmdFree(int argc, char *argv[])
 	else if (argc > 1) {
 		id = atoi(argv[1]);
 		if (!pifStorage_Free(&s_eeprom_i2c._storage, id)) {
-			pifLog_Printf(LT_NONE, "\nfree: failed");
+			pifLog_Printf(LT_NONE, "\nfree: failed E=%d", pif_error);
 		}
 #ifdef __PIF_DEBUG__
 		else {
@@ -108,6 +106,7 @@ static int _CmdFree(int argc, char *argv[])
 static int _CmdWrite(int argc, char *argv[])
 {
 	uint8_t value;
+	uint8_t* p_buffer;
 	uint16_t id;
 	PifStorageDataInfo* p_data_info;
 
@@ -119,7 +118,7 @@ static int _CmdWrite(int argc, char *argv[])
 		id = atoi(argv[1]);
 		p_data_info = pifStorage_GetDataInfo(&s_eeprom_i2c._storage, id);
 		if (!p_data_info) {
-			pifLog_Printf(LT_NONE, "\nwrite: not alloc ID=%d", id);
+			pifLog_Printf(LT_NONE, "\nwrite: not alloc ID=%d E=%d", id, pif_error);
 		}
 		else {
 			if (argc > 2) {
@@ -128,13 +127,17 @@ static int _CmdWrite(int argc, char *argv[])
 			else {
 				value = rand() & 0xFF;
 			}
-			memset(s_buffer, value, p_data_info->size);
-			if (!pifStorage_Write(&s_eeprom_i2c._storage, p_data_info, s_buffer)) {
-				pifLog_Printf(LT_NONE, "\nwrite: failed");
+			p_buffer = (uint8_t*)malloc(p_data_info->size);
+			if (p_buffer) {
+				memset(p_buffer, value, p_data_info->size);
+				if (!pifStorage_Write(&s_eeprom_i2c._storage, p_data_info, p_buffer)) {
+					pifLog_Printf(LT_NONE, "\nwrite: failed E=%d", pif_error);
+				}
+				else {
+					pifLog_Printf(LT_NONE, "\nwrite: value = %Xh", value);
+				}
 			}
-			else {
-				pifLog_Printf(LT_NONE, "\nwrite: value = %Xh", value);
-			}
+			else return PIF_LOG_CMD_INVALID_ARG;
 		}
 		return PIF_LOG_CMD_NO_ERROR;
 	}
@@ -143,6 +146,7 @@ static int _CmdWrite(int argc, char *argv[])
 
 static int _CmdRead(int argc, char *argv[])
 {
+	uint8_t* p_buffer;
 	uint16_t i, id, size;
 	PifStorageDataInfo* p_data_info;
 
@@ -158,18 +162,22 @@ static int _CmdRead(int argc, char *argv[])
 		}
 		else {
 			size = p_data_info->size;
-			memset(s_buffer, 0, 256);
-			if (!pifStorage_Read(&s_eeprom_i2c._storage, p_data_info, s_buffer)) {
-				pifLog_Printf(LT_NONE, "\nread: failed");
-			}
-			else {
-				for (i = 0; i < size; i++) {
-					if (!(i % 16)) {
-						pifLog_Printf(LT_NONE, "\n%04X: ", p_data_info->first_sector * s_eeprom_i2c._storage._p_info->sector_size + i);
+			p_buffer = (uint8_t*)malloc(size);
+			if (p_buffer) {
+				memset(p_buffer, 0, size);
+				if (!pifStorage_Read(&s_eeprom_i2c._storage, p_data_info, p_buffer)) {
+					pifLog_Printf(LT_NONE, "\nread: failed E=%d", pif_error);
+				}
+				else {
+					for (i = 0; i < size; i++) {
+						if (!(i % 16)) {
+							pifLog_Printf(LT_NONE, "\n%04X: ", p_data_info->first_sector * s_eeprom_i2c._storage._p_info->sector_size + i);
+						}
+						pifLog_Printf(LT_NONE, "%02X ", p_buffer[i]);
 					}
-					pifLog_Printf(LT_NONE, "%02X ", s_buffer[i]);
 				}
 			}
+			else return PIF_LOG_CMD_INVALID_ARG;
 		}
 		return PIF_LOG_CMD_NO_ERROR;
 	}
@@ -183,8 +191,17 @@ static int _CmdPrintInfo(int argc, char *argv[])
 	(void)argc;
 	(void)argv;
 
-	pifStorage_PrintInfo(&s_eeprom_i2c._storage, FALSE);
-	return PIF_LOG_CMD_NO_ERROR;
+	if (argc == 1) {
+		pifStorage_PrintInfo(&s_eeprom_i2c._storage, FALSE);
+		return PIF_LOG_CMD_NO_ERROR;
+	}
+	else if (argc > 1) {
+		if (argv[1][0] == 'h') {
+			pifStorage_PrintInfo(&s_eeprom_i2c._storage, TRUE);
+			return PIF_LOG_CMD_NO_ERROR;
+		}
+	}
+	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
 static int _CmdDump(int argc, char *argv[])
