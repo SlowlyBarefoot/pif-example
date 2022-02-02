@@ -60,7 +60,7 @@ int main()
 {
 	PifStorageDataInfo* p_data_info;
 
-	pifStorage_Init(&s_storage, PIF_ID_AUTO, 5, STORAGE_SECTOR_SIZE, STORAGE_VOLUME, actStorageRead, actStorageWrite);
+	pifStorage_Init(&s_storage, PIF_ID_AUTO, 5, STORAGE_SECTOR_SIZE, STORAGE_VOLUME, actStorageRead, actStorageWrite, NULL);
 	if (!s_storage._is_format) pifStorage_Format(&s_storage);
 
 	printf("info_bytes=%d\n", s_storage.__info_bytes);
