@@ -1,5 +1,5 @@
 #include "app_main.h"
-#include "ex_pulse.h"
+#include "ex_pulse_ppm.h"
 
 #include "pif_log.h"
 
@@ -21,19 +21,14 @@ static uint16_t _taskLedToggle(PifTask* p_task)
 
 static uint16_t _taskPulse(PifTask* p_task)
 {
-	uint16_t period, low_width, high_width;
+	uint16_t value[8];
 
 	(void)p_task;
 
-	period = pifPulse_GetPeriod(&g_pulse);
-	low_width = pifPulse_GetLowWidth(&g_pulse);
-	high_width = pifPulse_GetHighWidth(&g_pulse);
-
-	pifLog_Printf(LT_INFO, "P:%uus(%dHz) L:%uus(%d%%) H:%uus(%d%%) R:%lu F:%lu",
-			period, 1000000L / period,
-			low_width, 100 * low_width / period,
-			high_width, 100 * high_width / period,
-			g_pulse.rising_count, g_pulse.falling_count);
+	if (pifPulse_GetPositionModulation(&g_pulse, value)) {
+		pifLog_Printf(LT_INFO, "1:%5u 2:%5u 3:%5u 4:%5u 5:%5u 6:%5u 7:%5u 8:%5u",
+				value[0], value[1], value[2], value[3],	value[4], value[5], value[6], value[7]);
+	}
     return 0;
 }
 
@@ -56,7 +51,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
-    pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_LOW_WIDTH | PIF_PMM_HIGH_WIDTH | PIF_PMM_FALLING_COUNT | PIF_PMM_RISING_COUNT);
+    if (!pifPulse_SetPositionModulation(&g_pulse, 8, 2700)) return;
 
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;	// 100ms
 
