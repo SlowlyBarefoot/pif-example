@@ -16,19 +16,24 @@ static uint16_t _taskLedToggle(PifTask* p_task)
 
    	actLedL(sw);
 	sw ^= 1;
+    return 0;
 }
 
 static uint16_t _taskPulse(PifTask* p_task)
 {
-	pifPulse_GetPeriod(&g_pulse);
-	pifPulse_GetLowLevelTime(&g_pulse);
-	pifPulse_GetHighLevelTime(&g_pulse);
+	uint16_t period, low_width, high_width;
 
-	pifLog_Printf(LT_INFO, "P:%luus(%dHz) L:%luus(%d%%) H:%luus(%d%%) R:%lu F:%lu",
-			g_pulse._period_1us, (int)pifPulse_GetFrequency(&g_pulse),
-			g_pulse._low_level_1us, (int)pifPulse_GetLowLevelDuty(&g_pulse),
-			g_pulse._high_level_1us, (int)pifPulse_GetHighLevelDuty(&g_pulse),
-			g_pulse.rising_count, g_pulse.falling_count);
+	(void)p_task;
+
+	period = pifPulse_GetPeriod(&g_pulse);
+	low_width = pifPulse_GetLowWidth(&g_pulse);
+	high_width = pifPulse_GetHighWidth(&g_pulse);
+
+	pifLog_Printf(LT_INFO, "P:%uus(%dHz) LW:%uus(%d%%) HW:%uus(%d%%) RC:%lu",
+			period, 1000000L / period,
+			low_width, 100 * low_width / period,
+			high_width, 100 * high_width / period,
+			g_pulse.falling_count);
     return 0;
 }
 
@@ -51,7 +56,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
-    pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_LOW_LEVEL_TIME | PIF_PMM_HIGH_LEVEL_TIME | PIF_PMM_FALLING_COUNT | PIF_PMM_RISING_COUNT);
+    pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_LOW_WIDTH | PIF_PMM_HIGH_WIDTH | PIF_PMM_FALLING_COUNT);
 
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;	// 100ms
 

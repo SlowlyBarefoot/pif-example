@@ -8,6 +8,7 @@ PifComm g_comm_log;
 PifPulse g_pulse;
 PifTimerManager g_timer_1ms;
 
+static uint16_t s_value[8];
 
 static uint16_t _taskLedToggle(PifTask* p_task)
 {
@@ -22,14 +23,10 @@ static uint16_t _taskLedToggle(PifTask* p_task)
 
 static uint16_t _taskPulse(PifTask* p_task)
 {
-	uint16_t value[8];
-
 	(void)p_task;
 
-	if (pifPulse_GetPositionModulation(&g_pulse, value)) {
-		pifLog_Printf(LT_INFO, "1:%5u 2:%5u 3:%5u 4:%5u 5:%5u 6:%5u 7:%5u 8:%5u",
-				value[0], value[1], value[2], value[3],	value[4], value[5], value[6], value[7]);
-	}
+	pifLog_Printf(LT_INFO, "1:%5u 2:%5u 3:%5u 4:%5u 5:%5u 6:%5u 7:%5u 8:%5u",
+			s_value[0], s_value[1], s_value[2], s_value[3],	s_value[4], s_value[5], s_value[6], s_value[7]);
     return 0;
 }
 
@@ -51,7 +48,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pifLog_AttachComm(&g_comm_log)) return;
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
-    if (!pifPulse_SetPositionModulation(&g_pulse, 8, 2700)) return;
+    pifPulse_SetFallingPositionMode(&g_pulse, 8, 2700, s_value);
 
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;	// 100ms
 
