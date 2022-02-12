@@ -21,7 +21,7 @@ uint16_t actLogSendData(PifComm* p_comm, uint8_t* p_buffer, uint16_t size)
 
 static void _isrPulse()
 {
-	pifPulse_sigEdge(&g_pulse, digitalRead(PIN_PULSE) ? PE_RISING : PE_FALLING);
+	pifPulse_sigTick(&g_pulse, micros());
 }
 
 extern "C" {
@@ -39,7 +39,7 @@ void setup()
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_PULSE, INPUT_PULLUP);
 
-	attachInterrupt(PIN_PULSE, _isrPulse, CHANGE);
+	attachInterrupt(PIN_PULSE, _isrPulse, RISING);
 
 	Serial.begin(115200);
 

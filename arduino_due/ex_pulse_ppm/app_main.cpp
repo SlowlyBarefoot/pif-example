@@ -49,7 +49,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
-    pifPulse_SetFallingPositionMode(&g_pulse, 8, 2700, s_value);
+    pifPulse_SetPositionMode(&g_pulse, 8, 2700, s_value);
 
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;	// 100ms
 

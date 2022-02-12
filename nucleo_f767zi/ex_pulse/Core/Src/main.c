@@ -110,7 +110,7 @@ void actLedL(SWITCH sw)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	pifPulse_sigEdge(&g_pulse, HAL_GPIO_ReadPin(GPIOA, GPIO_Pin) ? PE_RISING : PE_FALLING);
+	pifPulse_sigEdge(&g_pulse, HAL_GPIO_ReadPin(GPIOA, GPIO_Pin) ? PE_RISING : PE_FALLING, micros());
 }
 
 /* USER CODE END 0 */
