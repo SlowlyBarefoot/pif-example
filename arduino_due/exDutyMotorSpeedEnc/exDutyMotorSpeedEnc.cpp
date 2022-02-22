@@ -86,7 +86,7 @@ void actOperateBreak(uint8_t ucState)
 
 static void _isrEncoder()
 {
-	pifPulse_sigEdge(&g_encoder, digitalRead(PIN_ENCODER) ? PE_RISING : PE_FALLING);
+	pifPulse_sigEdge(&g_encoder, digitalRead(PIN_ENCODER) ? PE_RISING : PE_FALLING, micros());
 }
 
 void actLedLState(PifId usPifId, uint32_t unState)
