@@ -22,7 +22,7 @@
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 #endif
 #ifdef USE_USART
-BOOL actLogStartTransfer();
+BOOL actLogStartTransfer(PifComm* p_comm);
 #endif
 void actLedLState(PifId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PifId usPifId);
@@ -33,8 +33,8 @@ uint16_t actSerial2SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSiz
 BOOL actSerial2ReceiveData(PifComm *pstComm, uint8_t *pucData);
 #endif
 #ifdef USE_USART
-BOOL actUart1StartTransfer();
-BOOL actUart2StartTransfer();
+BOOL actUart1StartTransfer(PifComm* p_comm);
+BOOL actUart2StartTransfer(PifComm* p_comm);
 #endif
 
 //Do not add code below this line

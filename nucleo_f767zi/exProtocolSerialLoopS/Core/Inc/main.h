@@ -58,11 +58,11 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-BOOL actLogStartTransfer();
+BOOL actLogStartTransfer(PifComm* p_comm);
 void actLedLState(PifId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PifId usPifId);
-BOOL actUart1StartTransfer();
-BOOL actUart2StartTransfer();
+BOOL actUart1StartTransfer(PifComm* p_comm);
+BOOL actUart2StartTransfer(PifComm* p_comm);
 
 /* USER CODE END EFP */
 

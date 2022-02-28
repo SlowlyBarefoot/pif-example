@@ -40,8 +40,10 @@ BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 
 #ifdef USE_USART
 
-BOOL actLogStartTransfer()
+BOOL actLogStartTransfer(PifComm* p_comm)
 {
+	(void)p_comm;
+
 	return USART_StartTransfer(0);
 }
 

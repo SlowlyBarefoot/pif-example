@@ -29,8 +29,10 @@ uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 
 #ifdef USE_USART
 
-BOOL actLogStartTransfer()
+BOOL actLogStartTransfer(PifComm* p_comm)
 {
+	(void)p_comm;
+
 	return USART_StartTransfer();
 }
 

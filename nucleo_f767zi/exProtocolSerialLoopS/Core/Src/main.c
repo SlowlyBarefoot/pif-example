@@ -86,12 +86,12 @@ static void MX_UART5_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-BOOL actLogStartTransfer()
+BOOL actLogStartTransfer(PifComm* p_comm)
 {
 	uint8_t *pucData, ucState;
 
 	s_usLogTx = 0;
-	ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
+	ucState = pifComm_StartSendDatas(p_comm, &pucData, &s_usLogTx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
 		return TRUE;
@@ -113,12 +113,12 @@ uint16_t actPushSwitchAcquire(PifId usPifId)
 	return !HAL_GPIO_ReadPin(GPIOE, usPinSwitch[usPifId - PIF_ID_SWITCH]);
 }
 
-BOOL actUart1StartTransfer()
+BOOL actUart1StartTransfer(PifComm* p_comm)
 {
 	uint8_t *pucData, ucState;
 
 	s_usSerial1Tx = UART_FRAME_SIZE;
-	ucState = pifComm_StartSendDatas(&g_serial1, &pucData, &s_usSerial1Tx);
+	ucState = pifComm_StartSendDatas(p_comm, &pucData, &s_usSerial1Tx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 #ifdef USE_INTERRUPT
 		HAL_UART_Transmit_IT(&huart4, pucData, s_usSerial1Tx);
@@ -132,12 +132,12 @@ BOOL actUart1StartTransfer()
 	return FALSE;
 }
 
-BOOL actUart2StartTransfer()
+BOOL actUart2StartTransfer(PifComm* p_comm)
 {
 	uint8_t *pucData, ucState;
 
 	s_usSerial2Tx = UART_FRAME_SIZE;
-	ucState = pifComm_StartSendDatas(&g_serial2, &pucData, &s_usSerial2Tx);
+	ucState = pifComm_StartSendDatas(p_comm, &pucData, &s_usSerial2Tx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 #ifdef USE_INTERRUPT
 		HAL_UART_Transmit_IT(&huart5, pucData, s_usSerial2Tx);

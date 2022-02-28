@@ -22,7 +22,7 @@
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 #endif
 #ifdef USE_USART
-BOOL actLogStartTransfer();
+BOOL actLogStartTransfer(PifComm* p_comm);
 #endif
 void actLedLState(PifId usPifId, uint32_t unState);
 void actLedRGBState(PifId usPifId, uint32_t unState);

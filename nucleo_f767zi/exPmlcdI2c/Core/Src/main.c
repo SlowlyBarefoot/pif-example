@@ -73,12 +73,12 @@ uint32_t micros()
     return htim2.Instance->CNT;
 }
 
-BOOL actLogStartTransfer()
+BOOL actLogStartTransfer(PifComm* p_comm)
 {
 	uint8_t *pucData, ucState;
 
 	s_usLogTx = 0;
-	ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
+	ucState = pifComm_StartSendDatas(p_comm, &pucData, &s_usLogTx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
 		return TRUE;

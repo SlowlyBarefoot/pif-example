@@ -29,8 +29,10 @@ uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 
 #ifdef USE_USART
 
-BOOL actLogStartTransfer()
+BOOL actLogStartTransfer(PifComm* p_comm)
 {
+	(void)p_comm;
+
 	return USART_StartTransfer(0);
 }
 
@@ -101,8 +103,10 @@ BOOL actSerial2ReceiveData(PifComm *pstComm, uint8_t *pucData)
 
 #ifdef USE_USART
 
-BOOL actUart1StartTransfer()
+BOOL actUart1StartTransfer(PifComm* p_comm)
 {
+	(void)p_comm;
+
 	return USART_StartTransfer(1);
 }
 
@@ -116,8 +120,10 @@ ISR(USART1_RX_vect)
 	USART_Receive(1, &g_serial1);
 }
 
-BOOL actUart2StartTransfer()
+BOOL actUart2StartTransfer(PifComm* p_comm)
 {
+	(void)p_comm;
+
 	return USART_StartTransfer(2);
 }
 
