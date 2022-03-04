@@ -22,7 +22,7 @@ static PifSensorSwitch s_switch[SWITCH_COUNT];
 static int CmdStepMotorTest(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "mt", CmdStepMotorTest, "\nMotor Test" },
+	{ "mt", CmdStepMotorTest, "Motor Test" },
 
 	{ NULL, NULL, NULL }
 };
@@ -85,8 +85,8 @@ static ST_StepMotorTest s_stStepMotorTest = { 0, 0, 0, 0 };
 static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "\n  Stage: %d", s_stStepMotorTest.ucStage);
-		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_motor.parent._operation);
+		pifLog_Printf(LT_NONE, "  Stage: %d\n", s_stStepMotorTest.ucStage);
+		pifLog_Printf(LT_NONE, "  Operation: %d\n", s_motor.parent._operation);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -110,7 +110,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 					pifStepMotorPos_Start(&s_motor, s_stStepMotorTest.ucStage - 1, 2000);
 				}
 				else {
-					pifLog_Printf(LT_NONE, "\nError: Stage=%d", s_stStepMotorTest.ucStage);
+					pifLog_Printf(LT_NONE, "Error: Stage=%d\n", s_stStepMotorTest.ucStage);
 				}
 				return PIF_LOG_CMD_NO_ERROR;
 			}
@@ -304,7 +304,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;										// 500ms

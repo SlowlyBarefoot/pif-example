@@ -19,7 +19,7 @@ static int nPeriod = 500;
 static int _CmdLedControl(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "led", _CmdLedControl, "\nLED Control" },
+	{ "led", _CmdLedControl, "LED Control" },
 
 	{ NULL, NULL, NULL }
 };
@@ -28,8 +28,8 @@ const PifLogCmdEntry c_psCmdTable[] = {
 static int _CmdLedControl(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "\n  Blink=%u", bBlink);
-		pifLog_Printf(LT_NONE, "\n  Period=%u", nPeriod);
+		pifLog_Printf(LT_NONE, "  Blink=%u\n", bBlink);
+		pifLog_Printf(LT_NONE, "  Period=%u\n", nPeriod);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
@@ -75,7 +75,7 @@ void appSetup()
 	g_comm_log.act_start_transfer = actLogStartTransfer;
 
 	if (!pifLog_AttachComm(&g_comm_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, nPeriod)) return;

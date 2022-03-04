@@ -43,7 +43,7 @@ void USART_Init(int port, uint32_t baud, uint8_t config, BOOL bRxInt)
 	if (bRxInt)	*p_stUsart->ucsrb |= (1 << RXCIE0);
 }
 
-BOOL USART_SetMultiProcessCommMode(int port, BOOL mpcm)
+void USART_SetMultiProcessCommMode(int port, BOOL mpcm)
 {
 	s_stUsart[port].mpcm = mpcm;
 }
@@ -57,7 +57,7 @@ BOOL USART_StartTransfer(int port)
 void USART_Send(int port, PifComm *pstComm)
 {
 	stUsart *p_stUsart = &s_stUsart[port];
-	uint8_t ucData, ucState;
+	uint8_t ucData = 0, ucState;
 
 	ucState = pifComm_SendData(pstComm, &ucData);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {

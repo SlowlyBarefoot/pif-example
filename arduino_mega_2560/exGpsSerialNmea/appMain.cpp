@@ -17,8 +17,8 @@ static int _cmdPrintRawData(int argc, char *argv[]);
 static int _cmdRequest(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "raw", _cmdPrintRawData, "\nPrint RawData" },
-	{ "req", _cmdRequest, "\nRequest" },
+	{ "raw", _cmdPrintRawData, "Print RawData" },
+	{ "req", _cmdRequest, "Request" },
 
 	{ NULL, NULL, NULL }
 };
@@ -27,7 +27,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 static int _cmdPrintRawData(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "\n  Print RawData: %d", g_bPrintRawData);
+		pifLog_Printf(LT_NONE, "  Print RawData: %d\n", g_bPrintRawData);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
@@ -149,7 +149,7 @@ void appSetup()
 	s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;						// 500ms

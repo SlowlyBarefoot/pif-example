@@ -13,7 +13,7 @@ static PifDutyMotor s_motor;
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "mt", CmdDutyMotorTest, "\nMotor Test" },
+	{ "mt", CmdDutyMotorTest, "Motor Test" },
 
 	{ NULL, NULL, NULL }
 };
@@ -28,8 +28,8 @@ static ST_DutyMotorTest s_stDutyMotorTest = { 128 };
 static int CmdDutyMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "\n  Duty: %d", s_motor._current_duty);
-		pifLog_Printf(LT_NONE, "\n  Direction: %d", s_motor._direction);
+		pifLog_Printf(LT_NONE, "  Duty: %d\n", s_motor._current_duty);
+		pifLog_Printf(LT_NONE, "  Direction: %d\n", s_motor._direction);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -86,7 +86,7 @@ void appSetup()
     s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;						// 500ms

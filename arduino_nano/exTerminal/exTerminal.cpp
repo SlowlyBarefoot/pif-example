@@ -42,6 +42,8 @@ BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 
 BOOL actLogStartTransfer(PifComm* p_comm)
 {
+	(void)p_comm;
+
 	return USART_StartTransfer();
 }
 

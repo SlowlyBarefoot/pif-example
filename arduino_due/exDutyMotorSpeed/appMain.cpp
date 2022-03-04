@@ -17,7 +17,7 @@ static PifSensorSwitch s_switch[SWITCH_COUNT];
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "mt", CmdDutyMotorTest, "\nMotor Test" },
+	{ "mt", CmdDutyMotorTest, "Motor Test" },
 
 	{ NULL, NULL, NULL }
 };
@@ -87,7 +87,7 @@ static ST_DutyMotorTest s_stDutyMotorTest = { 0, 0 };
 static int CmdDutyMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "\n  Stage: %d", s_stDutyMotorTest.ucStage);
+		pifLog_Printf(LT_NONE, "  Stage: %d\n", s_stDutyMotorTest.ucStage);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -105,7 +105,7 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 					}
 				}
 				else {
-					pifLog_Printf(LT_NONE, "\nError: Stage=%d", s_stDutyMotorTest.ucStage);
+					pifLog_Printf(LT_NONE, "Error: Stage=%d\n", s_stDutyMotorTest.ucStage);
 				}
 				return PIF_LOG_CMD_NO_ERROR;
 			}
@@ -231,7 +231,7 @@ void appSetup()
     s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;									// 500ms

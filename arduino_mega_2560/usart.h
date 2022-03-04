@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 void USART_Init(int port, uint32_t baud, uint8_t config, BOOL bRxInt);
-BOOL USART_SetMultiProcessCommMode(int port, BOOL mpcm);
+void USART_SetMultiProcessCommMode(int port, BOOL mpcm);
 BOOL USART_StartTransfer(int port);
 void USART_Send(int port, PifComm *pstComm);
 void USART_Receive(int port, PifComm *pstComm);

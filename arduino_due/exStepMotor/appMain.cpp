@@ -18,7 +18,7 @@ static PifStepMotor s_motor;
 static int CmdStepMotorTest(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "mt", CmdStepMotorTest, "\nMotor Test" },
+	{ "mt", CmdStepMotorTest, "Motor Test" },
 
 	{ NULL, NULL, NULL }
 };
@@ -35,12 +35,12 @@ static ST_StepMotorTest s_stStepMotorTest = { 0, 1000, 200 };
 static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "\n  Operation: %d", s_motor._operation);
-		pifLog_Printf(LT_NONE, "\n  Direction: %d", s_motor._direction);
-		pifLog_Printf(LT_NONE, "\n  P/S: %u", s_motor._current_pps);
-		pifLog_Printf(LT_NONE, "\n  R/M: %2f", pifStepMotor_GetRpm(&s_motor));
-		pifLog_Printf(LT_NONE, "\n  Step Count: %d", s_stStepMotorTest.unStepCount);
-		pifLog_Printf(LT_NONE, "\n  Break Time: %d", s_stStepMotorTest.usBreakTime);
+		pifLog_Printf(LT_NONE, "  Operation: %d\n", s_motor._operation);
+		pifLog_Printf(LT_NONE, "  Direction: %d\n", s_motor._direction);
+		pifLog_Printf(LT_NONE, "  P/S: %u\n", s_motor._current_pps);
+		pifLog_Printf(LT_NONE, "  R/M: %2f\n", pifStepMotor_GetRpm(&s_motor));
+		pifLog_Printf(LT_NONE, "  Step Count: %d\n", s_stStepMotorTest.unStepCount);
+		pifLog_Printf(LT_NONE, "  Break Time: %d\n", s_stStepMotorTest.usBreakTime);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -55,7 +55,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			float value = atof(argv[2]);
 			if (value > 0) {
 				if (!pifStepMotor_SetPps(&s_motor, value)) {
-					pifLog_Printf(LT_ERROR, "\n  Invalid Parameter: %d", value);
+					pifLog_Printf(LT_ERROR, "  Invalid Parameter: %d", value);
 				}
 				return PIF_LOG_CMD_NO_ERROR;
 			}
@@ -64,7 +64,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			float value = atof(argv[2]);
 			if (value > 0) {
 				if (!pifStepMotor_SetRpm(&s_motor, value)) {
-					pifLog_Printf(LT_ERROR, "\n  Invalid Parameter: %d", value);
+					pifLog_Printf(LT_ERROR, "  Invalid Parameter: %d", value);
 				}
 				return PIF_LOG_CMD_NO_ERROR;
 			}
@@ -144,7 +144,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug")) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;							// 500ms
