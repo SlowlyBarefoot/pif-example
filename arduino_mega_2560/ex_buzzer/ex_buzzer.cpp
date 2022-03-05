@@ -30,12 +30,12 @@ BOOL actLogStartTransfer(PifComm* p_comm)
 {
 	(void)p_comm;
 
-	return USART_StartTransfer();
+	return USART_StartTransfer(0);
 }
 
-ISR(USART_UDRE_vect)
+ISR(USART0_UDRE_vect)
 {
-	USART_Send(&g_comm_log);
+	USART_Send(0, &g_comm_log);
 }
 
 #endif
@@ -65,7 +65,7 @@ void setup()
 	Serial.begin(115200); //Doesn't matter speed
 #endif
 #ifdef USE_USART
-	USART_Init(115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
+	USART_Init(0, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
 
 	// Enable Global Interrupts
 	sei();
