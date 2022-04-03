@@ -85,6 +85,6 @@ void appSetup()
     s_pstTask[1] = pifTaskManager_Add(TM_RATIO, 60, _taskLedYellowToggle, NULL, FALSE);	// 60%
     if (!s_pstTask[1]) return;
 
-    s_pstTask[2] = pifTaskManager_Add(TM_RATIO, 100, _taskLedGreenToggle, NULL, FALSE);	// 100%
+    s_pstTask[2] = pifTaskManager_Add(TM_ALWAYS, 100, _taskLedGreenToggle, NULL, FALSE);	// 100%
     if (!s_pstTask[2]) return;
 }

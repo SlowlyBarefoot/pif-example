@@ -63,5 +63,5 @@ void appSetup()
 
     if (!pifTaskManager_Add(TM_RATIO, 30, _taskLedRedToggle, NULL, TRUE)) return;		// 30%
     if (!pifTaskManager_Add(TM_RATIO, 60, _taskLedYellowToggle, NULL, TRUE)) return;	// 60%
-    if (!pifTaskManager_Add(TM_RATIO, 100, _taskLedGreenToggle, NULL, TRUE)) return;	// 100%
+    if (!pifTaskManager_Add(TM_ALWAYS, 100, _taskLedGreenToggle, NULL, TRUE)) return;	// 100%
 }
