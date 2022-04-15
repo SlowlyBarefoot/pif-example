@@ -6,7 +6,7 @@
 
 
 extern PifTimerManager g_timer_1ms;
-extern BOOL g_bPrintRawData;
+extern int g_print_data;
 
 
 void appSetup();

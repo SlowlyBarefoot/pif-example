@@ -8,7 +8,7 @@
 
 
 PifTimerManager g_timer_1ms;
-BOOL g_bPrintRawData = FALSE;
+int g_print_data = 1;
 
 static PifComm s_comm_gps;
 static PifGpsNmea s_gps_nmea;
@@ -28,7 +28,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 	pifGps_ConvertLatitude2DegMinSec(pstOwner, &stLatDegMinSec);
 	pifGps_ConvertLongitude2DegMinSec(pstOwner, &stLonDegMinSec);
 
-	if (!g_bPrintRawData) {
+	if (g_print_data == 1) {
 		pifLog_Printf(LT_INFO, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
 				2000 + pstOwner->_date_time.year, pstOwner->_date_time.month, pstOwner->_date_time.day,
 				pstOwner->_date_time.hour, pstOwner->_date_time.minute, pstOwner->_date_time.second, pstOwner->_date_time.millisecond);
@@ -40,12 +40,13 @@ static void _evtGpsReceive(PifGps *pstOwner)
 				stLatDegMinSec.degree, stLatDegMinSec.minute, stLatDegMinSec.second);
 		pifLog_Printf(LT_INFO, "NumSat: %u", pstOwner->_num_sat);
 		pifLog_Printf(LT_INFO, "Altitude: %f m", pstOwner->_altitude);
-		pifLog_Printf(LT_INFO, "Speed: %f knots %f m/s %f km/h", pstOwner->_speed_n, pifGps_ConvertKnots2MpS(pstOwner->_speed_n),
-				pstOwner->_speed_k);
+		pifLog_Printf(LT_INFO, "Speed: %f cm/s", pstOwner->_ground_speed);
 		pifLog_Printf(LT_INFO, "Ground Course: %f deg", pstOwner->_ground_course);
 		pifLog_Printf(LT_INFO, "Fix: %u", pstOwner->_fix);
 	}
-	pifLog_Printf(LT_NONE, "\n");
+	if (g_print_data) {
+		pifLog_Printf(LT_NONE, "\n");
+	}
 }
 
 static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
@@ -54,7 +55,7 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	(void)pvIssuer;
 
 	if (usLevel) {
-		g_bPrintRawData ^= 1;
+		g_print_data = (g_print_data + 1) % 3;
 	}
 }
 
@@ -91,7 +92,6 @@ void appSetup()
     s_comm_gps.act_send_data = actGpsSendData;
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
-	if (!pifGpsNmea_SetProcessMessageId(&s_gps_nmea, 2, NMEA_MESSAGE_ID_GGA, NMEA_MESSAGE_ID_VTG)) return;
 	pifGpsNmea_SetEventMessageId(&s_gps_nmea, NMEA_MESSAGE_ID_GGA);
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;

@@ -7,27 +7,27 @@
 
 
 PifTimerManager g_timer_1ms;
-BOOL g_bPrintRawData = FALSE;
+int g_print_data = 1;
 
 static PifComm s_comm_gps;
 static PifGpsNmea s_gps_nmea;
 static PifLed s_led_l;
 
-static int _cmdPrintRawData(int argc, char *argv[]);
-static int _cmdRequest(int argc, char *argv[]);
+static int _cmdPrintData(int argc, char *argv[]);
+static int _cmdPollRequest(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "raw", _cmdPrintRawData, "Print RawData" },
-	{ "req", _cmdRequest, "Request" },
+	{ "print", _cmdPrintData, "Print Data" },
+	{ "req", _cmdPollRequest, "Poll Request" },
 
 	{ NULL, NULL, NULL }
 };
 
 
-static int _cmdPrintRawData(int argc, char *argv[])
+static int _cmdPrintData(int argc, char *argv[])
 {
 	if (argc == 1) {
-		pifLog_Printf(LT_NONE, "  Print RawData: %d\n", g_bPrintRawData);
+		pifLog_Printf(LT_NONE, "  Print Data: %d\n", g_print_data);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
@@ -35,13 +35,19 @@ static int _cmdPrintRawData(int argc, char *argv[])
 		case '0':
 		case 'F':
 		case 'f':
-			g_bPrintRawData = FALSE;
+			g_print_data = 0;
 			break;
 
 		case '1':
 		case 'T':
 		case 't':
-			g_bPrintRawData = TRUE;
+			g_print_data = 1;
+			break;
+
+		case '2':
+		case 'R':
+		case 'r':
+			g_print_data = 2;
 			break;
 
 		default:
@@ -52,38 +58,30 @@ static int _cmdPrintRawData(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _cmdRequest(int argc, char *argv[])
+static int _cmdPollRequest(int argc, char *argv[])
 {
-	int command;
-
 	if (argc > 2) {
-		command = atoi(argv[1]);
-		switch (command) {
-		case NMEA_MESSAGE_ID_GBQ:
+		if (strcmp(argv[1], "GBQ") == 0) {
 			if (!pifGpsNmea_PollRequestGBQ(&s_gps_nmea, argv[2])) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
-			break;
-
-		case NMEA_MESSAGE_ID_GLQ:
+		}
+		else if (strcmp(argv[1], "GLQ") == 0) {
 			if (!pifGpsNmea_PollRequestGLQ(&s_gps_nmea, argv[2])) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
-			break;
-
-		case NMEA_MESSAGE_ID_GNQ:
+		}
+		else if (strcmp(argv[1], "GNQ") == 0) {
 			if (!pifGpsNmea_PollRequestGNQ(&s_gps_nmea, argv[2])) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
-			break;
-
-		case NMEA_MESSAGE_ID_GPQ:
+		}
+		else if (strcmp(argv[1], "GPQ") == 0) {
 			if (!pifGpsNmea_PollRequestGPQ(&s_gps_nmea, argv[2])) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
-			break;
-
-		default:
+		}
+		else {
 			return PIF_LOG_CMD_INVALID_ARG;
 		}
 		return PIF_LOG_CMD_NO_ERROR;
@@ -111,7 +109,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 	pifGps_ConvertLatitude2DegMinSec(pstOwner, &stLatDegMinSec);
 	pifGps_ConvertLongitude2DegMinSec(pstOwner, &stLonDegMinSec);
 
-	if (!g_bPrintRawData) {
+	if (g_print_data == 1) {
 		pifLog_Printf(LT_INFO, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
 				2000 + pstOwner->_date_time.year, pstOwner->_date_time.month, pstOwner->_date_time.day,
 				pstOwner->_date_time.hour, pstOwner->_date_time.minute, pstOwner->_date_time.second, pstOwner->_date_time.millisecond);
@@ -123,12 +121,13 @@ static void _evtGpsReceive(PifGps *pstOwner)
 				stLatDegMinSec.degree, stLatDegMinSec.minute, stLatDegMinSec.second);
 		pifLog_Printf(LT_INFO, "NumSat: %u", pstOwner->_num_sat);
 		pifLog_Printf(LT_INFO, "Altitude: %f m", pstOwner->_altitude);
-		pifLog_Printf(LT_INFO, "Speed: %f knots %f m/s %f km/h", pstOwner->_speed_n, pifGps_ConvertKnots2MpS(pstOwner->_speed_n),
-				pstOwner->_speed_k);
+		pifLog_Printf(LT_INFO, "Speed: %f cm/s", pstOwner->_ground_speed);
 		pifLog_Printf(LT_INFO, "Ground Course: %f deg", pstOwner->_ground_course);
 		pifLog_Printf(LT_INFO, "Fix: %u", pstOwner->_fix);
 	}
-	pifLog_Printf(LT_NONE, "\n");
+	if (g_print_data) {
+		pifLog_Printf(LT_NONE, "\n");
+	}
 }
 
 void appSetup()
@@ -160,11 +159,9 @@ void appSetup()
     s_comm_gps.act_send_data = actGpsSendData;
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
-	if (!pifGpsNmea_SetProcessMessageId(&s_gps_nmea, 4, NMEA_MESSAGE_ID_GGA, 
-			NMEA_MESSAGE_ID_TXT, NMEA_MESSAGE_ID_VTG, NMEA_MESSAGE_ID_ZDA)) return;
 	pifGpsNmea_SetEventMessageId(&s_gps_nmea, NMEA_MESSAGE_ID_GGA);
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
-	s_gps_nmea.evt_text = _evtGpsNmeaText;
+	pifGpsNmea_SetEventText(&s_gps_nmea, _evtGpsNmeaText);
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
