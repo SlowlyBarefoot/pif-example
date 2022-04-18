@@ -6,7 +6,6 @@
 
 
 extern PifTimerManager g_timer_1ms;
-extern int g_print_data;
 
 
 void appSetup();

@@ -8,12 +8,17 @@
 
 
 PifTimerManager g_timer_1ms;
-int g_print_data = 1;
 
+static int s_print_data = 1;
 static PifComm s_comm_gps;
 static PifGpsNmea s_gps_nmea;
 static PifLed s_led_l;
 
+
+static void _evtGpsNmeaFrame(char* p_frame)
+{
+	pifLog_Print(LT_NONE, p_frame);
+}
 
 static void _evtGpsReceive(PifGps *pstOwner)
 {
@@ -28,15 +33,15 @@ static void _evtGpsReceive(PifGps *pstOwner)
 	pifGps_ConvertLatitude2DegMinSec(pstOwner, &stLatDegMinSec);
 	pifGps_ConvertLongitude2DegMinSec(pstOwner, &stLonDegMinSec);
 
-	if (g_print_data == 1) {
+	if (s_print_data == 1) {
 		pifLog_Printf(LT_INFO, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
 				2000 + pstOwner->_date_time.year, pstOwner->_date_time.month, pstOwner->_date_time.day,
 				pstOwner->_date_time.hour, pstOwner->_date_time.minute, pstOwner->_date_time.second, pstOwner->_date_time.millisecond);
 		pifLog_Printf(LT_INFO, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
-				pstOwner->_coord_deg[GPS_LON], stLonDegMin.degree, stLonDegMin.minute,
+				pstOwner->_coord_deg[PIF_GPS_LON], stLonDegMin.degree, stLonDegMin.minute,
 				stLonDegMinSec.degree, stLonDegMinSec.minute, stLonDegMinSec.second);
 		pifLog_Printf(LT_INFO, "Latitude: %f` - %u`%f' - %u`%u'%f\"",
-				pstOwner->_coord_deg[GPS_LAT], stLatDegMin.degree, stLatDegMin.minute,
+				pstOwner->_coord_deg[PIF_GPS_LAT], stLatDegMin.degree, stLatDegMin.minute,
 				stLatDegMinSec.degree, stLatDegMinSec.minute, stLatDegMinSec.second);
 		pifLog_Printf(LT_INFO, "NumSat: %u", pstOwner->_num_sat);
 		pifLog_Printf(LT_INFO, "Altitude: %f m", pstOwner->_altitude);
@@ -44,7 +49,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 		pifLog_Printf(LT_INFO, "Ground Course: %f deg", pstOwner->_ground_course);
 		pifLog_Printf(LT_INFO, "Fix: %u", pstOwner->_fix);
 	}
-	if (g_print_data) {
+	if (s_print_data) {
 		pifLog_Printf(LT_NONE, "\n");
 	}
 }
@@ -55,7 +60,13 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	(void)pvIssuer;
 
 	if (usLevel) {
-		g_print_data = (g_print_data + 1) % 3;
+		s_print_data = (s_print_data + 1) % 3;
+		if (s_print_data == 2) {
+			s_gps_nmea.evt_frame = _evtGpsNmeaFrame;
+		}
+		else {
+			s_gps_nmea.evt_frame = NULL;
+		}
 	}
 }
 
@@ -92,8 +103,8 @@ void appSetup()
     s_comm_gps.act_send_data = actGpsSendData;
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
-	pifGpsNmea_SetEventMessageId(&s_gps_nmea, NMEA_MESSAGE_ID_GGA);
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
+	s_gps_nmea._gps.evt_nmea_msg_id = PIF_GPS_NMEA_MSG_ID_GGA;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
     pifLed_SBlinkOn(&s_led_l, 1 << 0);

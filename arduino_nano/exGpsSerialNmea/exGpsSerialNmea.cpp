@@ -52,7 +52,6 @@ BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData)
 	rxData = serialGps.read();
 	if (rxData >= 0) {
 		*pucData = rxData;
-		if (g_print_data == 2) Serial.write(rxData);
 		return TRUE;
 	}
 	return FALSE;
