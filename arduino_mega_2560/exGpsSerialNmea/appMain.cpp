@@ -135,7 +135,7 @@ void appSetup()
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
-	pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText);
+	if (!pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText)) return;
 	s_gps_nmea._gps.evt_nmea_msg_id = PIF_GPS_NMEA_MSG_ID_GGA;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
