@@ -92,11 +92,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_comm.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_gps.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_gps.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pif_led.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_led.h</locationURI>
@@ -137,11 +132,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_comm.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_gps.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_gps.c</locationURI>
-		</link>
-		<link>
 			<name>pif/core/source/pif_led.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_led.c</locationURI>
@@ -172,9 +162,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_timer.c</locationURI>
 		</link>
 		<link>
+			<name>pif/gps/include/pif_gps.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gps/include/pif_gps.h</locationURI>
+		</link>
+		<link>
 			<name>pif/gps/include/pif_gps_nmea.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/gps/include/pif_gps_nmea.h</locationURI>
+		</link>
+		<link>
+			<name>pif/gps/source/pif_gps.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gps/source/pif_gps.c</locationURI>
 		</link>
 		<link>
 			<name>pif/gps/source/pif_gps_nmea.c</name>
