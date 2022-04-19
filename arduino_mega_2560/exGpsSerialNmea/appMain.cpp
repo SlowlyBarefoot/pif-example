@@ -46,21 +46,21 @@ static int _cmdPrintData(int argc, char *argv[])
 		case 'F':
 		case 'f':
 			s_print_data = 0;
-			s_gps_nmea.evt_frame = NULL;
+			s_gps_nmea._gps.evt_frame = NULL;
 			break;
 
 		case '1':
 		case 'T':
 		case 't':
 			s_print_data = 1;
-			s_gps_nmea.evt_frame = NULL;
+			s_gps_nmea._gps.evt_frame = NULL;
 			break;
 
 		case '2':
 		case 'R':
 		case 'r':
 			s_print_data = 2;
-			s_gps_nmea.evt_frame = _evtGpsNmeaFrame;
+			s_gps_nmea._gps.evt_frame = _evtGpsNmeaFrame;
 			break;
 
 		default:
@@ -135,7 +135,7 @@ void appSetup()
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
-	pifGpsNmea_SetEventText(&s_gps_nmea, _evtGpsNmeaText);
+	pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText);
 	s_gps_nmea._gps.evt_nmea_msg_id = PIF_GPS_NMEA_MSG_ID_GGA;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 

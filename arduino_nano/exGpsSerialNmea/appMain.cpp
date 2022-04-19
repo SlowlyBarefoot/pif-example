@@ -62,10 +62,10 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	if (usLevel) {
 		s_print_data = (s_print_data + 1) % 3;
 		if (s_print_data == 2) {
-			s_gps_nmea.evt_frame = _evtGpsNmeaFrame;
+			s_gps_nmea._gps.evt_frame = _evtGpsNmeaFrame;
 		}
 		else {
-			s_gps_nmea.evt_frame = NULL;
+			s_gps_nmea._gps.evt_frame = NULL;
 		}
 	}
 }
