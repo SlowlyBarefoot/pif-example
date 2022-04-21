@@ -31,7 +31,7 @@ static void _evtGpsNmeaText(PifGpsNmeaTxt *pstTxt)
 {
 	const char *acType[4] = { "Error", "Warning", "Notice", "User" };
 
-	pifLog_Printf(LT_INFO, "Text: Total=%u Num=%u Type=%s:%s", pstTxt->total, pstTxt->num, acType[pstTxt->type], pstTxt->text);
+	pifLog_Printf(LT_NONE, "%s] %s\n", acType[pstTxt->type], pstTxt->text);
 }
 
 static int _cmdPrintData(int argc, char *argv[])
