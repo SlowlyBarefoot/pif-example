@@ -93,34 +93,36 @@ static int _cmdPollRequest(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static void _evtGpsReceive(PifGps *pstOwner)
+static void _evtGpsReceive(PifGps *p_owner)
 {
-	PifDegMin stLatDegMin, stLonDegMin;
-	PifDegMinSec stLatDegMinSec, stLonDegMinSec;
+	PifDegMin lat_deg_min, lon_deg_min;
+	PifDegMinSec lat_deg_min_sec, lon_deg_min_sec;
 
 	pifLed_PartToggle(&s_led_l, 1 << 1);
 
-	pifGps_ConvertLatitude2DegMin(pstOwner, &stLatDegMin);
-	pifGps_ConvertLongitude2DegMin(pstOwner, &stLonDegMin);
+	pifGps_ConvertLatitude2DegMin(p_owner, &lat_deg_min);
+	pifGps_ConvertLongitude2DegMin(p_owner, &lon_deg_min);
 
-	pifGps_ConvertLatitude2DegMinSec(pstOwner, &stLatDegMinSec);
-	pifGps_ConvertLongitude2DegMinSec(pstOwner, &stLonDegMinSec);
+	pifGps_ConvertLatitude2DegMinSec(p_owner, &lat_deg_min_sec);
+	pifGps_ConvertLongitude2DegMinSec(p_owner, &lon_deg_min_sec);
 
 	if (g_print_data == 1) {
 		pifLog_Printf(LT_INFO, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
-				2000 + pstOwner->_date_time.year, pstOwner->_date_time.month, pstOwner->_date_time.day,
-				pstOwner->_date_time.hour, pstOwner->_date_time.minute, pstOwner->_date_time.second, pstOwner->_date_time.millisecond);
+				2000 + p_owner->_utc.year, p_owner->_utc.month, p_owner->_utc.day,
+				p_owner->_utc.hour, p_owner->_utc.minute, p_owner->_utc.second, p_owner->_utc.millisecond);
 		pifLog_Printf(LT_INFO, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
-				pstOwner->_coord_deg[PIF_GPS_LON], stLonDegMin.degree, stLonDegMin.minute,
-				stLonDegMinSec.degree, stLonDegMinSec.minute, stLonDegMinSec.second);
+				p_owner->_coord_deg[PIF_GPS_LON], lon_deg_min.degree, lon_deg_min.minute,
+				lon_deg_min_sec.degree, lon_deg_min_sec.minute, lon_deg_min_sec.second);
 		pifLog_Printf(LT_INFO, "Latitude: %f` - %u`%f' - %u`%u'%f\"",
-				pstOwner->_coord_deg[PIF_GPS_LAT], stLatDegMin.degree, stLatDegMin.minute,
-				stLatDegMinSec.degree, stLatDegMinSec.minute, stLatDegMinSec.second);
-		pifLog_Printf(LT_INFO, "NumSat: %u", pstOwner->_num_sat);
-		pifLog_Printf(LT_INFO, "Altitude: %f m", pstOwner->_altitude);
-		pifLog_Printf(LT_INFO, "Speed: %f cm/s", pstOwner->_ground_speed);
-		pifLog_Printf(LT_INFO, "Ground Course: %f deg", pstOwner->_ground_course);
-		pifLog_Printf(LT_INFO, "Fix: %u", pstOwner->_fix);
+				p_owner->_coord_deg[PIF_GPS_LAT], lat_deg_min.degree, lat_deg_min.minute,
+				lat_deg_min_sec.degree, lat_deg_min_sec.minute, lat_deg_min_sec.second);
+		pifLog_Printf(LT_INFO, "NumSat: %u", p_owner->_num_sat);
+		pifLog_Printf(LT_INFO, "Altitude: %f m", p_owner->_altitude);
+		pifLog_Printf(LT_INFO, "Speed: %f cm/s", p_owner->_ground_speed);
+		pifLog_Printf(LT_INFO, "Ground Course: %f deg", p_owner->_ground_course);
+		pifLog_Printf(LT_INFO, "Fix: %u", p_owner->_fix);
+		pifLog_Printf(LT_INFO, "Acc: Hor %lu mm Ver %lu mm", p_owner->_horizontal_acc, p_owner->_vertical_acc);
+		pifLog_Printf(LT_INFO, "Update: %lu ms, %lu ms", p_owner->_update_rate[0], p_owner->_update_rate[1]);
 	}
 	if (g_print_data) {
 		pifLog_Printf(LT_NONE, "\n");
@@ -129,7 +131,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 
 void _evtGpsUbxReceive(PifGpsUbxPacket* p_packet)
 {
-	pifLog_Printf(LT_INFO, "UBX: CID=%u MID=%u Len=%u", p_packet->class_id, p_packet->message_id, p_packet->length);
+	pifLog_Printf(LT_INFO, "UBX: CID=%u MID=%u Len=%u", p_packet->class_id, p_packet->msg_id, p_packet->length);
 }
 
 void appSetup()
@@ -148,16 +150,16 @@ void appSetup()
 			0x00, 0x00				// reserved2
     };
     const uint8_t kCfgMsg[][3] = {
-			{ 0xF0, 0x05, 0x00 },   // VGS: Course over ground and Ground speed
-			{ 0xF0, 0x03, 0x00 },   // GSV: GNSS Satellites in View
-			{ 0xF0, 0x01, 0x00 },   // GLL: Latitude and longitude, with time of position fix and status
-			{ 0xF0, 0x00, 0x00 },   // GGA: Global positioning system fix data
-			{ 0xF0, 0x02, 0x00 },   // GSA: GNSS DOP and Active Satellites
-			{ 0xF0, 0x04, 0x00 },   // RMC: Recommended Minimum data
-		    { 0x01, 0x02, 0x01 },   // set POSLLH MSG rate
-		    { 0x01, 0x03, 0x01 },   // set STATUS MSG rate
-		    { 0x01, 0x06, 0x01 },   // set SOL MSG rate
-		    { 0x01, 0x12, 0x01 }    // set VELNED MSG rate
+			{ GUCI_NMEA_STD, GUMI_NMEA_VTG, 0x00 }, // Course over ground and Ground speed
+			{ GUCI_NMEA_STD, GUMI_NMEA_GSV, 0x00 }, // GNSS Satellites in View
+			{ GUCI_NMEA_STD, GUMI_NMEA_GLL, 0x00 }, // Latitude and longitude, with time of position fix and status
+			{ GUCI_NMEA_STD, GUMI_NMEA_GGA, 0x00 }, // Global positioning system fix data
+			{ GUCI_NMEA_STD, GUMI_NMEA_GSA, 0x00 }, // GNSS DOP and Active Satellites
+			{ GUCI_NMEA_STD, GUMI_NMEA_RMC, 0x00 },	// Recommended Minimum data
+		    { GUCI_NAV, GUMI_NAV_POSLLH, 0x01 },	// set POSLLH MSG rate
+		    { GUCI_NAV, GUMI_NAV_SOL, 0x01 },   	// set SOL MSG rate
+		    { GUCI_NAV, GUMI_NAV_TIMEUTC, 0x01 },   // set TIMEUTC MSG rate
+		    { GUCI_NAV, GUMI_NAV_VELNED, 0x01 }    	// set VELNED MSG rate
     };
     const uint8_t kCfgRate[] = {
     		0xC8, 0x00,				// messRate 5Hz
@@ -166,8 +168,8 @@ void appSetup()
     };
     const uint8_t kCfgNav5[] = {
     		0xFF, 0xFF,						// mask
-			0x06, 							// dynModel
-			0x03, 							// fixMode
+			0x06, 							// dynModel = airborne with < 1g acceleration
+			0x03, 							// fixMode = auto 2D/3D
 			0x00, 0x00,	0x00, 0x00, 		// fixedAlt
 			0x10, 0x27, 0x00, 0x00,			// fixedAltVar
 			0x05, 							// minElev
@@ -185,7 +187,7 @@ void appSetup()
 			0x00, 							// utcStandard
 			0x00, 0x00, 0x00, 0x00, 0x00	// reserved2
     };
-    uint8_t kCfgSbas[][8] = {
+    const uint8_t kCfgSbas[][8] = {
 			{ 0x03, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00 },   	// Auto
 			{ 0x03, 0x07, 0x03, 0x00, 0x51, 0x08, 0x00, 0x00 },   	// EGNOS
 			{ 0x03, 0x07, 0x03, 0x00, 0x04, 0xE0, 0x04, 0x00 },   	// WAAS
@@ -231,13 +233,13 @@ void appSetup()
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
 	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_PRT, sizeof(kCfgPrt), (uint8_t*)kCfgPrt, TRUE)) return;
 	pifTaskManager_YieldMs(50);
-	Serial1.begin(115200);
-	for (int i = 0; i < 10; i++) {
+	actGpsSetBaudrate(115200);
+	for (uint8_t i = 0; i < sizeof(kCfgMsg) / sizeof(kCfgMsg[0]); i++) {
 		if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsg[i]), (uint8_t*)kCfgMsg[i], TRUE)) return;
 	}
 	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE)) return;
 	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE)) return;
-	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[3]), (uint8_t*)kCfgSbas[3], TRUE)) return;		// 3 = MSAS
+	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[0]), (uint8_t*)kCfgSbas[0], TRUE)) return;		// 0 = Auto
 	s_gps_ublox.evt_ubx_receive = NULL;
 #endif
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;

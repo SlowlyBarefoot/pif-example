@@ -36,6 +36,11 @@ BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData)
 	return FALSE;
 }
 
+void actGpsSetBaudrate(uint32_t baudrate)
+{
+	Serial1.begin(baudrate);
+}
+
 uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;

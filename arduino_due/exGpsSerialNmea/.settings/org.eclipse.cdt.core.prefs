@@ -34,7 +34,7 @@ environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.MCU/ope
 environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.MCU/value=cortex-m3
 environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.PATH/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.PATH/value=/home/wonjh/github/pif-example/arduino_due/exGpsSerialNmea/Release
+environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.PATH/value=/media/wonjh/work/github/pif-example/arduino_due/exGpsSerialNmea/Release
 environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.PID/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.PID/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1253990066/A.BUILD.PID/value=0x003e
@@ -397,7 +397,7 @@ environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.COM_PORT
 environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.COM_PORT/value=/dev/ttyACM0
 environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}////////////
+environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}//////////////////////////////////
 environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.1253990066/JANTJE.EXTRA.ALL/value=

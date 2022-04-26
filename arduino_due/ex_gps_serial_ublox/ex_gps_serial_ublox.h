@@ -17,10 +17,11 @@
 //add your function definitions for the project ex_gps_serial_ublox here
 
 void actLedLState(PifId usPifId, uint32_t unState);
-uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData);
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
+void actGpsSetBaudrate(uint32_t baudrate);
+uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _ex_gps_serial_ublox_H_ */

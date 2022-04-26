@@ -86,8 +86,8 @@ static void _evtGpsReceive(PifGps *pstOwner)
 
 	if (s_print_data == 1) {
 		pifLog_Printf(LT_INFO, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
-				2000 + pstOwner->_date_time.year, pstOwner->_date_time.month, pstOwner->_date_time.day,
-				pstOwner->_date_time.hour, pstOwner->_date_time.minute, pstOwner->_date_time.second, pstOwner->_date_time.millisecond);
+				2000 + pstOwner->_utc.year, pstOwner->_utc.month, pstOwner->_utc.day,
+				pstOwner->_utc.hour, pstOwner->_utc.minute, pstOwner->_utc.second, pstOwner->_utc.millisecond);
 		pifLog_Printf(LT_INFO, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
 				pstOwner->_coord_deg[PIF_GPS_LON], stLonDegMin.degree, stLonDegMin.minute,
 				stLonDegMinSec.degree, stLonDegMinSec.minute, stLonDegMinSec.second);
