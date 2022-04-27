@@ -122,7 +122,7 @@ static void _evtGpsReceive(PifGps *p_owner)
 		pifLog_Printf(LT_INFO, "Ground Course: %f deg", p_owner->_ground_course);
 		pifLog_Printf(LT_INFO, "Fix: %u", p_owner->_fix);
 		pifLog_Printf(LT_INFO, "Acc: Hor %lu mm Ver %lu mm", p_owner->_horizontal_acc, p_owner->_vertical_acc);
-		pifLog_Printf(LT_INFO, "Update: %lu ms, %lu ms", p_owner->_update_rate[0], p_owner->_update_rate[1]);
+		pifLog_Printf(LT_INFO, "Update: %lu ms", p_owner->_update_rate[1] - p_owner->_update_rate[0]);
 	}
 	if (g_print_data) {
 		pifLog_Printf(LT_NONE, "\n");
@@ -138,12 +138,12 @@ void appSetup()
 {
 	static PifComm s_comm_log;
 #ifdef UBX
-    const uint8_t kCfgPrt[] = {
+    uint8_t kCfgPrt[] = {
     		0x01, 					// portID UART
 			0x00, 					// reserved1
 			0x00, 0x00, 			// txReady
 			0xC0, 0x08, 0x00, 0x00,	// mode 8 bits, No parity, 1 Stop Bits
-			0x00, 0xC2, 0x01, 0x00, // bardRate 115200 bits/s
+			0x80, 0x25, 0x00, 0x00, // bardRate 9600 bits/s
 			0x07, 0x00,				// inProtoMask UBX+NMEA+RCTM2
 			0x03, 0x00,				// outProtoMask UBX+NMEA
 			0x00, 0x00,				// flags
@@ -161,8 +161,8 @@ void appSetup()
 		    { GUCI_NAV, GUMI_NAV_TIMEUTC, 0x01 },   // set TIMEUTC MSG rate
 		    { GUCI_NAV, GUMI_NAV_VELNED, 0x01 }    	// set VELNED MSG rate
     };
-    const uint8_t kCfgRate[] = {
-    		0xC8, 0x00,				// messRate 5Hz
+    uint8_t kCfgRate[] = {
+    		0xE8, 0x03,				// messRate 1Hz
 			0x01, 0x00, 			// navRate
 			0x01, 0x00 				// timeRef
     };
@@ -189,13 +189,17 @@ void appSetup()
     };
     const uint8_t kCfgSbas[][8] = {
 			{ 0x03, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00 },   	// Auto
-			{ 0x03, 0x07, 0x03, 0x00, 0x51, 0x08, 0x00, 0x00 },   	// EGNOS
-			{ 0x03, 0x07, 0x03, 0x00, 0x04, 0xE0, 0x04, 0x00 },   	// WAAS
-			{ 0x03, 0x07, 0x03, 0x00, 0x00, 0x02, 0x02, 0x00 },   	// MSAS
-			{ 0x03, 0x07, 0x03, 0x00, 0x80, 0x01, 0x00, 0x00 },   	// GAGAN
+	        { 0x03, 0x07, 0x03, 0x00, 0x4A, 0x00, 0x01, 0x40 },   	// EGNOS
+	        { 0x03, 0x07, 0x03, 0x00, 0x00, 0xA8, 0x04, 0x00 },   	// WAAS
+	        { 0x03, 0x07, 0x03, 0x00, 0x00, 0x42, 0x0A, 0x00 },   	// MSAS + KASS
+	        { 0x03, 0x07, 0x03, 0x00, 0x80, 0x11, 0x00, 0x00 },   	// GAGAN
 			{ 0x02, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00 }		// Disabled
     };
 #endif
+	uint32_t baurate = 115200;
+	uint32_t* p_baurate;
+	uint16_t* p_rate;
+	uint8_t sbas = 0;		// 0 = Auto
 
 	pif_Init(NULL);
 
@@ -225,21 +229,26 @@ void appSetup()
 	pifGpsUblox_AttachComm(&s_gps_ublox, &s_comm_gps);
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_msg_id = PIF_GPS_NMEA_MSG_ID_GGA;
-	if (!pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x03, 0x03, 38400, TRUE)) return;
-	pifTaskManager_YieldMs(50);
-	Serial1.begin(38400);
+	if (!pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x07, 0x03, baurate, TRUE)) return;
+	pifTaskManager_YieldMs(200);
+	Serial1.begin(baurate);
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
+	pifTaskManager_YieldMs(2000);
+	p_baurate = (uint32_t*)(kCfgPrt + 8);
+	*p_baurate = baurate;
 	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_PRT, sizeof(kCfgPrt), (uint8_t*)kCfgPrt, TRUE)) return;
-	pifTaskManager_YieldMs(50);
-	actGpsSetBaudrate(115200);
+	pifTaskManager_YieldMs(200);
+	actGpsSetBaudrate(*p_baurate);
 	for (uint8_t i = 0; i < sizeof(kCfgMsg) / sizeof(kCfgMsg[0]); i++) {
 		if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsg[i]), (uint8_t*)kCfgMsg[i], TRUE)) return;
 	}
+	p_rate = (uint16_t*)kCfgRate;
+	*p_rate = 1000;	// 1000 = 1Hz
 	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE)) return;
 	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE)) return;
-	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[0]), (uint8_t*)kCfgSbas[0], TRUE)) return;		// 0 = Auto
+	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE)) return;
 	s_gps_ublox.evt_ubx_receive = NULL;
 #endif
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
