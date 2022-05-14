@@ -3,10 +3,10 @@
   <FileVersion>3.0</FileVersion>
   <Workspace>
     <WorkspaceType>Single-project</WorkspaceType>
-    <WorkspacePath>/home/wonjh/github/pif-example/nucleo_f767zi/exAds1115/</WorkspacePath>
+    <WorkspacePath>/media/wonjh/work/github/pif-example/nucleo_f767zi/exAds1115/</WorkspacePath>
     <underRoot>true</underRoot>
     <TrustZone>0</TrustZone>
-    <HAL_Driver>/home/wonjh/STM32Cube/Repository//STM32Cube_FW_F7_V1.16.1</HAL_Driver>
+    <HAL_Driver>/home/wonjh/STM32Cube/Repository//STM32Cube_FW_F7_V1.16.2</HAL_Driver>
     <CMSIS>Drivers/CMSIS</CMSIS>
     <Toolchain>STM32CubeIDE</Toolchain>
     <IocFile>exAds1115.ioc</IocFile>
@@ -14,7 +14,14 @@
       <ProjectName>exAds1115</ProjectName>
       <ProjectNature>C</ProjectNature>
       <Secure/>
-      <filestoremove/>
+      <filestoremove>
+        <file>
+          <name>Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c</name>
+        </file>
+        <file>
+          <name>../Src/stm32f7xx_nucleo.c</name>
+        </file>
+      </filestoremove>
       <sourceEntriesToRemove>
         <sourceEntry/>
       </sourceEntriesToRemove>
@@ -30,7 +37,7 @@
             <memory access="xrw" name="RAM" size="512" start="0x20000000"/>
             <memory access="rx" name="FLASH" size="2048" start="0x8000000"/>
           </memories>
-          <startup>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/CMSIS/Device\ST\STM32F7xx\Source\Templates\gcc\startup_stm32f767xx.s</startup>
+          <startup>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.2/Drivers/CMSIS/Device\ST\STM32F7xx\Source\Templates\gcc\startup_stm32f767xx.s</startup>
           <LinkSettings>
             <LinkAdditionalLibs/>
           </LinkSettings>
