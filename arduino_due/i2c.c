@@ -17,8 +17,6 @@ static BOOL TWI_WaitTransferComplete(Twi *_twi, uint32_t _timeout)
 	uint32_t _status_reg = 0;
 
 	while ((_status_reg & TWI_SR_TXCOMP) != TWI_SR_TXCOMP) {
-		pifTaskManager_Yield();
-
 		_status_reg = TWI_GetStatus(_twi);
 
 		if (_status_reg & TWI_SR_NACK) {
@@ -30,6 +28,8 @@ static BOOL TWI_WaitTransferComplete(Twi *_twi, uint32_t _timeout)
 			pif_error = E_TIMEOUT;
 			return FALSE;
 		}
+
+//		pifTaskManager_Yield();
 	}
 	return TRUE;
 }
@@ -39,8 +39,6 @@ static BOOL TWI_WaitByteSent(Twi *_twi, uint32_t _timeout)
 	uint32_t _status_reg = 0;
 
 	while ((_status_reg & TWI_SR_TXRDY) != TWI_SR_TXRDY) {
-		pifTaskManager_Yield();
-
 		_status_reg = TWI_GetStatus(_twi);
 
 		if (_status_reg & TWI_SR_NACK) {
@@ -52,6 +50,8 @@ static BOOL TWI_WaitByteSent(Twi *_twi, uint32_t _timeout)
 			pif_error = E_TIMEOUT;
 			return FALSE;
 		}
+
+		pifTaskManager_Yield();
 	}
 
 	return TRUE;
@@ -62,8 +62,6 @@ static BOOL TWI_WaitByteReceived(Twi *_twi, uint32_t _timeout)
 	uint32_t _status_reg = 0;
 
 	while ((_status_reg & TWI_SR_RXRDY) != TWI_SR_RXRDY) {
-		pifTaskManager_Yield();
-
 		_status_reg = TWI_GetStatus(_twi);
 
 		if (_status_reg & TWI_SR_NACK) {
@@ -75,6 +73,8 @@ static BOOL TWI_WaitByteReceived(Twi *_twi, uint32_t _timeout)
 			pif_error = E_TIMEOUT;
 			return FALSE;
 		}
+
+		pifTaskManager_Yield();
 	}
 
 	return TRUE;
@@ -149,7 +149,8 @@ BOOL I2C_ReadAddr(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, 
 			break;
 	}
 	while (readed < size);
-	return TWI_WaitTransferComplete(twi, recv_timeout);
+	if (!TWI_WaitTransferComplete(twi, recv_timeout)) return FALSE;
+	return readed >= size;
 }
 
 BOOL I2C_Read(uint8_t addr, uint8_t* p_data, uint8_t size)

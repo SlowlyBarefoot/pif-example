@@ -105,7 +105,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 
 void actLedL(SWITCH sw)
 {
-	HAL_GPIO_WritePin(GPIOB, LD2_Pin, sw);
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, sw);
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

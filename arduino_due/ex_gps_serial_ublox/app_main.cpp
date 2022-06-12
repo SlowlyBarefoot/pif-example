@@ -123,15 +123,25 @@ static void _evtGpsReceive(PifGps *p_owner)
 		pifLog_Printf(LT_INFO, "Fix: %u", p_owner->_fix);
 		pifLog_Printf(LT_INFO, "Acc: Hor %lu mm Ver %lu mm", p_owner->_horizontal_acc, p_owner->_vertical_acc);
 		pifLog_Printf(LT_INFO, "Update: %lu ms", p_owner->_update_rate[1] - p_owner->_update_rate[0]);
+/*		pifLog_Printf(LT_INFO, "SvInfo: ch=%u rate=%lu:%lu", s_gps_ublox._num_ch, s_gps_ublox._svinfo_rate[0], s_gps_ublox._svinfo_rate[1]);
+	    for (int i = 0; i < s_gps_ublox._num_ch; i++) {
+			pifLog_Printf(LT_INFO, "   ch=%u rate=%lu:%lu", s_gps_ublox._svinfo_chn[i], s_gps_ublox._svinfo_svid[i], s_gps_ublox._svinfo_quality[i], s_gps_ublox._svinfo_cno[i]);
+	    } */
 	}
 	if (g_print_data) {
 		pifLog_Printf(LT_NONE, "\n");
 	}
 }
 
-void _evtGpsUbxReceive(PifGpsUbxPacket* p_packet)
+static void _evtGpsUbxReceive(PifGpsUbxPacket* p_packet)
 {
-	pifLog_Printf(LT_INFO, "UBX: CID=%u MID=%u Len=%u", p_packet->class_id, p_packet->msg_id, p_packet->length);
+	pifLog_Printf(LT_INFO, "Ubx: cid=%u mid=%u", p_packet->class_id, p_packet->msg_id);
+/*	if (p_packet->class_id == GUCI_NAV && p_packet->msg_id == GUMI_NAV_SVINFO) {
+		pifLog_Printf(LT_INFO, "SvInfo: ch=%u rate=%lu:%lu", s_gps_ublox._num_ch, s_gps_ublox._svinfo_rate[0], s_gps_ublox._svinfo_rate[1]);
+	    for (int i = 0; i < s_gps_ublox._num_ch; i++) {
+			pifLog_Printf(LT_INFO, "   ch=%u rate=%lu:%lu", s_gps_ublox._svinfo_chn[i], s_gps_ublox._svinfo_svid[i], s_gps_ublox._svinfo_quality[i], s_gps_ublox._svinfo_cno[i]);
+	    }
+	} */
 }
 
 void appSetup()
@@ -158,6 +168,7 @@ void appSetup()
 			{ GUCI_NMEA_STD, GUMI_NMEA_RMC, 0x00 },	// Recommended Minimum data
 		    { GUCI_NAV, GUMI_NAV_POSLLH, 0x01 },	// set POSLLH MSG rate
 		    { GUCI_NAV, GUMI_NAV_SOL, 0x01 },   	// set SOL MSG rate
+		    { GUCI_NAV, GUMI_NAV_SVINFO, 0x00 },   	// set SVINFO MSG rate
 		    { GUCI_NAV, GUMI_NAV_TIMEUTC, 0x01 },   // set TIMEUTC MSG rate
 		    { GUCI_NAV, GUMI_NAV_VELNED, 0x01 }    	// set VELNED MSG rate
     };
@@ -203,7 +214,7 @@ void appSetup()
 
 	pif_Init(NULL);
 
-    if (!pifTaskManager_Init(4)) return;
+    if (!pifTaskManager_Init(5)) return;
 
     pifLog_Init();
 
@@ -235,7 +246,7 @@ void appSetup()
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	pifTaskManager_YieldMs(2000);
+	pifTaskManager_YieldMs(5000);
 	p_baurate = (uint32_t*)(kCfgPrt + 8);
 	*p_baurate = baurate;
 	if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_PRT, sizeof(kCfgPrt), (uint8_t*)kCfgPrt, TRUE)) return;

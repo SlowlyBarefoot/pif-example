@@ -221,7 +221,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 #endif
 
 #ifdef USE_DMA
-		pifComm_ReceiveDatas(g_pstSerial1, s_ucSerial1Buffer, UART_FRAME_SIZE);
+		pifComm_ReceiveDatas(&g_serial1, s_ucSerial1Buffer, UART_FRAME_SIZE);
 		HAL_UART_Receive_DMA(huart, s_ucSerial1Buffer, UART_FRAME_SIZE);
 #endif
 	}
@@ -232,7 +232,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 #endif
 
 #ifdef USE_DMA
-		pifComm_ReceiveDatas(g_pstSerial2, s_ucSerial2Buffer, UART_FRAME_SIZE);
+		pifComm_ReceiveDatas(&g_serial2, s_ucSerial2Buffer, UART_FRAME_SIZE);
 		HAL_UART_Receive_DMA(huart, s_ucSerial2Buffer, UART_FRAME_SIZE);
 #endif
 	}
