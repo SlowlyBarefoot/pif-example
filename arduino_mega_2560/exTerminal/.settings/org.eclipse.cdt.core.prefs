@@ -52,7 +52,7 @@ environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUIL
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUILD.MCU/value=atmega2560
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUILD.PATH/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUILD.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUILD.PATH/value=/home/wonjh/github/pif-example/arduino_mega_2560/exTerminal/Debug
+environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUILD.PATH/value=/media/wonjh/work/github/pif-example/arduino_mega_2560/exTerminal/Debug
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUILD.PROJECT_NAME/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUILD.PROJECT_NAME/operation=replace
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/A.BUILD.PROJECT_NAME/value=${ProjName}
@@ -484,7 +484,7 @@ environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE.COM_PORT/value=/dev/ttyUSB0
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}///////////////////////////////////////
+environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}////////////////////////////////////////
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.944642023.690305399/JANTJE.EXTRA.ALL/value=
@@ -594,7 +594,7 @@ environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.MCU/oper
 environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.MCU/value=atmega2560
 environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.PATH/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.PATH/value=/home/wonjh/github/pif-example/arduino_mega_2560/exTerminal/Release
+environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.PATH/value=/media/wonjh/work/github/pif-example/arduino_mega_2560/exTerminal/Release
 environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.PROJECT_NAME/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.PROJECT_NAME/operation=replace
 environment/project/io.sloeber.core.toolChain.release.944642023/A.BUILD.PROJECT_NAME/value=${ProjName}
@@ -1026,7 +1026,7 @@ environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.COM_PORT/
 environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.COM_PORT/value=/dev/ttyUSB0
 environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}////////////////////////////////////////////
+environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}/////////////////////////////////////////////
 environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.944642023/JANTJE.EXTRA.ALL/value=

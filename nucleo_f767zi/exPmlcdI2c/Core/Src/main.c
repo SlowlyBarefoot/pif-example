@@ -174,7 +174,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	pif_Loop();
+	pifTaskManager_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

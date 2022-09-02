@@ -52,7 +52,7 @@ environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUI
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUILD.MCU/value=atmega328p
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUILD.PATH/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUILD.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUILD.PATH/value=/home/wonjh/github/pif-example/arduino_nano/exTerminal/Debug
+environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUILD.PATH/value=/media/wonjh/work/github/pif-example/arduino_nano/exTerminal/Debug
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUILD.PROJECT_NAME/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUILD.PROJECT_NAME/operation=replace
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/A.BUILD.PROJECT_NAME/value=${ProjName}
@@ -448,7 +448,7 @@ environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJ
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJE.COM_PORT/value=/dev/ttyUSB0
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}////////////////////////////////
+environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}/////////////////////////////////
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.126136493.1389005495/JANTJE.EXTRA.ALL/value=
@@ -558,7 +558,7 @@ environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.MCU/oper
 environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.MCU/value=atmega328p
 environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.PATH/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.PATH/value=/home/wonjh/github/pif-example/arduino_nano/exTerminal/Release
+environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.PATH/value=/media/wonjh/work/github/pif-example/arduino_nano/exTerminal/Release
 environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.PROJECT_NAME/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.PROJECT_NAME/operation=replace
 environment/project/io.sloeber.core.toolChain.release.126136493/A.BUILD.PROJECT_NAME/value=${ProjName}
@@ -954,7 +954,7 @@ environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.COM_PORT/
 environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.COM_PORT/value=/dev/ttyUSB0
 environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}//////////////////////
+environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}///////////////////////
 environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.126136493/JANTJE.EXTRA.ALL/value=

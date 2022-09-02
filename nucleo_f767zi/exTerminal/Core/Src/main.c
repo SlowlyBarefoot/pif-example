@@ -82,7 +82,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 	uint8_t *pucData, ucState;
 
-  if (huart->Instance == USART3) {
+	if (huart->Instance == USART3) {
 		ucState = pifComm_EndSendDatas(&g_comm_log, s_usLogTx);
 		if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
 			pifComm_FinishTransfer(&g_comm_log);
@@ -99,15 +99,17 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	pifComm_ReceiveData(&g_comm_log, s_ucLogRx);
-	HAL_UART_Receive_IT(huart, &s_ucLogRx, 1);
+	if (huart->Instance == USART3) {
+		pifComm_ReceiveData(&g_comm_log, s_ucLogRx);
+		HAL_UART_Receive_IT(huart, &s_ucLogRx, 1);
+	}
 }
 
 void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
-	HAL_GPIO_WritePin(GPIOB, LD2_Pin, unState & 1);
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, unState & 1);
 	pifLog_Printf(LT_INFO, "LED State=%u ", unState);
 }
 
@@ -154,7 +156,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    pif_Loop();
+	pifTaskManager_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

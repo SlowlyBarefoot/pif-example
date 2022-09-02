@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     if (!appInit()) goto fail;
 
     while (s_unTimer) {
-        pif_Loop();
+    	pifTaskManager_Loop();
     }
 
     pifLog_PrintInBuffer();

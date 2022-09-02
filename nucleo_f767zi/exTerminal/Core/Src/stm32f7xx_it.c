@@ -188,7 +188,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
   static int sw = 0;
 
-  HAL_GPIO_WritePin(GPIOB, LD1_Pin, sw);
+  HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, sw);
   sw ^= 1;
 
   pif_sigTimer1ms();

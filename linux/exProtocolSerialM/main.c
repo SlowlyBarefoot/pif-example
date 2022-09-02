@@ -99,7 +99,7 @@ int main(int argc, char **argv)
     if (!appInit()) goto fail;
 
     while (1) {
-        pif_Loop();
+    	pifTaskManager_Loop();
     }
 
 fail:

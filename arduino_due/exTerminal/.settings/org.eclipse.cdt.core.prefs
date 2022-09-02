@@ -397,7 +397,7 @@ environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE
 environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE.COM_PORT/value=/dev/ttyACM0
 environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE.ECLIPSE_LOCATION/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE.ECLIPSE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}////////////////////////////////////////////////////////////
+environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE.ECLIPSE_LOCATION/value=${eclipse_home}/////////////////////////////////////////////////////////////
 environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE.EXTRA.ALL/delimiter=\:
 environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE.EXTRA.ALL/operation=replace
 environment/project/io.sloeber.core.toolChain.release.396960976.109464084/JANTJE.EXTRA.ALL/value=

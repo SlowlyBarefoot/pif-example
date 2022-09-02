@@ -55,11 +55,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_list.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_storage.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_storage.h</locationURI>
-		</link>
-		<link>
 			<name>pif/core/include/pif_task.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_task.h</locationURI>
@@ -73,11 +68,6 @@
 			<name>pif/core/source/pif_list.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_list.c</locationURI>
-		</link>
-		<link>
-			<name>pif/core/source/pif_storage.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_storage.c</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source/pif_task.c</name>
