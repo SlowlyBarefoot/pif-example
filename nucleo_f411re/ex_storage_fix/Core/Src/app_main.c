@@ -27,7 +27,7 @@ static int _CmdWrite(int argc, char *argv[])
 	PifStorageFixDataInfo* p_data_info;
 
 	if (argc == 1) {
-		pifLog_Print(LT_NONE, "write [id] [size] [value]\n");
+		pifLog_Print(LT_INFO, "write [id] [size] [value]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -35,7 +35,7 @@ static int _CmdWrite(int argc, char *argv[])
 		size = atoi(argv[2]);
 		p_data_info = (PifStorageFixDataInfo*)pifStorage_Open(&s_storage.parent, id);
 		if (!p_data_info) {
-			pifLog_Printf(LT_NONE, "write: not alloc ID=%d E=%d\n", id, pif_error);
+			pifLog_Printf(LT_INFO, "write: not alloc ID=%d E=%d", id, pif_error);
 		}
 		else {
 			if (argc > 3) {
@@ -47,11 +47,11 @@ static int _CmdWrite(int argc, char *argv[])
 			p_buffer = (uint8_t*)malloc(size);
 			if (p_buffer) {
 				memset(p_buffer, value, size);
-				if (!pifStorage_Write(&s_storage.parent, (PifStorageDataInfo*)p_data_info, p_buffer, size)) {
-					pifLog_Printf(LT_NONE, "write: failed E=%d\n", pif_error);
+				if (!pifStorage_Write(&s_storage.parent, (PifStorageDataInfoP)p_data_info, p_buffer, size)) {
+					pifLog_Printf(LT_INFO, "write: failed E=%d", pif_error);
 				}
 				else {
-					pifLog_Printf(LT_NONE, "write: value = %Xh\n", value);
+					pifLog_Printf(LT_INFO, "write: value = %Xh", value);
 				}
 				free(p_buffer);
 			}
@@ -69,7 +69,7 @@ static int _CmdRead(int argc, char *argv[])
 	PifStorageFixDataInfo* p_data_info;
 
 	if (argc == 1) {
-		pifLog_Print(LT_NONE, "read [id] [size]\n");
+		pifLog_Print(LT_INFO, "read [id] [size]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
@@ -77,14 +77,14 @@ static int _CmdRead(int argc, char *argv[])
 		size = atoi(argv[2]);
 		p_data_info = (PifStorageFixDataInfo*)pifStorage_Open(&s_storage.parent, id);
 		if (!p_data_info) {
-			pifLog_Printf(LT_NONE, "read: not alloc ID=%d EC=%d\n", id, pif_error);
+			pifLog_Printf(LT_INFO, "read: not alloc ID=%d EC=%d", id, pif_error);
 		}
 		else {
 			p_buffer = (uint8_t*)malloc(size);
 			if (p_buffer) {
 				memset(p_buffer, 0, size);
-				if (!pifStorage_Read(&s_storage.parent, p_buffer, (PifStorageDataInfo*)p_data_info, size)) {
-					pifLog_Printf(LT_NONE, "read: failed E=%d\n", pif_error);
+				if (!pifStorage_Read(&s_storage.parent, p_buffer, (PifStorageDataInfoP)p_data_info, size)) {
+					pifLog_Printf(LT_INFO, "read: failed E=%d", pif_error);
 				}
 				else {
 					for (i = 0; i < size; i++) {
@@ -144,5 +144,5 @@ void appSetup()
 	if (!pifStorageFix_AttachActStorage(&s_storage, actStorageRead, actStorageWrite)) return;
 	if (!pifStorageFix_SetMedia(&s_storage, STORAGE_SECTOR_SIZE, STORAGE_VOLUME)) return;
 
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

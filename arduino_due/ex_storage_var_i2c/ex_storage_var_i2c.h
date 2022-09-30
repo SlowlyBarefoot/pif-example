@@ -14,7 +14,7 @@
 
 //end of add your includes here
 
-#define USE_I2C_WIRE
+//#define USE_I2C_WIRE
 
 //add your function definitions for the project ex_storage_var_i2c here
 

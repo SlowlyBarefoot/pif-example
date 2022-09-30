@@ -7,15 +7,24 @@
 
 #define ATMEL_I2C_ADDRESS		0x50
 
-#define EEPROM_AT24C08
-//#define EEPROM_AT24C256
+//#define EEPROM_AT24C08
+#define EEPROM_AT24C256
 
-#define AT24C08_SECTOR_SIZE		16
-#define AT24C08_VOLUME			1024
+#ifdef EEPROM_AT24C08
+	#define EEPROM_PAGE_SIZE		16
+	#define EEPROM_SECTOR_SIZE		16
+	#define EEPROM_VOLUME			1024
+	#define EEPROM_I_ADDR_SIZE		SIC_I_ADDR_SIZE_1
+	#define MIN_DATA_INFO_COUNT		5
+#endif
 
-#define AT24C256_SECTOR_SIZE	64
-#define AT24C256_VOLUME			32768
-
+#ifdef EEPROM_AT24C256
+	#define EEPROM_PAGE_SIZE		64
+	#define EEPROM_SECTOR_SIZE		64
+	#define EEPROM_VOLUME			32768
+	#define EEPROM_I_ADDR_SIZE		SIC_I_ADDR_SIZE_2
+	#define MIN_DATA_INFO_COUNT		10
+#endif
 
 PifTimerManager g_timer_1ms;
 
@@ -51,8 +60,12 @@ static int _CmdFormat(int argc, char *argv[])
 	(void)argc;
 	(void)argv;
 
-	pifStorage_Format(&s_storage.parent);
-	pifLog_Print(LT_INFO, "Storage format\n");
+	if (pifStorage_Format(&s_storage.parent)) {
+		pifLog_Print(LT_INFO, "Storage format: Success\n");
+	}
+	else {
+		pifLog_Printf(LT_INFO, "Storage format: Failed(%d)\n", pif_error);
+	}
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
@@ -61,14 +74,14 @@ static int _CmdCreate(int argc, char *argv[])
 	uint16_t id, size;
 
 	if (argc == 1) {
-		pifLog_Print(LT_NONE, "create [id] [size]\n");
+		pifLog_Print(LT_INFO, "create [id] [size]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 2) {
 		id = atoi(argv[1]);
 		size = atoi(argv[2]);
 		if (!pifStorage_Create(&s_storage.parent, id, size)) {
-			pifLog_Printf(LT_NONE, "create: failed E=%d\n", pif_error);
+			pifLog_Printf(LT_INFO, "create: failed E=%d", pif_error);
 		}
 #ifdef __PIF_DEBUG__
 		else {
@@ -85,13 +98,13 @@ static int _CmdDelete(int argc, char *argv[])
 	uint16_t id;
 
 	if (argc == 1) {
-		pifLog_Print(LT_NONE, "delete [id]\n");
+		pifLog_Print(LT_INFO, "delete [id]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
 		id = atoi(argv[1]);
 		if (!pifStorage_Delete(&s_storage.parent, id)) {
-			pifLog_Printf(LT_NONE, "delete: failed E=%d\n", pif_error);
+			pifLog_Printf(LT_INFO, "delete: failed E=%d", pif_error);
 		}
 #ifdef __PIF_DEBUG__
 		else {
@@ -111,14 +124,14 @@ static int _CmdWrite(int argc, char *argv[])
 	PifStorageVarDataInfo* p_data_info;
 
 	if (argc == 1) {
-		pifLog_Print(LT_NONE, "write [id] [value]\n");
+		pifLog_Print(LT_INFO, "write [id] [value]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
 		id = atoi(argv[1]);
 		p_data_info = (PifStorageVarDataInfo*)pifStorage_Open(&s_storage.parent, id);
 		if (!p_data_info) {
-			pifLog_Printf(LT_NONE, "write: not alloc ID=%d E=%d\n", id, pif_error);
+			pifLog_Printf(LT_INFO, "write: not alloc ID=%d E=%d", id, pif_error);
 		}
 		else {
 			if (argc > 2) {
@@ -130,11 +143,11 @@ static int _CmdWrite(int argc, char *argv[])
 			p_buffer = (uint8_t*)malloc(p_data_info->size);
 			if (p_buffer) {
 				memset(p_buffer, value, p_data_info->size);
-				if (!pifStorage_Write(&s_storage.parent, (PifStorageDataInfo*)p_data_info, p_buffer, p_data_info->size)) {
-					pifLog_Printf(LT_NONE, "write: failed E=%d\n", pif_error);
+				if (!pifStorage_Write(&s_storage.parent, (PifStorageDataInfoP)p_data_info, p_buffer, p_data_info->size)) {
+					pifLog_Printf(LT_INFO, "write: failed E=%d", pif_error);
 				}
 				else {
-					pifLog_Printf(LT_NONE, "write: value = %Xh\n", value);
+					pifLog_Printf(LT_INFO, "write: value = %Xh", value);
 				}
 				free(p_buffer);
 			}
@@ -152,22 +165,22 @@ static int _CmdRead(int argc, char *argv[])
 	PifStorageVarDataInfo* p_data_info;
 
 	if (argc == 1) {
-		pifLog_Print(LT_NONE, "read [id]\n");
+		pifLog_Print(LT_INFO, "read [id]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
 		id = atoi(argv[1]);
 		p_data_info = (PifStorageVarDataInfo*)pifStorage_Open(&s_storage.parent, id);
 		if (!p_data_info) {
-			pifLog_Printf(LT_NONE, "read: not alloc ID=%d EC=%d\n", id, pif_error);
+			pifLog_Printf(LT_INFO, "read: not alloc ID=%d EC=%d", id, pif_error);
 		}
 		else {
 			size = p_data_info->size;
 			p_buffer = (uint8_t*)malloc(size);
 			if (p_buffer) {
 				memset(p_buffer, 0, size);
-				if (!pifStorage_Read(&s_storage.parent, p_buffer, (PifStorageDataInfo*)p_data_info, p_data_info->size)) {
-					pifLog_Printf(LT_NONE, "read: failed E=%d\n", pif_error);
+				if (!pifStorage_Read(&s_storage.parent, p_buffer, (PifStorageDataInfoP)p_data_info, p_data_info->size)) {
+					pifLog_Printf(LT_INFO, "read: failed E=%d", pif_error);
 				}
 				else {
 					for (i = 0; i < size; i++) {
@@ -212,7 +225,7 @@ static int _CmdDump(int argc, char *argv[])
 	(void)argc;
 	(void)argv;
 
-	pifStorageVar_Dump(&s_storage, 0, AT24C08_VOLUME);
+	pifStorageVar_Dump(&s_storage, 0, EEPROM_VOLUME);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
@@ -254,30 +267,24 @@ void appSetup()
     pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
     pifTimer_Start(pstTimer1ms, 500);												// 500ms
 
-    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1, 16)) return;
+    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1, EEPROM_PAGE_SIZE)) return;
     s_i2c_port.act_read = actI2cRead;
     s_i2c_port.act_write = actI2cWrite;
 
 	if (!pifStorageVar_Init(&s_storage, PIF_ID_AUTO)) return;
-#ifdef EEPROM_AT24C08
-	if (!pifStorageVar_AttachI2c(&s_storage, &s_i2c_port, ATMEL_I2C_ADDRESS, SIC_I_ADDR_SIZE_1, 5)) return;	// 5ms
-	if (!pifStorageVar_SetMedia(&s_storage, AT24C08_SECTOR_SIZE, AT24C08_VOLUME, 5)) return;
-#endif
-#ifdef EEPROM_AT24C256
-	if (!pifStorageVar_AttachI2c(&s_storage, &s_i2c_port, ATMEL_I2C_ADDRESS, SIC_I_ADDR_SIZE_2, 5)) return;	// 5ms
-	if (!pifStorageVar_SetMedia(&s_storage, AT24C256_SECTOR_SIZE, AT24C256_VOLUME, 10)) return;
-#endif
+	if (!pifStorageVar_AttachI2c(&s_storage, &s_i2c_port, ATMEL_I2C_ADDRESS, EEPROM_I_ADDR_SIZE, 10)) return;	// 10ms
+	if (!pifStorageVar_SetMedia(&s_storage, EEPROM_SECTOR_SIZE, EEPROM_VOLUME, MIN_DATA_INFO_COUNT)) return;
 	if (!pifStorageVar_IsFormat(&s_storage.parent)) {
-		pifLog_Printf(LT_INFO, "Storage Init : EC=%d\n", pif_error);
+		pifLog_Printf(LT_INFO, "Storage Init : EC=%d", pif_error);
 		if (!pifStorage_Format(&s_storage.parent)) {
-			pifLog_Printf(LT_INFO, "Storage format failed\n");
+			pifLog_Printf(LT_INFO, "Storage format failed");
 		}
 		else {
-			pifLog_Printf(LT_INFO, "Storage format\n");
+			pifLog_Printf(LT_INFO, "Storage format");
 		}
 	}
 
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 
 #ifdef __PIF_DEBUG__
 	if (!pifStorageVar_IsFormat(&s_storage.parent)) {

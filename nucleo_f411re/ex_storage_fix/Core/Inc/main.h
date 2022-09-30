@@ -32,6 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "pif_comm.h"
+#include "pif_storage.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -56,8 +57,8 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 BOOL actLogStartTransfer(PifComm* p_comm);
 void actLedL(SWITCH sw);
-BOOL actStorageRead(uint8_t* dst, uint32_t src, size_t size, void* p_issuer);
-BOOL actStorageWrite(uint32_t dst, uint8_t* src, size_t size, void* p_issuer);
+BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size);
+BOOL actStorageWrite(PifStorage* p_owner, uint32_t dst, uint8_t* src, size_t size);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

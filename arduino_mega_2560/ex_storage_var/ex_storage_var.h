@@ -10,6 +10,7 @@
 //add your includes for the project ex_storage_var here
 
 #include "pif_comm.h"
+#include "pif_storage.h"
 
 //end of add your includes here
 
@@ -21,8 +22,8 @@
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
 void actLedL(SWITCH sw);
-BOOL actStorageRead(uint8_t* dst, uint32_t src, size_t size, void* p_issuer);
-BOOL actStorageWrite(uint32_t dst, uint8_t* src, size_t size, void* p_issuer);
+BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size);
+BOOL actStorageWrite(PifStorage* p_owner, uint32_t dst, uint8_t* src, size_t size);
 
 //Do not add code below this line
 #endif /* _ex_storage_var_H_ */

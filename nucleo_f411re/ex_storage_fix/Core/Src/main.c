@@ -180,13 +180,13 @@ static HAL_StatusTypeDef EraseFlash(uint32_t start_addr)
 	return HAL_OK;
 }
 
-BOOL actStorageRead(uint8_t* dst, uint32_t src, size_t size, void* p_issuer)
+BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size)
 {
 	uint32_t address = FLASH_USER_START_ADDR + src;
 	uint32_t* dp = (uint32_t*)dst;
 	size_t i;
 
-	(void)p_issuer;
+	(void)p_owner;
 
 	for (i = 0; i < size; i += 4) {
 		*dp = *(__IO uint32_t*)(address + i);
@@ -195,13 +195,13 @@ BOOL actStorageRead(uint8_t* dst, uint32_t src, size_t size, void* p_issuer)
 	return TRUE;
 }
 
-BOOL actStorageWrite(uint32_t dst, uint8_t* src, size_t size, void* p_issuer)
+BOOL actStorageWrite(PifStorage* p_owner, uint32_t dst, uint8_t* src, size_t size)
 {
 	uint32_t address = FLASH_USER_START_ADDR + dst;
 	uint32_t* sp = (uint32_t*)src;
 	size_t i;
 
-	(void)p_issuer;
+	(void)p_owner;
 
 	if (EraseFlash(address) != HAL_OK) return FALSE;
 
