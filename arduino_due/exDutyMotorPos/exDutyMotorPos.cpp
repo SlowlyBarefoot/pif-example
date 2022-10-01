@@ -37,9 +37,9 @@ BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 	return FALSE;
 }
 
-uint16_t actPhotoInterruptAcquire(PifId usPifId)
+uint16_t actPhotoInterruptAcquire(PifSensor* p_owner)
 {
-	switch (usPifId) {
+	switch (p_owner->_id) {
 	case PIF_ID_SWITCH:
 		return digitalRead(PIN_PHOTO_INTERRUPT_1);
 

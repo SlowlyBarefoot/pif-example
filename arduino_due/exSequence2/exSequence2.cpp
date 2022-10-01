@@ -41,9 +41,9 @@ void actLedRGBState(PifId usPifId, uint32_t unState)
 	digitalWrite(s_stSequenceTest[1].ucPinLed, (unState >> 1) & 1);
 }
 
-uint16_t actPushSwitchAcquire(PifId usPifId)
+uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 {
-	return !digitalRead(s_stSequenceTest[usPifId - PIF_ID_SWITCH].ucPinSwitch);
+	return !digitalRead(s_stSequenceTest[p_owner->_id - PIF_ID_SWITCH].ucPinSwitch);
 }
 
 extern "C" {

@@ -27,12 +27,11 @@ uint16_t taskLedToggle(PifTask *pstTask)
 	return 0;
 }
 
-uint16_t taskSensorAcquisition(PifTask *pstTask)
+uint16_t actSensorAcquisition(PifSensor* p_owner)
 {
-	(void)pstTask;
+	(void)p_owner;
 
-	pifSensorDigital_sigData(&g_sensor, analogRead(PIN_CDS));
-	return 0;
+	return analogRead(PIN_CDS);
 }
 
 static void sysTickHook()

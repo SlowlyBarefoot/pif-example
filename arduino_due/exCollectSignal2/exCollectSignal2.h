@@ -10,6 +10,7 @@
 //add your includes for the project exCollectSignal2 here
 
 #include "pif_comm.h"
+#include "pif_sensor.h"
 
 //end of add your includes here
 
@@ -19,8 +20,8 @@
 void actLedLState(PifId usPifId, uint32_t unState);
 void actGpioRGBState(PifId usPifId, uint8_t unState);
 void actLedCollectState(PifId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PifId usPifId);
-uint16_t actPushSwitchCollectAcquire(PifId usPifId);
+uint16_t actPushSwitchAcquire(PifSensor* p_owner);
+uint16_t actPushSwitchCollectAcquire(PifSensor* p_owner);
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
 

@@ -29,9 +29,9 @@ uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-uint16_t actPushSwitchAcquire(PifId usPifId)
+uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 {
-	(void)usPifId;
+	(void)p_owner;
 
 	return !digitalRead(PIN_PUSH_SWITCH);
 }

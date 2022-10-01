@@ -67,12 +67,27 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>pif/filter</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>pif/core/include</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>pif/core/source</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/filter/include</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/filter/source</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -185,6 +200,26 @@
 			<name>pif/core/source/pif_timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_timer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/filter/include/pif_noise_filter.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/filter/include/pif_noise_filter.h</locationURI>
+		</link>
+		<link>
+			<name>pif/filter/include/pif_noise_filter_bit.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/filter/include/pif_noise_filter_bit.h</locationURI>
+		</link>
+		<link>
+			<name>pif/filter/source/pif_noise_filter.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/filter/source/pif_noise_filter.c</locationURI>
+		</link>
+		<link>
+			<name>pif/filter/source/pif_noise_filter_bit.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/filter/source/pif_noise_filter_bit.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

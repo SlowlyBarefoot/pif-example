@@ -226,12 +226,6 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;											// 500ms
 
-    for (int i = 0; i < SWITCH_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&s_switch[i], PIF_ID_SWITCH + i, 0)) return;
-	    if (!pifSensorSwitch_AttachTask(&s_switch[i], TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
-	    pifSensor_AttachAction(&s_switch[i].parent, actPhotoInterruptAcquire);
-    }
-
     if (!pifStepMotorSpeed_Init(&s_motor, PIF_ID_AUTO, &g_timer_200us, STEP_MOTOR_RESOLUTION,
 			SMO_2P_4W_1S, 100)) return;															// 100ms
     s_motor.parent.act_set_step = actSetStep;
@@ -240,6 +234,11 @@ void appSetup(PifActTimer1us act_timer1us)
     s_motor.parent.evt_error = _evtError;
     pifStepMotor_SetReductionGearRatio(&s_motor.parent, STEP_MOTOR_REDUCTION_GEAR_RATIO);
     pifStepMotorSpeed_AddStages(&s_motor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
+
+    for (int i = 0; i < SWITCH_COUNT; i++) {
+		if (!pifSensorSwitch_Init(&s_switch[i], PIF_ID_SWITCH + i, 0, actPhotoInterruptAcquire, &s_motor)) return;
+	    if (!pifSensorSwitch_AttachTaskAcquire(&s_switch[i], TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
+    }
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE)) return;				// 10ms
 

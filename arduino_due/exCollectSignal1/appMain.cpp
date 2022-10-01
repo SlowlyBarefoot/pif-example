@@ -36,13 +36,14 @@ typedef struct {
 static TestStruct s_test[SEQUENCE_COUNT];
 
 
-static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	TestStruct* p_test = (TestStruct*)pvIssuer;
+	TestStruct* p_test = (TestStruct*)p_issuer;
 
-	(void)usPifId;
+	(void)p_owner;
+	(void)p_value;
 
-	if (usLevel) {
+	if (state) {
 		if (p_test->stSequence._phase_no == PIF_SEQUENCE_PHASE_NO_IDLE) {
 			pifSequence_Start(&p_test->stSequence);
 		}
@@ -54,12 +55,13 @@ static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer
 	}
 }
 
-static void _evtPushSwitchCollectChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtPushSwitchCollectChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	(void)usPifId;
-	(void)pvIssuer;
+	(void)p_owner;
+	(void)p_value;
+	(void)p_issuer;
 
-	if (usLevel) {
+	if (state) {
 		if (!bCollect) {
 			pifLed_AllOn(&s_led_collect);
 			pifLog_Disable();
@@ -139,17 +141,17 @@ void appSetup(PifActTimer1us act_timer1us)
     pifCollectSignal_Init("example");
     if (!pifCollectSignal_ChangeScale(CSS_1MS)) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 4)) return;							// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 4)) return;								// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;							// 1ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;								// 1ms
     s_comm_log.act_receive_data = actLogReceiveData;
     s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;												// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;													// 500ms
 
     if (!pifGpio_Init(&s_gpio_rgb, PIF_ID_AUTO, SEQUENCE_COUNT)) return;
     pifGpio_AttachActOut(&s_gpio_rgb, actGpioRGBState);
@@ -158,23 +160,21 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifLed_Init(&s_led_collect, PIF_ID_AUTO, &g_timer_1ms, 1, actLedCollectState)) return;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&s_test[i].stPushSwitch, PIF_ID_SWITCH + i, 0)) return;
-	    if (!pifSensorSwitch_AttachTask(&s_test[i].stPushSwitch, TM_PERIOD_MS, 5, TRUE)) return;	// 5ms
+		if (!pifSensorSwitch_Init(&s_test[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire, &s_test[i])) return;
+	    if (!pifSensorSwitch_AttachTaskAcquire(&s_test[i].stPushSwitch, TM_PERIOD_MS, 5, TRUE)) return;	// 5ms
 	    pifSensorSwitch_SetCsFlag(&s_test[i].stPushSwitch, SS_CSF_RAW_BIT);
-		pifSensor_AttachAction(&s_test[i].stPushSwitch.parent, actPushSwitchAcquire);
-		pifSensor_AttachEvtChange(&s_test[i].stPushSwitch.parent, _evtPushSwitchChange, &s_test[i]);
+		pifSensor_AttachEvtChange(&s_test[i].stPushSwitch.parent, _evtPushSwitchChange);
 
-	    if (!pifSequence_Init(&s_test[i].stSequence, PIF_ID_SEQUENCE + i, &g_timer_1ms, 10,			// 10ms
+	    if (!pifSequence_Init(&s_test[i].stSequence, PIF_ID_SEQUENCE + i, &g_timer_1ms, 10,				// 10ms
 				s_astSequencePhaseList,	&s_test[i])) return;
 
 	    s_test[i].bSequenceParam = FALSE;
     }
     pifSequenceColSig_SetFlag(SQ_CSF_ALL_BIT);
 
-    if (!pifSensorSwitch_Init(&s_push_switch_collect, PIF_ID_AUTO, 0)) return;
-    if (!pifSensorSwitch_AttachTask(&s_push_switch_collect, TM_PERIOD_MS, 5, TRUE)) return;			// 5ms
-	pifSensor_AttachAction(&s_push_switch_collect.parent, actPushSwitchCollectAcquire);
-	pifSensor_AttachEvtChange(&s_push_switch_collect.parent, _evtPushSwitchCollectChange, NULL);
+    if (!pifSensorSwitch_Init(&s_push_switch_collect, PIF_ID_AUTO, 0, actPushSwitchCollectAcquire, NULL)) return;
+    if (!pifSensorSwitch_AttachTaskAcquire(&s_push_switch_collect, TM_PERIOD_MS, 5, TRUE)) return;		// 5ms
+	pifSensor_AttachEvtChange(&s_push_switch_collect.parent, _evtPushSwitchCollectChange);
 
 	pifLed_SBlinkOn(&s_led_l, 1 << 0);
 

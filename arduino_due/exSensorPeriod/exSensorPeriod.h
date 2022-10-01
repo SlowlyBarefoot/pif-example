@@ -10,6 +10,7 @@
 //add your includes for the project exSensorPeriod here
 
 #include "pif_comm.h"
+#include "pif_sensor.h"
 
 //end of add your includes here
 
@@ -18,7 +19,7 @@
 
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 uint16_t taskLedToggle(PifTask *pstTask);
-uint16_t taskSensorAcquisition(PifTask *pstTask);
+uint16_t actSensorAcquisition(PifSensor* p_owner);
 
 //Do not add code below this line
 #endif /* _exSensorPeriod_H_ */

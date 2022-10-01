@@ -23,12 +23,13 @@ static void _evtXmodemRxReceive(uint8_t ucCode, PifXmodemPacket *pstPacket)
 	}
 }
 
-static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	(void)usPifId;
-	(void)pvIssuer;
+	(void)p_owner;
+	(void)p_value;
+	(void)p_issuer;
 
-	if (usLevel) {
+	if (state) {
 	    pifXmodem_ReadyReceive(&s_xmodem);
 	}
 }
@@ -45,24 +46,23 @@ void appSetup()
 
     pifLog_Init();
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;			// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;					// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
 	s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;										// 500ms
 
-	if (!pifSensorSwitch_Init(&stPushSwitch, PIF_ID_AUTO, 0)) return;
-    if (!pifSensorSwitch_AttachTask(&stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
-	pifSensor_AttachAction(&stPushSwitch.parent, actPushSwitchAcquire);
-	pifSensor_AttachEvtChange(&stPushSwitch.parent, _evtPushSwitchChange, NULL);
+	if (!pifSensorSwitch_Init(&stPushSwitch, PIF_ID_AUTO, 0, actPushSwitchAcquire, NULL)) return;
+    if (!pifSensorSwitch_AttachTaskAcquire(&stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
+	pifSensor_AttachEvtChange(&stPushSwitch.parent, _evtPushSwitchChange);
 
 	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return;				// 1ms
+    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
     s_serial.act_receive_data = actXmodemReceiveData;
     s_serial.act_send_data = actXmodemSendData;
 

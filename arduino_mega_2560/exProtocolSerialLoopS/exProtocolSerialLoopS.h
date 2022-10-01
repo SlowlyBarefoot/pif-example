@@ -10,6 +10,7 @@
 //add your includes for the project exProtocolSerialLoopS here
 
 #include "pif_comm.h"
+#include "pif_sensor.h"
 
 //end of add your includes here
 
@@ -25,7 +26,7 @@ uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actLogStartTransfer(PifComm* p_comm);
 #endif
 void actLedLState(PifId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PifId usPifId);
+uint16_t actPushSwitchAcquire(PifSensor* p_owner);
 #ifdef USE_SERIAL
 uint16_t actSerial1SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actSerial1ReceiveData(PifComm *pstComm, uint8_t *pucData);

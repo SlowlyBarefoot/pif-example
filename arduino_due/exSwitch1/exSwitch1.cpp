@@ -17,34 +17,36 @@ uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-uint16_t actPushSwitchAcquire(PifId usPifId)
+uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 {
-	(void)usPifId;
+	(void)p_owner;
 
 	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-void evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	(void)usPifId;
-	(void)pvIssuer;
+	(void)p_owner;
+	(void)p_value;
+	(void)p_issuer;
 
-	digitalWrite(PIN_LED_RED, usLevel);
+	digitalWrite(PIN_LED_RED, state);
 }
 
-uint16_t actTiltSwitchAcquire(PifId usPifId)
+uint16_t actTiltSwitchAcquire(PifSensor* p_owner)
 {
-	(void)usPifId;
+	(void)p_owner;
 
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-void evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	(void)usPifId;
-	(void)pvIssuer;
+	(void)p_owner;
+	(void)p_value;
+	(void)p_issuer;
 
-	digitalWrite(PIN_LED_YELLOW, usLevel);
+	digitalWrite(PIN_LED_YELLOW, state);
 }
 
 uint16_t taskLedToggle(PifTask *pstTask)

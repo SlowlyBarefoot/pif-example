@@ -10,6 +10,7 @@
 //add your includes for the project exDutyMotorSpeed here
 
 #include "pif_comm.h"
+#include "pif_sensor.h"
 
 //end of add your includes here
 
@@ -18,7 +19,7 @@
 
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
-uint16_t actPhotoInterruptAcquire(PifId usPifId);
+uint16_t actPhotoInterruptAcquire(PifSensor* p_owner);
 void actSetDuty(uint16_t usDuty);
 void actSetDirection(uint8_t ucDir);
 void actOperateBreak(uint8_t ucState);

@@ -34,8 +34,8 @@ static struct {
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
 } s_stProtocolTest[SWITCH_COUNT] = {
-		{ NULL, 0, },
-		{ NULL, 0, }
+		{ NULL, 0, { 0, } },
+		{ NULL, 0, { 0, } }
 };
 
 

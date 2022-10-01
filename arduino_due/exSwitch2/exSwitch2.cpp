@@ -32,20 +32,22 @@ void evtSwitchAcquire(void *pvIssuer)
 	pifSensorSwitch_sigData(&g_tilt_switch, digitalRead(PIN_TILT_SWITCH));
 }
 
-void evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	(void)usPifId;
-	(void)pvIssuer;
+	(void)p_owner;
+	(void)p_value;
+	(void)p_issuer;
 
-	digitalWrite(PIN_LED_RED, usLevel);
+	digitalWrite(PIN_LED_RED, state);
 }
 
-void evtTiltSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	(void)usPifId;
-	(void)pvIssuer;
+	(void)p_owner;
+	(void)p_value;
+	(void)p_issuer;
 
-	digitalWrite(PIN_LED_YELLOW, usLevel);
+	digitalWrite(PIN_LED_YELLOW, state);
 }
 
 extern "C" {

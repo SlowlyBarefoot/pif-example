@@ -19,7 +19,7 @@ static struct {
 	uint16_t usPos;
 	uint16_t usLength;
 	uint8_t aucData[128];
-} s_stXmodemTest = { 0, 0, 1000, };
+} s_stXmodemTest = { 0, 0, 1000, 0, 0, { 0, } };
 
 
 static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)

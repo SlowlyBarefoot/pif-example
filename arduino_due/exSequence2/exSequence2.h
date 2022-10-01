@@ -10,6 +10,7 @@
 //add your includes for the project exSequence2 here
 
 #include "pif_comm.h"
+#include "pif_sensor.h"
 
 //end of add your includes here
 
@@ -19,7 +20,7 @@
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
 void actLedRGBState(PifId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PifId usPifId);
+uint16_t actPushSwitchAcquire(PifSensor* p_owner);
 
 //Do not add code below this line
 #endif /* _exSequence2_H_ */

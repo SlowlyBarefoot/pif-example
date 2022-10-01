@@ -2,29 +2,30 @@
 #include "exSensorThreshold2P.h"
 
 #include "pif_log.h"
+#include "pif_noise_filter_uint16.h"
+#include "pif_sensor_digital.h"
 
 
-#define USE_FILTER_AVERAGE		0
+#define USE_FILTER_AVERAGE		1
 
 
 PifTimerManager g_timer_1ms;
-PifSensorDigital g_sensor;
-
-#if USE_FILTER_AVERAGE
-static PIF_stSensorDigitalFilter s_stFilter;
-#endif
 
 
-static void _evtSensorThreshold(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtSensorThreshold(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	(void)pvIssuer;
+	(void)p_issuer;
 
-	pifLog_Printf(LT_INFO, "Sensor: DC:%u SW:%u", usPifId, usLevel);
+	pifLog_Printf(LT_INFO, "Sensor: DC:%u S:%u V:%u", p_owner->_id, state, *(uint16_t*)p_value);
 }
 
 void appSetup()
 {
 	static PifComm s_comm_log;
+#if USE_FILTER_AVERAGE
+    static PifNoiseFilterUint16 s_filter;
+#endif
+    static PifSensorDigital s_sensor;
 
 	pif_Init(NULL);
 
@@ -40,16 +41,19 @@ void appSetup()
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    if (!pifSensorDigital_Init(&g_sensor, PIF_ID_AUTO, &g_timer_1ms)) return;
-    if (!pifSensorDigital_AttachTask(&g_sensor, TM_PERIOD_MS, 100, TRUE)) return;			// 100ms
 #if USE_FILTER_AVERAGE
-    pifSensorDigital_AttachFilter(&g_sensor, PIF_SENSOR_DIGITAL_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
+    if (!pifNoiseFilterUint16_Init(&s_filter, 7)) return;
 #endif
-    pifSensorDigital_SetEventThreshold2P(&g_sensor, 400, 700);
-    pifSensor_AttachEvtChange(&g_sensor.parent, _evtSensorThreshold, NULL);
+
+    if (!pifSensorDigital_Init(&s_sensor, PIF_ID_AUTO, actSensorAcquisition, NULL)) return;
+    pifSensorDigital_SetThreshold(&s_sensor, 300, 600);
+    if (!pifSensorDigital_AttachTaskAcquire(&s_sensor, TM_PERIOD_MS, 100, TRUE)) return;	// 100ms
+#if USE_FILTER_AVERAGE
+    s_sensor.p_filter = &s_filter.parent;
+#endif
+    pifSensor_AttachEvtChange(&s_sensor.parent, _evtSensorThreshold);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 100, taskSensorAcquisition, NULL, TRUE)) return;	// 100ms
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

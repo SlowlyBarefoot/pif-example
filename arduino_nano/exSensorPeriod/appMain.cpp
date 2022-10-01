@@ -2,27 +2,31 @@
 #include "exSensorPeriod.h"
 
 #include "pif_log.h"
+#include "pif_noise_filter_uint16.h"
+#include "pif_sensor_digital.h"
 
 
-#define USE_FILTER_AVERAGE		0
+#define USE_FILTER_AVERAGE		1
 
 
 PifTimerManager g_timer_1ms;
-PifSensorDigital g_sensor;
-
-#if USE_FILTER_AVERAGE
-static PIF_stSensorDigitalFilter s_stFilter;
-#endif
 
 
-static void _evtSensorPeriod(PifId usPifId, uint16_t usLevel)
+static void _evtTimerPeriodFinish(void* p_issuer)
 {
-	pifLog_Printf(LT_INFO, "Sensor: DC:%u L:%u", usPifId, usLevel);
+    PifSensorDigital* p_owner = (PifSensorDigital*)p_issuer;
+
+	pifLog_Printf(LT_INFO, "Sensor: DC:%u L:%u", p_owner->parent._id, p_owner->__curr_level);
 }
 
 void appSetup()
 {
 	static PifComm s_comm_log;
+#if USE_FILTER_AVERAGE
+    static PifNoiseFilterUint16 s_filter;
+#endif
+    static PifSensorDigital s_sensor;
+    PifTimer* p_timer;
 
 	pif_Init(NULL);
 
@@ -30,7 +34,7 @@ void appSetup()
 
     pifLog_Init();
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;					// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;					// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
     if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms
@@ -38,17 +42,22 @@ void appSetup()
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-    if (!pifSensorDigital_Init(&g_sensor, PIF_ID_AUTO, &g_timer_1ms)) return;
-    if (!pifSensorDigital_AttachTask(&g_sensor, TM_RATIO, 3, TRUE)) return;					// 3%
 #if USE_FILTER_AVERAGE
-    pifSensorDigital_AttachFilter(&g_sensor, PIF_SENSOR_DIGITAL_FILTER_AVERAGE, 7, &s_stFilter, TRUE);
+	if (!pifNoiseFilterUint16_Init(&s_filter, 7)) return;
 #endif
-    if (!pifSensorDigital_AttachEvtPeriod(&g_sensor, _evtSensorPeriod)) return;
+
+    if (!pifSensorDigital_Init(&s_sensor, PIF_ID_AUTO, actSensorAcquisition, NULL)) return;
+    if (!pifSensorDigital_AttachTaskAcquire(&s_sensor, TM_PERIOD_MS, 50, TRUE)) return;		// 50ms
+#if USE_FILTER_AVERAGE
+    s_sensor.p_filter = &s_filter.parent;
+#endif
+
+	p_timer = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+    if (!p_timer) return;
+    pifTimer_AttachEvtFinish(p_timer, _evtTimerPeriodFinish, &s_sensor);
+	if (!pifTimer_Start(p_timer, 500)) return;												// 500ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 100, taskSensorAcquisition, NULL, TRUE)) return;	// 100ms
 
-    if (!pifSensorDigital_StartPeriod(&g_sensor, 500)) return;								// 500ms
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	pifLog_Printf(LT_INFO, "Task=%d Timer=%d", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

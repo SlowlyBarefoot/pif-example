@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "pif_comm.h"
+#include "pif_sensor.h"
 
 /* USER CODE END Includes */
 
@@ -60,7 +61,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 BOOL actLogStartTransfer(PifComm* p_comm);
 void actLedLState(PifId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PifId usPifId);
+uint16_t actPushSwitchAcquire(PifSensor* p_owner);
 BOOL actUart1StartTransfer(PifComm* p_comm);
 BOOL actUart2StartTransfer(PifComm* p_comm);
 

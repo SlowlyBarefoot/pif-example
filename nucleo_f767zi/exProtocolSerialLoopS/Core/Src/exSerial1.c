@@ -4,6 +4,7 @@
 #include "appMain.h"
 
 #include "pif_log.h"
+#include "pif_noise_filter_bit.h"
 #include "pif_protocol.h"
 #include "pif_sensor_switch.h"
 
@@ -34,7 +35,7 @@ static struct {
 	PifSensorSwitch stPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
-	PifSensorSwitchFilter stPushSwitchFilter;
+	PifNoiseFilterBit stPushSwitchFilter;
 } s_stProtocolTest[SWITCH_COUNT];
 
 
@@ -106,13 +107,14 @@ static void _evtProtocolError(PifId usPifId)
 	pifLog_Printf(LT_ERROR, "ProtocolError DC=%d", usPifId);
 }
 
-static void _evtPushSwitchChange(PifId usPifId, uint16_t usLevel, void *pvIssuer)
+static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
 {
-	uint8_t index = usPifId - PIF_ID_SWITCH;
+	uint8_t index = p_owner->_id - PIF_ID_SWITCH;
 
-	(void)pvIssuer;
+	(void)p_value;
+	(void)p_issuer;
 
-	if (usLevel) {
+	if (state) {
 		s_stProtocolTest[index].ucDataCount = rand() % 8;
 		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
 		if (!pifProtocol_MakeRequest(&s_protocol, &stProtocolRequests1[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
@@ -137,17 +139,17 @@ BOOL exSerial1_Setup()
 	int i;
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&s_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0)) return FALSE;
-	    if (!pifSensorSwitch_AttachTask(&s_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
-		pifSensor_AttachAction(&s_stProtocolTest[i].stPushSwitch.parent, actPushSwitchAcquire);
-		pifSensor_AttachEvtChange(&s_stProtocolTest[i].stPushSwitch.parent, _evtPushSwitchChange, NULL);
-	    if (!pifSensorSwitch_AttachFilter(&s_stProtocolTest[i].stPushSwitch, PIF_SENSOR_SWITCH_FILTER_COUNT, 7, &s_stProtocolTest[i].stPushSwitchFilter)) return FALSE;
+	    if (!pifNoiseFilterBit_Init(&s_stProtocolTest[i].stPushSwitchFilter, 7)) return FALSE;
 
+	    if (!pifSensorSwitch_Init(&s_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire, NULL)) return FALSE;
+	    if (!pifSensorSwitch_AttachTaskAcquire(&s_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
+		pifSensor_AttachEvtChange(&s_stProtocolTest[i].stPushSwitch.parent, _evtPushSwitchChange);
+		s_stProtocolTest[i].stPushSwitch.p_filter = &s_stProtocolTest[i].stPushSwitchFilter.parent;
     	s_stProtocolTest[i].ucDataCount = 0;
     }
 
 	if (!pifComm_Init(&g_serial1, PIF_ID_AUTO)) return FALSE;
-    if (!pifComm_AttachTask(&g_serial1, TM_PERIOD_MS, 1, TRUE)) return FALSE;										// 1ms
+    if (!pifComm_AttachTask(&g_serial1, TM_PERIOD_MS, 1, TRUE)) return FALSE;												// 1ms
 	if (!pifComm_AllocRxBuffer(&g_serial1, 64)) return FALSE;
 	if (!pifComm_AllocTxBuffer(&g_serial1, 64)) return FALSE;
 	g_serial1.act_start_transfer = actUart1StartTransfer;
