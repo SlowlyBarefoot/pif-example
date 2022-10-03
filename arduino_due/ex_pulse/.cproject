@@ -12,7 +12,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildProperties="" description="" id="io.sloeber.core.toolChain.release.960926829" name="Release" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=" parent="org.eclipse.cdt.build.core.emptycfg">
+				<configuration artifactName="${ProjName}" buildProperties="" description="" id="io.sloeber.core.toolChain.release.960926829" name="Release" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="org.eclipse.cdt.build.core.emptycfg">
 					<folderInfo id="io.sloeber.core.toolChain.release.960926829.15771151" name="/" resourcePath="">
 						<toolChain id="io.sloeber.core.toolChain.release.1781056319" name="Arduino Toolchain (Sloeber edition)" superClass="io.sloeber.core.toolChain.release">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="io.sloeber.targetplatform.120869660" name="Arduino Target" osList="all" superClass="io.sloeber.targetplatform"/>
@@ -20,16 +20,16 @@
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.1602202761" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.69061702" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_pulse/core/core}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_pulse/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.223086034" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.1699348442" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.311649545" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_pulse/core/core}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_pulse/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.435289974" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>

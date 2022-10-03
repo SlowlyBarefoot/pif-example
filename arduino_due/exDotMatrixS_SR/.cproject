@@ -20,16 +20,16 @@
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.22251935" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.505270203" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exDotMatrixS_SR/core/core}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exDotMatrixS_SR/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1321644766" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.928963886" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.96124794" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exDotMatrixS_SR/core/core}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exDotMatrixS_SR/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1653671850" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>

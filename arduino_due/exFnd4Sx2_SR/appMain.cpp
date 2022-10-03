@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "exFnd4Sx2_SR.h"
 
-#include "pif_fnd.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "display/pif_fnd.h"
 
 
 PifTimerManager g_timer_1ms;

@@ -22,8 +22,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSequence2/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSequence2/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSequence2/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/filter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.2055937267" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -32,8 +31,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSequence2/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSequence2/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSequence2/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/filter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.332788832" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>

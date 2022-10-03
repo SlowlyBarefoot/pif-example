@@ -9,8 +9,8 @@
 #include "Arduino.h"
 //add your includes for the project exDutyMotorSpeedEnc here
 
-#include "pif_comm.h"
-#include "pif_sensor.h"
+#include "core/pif_comm.h"
+#include "sensor/pif_sensor.h"
 
 //end of add your includes here
 

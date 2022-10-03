@@ -2,8 +2,8 @@
 #define APP_MAIN_H
 
 
-#include "pif_hc_sr04.h"
-#include "pif_timer.h"
+#include "core/pif_timer.h"
+#include "sensor/pif_hc_sr04.h"
 
 
 extern PifHcSr04 g_hcsr04;

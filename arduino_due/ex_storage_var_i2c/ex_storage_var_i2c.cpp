@@ -2,7 +2,7 @@
 #include "ex_storage_var_i2c.h"
 #include "app_main.h"
 
-#include "pif_log.h"
+#include "core/pif_log.h"
 
 #ifdef USE_I2C_WIRE
 	#include <Wire.h>

@@ -1,8 +1,8 @@
 #include "app_main.h"
 #include "main.h"
 
-#include "pif_led.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
 
 
 PifTimerManager g_timer1ms;

@@ -2,8 +2,8 @@
 #define APP_MAIN_H
 
 
-#include "pif_pulse.h"
-#include "pif_timer.h"
+#include "core/pif_pulse.h"
+#include "core/pif_timer.h"
 
 
 extern PifPulse g_pulse;

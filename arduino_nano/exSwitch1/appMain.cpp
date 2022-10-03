@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "exSwitch1.h"
 
-#include "pif_log.h"
-#include "pif_sensor_switch.h"
+#include "core/pif_log.h"
+#include "sensor/pif_sensor_switch.h"
 
 
 static PifSensorSwitch s_push_switch;

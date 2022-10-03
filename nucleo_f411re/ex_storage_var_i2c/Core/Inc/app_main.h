@@ -2,8 +2,8 @@
 #define APP_MAIN_H
 
 
-#include "pif_log.h"
-#include "pif_timer.h"
+#include "core/pif_log.h"
+#include "core/pif_timer.h"
 
 
 extern PifComm g_comm_log;

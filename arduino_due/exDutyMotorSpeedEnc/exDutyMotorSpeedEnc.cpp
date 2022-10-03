@@ -2,8 +2,8 @@
 #include "exDutyMotorSpeedEnc.h"
 #include "appMain.h"
 
-#include "pif_duty_motor_speed_enc.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "motor/pif_duty_motor_speed_enc.h"
 
 
 #define PIN_LED_L				13

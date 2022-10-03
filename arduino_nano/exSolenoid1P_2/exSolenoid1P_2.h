@@ -9,8 +9,8 @@
 #include "Arduino.h"
 //add your includes for the project exSolenoid1P_2 here
 
-#include "pif_comm.h"
-#include "pif_solenoid.h"
+#include "actulator/pif_solenoid.h"
+#include "core/pif_comm.h"
 
 //end of add your includes here
 

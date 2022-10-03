@@ -1,10 +1,10 @@
 #include "exProtocolSerialLoopS.h"
 #include "appMain.h"
 
-#include "pif_log.h"
-#include "pif_noise_filter_bit.h"
-#include "pif_protocol.h"
-#include "pif_sensor_switch.h"
+#include "core/pif_log.h"
+#include "filter/pif_noise_filter_bit.h"
+#include "protocol/pif_protocol.h"
+#include "sensor/pif_sensor_switch.h"
 
 
 PifComm g_serial1;

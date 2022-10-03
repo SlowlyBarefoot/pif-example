@@ -32,8 +32,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "pif_comm.h"
-#include "pif_i2c.h"
+#include "core/pif_comm.h"
+#include "core/pif_i2c.h"
 
 /* USER CODE END Includes */
 

@@ -2,7 +2,7 @@
 #define EXSERIAL1_H_
 
 
-#include "pif_comm.h"
+#include "core/pif_comm.h"
 
 
 extern PifComm g_serial1;

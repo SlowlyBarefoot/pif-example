@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "exSwitch2.h"
 
-#include "pif_led.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
 
 
 PifSensorSwitch g_push_switch;

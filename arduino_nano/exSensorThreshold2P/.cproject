@@ -22,8 +22,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSensorThreshold2P/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSensorThreshold2P/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSensorThreshold2P/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/filter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1206792451" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -32,8 +31,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSensorThreshold2P/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSensorThreshold2P/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSensorThreshold2P/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/filter/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.476278982" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>

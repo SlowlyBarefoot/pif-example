@@ -8,7 +8,7 @@
 #include "exTask3.h"
 #include "appMain.h"
 
-#include "pif_task.h"
+#include "core/pif_task.h"
 
 
 #define PIN_LED_RED				23

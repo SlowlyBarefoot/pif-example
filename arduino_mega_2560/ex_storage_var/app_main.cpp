@@ -1,8 +1,8 @@
 #include "app_main.h"
 #include "ex_storage_var.h"
 
-#include "pif_log.h"
-#include "pif_storage_var.h"
+#include "core/pif_log.h"
+#include "storage/pif_storage_var.h"
 
 
 PifTimerManager g_timer_1ms;

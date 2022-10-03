@@ -4,8 +4,8 @@
 #include "exGpio1.h"
 #include "appMain.h"
 
-#include "pif_log.h"
-#include "pif_task.h"
+#include "core/pif_log.h"
+#include "core/pif_task.h"
 
 
 #define PIN_LED_L				13

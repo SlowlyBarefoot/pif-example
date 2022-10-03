@@ -3,8 +3,8 @@
 #include "appMain.h"
 #include "main.h"
 
-#include "pif_log.h"
-#include "pif_protocol.h"
+#include "core/pif_log.h"
+#include "protocol/pif_protocol.h"
 
 
 PifTimerManager g_timer_1ms;

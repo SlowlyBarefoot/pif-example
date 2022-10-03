@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "exKeypad1.h"
 
-#include "pif_keypad.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "input/pif_keypad.h"
 
 
 const char c_cKeys[ROWS * COLS] = {

@@ -2,8 +2,8 @@
 #include "exDutyMotorPos.h"
 #include "appMain.h"
 
-#include "pif_duty_motor_pos.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "motor/pif_duty_motor_pos.h"
 
 
 #define PIN_LED_L				13

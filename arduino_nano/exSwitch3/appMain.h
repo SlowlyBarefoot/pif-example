@@ -2,8 +2,8 @@
 #define APP_MAIN_H
 
 
-#include "pif_sensor_switch.h"
-#include "pif_timer.h"
+#include "core/pif_timer.h"
+#include "sensor/pif_sensor_switch.h"
 
 
 extern PifSensorSwitch g_push_switch;

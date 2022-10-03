@@ -23,9 +23,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exGpsSerialNmea/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exGpsSerialNmea/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exGpsSerialNmea/libraries/SoftwareSerial/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/filter/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/gps/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.510580580" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -35,9 +33,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exGpsSerialNmea/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exGpsSerialNmea/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exGpsSerialNmea/libraries/SoftwareSerial/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/filter/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/gps/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1360180500" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>

@@ -1,10 +1,10 @@
 #include "appMain.h"
 #include "exSequence2.h"
 
-#include "pif_led.h"
-#include "pif_log.h"
-#include "pif_sequence.h"
-#include "pif_sensor_switch.h"
+#include "core/pif_log.h"
+#include "core/pif_sequence.h"
+#include "display/pif_led.h"
+#include "sensor/pif_sensor_switch.h"
 
 
 PifTimerManager g_timer_1ms;

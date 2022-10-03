@@ -1,7 +1,7 @@
 #include "app_main.h"
 #include "main.h"
 
-#include "pif_storage_var.h"
+#include "storage/pif_storage_var.h"
 
 
 #define ATMEL_I2C_ADDRESS		0x50

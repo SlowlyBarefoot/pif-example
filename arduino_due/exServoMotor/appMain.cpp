@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exServoMotor.h"
 
-#include "pif_led.h"
-#include "pif_log.h"
-#include "pif_timer.h"
+#include "core/pif_log.h"
+#include "core/pif_timer.h"
+#include "display/pif_led.h"
 
 
 PifTimerManager g_timer_1ms;

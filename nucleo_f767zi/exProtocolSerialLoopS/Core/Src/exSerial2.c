@@ -3,8 +3,8 @@
 #include "main.h"
 #include "appMain.h"
 
-#include "pif_log.h"
-#include "pif_protocol.h"
+#include "core/pif_log.h"
+#include "protocol/pif_protocol.h"
 
 
 PifComm g_serial2;

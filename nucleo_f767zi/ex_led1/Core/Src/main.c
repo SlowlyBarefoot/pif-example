@@ -24,7 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "app_main.h"
 
-#include "pif_log.h"
+#include "core/pif_log.h"
 
 /* USER CODE END Includes */
 

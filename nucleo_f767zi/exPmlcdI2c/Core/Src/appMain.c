@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "main.h"
 
-#include "pif_led.h"
-#include "pif_log.h"
-#include "pif_pmlcd_i2c.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
+#include "display/pif_pmlcd_i2c.h"
 
 
 #define SINGLE_SHOT

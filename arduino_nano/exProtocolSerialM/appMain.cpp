@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exProtocolSerialM.h"
 
-#include "pif_led.h"
-#include "pif_log.h"
-#include "pif_protocol.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
+#include "protocol/pif_protocol.h"
 
 
 PifTimerManager g_timer_1ms;

@@ -52,184 +52,214 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/DueTimer/1.4.7</locationURI>
 		</link>
 		<link>
-			<name>pif/core</name>
+			<name>pif/include</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/filter</name>
+			<name>pif/source</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include</name>
+			<name>pif/include/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source</name>
+			<name>pif/include/display</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/filter/include</name>
+			<name>pif/include/filter</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/filter/source</name>
+			<name>pif/include/motor</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif.h</locationURI>
+			<name>pif/include/sensor</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_comm.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_comm.h</locationURI>
+			<name>pif/source/core</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_led.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_led.h</locationURI>
+			<name>pif/source/display</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_list.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_list.h</locationURI>
+			<name>pif/source/filter</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_log.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_log.h</locationURI>
+			<name>pif/source/motor</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_motor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_motor.h</locationURI>
+			<name>pif/source/sensor</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_ring_buffer.h</name>
+			<name>pif/include/core/pif.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_ring_buffer.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_sensor.h</name>
+			<name>pif/include/core/pif_comm.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_sensor.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_comm.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_sensor_switch.h</name>
+			<name>pif/include/core/pif_list.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_sensor_switch.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_list.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_step_motor.h</name>
+			<name>pif/include/core/pif_log.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_step_motor.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_log.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_step_motor_pos.h</name>
+			<name>pif/include/core/pif_ring_buffer.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_step_motor_pos.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_ring_buffer.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_task.h</name>
+			<name>pif/include/core/pif_task.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_task.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_timer.h</name>
+			<name>pif/include/core/pif_timer.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_timer.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif.c</name>
+			<name>pif/include/display/pif_led.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_comm.c</name>
+			<name>pif/include/filter/pif_noise_filter.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_comm.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_led.c</name>
+			<name>pif/include/filter/pif_noise_filter_bit.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_led.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter_bit.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_list.c</name>
+			<name>pif/include/motor/pif_motor.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_list.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/motor/pif_motor.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_log.c</name>
+			<name>pif/include/motor/pif_step_motor.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_log.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/motor/pif_step_motor.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_motor.c</name>
+			<name>pif/include/motor/pif_step_motor_pos.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_motor.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/motor/pif_step_motor_pos.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_ring_buffer.c</name>
+			<name>pif/include/sensor/pif_sensor.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_ring_buffer.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_sensor.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_sensor.c</name>
+			<name>pif/include/sensor/pif_sensor_switch.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_sensor.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_sensor_switch.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_sensor_switch.c</name>
+			<name>pif/source/core/pif.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_sensor_switch.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_step_motor.c</name>
+			<name>pif/source/core/pif_comm.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_step_motor.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_comm.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_step_motor_pos.c</name>
+			<name>pif/source/core/pif_list.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_step_motor_pos.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_list.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_task.c</name>
+			<name>pif/source/core/pif_log.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_task.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_log.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_timer.c</name>
+			<name>pif/source/core/pif_ring_buffer.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_timer.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_ring_buffer.c</locationURI>
 		</link>
 		<link>
-			<name>pif/filter/include/pif_noise_filter.h</name>
+			<name>pif/source/core/pif_task.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/filter/include/pif_noise_filter.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
 		</link>
 		<link>
-			<name>pif/filter/include/pif_noise_filter_bit.h</name>
+			<name>pif/source/core/pif_timer.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/filter/include/pif_noise_filter_bit.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
 		</link>
 		<link>
-			<name>pif/filter/source/pif_noise_filter.c</name>
+			<name>pif/source/display/pif_led.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/filter/source/pif_noise_filter.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>pif/filter/source/pif_noise_filter_bit.c</name>
+			<name>pif/source/filter/pif_noise_filter.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/filter/source/pif_noise_filter_bit.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/filter/pif_noise_filter_bit.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter_bit.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/motor/pif_motor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/motor/pif_motor.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/motor/pif_step_motor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/motor/pif_step_motor.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/motor/pif_step_motor_pos.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/motor/pif_step_motor_pos.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/sensor/pif_sensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_sensor.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/sensor/pif_sensor_switch.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_sensor_switch.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -2,8 +2,8 @@
 #define APP_MAIN_H
 
 
-#include "pif_duty_motor_speed.h"
-#include "pif_timer.h"
+#include "core/pif_timer.h"
+#include "motor/pif_duty_motor_speed.h"
 
 
 #define PIF_ID_SWITCH		0x100

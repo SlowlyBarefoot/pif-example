@@ -1,9 +1,9 @@
 #include "app_main.h"
 #include "ex_gps_serial_ublox.h"
 
-#include "pif_gps_ublox.h"
-#include "pif_led.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
+#include "gps/pif_gps_ublox.h"
 
 
 //#define NMEA

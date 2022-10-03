@@ -2,7 +2,7 @@
 #define APPMAIN_H_
 
 
-#include "pif.h"
+#include "core/pif.h"
 
 
 BOOL appInit();

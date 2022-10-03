@@ -7,7 +7,7 @@
 #include "../usart.h"
 #endif
 
-#include "pif_log.h"
+#include "core/pif_log.h"
 
 
 #define PIN_LED_L				13

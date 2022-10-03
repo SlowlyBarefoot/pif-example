@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exGpio1.h"
 
-#include "pif_gpio.h"
-#include "pif_log.h"
-#include "pif_task.h"
+#include "core/pif_gpio.h"
+#include "core/pif_log.h"
+#include "core/pif_task.h"
 
 
 static PifGpio s_gpio_l;

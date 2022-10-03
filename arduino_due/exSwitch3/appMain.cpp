@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exSwitch3.h"
 
-#include "pif_led.h"
-#include "pif_log.h"
-#include "pif_noise_filter_bit.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
+#include "filter/pif_noise_filter_bit.h"
 
 
 #define USE_FILTER		1

@@ -1,10 +1,10 @@
 #include "appMain.h"
 #include "exGpsSerialNmea.h"
 
-#include "pif_gps_nmea.h"
-#include "pif_led.h"
-#include "pif_log.h"
-#include "pif_sensor_switch.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
+#include "gps/pif_gps_nmea.h"
+#include "sensor/pif_sensor_switch.h"
 
 
 PifTimerManager g_timer_1ms;

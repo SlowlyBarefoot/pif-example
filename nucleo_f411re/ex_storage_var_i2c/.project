@@ -36,134 +36,134 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core</name>
+			<name>Core/pif/include</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/storage</name>
+			<name>Core/pif/source</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include</name>
+			<name>Core/pif/include/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source</name>
+			<name>Core/pif/include/storage</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/storage/include</name>
+			<name>Core/pif/source/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/storage/source</name>
+			<name>Core/pif/source/storage</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include/pif.h</name>
+			<name>Core/pif/include/core/pif.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include/pif_comm.h</name>
+			<name>Core/pif/include/core/pif_comm.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_comm.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_comm.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include/pif_i2c.h</name>
+			<name>Core/pif/include/core/pif_i2c.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_i2c.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_i2c.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include/pif_list.h</name>
+			<name>Core/pif/include/core/pif_list.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_list.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_list.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include/pif_log.h</name>
+			<name>Core/pif/include/core/pif_log.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_log.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_log.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include/pif_ring_buffer.h</name>
+			<name>Core/pif/include/core/pif_ring_buffer.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_ring_buffer.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_ring_buffer.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include/pif_task.h</name>
+			<name>Core/pif/include/core/pif_task.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_task.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/include/pif_timer.h</name>
+			<name>Core/pif/include/core/pif_timer.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_timer.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source/pif.c</name>
+			<name>Core/pif/include/storage/pif_storage.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/storage/pif_storage.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source/pif_comm.c</name>
+			<name>Core/pif/include/storage/pif_storage_var.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_comm.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/storage/pif_storage_var.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source/pif_i2c.c</name>
+			<name>Core/pif/source/core/pif.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_i2c.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source/pif_list.c</name>
+			<name>Core/pif/source/core/pif_comm.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_list.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_comm.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source/pif_log.c</name>
+			<name>Core/pif/source/core/pif_i2c.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_log.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_i2c.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source/pif_ring_buffer.c</name>
+			<name>Core/pif/source/core/pif_list.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_ring_buffer.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_list.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source/pif_task.c</name>
+			<name>Core/pif/source/core/pif_log.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_task.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_log.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/core/source/pif_timer.c</name>
+			<name>Core/pif/source/core/pif_ring_buffer.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_timer.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_ring_buffer.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/storage/include/pif_storage.h</name>
+			<name>Core/pif/source/core/pif_task.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/storage/include/pif_storage.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/storage/include/pif_storage_var.h</name>
+			<name>Core/pif/source/core/pif_timer.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/storage/include/pif_storage_var.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/storage/source/pif_storage.c</name>
+			<name>Core/pif/source/storage/pif_storage.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/storage/source/pif_storage.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/storage/pif_storage.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/storage/source/pif_storage_var.c</name>
+			<name>Core/pif/source/storage/pif_storage_var.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/storage/source/pif_storage_var.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/storage/pif_storage_var.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

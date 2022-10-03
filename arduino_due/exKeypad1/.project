@@ -47,89 +47,104 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x</locationURI>
 		</link>
 		<link>
-			<name>pif/core</name>
+			<name>pif/include</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include</name>
+			<name>pif/source</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source</name>
+			<name>pif/include/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif.h</locationURI>
+			<name>pif/include/input</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_comm.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_comm.h</locationURI>
+			<name>pif/source/core</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_keypad.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_keypad.h</locationURI>
+			<name>pif/source/input</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_list.h</name>
+			<name>pif/include/core/pif.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_list.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_log.h</name>
+			<name>pif/include/core/pif_comm.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_log.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_comm.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_ring_buffer.h</name>
+			<name>pif/include/core/pif_list.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_ring_buffer.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_list.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/include/pif_task.h</name>
+			<name>pif/include/core/pif_log.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/include/pif_task.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_log.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif.c</name>
+			<name>pif/include/core/pif_ring_buffer.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_ring_buffer.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_comm.c</name>
+			<name>pif/include/core/pif_task.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_comm.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_keypad.c</name>
+			<name>pif/include/input/pif_keypad.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_keypad.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/input/pif_keypad.h</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_list.c</name>
+			<name>pif/source/core/pif.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_list.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_log.c</name>
+			<name>pif/source/core/pif_comm.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_log.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_comm.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_ring_buffer.c</name>
+			<name>pif/source/core/pif_list.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_ring_buffer.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_list.c</locationURI>
 		</link>
 		<link>
-			<name>pif/core/source/pif_task.c</name>
+			<name>pif/source/core/pif_log.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/core/source/pif_task.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_log.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_ring_buffer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_ring_buffer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_task.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/input/pif_keypad.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/input/pif_keypad.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

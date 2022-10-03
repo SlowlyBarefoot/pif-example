@@ -1,12 +1,12 @@
 #include "appMain.h"
 #include "exCollectSignal1.h"
 
-#include "pif_collect_signal.h"
-#include "pif_gpio.h"
-#include "pif_led.h"
-#include "pif_log.h"
-#include "pif_sensor_switch.h"
-#include "pif_sequence.h"
+#include "core/pif_collect_signal.h"
+#include "core/pif_gpio.h"
+#include "core/pif_log.h"
+#include "core/pif_sequence.h"
+#include "display/pif_led.h"
+#include "sensor/pif_sensor_switch.h"
 
 
 PifTimerManager g_timer_1ms;

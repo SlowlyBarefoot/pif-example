@@ -1,4 +1,4 @@
-#include "pif_task.h"
+#include "core/pif_task.h"
 #include "i2c.h"
 
 // Include Atmel CMSIS driver

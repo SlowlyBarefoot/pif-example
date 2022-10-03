@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "main.h"
 
-#include "pif_log.h"
-#include "pif_xmodem.h"
+#include "core/pif_log.h"
+#include "protocol/pif_xmodem.h"
 
 
 PifTimerManager g_timer_1ms;

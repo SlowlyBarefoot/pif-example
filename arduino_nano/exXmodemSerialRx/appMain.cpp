@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exXmodemSerialRx.h"
 
-#include "pif_led.h"
-#include "pif_sensor_switch.h"
-#include "pif_xmodem.h"
+#include "display/pif_led.h"
+#include "protocol/pif_xmodem.h"
+#include "sensor/pif_sensor_switch.h"
 
 
 PifTimerManager g_timer_1ms;

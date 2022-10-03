@@ -2,9 +2,9 @@
 #define APP_MAIN_H
 
 
-#include "pif_comm.h"
-#include "pif_i2c.h"
-#include "pif_timer.h"
+#include "core/pif_comm.h"
+#include "core/pif_i2c.h"
+#include "core/pif_timer.h"
 
 
 extern PifComm g_comm_log;

@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exDotMatrixS_VS here
 
-#include "pif_comm.h"
+#include "core/pif_comm.h"
 
 //end of add your includes here
 

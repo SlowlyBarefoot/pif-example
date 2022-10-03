@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exSensorThreshold2P.h"
 
-#include "pif_log.h"
-#include "pif_noise_filter_uint16.h"
-#include "pif_sensor_digital.h"
+#include "core/pif_log.h"
+#include "filter/pif_noise_filter_uint16.h"
+#include "sensor/pif_sensor_digital.h"
 
 
 #define USE_FILTER_AVERAGE		1
@@ -33,7 +33,7 @@ void appSetup()
 
     pifLog_Init();
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;					// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;					// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
     if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;					// 1ms

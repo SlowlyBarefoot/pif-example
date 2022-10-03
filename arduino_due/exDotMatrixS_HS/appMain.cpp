@@ -1,8 +1,8 @@
 #include "appMain.h"
 #include "exDotMatrixS_HS.h"
 
-#include "pif_dot_matrix.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "display/pif_dot_matrix.h"
 
 
 PifTimerManager g_timer_1ms;

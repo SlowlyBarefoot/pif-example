@@ -1,8 +1,8 @@
 #include "app_main.h"
 #include "ex_buzzer.h"
 
-#include "pif_buzzer.h"
-#include "pif_log.h"
+#include "core/pif_log.h"
+#include "sound/pif_buzzer.h"
 
 
 PifTimerManager g_timer_1ms;

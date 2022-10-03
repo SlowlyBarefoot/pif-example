@@ -1,7 +1,7 @@
 #include "appMain.h"
 #include "main.h"
 
-#include "pif_task.h"
+#include "core/pif_task.h"
 
 
 static uint16_t _taskLedToggle(PifTask *pstTask)

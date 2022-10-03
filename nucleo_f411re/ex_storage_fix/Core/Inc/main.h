@@ -31,8 +31,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "pif_comm.h"
-#include "pif_storage.h"
+#include "core/pif_comm.h"
+#include "storage/pif_storage.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

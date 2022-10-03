@@ -1,11 +1,11 @@
 #include "appMain.h"
 #include "exProtocolSerialS.h"
 
-#include "pif_led.h"
-#include "pif_log.h"
-#include "pif_noise_filter_bit.h"
-#include "pif_protocol.h"
-#include "pif_sensor_switch.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
+#include "filter/pif_noise_filter_bit.h"
+#include "protocol/pif_protocol.h"
+#include "sensor/pif_sensor_switch.h"
 
 
 PifTimerManager g_timer_1ms;
@@ -160,7 +160,7 @@ void appSetup()
 	    if (!pifNoiseFilterBit_Init(&s_stProtocolTest[i].stPushSwitchFilter, 7)) return;
 
 		if (!pifSensorSwitch_Init(&s_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire, NULL)) return;
-	    if (!pifSensorSwitch_AttachTaskAcquire(&s_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10m
+	    if (!pifSensorSwitch_AttachTaskAcquire(&s_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
 		pifSensor_AttachEvtChange(&s_stProtocolTest[i].stPushSwitch.parent, _evtPushSwitchChange);
 		s_stProtocolTest[i].stPushSwitch.p_filter = &s_stProtocolTest[i].stPushSwitchFilter.parent;
 	    s_stProtocolTest[i].ucDataCount = 0;

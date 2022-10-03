@@ -1,9 +1,9 @@
 #include "appMain.h"
 #include "exSensorThreshold1P.h"
 
-#include "pif_log.h"
-#include "pif_noise_filter_uint16.h"
-#include "pif_sensor_digital.h"
+#include "core/pif_log.h"
+#include "filter/pif_noise_filter_uint16.h"
+#include "sensor/pif_sensor_digital.h"
 
 
 #define USE_FILTER_AVERAGE		1

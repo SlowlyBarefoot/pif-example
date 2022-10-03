@@ -61,7 +61,7 @@ void setup()
 
     attachInterrupt(PIN_ECHO, _isrUltrasonicEcho, CHANGE);
 
-	appSetup(micros);
+	appSetup((PifActTimer1us)micros);
 }
 
 // The loop function is called in an endless loop

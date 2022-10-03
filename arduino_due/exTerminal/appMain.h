@@ -2,8 +2,8 @@
 #define APP_MAIN_H
 
 
-#include "pif_comm.h"
-#include "pif_timer.h"
+#include "core/pif_comm.h"
+#include "core/pif_timer.h"
 
 
 extern PifTimerManager g_timer_1ms;
