@@ -24,7 +24,7 @@ uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	(void)p_owner;
 	(void)p_value;
@@ -40,7 +40,7 @@ uint16_t actTiltSwitchAcquire(PifSensor* p_owner)
 	return digitalRead(PIN_TILT_SWITCH);
 }
 
-void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	(void)p_owner;
 	(void)p_value;

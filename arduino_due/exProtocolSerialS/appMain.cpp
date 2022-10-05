@@ -108,7 +108,7 @@ static void _evtProtocolError(PifId usPifId)
 	pifLog_Printf(LT_ERROR, "ProtocolError DC=%d", usPifId);
 }
 
-static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	uint8_t index = p_owner->_id - PIF_ID_SWITCH;
 

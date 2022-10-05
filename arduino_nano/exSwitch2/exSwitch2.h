@@ -20,8 +20,8 @@
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
 void evtSwitchAcquire(void *pvIssuer);
-void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer);
-void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer);
+void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer);
+void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer);
 
 //Do not add code below this line
 #endif /* _exSwitch2_H_ */

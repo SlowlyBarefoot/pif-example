@@ -16,7 +16,7 @@ PifTimerManager g_timer_1ms;
 static PifLed s_led;
 
 
-static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	(void)p_owner;
 	(void)p_value;
@@ -25,7 +25,7 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 	pifLed_PartChange(&s_led, 1 << 1, state);
 }
 
-static void _evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+static void _evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	(void)p_owner;
 	(void)p_value;

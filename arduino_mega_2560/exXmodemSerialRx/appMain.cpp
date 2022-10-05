@@ -23,7 +23,7 @@ static void _evtXmodemRxReceive(uint8_t ucCode, PifXmodemPacket *pstPacket)
 	}
 }
 
-static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	(void)p_owner;
 	(void)p_value;

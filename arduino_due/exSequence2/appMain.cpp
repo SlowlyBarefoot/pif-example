@@ -31,7 +31,7 @@ typedef struct {
 static SequenceTest s_stSequenceTest[SEQUENCE_COUNT];
 
 
-static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	SequenceTest* p_test = (SequenceTest*)p_issuer;
 

@@ -19,9 +19,9 @@
 
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 uint16_t actPushSwitchAcquire(PifSensor* p_owner);
-void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer);
+void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer);
 uint16_t actTiltSwitchAcquire(PifSensor* p_owner);
-void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer);
+void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer);
 uint16_t taskLedToggle(PifTask *pstTask);
 
 //Do not add code below this line

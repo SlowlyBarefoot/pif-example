@@ -12,7 +12,7 @@
 PifTimerManager g_timer_1ms;
 
 
-static void _evtSensorThreshold(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+static void _evtSensorThreshold(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	(void)p_issuer;
 

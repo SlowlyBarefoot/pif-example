@@ -36,7 +36,7 @@ typedef struct {
 static TestStruct s_test[SEQUENCE_COUNT];
 
 
-static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	TestStruct* p_test = (TestStruct*)p_issuer;
 
@@ -55,7 +55,7 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 	}
 }
 
-static void _evtPushSwitchCollectChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, void* p_issuer)
+static void _evtPushSwitchCollectChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	(void)p_owner;
 	(void)p_value;

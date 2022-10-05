@@ -12,7 +12,7 @@
 PifTimerManager g_timer_1ms;
 
 
-static void _evtTimerPeriodFinish(void* p_issuer)
+static void _evtTimerPeriodFinish(PifIssuerP p_issuer)
 {
     PifSensorDigital* p_owner = (PifSensorDigital*)p_issuer;
 
