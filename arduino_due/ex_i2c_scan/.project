@@ -57,9 +57,9 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x</locationURI>
 		</link>
 		<link>
-			<name>libraries/WiFi</name>
+			<name>libraries/Wire</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/WiFi/1.2.7</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/libraries/Wire</locationURI>
 		</link>
 		<link>
 			<name>pif/include</name>

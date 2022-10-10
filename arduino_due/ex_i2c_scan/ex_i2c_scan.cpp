@@ -40,8 +40,7 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
     for (i = 0; i < size; i++) {
     	Wire.write(p_data[i]);
     }
-    error = Wire.endTransmission();
-    if (error != 0) return IR_ERROR;
+    if (Wire.endTransmission() != 0) return IR_ERROR;
 #else
 	if (!I2C_WriteAddr(addr, iaddr, isize, p_data, size)) {
 		return IR_ERROR;
