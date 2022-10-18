@@ -76,7 +76,7 @@ BOOL actLogStartTransfer(PifComm* p_comm)
 	uint8_t *pucData, ucState;
 
 	s_usLogTx = 0;
-	ucState = pifComm_StartSendDatas(p_comm, &pucData, &s_usLogTx);
+	ucState = pifComm_StartGetTxData(p_comm, &pucData, &s_usLogTx);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart3, pucData, s_usLogTx);
 		return TRUE;
@@ -89,13 +89,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *pucData, ucState;
 
   if (huart->Instance == USART3) {
-		ucState = pifComm_EndSendDatas(&g_comm_log, s_usLogTx);
+		ucState = pifComm_EndGetTxData(&g_comm_log, s_usLogTx);
 		if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
 			pifComm_FinishTransfer(&g_comm_log);
 		}
 		else {
 			s_usLogTx = 0;
-			ucState = pifComm_StartSendDatas(&g_comm_log, &pucData, &s_usLogTx);
+			ucState = pifComm_StartGetTxData(&g_comm_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
 			}

@@ -54,7 +54,7 @@ void USART_Send(PifComm *pstComm)
 {
 	uint8_t ucData = 0, ucState;
 
-	ucState = pifComm_SendData(pstComm, &ucData);
+	ucState = pifComm_GetTxByte(pstComm, &ucData);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		*s_stUsart.udr = ucData;
 
@@ -72,7 +72,7 @@ void USART_Send(PifComm *pstComm)
 void USART_Receive(PifComm *pstComm)
 {
 	if (!(*s_stUsart.ucsra & (1 << UPE0))) {
-		pifComm_ReceiveData(pstComm, *s_stUsart.udr);
+		pifComm_PutRxByte(pstComm, *s_stUsart.udr);
 	}
 	else {
 		*s_stUsart.udr;

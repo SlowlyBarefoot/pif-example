@@ -1,10 +1,10 @@
 // Do not remove the include below
-#include <Wire.h>
-
 #include "exPmlcdI2c.h"
 #include "appMain.h"
 
 #include "core/pif_log.h"
+
+#include <Wire.h>
 
 
 #define PIN_LED_L				13

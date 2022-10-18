@@ -59,7 +59,7 @@ void USART_Send(int port, PifComm *pstComm)
 	stUsart *p_stUsart = &s_stUsart[port];
 	uint8_t ucData = 0, ucState;
 
-	ucState = pifComm_SendData(pstComm, &ucData);
+	ucState = pifComm_GetTxByte(pstComm, &ucData);
 	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
 		*p_stUsart->udr = ucData;
 
@@ -80,7 +80,7 @@ void USART_Receive(int port, PifComm *pstComm)
 	stUsart *p_stUsart = &s_stUsart[port];
 
 	if (!(*p_stUsart->ucsra & (1 << UPE0))) {
-		pifComm_ReceiveData(pstComm, *p_stUsart->udr);
+		pifComm_PutRxByte(pstComm, *p_stUsart->udr);
 	}
 	else {
 		*p_stUsart->udr;

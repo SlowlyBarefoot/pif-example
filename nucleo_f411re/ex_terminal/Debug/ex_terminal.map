@@ -909,10 +909,14 @@ Discarded input sections
                 0x0000000000000000       0x1c ./Core/pif/source/core/pif_comm.o
  .text.pifComm_GetFillSizeOfTxBuffer
                 0x0000000000000000       0x1c ./Core/pif/source/core/pif_comm.o
- .text.pifComm_ReceiveDatas
+ .text.pifComm_PutRxData
                 0x0000000000000000       0x44 ./Core/pif/source/core/pif_comm.o
- .text.pifComm_SendData
+ .text.pifComm_GetTxByte
                 0x0000000000000000       0x5c ./Core/pif/source/core/pif_comm.o
+ .text.pifComm_ReceiveRxData
+                0x0000000000000000       0x70 ./Core/pif/source/core/pif_comm.o
+ .text.pifComm_SendTxData
+                0x0000000000000000       0x58 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_ForceSendData
                 0x0000000000000000       0x1e ./Core/pif/source/core/pif_comm.o
  .debug_macro   0x0000000000000000      0xa90 ./Core/pif/source/core/pif_comm.o
@@ -3677,15 +3681,15 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
  .text.pifComm_AttachClient
                 0x0000000008002280       0x2c ./Core/pif/source/core/pif_comm.o
                 0x0000000008002280                pifComm_AttachClient
- .text.pifComm_ReceiveData
+ .text.pifComm_PutRxByte
                 0x00000000080022ac       0x42 ./Core/pif/source/core/pif_comm.o
-                0x00000000080022ac                pifComm_ReceiveData
- .text.pifComm_StartSendDatas
+                0x00000000080022ac                pifComm_PutRxByte
+ .text.pifComm_StartGetTxData
                 0x00000000080022ee       0x70 ./Core/pif/source/core/pif_comm.o
-                0x00000000080022ee                pifComm_StartSendDatas
- .text.pifComm_EndSendDatas
+                0x00000000080022ee                pifComm_StartGetTxData
+ .text.pifComm_EndGetTxData
                 0x000000000800235e       0x32 ./Core/pif/source/core/pif_comm.o
-                0x000000000800235e                pifComm_EndSendDatas
+                0x000000000800235e                pifComm_EndGetTxData
  .text.pifComm_FinishTransfer
                 0x0000000008002390       0x24 ./Core/pif/source/core/pif_comm.o
                 0x0000000008002390                pifComm_FinishTransfer
@@ -4407,53 +4411,53 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
 LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a
 LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a
 
-.debug_info     0x0000000000000000    0x100e9
- .debug_info    0x0000000000000000      0xc4e ./Core/Src/app_main.o
- .debug_info    0x0000000000000c4e     0x12b6 ./Core/Src/main.o
- .debug_info    0x0000000000001f04      0xb94 ./Core/Src/stm32f4xx_hal_msp.o
- .debug_info    0x0000000000002a98      0x93b ./Core/Src/stm32f4xx_it.o
- .debug_info    0x00000000000033d3      0x171 ./Core/Src/sysmem.o
- .debug_info    0x0000000000003544      0x54f ./Core/Src/system_stm32f4xx.o
- .debug_info    0x0000000000003a93       0x22 ./Core/Startup/startup_stm32f411retx.o
- .debug_info    0x0000000000003ab5      0xce2 ./Core/pif/source/core/pif.o
- .debug_info    0x0000000000004797      0xbbf ./Core/pif/source/core/pif_comm.o
- .debug_info    0x0000000000005356      0xbc9 ./Core/pif/source/core/pif_list.o
- .debug_info    0x0000000000005f1f     0x11fd ./Core/pif/source/core/pif_log.o
- .debug_info    0x000000000000711c      0xac5 ./Core/pif/source/core/pif_ring_buffer.o
- .debug_info    0x0000000000007be1      0xc12 ./Core/pif/source/core/pif_task.o
- .debug_info    0x00000000000087f3      0xa19 ./Core/pif/source/core/pif_timer.o
- .debug_info    0x000000000000920c      0xc2f ./Core/pif/source/display/pif_led.o
- .debug_info    0x0000000000009e3b      0x90d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_info    0x000000000000a748      0xd8b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_info    0x000000000000b4d3      0x947 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
- .debug_info    0x000000000000be1a      0x78e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_info    0x000000000000c5a8      0x98d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_info    0x000000000000cf35     0x31b4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+.debug_info     0x0000000000000000    0x101ac
+ .debug_info    0x0000000000000000      0xc4f ./Core/Src/app_main.o
+ .debug_info    0x0000000000000c4f     0x12b6 ./Core/Src/main.o
+ .debug_info    0x0000000000001f05      0xb94 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_info    0x0000000000002a99      0x93b ./Core/Src/stm32f4xx_it.o
+ .debug_info    0x00000000000033d4      0x171 ./Core/Src/sysmem.o
+ .debug_info    0x0000000000003545      0x54f ./Core/Src/system_stm32f4xx.o
+ .debug_info    0x0000000000003a94       0x22 ./Core/Startup/startup_stm32f411retx.o
+ .debug_info    0x0000000000003ab6      0xce2 ./Core/pif/source/core/pif.o
+ .debug_info    0x0000000000004798      0xc81 ./Core/pif/source/core/pif_comm.o
+ .debug_info    0x0000000000005419      0xbc9 ./Core/pif/source/core/pif_list.o
+ .debug_info    0x0000000000005fe2     0x11fd ./Core/pif/source/core/pif_log.o
+ .debug_info    0x00000000000071df      0xac5 ./Core/pif/source/core/pif_ring_buffer.o
+ .debug_info    0x0000000000007ca4      0xc12 ./Core/pif/source/core/pif_task.o
+ .debug_info    0x00000000000088b6      0xa19 ./Core/pif/source/core/pif_timer.o
+ .debug_info    0x00000000000092cf      0xc2f ./Core/pif/source/display/pif_led.o
+ .debug_info    0x0000000000009efe      0x90d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_info    0x000000000000a80b      0xd8b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_info    0x000000000000b596      0x947 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
+ .debug_info    0x000000000000bedd      0x78e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_info    0x000000000000c66b      0x98d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_info    0x000000000000cff8     0x31b4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_abbrev   0x0000000000000000     0x2fe2
- .debug_abbrev  0x0000000000000000      0x21e ./Core/Src/app_main.o
- .debug_abbrev  0x000000000000021e      0x301 ./Core/Src/main.o
- .debug_abbrev  0x000000000000051f      0x1b9 ./Core/Src/stm32f4xx_hal_msp.o
- .debug_abbrev  0x00000000000006d8      0x1e7 ./Core/Src/stm32f4xx_it.o
- .debug_abbrev  0x00000000000008bf       0xbb ./Core/Src/sysmem.o
- .debug_abbrev  0x000000000000097a      0x116 ./Core/Src/system_stm32f4xx.o
- .debug_abbrev  0x0000000000000a90       0x12 ./Core/Startup/startup_stm32f411retx.o
- .debug_abbrev  0x0000000000000aa2      0x328 ./Core/pif/source/core/pif.o
- .debug_abbrev  0x0000000000000dca      0x230 ./Core/pif/source/core/pif_comm.o
- .debug_abbrev  0x0000000000000ffa      0x2a6 ./Core/pif/source/core/pif_list.o
- .debug_abbrev  0x00000000000012a0      0x3e8 ./Core/pif/source/core/pif_log.o
- .debug_abbrev  0x0000000000001688      0x2a3 ./Core/pif/source/core/pif_ring_buffer.o
- .debug_abbrev  0x000000000000192b      0x340 ./Core/pif/source/core/pif_task.o
- .debug_abbrev  0x0000000000001c6b      0x250 ./Core/pif/source/core/pif_timer.o
- .debug_abbrev  0x0000000000001ebb      0x245 ./Core/pif/source/display/pif_led.o
- .debug_abbrev  0x0000000000002100      0x23e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_abbrev  0x000000000000233e      0x316 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_abbrev  0x0000000000002654      0x21b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
- .debug_abbrev  0x000000000000286f      0x1c4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_abbrev  0x0000000000002a33      0x2aa ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_abbrev  0x0000000000002cdd      0x305 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+.debug_abbrev   0x0000000000000000     0x300a
+ .debug_abbrev  0x0000000000000000      0x235 ./Core/Src/app_main.o
+ .debug_abbrev  0x0000000000000235      0x301 ./Core/Src/main.o
+ .debug_abbrev  0x0000000000000536      0x1b9 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_abbrev  0x00000000000006ef      0x1e7 ./Core/Src/stm32f4xx_it.o
+ .debug_abbrev  0x00000000000008d6       0xbb ./Core/Src/sysmem.o
+ .debug_abbrev  0x0000000000000991      0x116 ./Core/Src/system_stm32f4xx.o
+ .debug_abbrev  0x0000000000000aa7       0x12 ./Core/Startup/startup_stm32f411retx.o
+ .debug_abbrev  0x0000000000000ab9      0x328 ./Core/pif/source/core/pif.o
+ .debug_abbrev  0x0000000000000de1      0x241 ./Core/pif/source/core/pif_comm.o
+ .debug_abbrev  0x0000000000001022      0x2a6 ./Core/pif/source/core/pif_list.o
+ .debug_abbrev  0x00000000000012c8      0x3e8 ./Core/pif/source/core/pif_log.o
+ .debug_abbrev  0x00000000000016b0      0x2a3 ./Core/pif/source/core/pif_ring_buffer.o
+ .debug_abbrev  0x0000000000001953      0x340 ./Core/pif/source/core/pif_task.o
+ .debug_abbrev  0x0000000000001c93      0x250 ./Core/pif/source/core/pif_timer.o
+ .debug_abbrev  0x0000000000001ee3      0x245 ./Core/pif/source/display/pif_led.o
+ .debug_abbrev  0x0000000000002128      0x23e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_abbrev  0x0000000000002366      0x316 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_abbrev  0x000000000000267c      0x21b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
+ .debug_abbrev  0x0000000000002897      0x1c4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_abbrev  0x0000000000002a5b      0x2aa ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_abbrev  0x0000000000002d05      0x305 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_aranges  0x0000000000000000      0xd88
+.debug_aranges  0x0000000000000000      0xd98
  .debug_aranges
                 0x0000000000000000       0x28 ./Core/Src/app_main.o
  .debug_aranges
@@ -4471,33 +4475,33 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
  .debug_aranges
                 0x0000000000000190       0xc0 ./Core/pif/source/core/pif.o
  .debug_aranges
-                0x0000000000000250       0xb8 ./Core/pif/source/core/pif_comm.o
+                0x0000000000000250       0xc8 ./Core/pif/source/core/pif_comm.o
  .debug_aranges
-                0x0000000000000308      0x118 ./Core/pif/source/core/pif_list.o
+                0x0000000000000318      0x118 ./Core/pif/source/core/pif_list.o
  .debug_aranges
-                0x0000000000000420       0xd8 ./Core/pif/source/core/pif_log.o
+                0x0000000000000430       0xd8 ./Core/pif/source/core/pif_log.o
  .debug_aranges
-                0x00000000000004f8       0xf8 ./Core/pif/source/core/pif_ring_buffer.o
+                0x0000000000000508       0xf8 ./Core/pif/source/core/pif_ring_buffer.o
  .debug_aranges
-                0x00000000000005f0       0xd8 ./Core/pif/source/core/pif_task.o
+                0x0000000000000600       0xd8 ./Core/pif/source/core/pif_task.o
  .debug_aranges
-                0x00000000000006c8       0x90 ./Core/pif/source/core/pif_timer.o
+                0x00000000000006d8       0x90 ./Core/pif/source/core/pif_timer.o
  .debug_aranges
-                0x0000000000000758       0xb8 ./Core/pif/source/display/pif_led.o
+                0x0000000000000768       0xb8 ./Core/pif/source/display/pif_led.o
  .debug_aranges
-                0x0000000000000810       0xf0 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+                0x0000000000000820       0xf0 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
  .debug_aranges
-                0x0000000000000900      0x118 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+                0x0000000000000910      0x118 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
  .debug_aranges
-                0x0000000000000a18       0x90 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
+                0x0000000000000a28       0x90 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
  .debug_aranges
-                0x0000000000000aa8       0x58 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+                0x0000000000000ab8       0x58 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
  .debug_aranges
-                0x0000000000000b00       0x88 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+                0x0000000000000b10       0x88 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
  .debug_aranges
-                0x0000000000000b88      0x200 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+                0x0000000000000b98      0x200 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_ranges   0x0000000000000000      0xc70
+.debug_ranges   0x0000000000000000      0xc80
  .debug_ranges  0x0000000000000000       0x18 ./Core/Src/app_main.o
  .debug_ranges  0x0000000000000018       0x50 ./Core/Src/main.o
  .debug_ranges  0x0000000000000068       0x20 ./Core/Src/stm32f4xx_hal_msp.o
@@ -4506,19 +4510,19 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
  .debug_ranges  0x00000000000000f0       0x18 ./Core/Src/system_stm32f4xx.o
  .debug_ranges  0x0000000000000108       0x20 ./Core/Startup/startup_stm32f411retx.o
  .debug_ranges  0x0000000000000128       0xb0 ./Core/pif/source/core/pif.o
- .debug_ranges  0x00000000000001d8       0xa8 ./Core/pif/source/core/pif_comm.o
- .debug_ranges  0x0000000000000280      0x108 ./Core/pif/source/core/pif_list.o
- .debug_ranges  0x0000000000000388       0xc8 ./Core/pif/source/core/pif_log.o
- .debug_ranges  0x0000000000000450       0xe8 ./Core/pif/source/core/pif_ring_buffer.o
- .debug_ranges  0x0000000000000538       0xc8 ./Core/pif/source/core/pif_task.o
- .debug_ranges  0x0000000000000600       0x80 ./Core/pif/source/core/pif_timer.o
- .debug_ranges  0x0000000000000680       0xa8 ./Core/pif/source/display/pif_led.o
- .debug_ranges  0x0000000000000728       0xe0 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_ranges  0x0000000000000808      0x108 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_ranges  0x0000000000000910       0x80 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
- .debug_ranges  0x0000000000000990       0x48 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_ranges  0x00000000000009d8       0x78 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_ranges  0x0000000000000a50      0x220 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_ranges  0x00000000000001d8       0xb8 ./Core/pif/source/core/pif_comm.o
+ .debug_ranges  0x0000000000000290      0x108 ./Core/pif/source/core/pif_list.o
+ .debug_ranges  0x0000000000000398       0xc8 ./Core/pif/source/core/pif_log.o
+ .debug_ranges  0x0000000000000460       0xe8 ./Core/pif/source/core/pif_ring_buffer.o
+ .debug_ranges  0x0000000000000548       0xc8 ./Core/pif/source/core/pif_task.o
+ .debug_ranges  0x0000000000000610       0x80 ./Core/pif/source/core/pif_timer.o
+ .debug_ranges  0x0000000000000690       0xa8 ./Core/pif/source/display/pif_led.o
+ .debug_ranges  0x0000000000000738       0xe0 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_ranges  0x0000000000000818      0x108 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_ranges  0x0000000000000920       0x80 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
+ .debug_ranges  0x00000000000009a0       0x48 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_ranges  0x00000000000009e8       0x78 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_ranges  0x0000000000000a60      0x220 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
 .debug_macro    0x0000000000000000    0x16e2c
  .debug_macro   0x0000000000000000      0x334 ./Core/Src/app_main.o
@@ -4612,7 +4616,7 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
  .debug_macro   0x0000000000016a93      0x1de ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
  .debug_macro   0x0000000000016c71      0x1bb ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_line     0x0000000000000000     0xf49e
+.debug_line     0x0000000000000000     0xf507
  .debug_line    0x0000000000000000      0x9f2 ./Core/Src/app_main.o
  .debug_line    0x00000000000009f2      0xa5b ./Core/Src/main.o
  .debug_line    0x000000000000144d      0x8ec ./Core/Src/stm32f4xx_hal_msp.o
@@ -4621,62 +4625,62 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
  .debug_line    0x0000000000002bb7      0x700 ./Core/Src/system_stm32f4xx.o
  .debug_line    0x00000000000032b7       0x88 ./Core/Startup/startup_stm32f411retx.o
  .debug_line    0x000000000000333f      0xd4c ./Core/pif/source/core/pif.o
- .debug_line    0x000000000000408b      0x93d ./Core/pif/source/core/pif_comm.o
- .debug_line    0x00000000000049c8      0xc54 ./Core/pif/source/core/pif_list.o
- .debug_line    0x000000000000561c      0xcb2 ./Core/pif/source/core/pif_log.o
- .debug_line    0x00000000000062ce      0xc62 ./Core/pif/source/core/pif_ring_buffer.o
- .debug_line    0x0000000000006f30      0xc19 ./Core/pif/source/core/pif_task.o
- .debug_line    0x0000000000007b49      0x8ba ./Core/pif/source/core/pif_timer.o
- .debug_line    0x0000000000008403      0xacb ./Core/pif/source/display/pif_led.o
- .debug_line    0x0000000000008ece      0x966 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_line    0x0000000000009834      0xc15 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_line    0x000000000000a449      0xeca ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
- .debug_line    0x000000000000b313      0xa9e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_line    0x000000000000bdb1      0xce2 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_line    0x000000000000ca93     0x2a0b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_line    0x000000000000408b      0x9a6 ./Core/pif/source/core/pif_comm.o
+ .debug_line    0x0000000000004a31      0xc54 ./Core/pif/source/core/pif_list.o
+ .debug_line    0x0000000000005685      0xcb2 ./Core/pif/source/core/pif_log.o
+ .debug_line    0x0000000000006337      0xc62 ./Core/pif/source/core/pif_ring_buffer.o
+ .debug_line    0x0000000000006f99      0xc19 ./Core/pif/source/core/pif_task.o
+ .debug_line    0x0000000000007bb2      0x8ba ./Core/pif/source/core/pif_timer.o
+ .debug_line    0x000000000000846c      0xacb ./Core/pif/source/display/pif_led.o
+ .debug_line    0x0000000000008f37      0x966 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_line    0x000000000000989d      0xc15 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_line    0x000000000000a4b2      0xeca ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
+ .debug_line    0x000000000000b37c      0xa9e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_line    0x000000000000be1a      0xce2 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_line    0x000000000000cafc     0x2a0b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_str      0x0000000000000000    0x870d1
- .debug_str     0x0000000000000000    0x834a1 ./Core/Src/app_main.o
-                                      0x8386e (size before relaxing)
- .debug_str     0x00000000000834a1      0x890 ./Core/Src/main.o
-                                      0x83cde (size before relaxing)
- .debug_str     0x0000000000083d31      0x44f ./Core/Src/stm32f4xx_hal_msp.o
+.debug_str      0x0000000000000000    0x870f7
+ .debug_str     0x0000000000000000    0x834a2 ./Core/Src/app_main.o
+                                      0x8386f (size before relaxing)
+ .debug_str     0x00000000000834a2      0x88e ./Core/Src/main.o
+                                      0x83cdc (size before relaxing)
+ .debug_str     0x0000000000083d30      0x44f ./Core/Src/stm32f4xx_hal_msp.o
                                       0x83995 (size before relaxing)
- .debug_str     0x0000000000084180      0x117 ./Core/Src/stm32f4xx_it.o
+ .debug_str     0x000000000008417f      0x117 ./Core/Src/stm32f4xx_it.o
                                       0x836ed (size before relaxing)
- .debug_str     0x0000000000084297      0x4da ./Core/Src/sysmem.o
+ .debug_str     0x0000000000084296      0x4da ./Core/Src/sysmem.o
                                        0x5e08 (size before relaxing)
- .debug_str     0x0000000000084771       0xdb ./Core/Src/system_stm32f4xx.o
+ .debug_str     0x0000000000084770       0xdb ./Core/Src/system_stm32f4xx.o
                                       0x7faa8 (size before relaxing)
- .debug_str     0x000000000008484c       0x36 ./Core/Startup/startup_stm32f411retx.o
+ .debug_str     0x000000000008484b       0x36 ./Core/Startup/startup_stm32f411retx.o
                                          0x7b (size before relaxing)
- .debug_str     0x0000000000084882      0x47f ./Core/pif/source/core/pif.o
+ .debug_str     0x0000000000084881      0x47f ./Core/pif/source/core/pif.o
                                        0x785a (size before relaxing)
- .debug_str     0x0000000000084d01      0x296 ./Core/pif/source/core/pif_comm.o
-                                       0x7d1a (size before relaxing)
- .debug_str     0x0000000000084f97      0x302 ./Core/pif/source/core/pif_list.o
+ .debug_str     0x0000000000084d00      0x2d7 ./Core/pif/source/core/pif_comm.o
+                                       0x7d59 (size before relaxing)
+ .debug_str     0x0000000000084fd7      0x302 ./Core/pif/source/core/pif_list.o
                                        0x77bf (size before relaxing)
- .debug_str     0x0000000000085299      0x32d ./Core/pif/source/core/pif_log.o
+ .debug_str     0x00000000000852d9      0x32d ./Core/pif/source/core/pif_log.o
                                        0x80a9 (size before relaxing)
- .debug_str     0x00000000000855c6      0x160 ./Core/pif/source/core/pif_ring_buffer.o
+ .debug_str     0x0000000000085606      0x146 ./Core/pif/source/core/pif_ring_buffer.o
                                        0x7842 (size before relaxing)
- .debug_str     0x0000000000085726      0x200 ./Core/pif/source/core/pif_task.o
+ .debug_str     0x000000000008574c      0x200 ./Core/pif/source/core/pif_task.o
                                        0x79b0 (size before relaxing)
- .debug_str     0x0000000000085926      0x130 ./Core/pif/source/core/pif_timer.o
-                                       0x79ad (size before relaxing)
- .debug_str     0x0000000000085a56      0x147 ./Core/pif/source/display/pif_led.o
-                                       0x7a4d (size before relaxing)
- .debug_str     0x0000000000085b9d      0x5fa ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_str     0x000000000008594c      0x130 ./Core/pif/source/core/pif_timer.o
+                                       0x79ae (size before relaxing)
+ .debug_str     0x0000000000085a7c      0x147 ./Core/pif/source/display/pif_led.o
+                                       0x7a4e (size before relaxing)
+ .debug_str     0x0000000000085bc3      0x5fa ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
                                       0x804d4 (size before relaxing)
- .debug_str     0x0000000000086197      0x32d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_str     0x00000000000861bd      0x32d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
                                       0x801f5 (size before relaxing)
- .debug_str     0x00000000000864c4      0x322 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
+ .debug_str     0x00000000000864ea      0x322 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
                                       0x7feb0 (size before relaxing)
- .debug_str     0x00000000000867e6      0x121 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_str     0x000000000008680c      0x121 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
                                       0x7fc23 (size before relaxing)
- .debug_str     0x0000000000086907      0x233 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_str     0x000000000008692d      0x233 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
                                       0x7fedc (size before relaxing)
- .debug_str     0x0000000000086b3a      0x597 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_str     0x0000000000086b60      0x597 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
                                       0x80469 (size before relaxing)
 
 .comment        0x0000000000000000       0x50
@@ -4702,7 +4706,7 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
  .comment       0x0000000000000050       0x51 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
  .comment       0x0000000000000050       0x51 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_frame    0x0000000000000000     0x3c34
+.debug_frame    0x0000000000000000     0x3c7c
  .debug_frame   0x0000000000000000       0x5c ./Core/Src/app_main.o
  .debug_frame   0x000000000000005c      0x138 ./Core/Src/main.o
  .debug_frame   0x0000000000000194       0x7c ./Core/Src/stm32f4xx_hal_msp.o
@@ -4710,40 +4714,40 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
  .debug_frame   0x0000000000000330       0x34 ./Core/Src/sysmem.o
  .debug_frame   0x0000000000000364       0x58 ./Core/Src/system_stm32f4xx.o
  .debug_frame   0x00000000000003bc      0x34c ./Core/pif/source/core/pif.o
- .debug_frame   0x0000000000000708      0x2ec ./Core/pif/source/core/pif_comm.o
- .debug_frame   0x00000000000009f4      0x4cc ./Core/pif/source/core/pif_list.o
- .debug_frame   0x0000000000000ec0      0x36c ./Core/pif/source/core/pif_log.o
- .debug_frame   0x000000000000122c      0x438 ./Core/pif/source/core/pif_ring_buffer.o
- .debug_frame   0x0000000000001664      0x378 ./Core/pif/source/core/pif_task.o
- .debug_frame   0x00000000000019dc      0x24c ./Core/pif/source/core/pif_timer.o
- .debug_frame   0x0000000000001c28      0x308 ./Core/pif/source/display/pif_led.o
- .debug_frame   0x0000000000001f30      0x374 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_frame   0x00000000000022a4      0x498 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_frame   0x000000000000273c      0x250 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
- .debug_frame   0x000000000000298c      0x14c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_frame   0x0000000000002ad8      0x1f4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_frame   0x0000000000002ccc      0x92c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
- .debug_frame   0x00000000000035f8       0x30 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-atoi.o)
- .debug_frame   0x0000000000003628       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-calloc.o)
- .debug_frame   0x0000000000003648       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-errno.o)
- .debug_frame   0x0000000000003668       0x2c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-init.o)
- .debug_frame   0x0000000000003694       0x30 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-malloc.o)
- .debug_frame   0x00000000000036c4       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-memset.o)
- .debug_frame   0x00000000000036e4       0x30 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-callocr.o)
- .debug_frame   0x0000000000003714       0x38 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-freer.o)
- .debug_frame   0x000000000000374c       0x4c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-mallocr.o)
- .debug_frame   0x0000000000003798       0x2c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-sbrkr.o)
- .debug_frame   0x00000000000037c4       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-strcmp.o)
- .debug_frame   0x00000000000037e4       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-strcpy.o)
- .debug_frame   0x0000000000003804       0x28 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-strncpy.o)
- .debug_frame   0x000000000000382c       0x64 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-strtol.o)
- .debug_frame   0x0000000000003890       0x30 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-mlock.o)
- .debug_frame   0x00000000000038c0       0x5c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-reent.o)
- .debug_frame   0x000000000000391c       0xb0 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-lock.o)
- .debug_frame   0x00000000000039cc       0xac /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_addsubdf3.o)
- .debug_frame   0x0000000000003a78       0x50 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_muldivdf3.o)
- .debug_frame   0x0000000000003ac8       0xc4 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_cmpdf2.o)
- .debug_frame   0x0000000000003b8c       0x24 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_fixunsdfsi.o)
- .debug_frame   0x0000000000003bb0       0x24 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_truncdfsf2.o)
- .debug_frame   0x0000000000003bd4       0x2c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_aeabi_uldivmod.o)
- .debug_frame   0x0000000000003c00       0x34 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x0000000000000708      0x334 ./Core/pif/source/core/pif_comm.o
+ .debug_frame   0x0000000000000a3c      0x4cc ./Core/pif/source/core/pif_list.o
+ .debug_frame   0x0000000000000f08      0x36c ./Core/pif/source/core/pif_log.o
+ .debug_frame   0x0000000000001274      0x438 ./Core/pif/source/core/pif_ring_buffer.o
+ .debug_frame   0x00000000000016ac      0x378 ./Core/pif/source/core/pif_task.o
+ .debug_frame   0x0000000000001a24      0x24c ./Core/pif/source/core/pif_timer.o
+ .debug_frame   0x0000000000001c70      0x308 ./Core/pif/source/display/pif_led.o
+ .debug_frame   0x0000000000001f78      0x374 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_frame   0x00000000000022ec      0x498 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_frame   0x0000000000002784      0x250 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
+ .debug_frame   0x00000000000029d4      0x14c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_frame   0x0000000000002b20      0x1f4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_frame   0x0000000000002d14      0x92c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_frame   0x0000000000003640       0x30 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-atoi.o)
+ .debug_frame   0x0000000000003670       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-calloc.o)
+ .debug_frame   0x0000000000003690       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-errno.o)
+ .debug_frame   0x00000000000036b0       0x2c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-init.o)
+ .debug_frame   0x00000000000036dc       0x30 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-malloc.o)
+ .debug_frame   0x000000000000370c       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-memset.o)
+ .debug_frame   0x000000000000372c       0x30 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-callocr.o)
+ .debug_frame   0x000000000000375c       0x38 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-freer.o)
+ .debug_frame   0x0000000000003794       0x4c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_frame   0x00000000000037e0       0x2c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-sbrkr.o)
+ .debug_frame   0x000000000000380c       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-strcmp.o)
+ .debug_frame   0x000000000000382c       0x20 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-strcpy.o)
+ .debug_frame   0x000000000000384c       0x28 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-strncpy.o)
+ .debug_frame   0x0000000000003874       0x64 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-strtol.o)
+ .debug_frame   0x00000000000038d8       0x30 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-mlock.o)
+ .debug_frame   0x0000000000003908       0x5c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-reent.o)
+ .debug_frame   0x0000000000003964       0xb0 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-lock.o)
+ .debug_frame   0x0000000000003a14       0xac /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_addsubdf3.o)
+ .debug_frame   0x0000000000003ac0       0x50 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_muldivdf3.o)
+ .debug_frame   0x0000000000003b10       0xc4 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_cmpdf2.o)
+ .debug_frame   0x0000000000003bd4       0x24 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_fixunsdfsi.o)
+ .debug_frame   0x0000000000003bf8       0x24 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_truncdfsf2.o)
+ .debug_frame   0x0000000000003c1c       0x2c /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x0000000000003c48       0x34 /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.linux64_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/libgcc.a(_udivmoddi4.o)

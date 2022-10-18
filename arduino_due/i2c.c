@@ -51,7 +51,7 @@ static BOOL TWI_WaitByteSent(Twi *_twi, uint32_t _timeout)
 			return FALSE;
 		}
 
-		pifTaskManager_Yield();
+//		pifTaskManager_Yield();
 	}
 
 	return TRUE;
@@ -74,7 +74,7 @@ static BOOL TWI_WaitByteReceived(Twi *_twi, uint32_t _timeout)
 			return FALSE;
 		}
 
-		pifTaskManager_Yield();
+//		pifTaskManager_Yield();
 	}
 
 	return TRUE;

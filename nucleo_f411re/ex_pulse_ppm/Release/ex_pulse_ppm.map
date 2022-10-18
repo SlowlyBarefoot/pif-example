@@ -172,12 +172,16 @@ Discarded input sections
                 0x0000000000000000        0x6 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_GetFillSizeOfTxBuffer
                 0x0000000000000000        0x6 ./Core/pif/source/core/pif_comm.o
- .text.pifComm_ReceiveData
+ .text.pifComm_PutRxByte
                 0x0000000000000000       0x1c ./Core/pif/source/core/pif_comm.o
- .text.pifComm_ReceiveDatas
+ .text.pifComm_PutRxData
                 0x0000000000000000       0x1c ./Core/pif/source/core/pif_comm.o
- .text.pifComm_SendData
+ .text.pifComm_GetTxByte
                 0x0000000000000000       0x2a ./Core/pif/source/core/pif_comm.o
+ .text.pifComm_ReceiveRxData
+                0x0000000000000000       0x3e ./Core/pif/source/core/pif_comm.o
+ .text.pifComm_SendTxData
+                0x0000000000000000       0x20 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_ForceSendData
                 0x0000000000000000        0xa ./Core/pif/source/core/pif_comm.o
  .text          0x0000000000000000        0x0 ./Core/pif/source/core/pif_list.o
@@ -1505,12 +1509,12 @@ LOAD /home/wonjh/st/stm32cubeide_1.6.1/plugins/com.st.stm32cube.ide.mcu.external
  .text.pifComm_AttachClient
                 0x000000000800174c        0x8 ./Core/pif/source/core/pif_comm.o
                 0x000000000800174c                pifComm_AttachClient
- .text.pifComm_StartSendDatas
+ .text.pifComm_StartGetTxData
                 0x0000000008001754       0x3a ./Core/pif/source/core/pif_comm.o
-                0x0000000008001754                pifComm_StartSendDatas
- .text.pifComm_EndSendDatas
+                0x0000000008001754                pifComm_StartGetTxData
+ .text.pifComm_EndGetTxData
                 0x000000000800178e       0x18 ./Core/pif/source/core/pif_comm.o
-                0x000000000800178e                pifComm_EndSendDatas
+                0x000000000800178e                pifComm_EndGetTxData
  .text.pifComm_FinishTransfer
                 0x00000000080017a6        0xe ./Core/pif/source/core/pif_comm.o
                 0x00000000080017a6                pifComm_FinishTransfer
