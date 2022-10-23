@@ -59,7 +59,7 @@ void appSetup(PifActTimer1us act_timer1us)
     s_i2c_port.act_read = actI2cRead;
     s_i2c_port.act_write = actI2cWrite;
 
-    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &s_i2c_port, ADS1X1X_I2C_ADDR_0)) return;
+    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &s_i2c_port, ADS1X1X_I2C_ADDR(0))) return;
 
     stConfig = s_ads1x1x._config;
 #if 1
