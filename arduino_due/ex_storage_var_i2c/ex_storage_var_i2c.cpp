@@ -42,7 +42,6 @@ void actLedL(SWITCH sw)
 
 PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	uint8_t error;
 #ifdef USE_I2C_WIRE
 	int i;
 	uint8_t count;
@@ -53,32 +52,29 @@ PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_
 		for (i = isize - 1; i >= 0; i--) {
 			Wire.write((iaddr >> (i * 8)) & 0xFF);
 		}
-	    error = Wire.endTransmission();
-	    if (error != 0) goto fail;
+	    if (Wire.endTransmission() != 0) {
+			pif_error = E_TRANSFER_FAILED;
+			return IR_ERROR;
+		}
 	}
 
     count = Wire.requestFrom(addr, (uint8_t)size);
-    if (count < size) goto fail;
+    if (count < size) {
+		pif_error = E_TRANSFER_FAILED;
+		return IR_ERROR;
+	}
 
     for (n = 0; n < size; n++) {
     	p_data[n] = Wire.read();
     }
 #else
-	if (!I2C_ReadAddr(addr, iaddr, isize, p_data, size)) {
-		error = pif_error;
-		goto fail;
-	}
+	if (!I2C_ReadAddr(addr, iaddr, isize, p_data, size)) return IR_ERROR;
 #endif
     return IR_COMPLETE;
-
-fail:
-	pifLog_Printf(LT_ERROR, "I2CR(%Xh) IA=%lXh IS=%u S=%u E=%u", addr, iaddr, isize, size, error);
-	return IR_ERROR;
 }
 
 PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
-	uint8_t error;
 #ifdef USE_I2C_WIRE
 	int i;
 	uint16_t n;
@@ -92,19 +88,14 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
     for (n = 0; n < size; n++) {
     	Wire.write(p_data[n]);
     }
-    error = Wire.endTransmission();
-    if (error != 0) goto fail;
-#else
-	if (!I2C_WriteAddr(addr, iaddr, isize, p_data, size)) {
-		error = pif_error;
-		goto fail;
+    if (Wire.endTransmission() != 0) {
+		pif_error = E_TRANSFER_FAILED;
+		return IR_ERROR;
 	}
+#else
+	if (!I2C_WriteAddr(addr, iaddr, isize, p_data, size)) return IR_ERROR;
 #endif
     return IR_COMPLETE;
-
-fail:
-	pifLog_Printf(LT_ERROR, "I2CW(%Xh) IA=%lXh IS=%u S=%u E=%u", addr, iaddr, isize, size, error);
-	return IR_ERROR;
 }
 
 extern "C" {

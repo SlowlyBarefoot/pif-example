@@ -40,11 +40,12 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
     for (i = 0; i < size; i++) {
     	Wire.write(p_data[i]);
     }
-    if (Wire.endTransmission() != 0) return IR_ERROR;
-#else
-	if (!I2C_WriteAddr(addr, iaddr, isize, p_data, size)) {
+    if (Wire.endTransmission() != 0) {
+		pif_error = E_TRANSFER_FAILED;
 		return IR_ERROR;
 	}
+#else
+	if (!I2C_WriteAddr(addr, iaddr, isize, p_data, size)) return IR_ERROR;
 #endif
     return IR_COMPLETE;
 }
@@ -68,7 +69,7 @@ void setup()
 #ifdef USE_I2C_WIRE
 	Wire.begin();
 #else
-	I2C_Init(I2C_CLOCK_400KHz);
+	I2C_Init(I2C_CLOCK_100KHz);
 #endif
 
     appSetup(NULL);

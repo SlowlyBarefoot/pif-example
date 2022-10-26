@@ -35,9 +35,8 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
     for (i = 0; i < size; i++) {
     	Wire.write(p_data[i]);
     }
-    uint8_t status_ = Wire.endTransmission();
-    if (status_ != 0) {
-    	pifLog_Printf(LT_ERROR, "I2CW(%Xh): C=%Xh S=%u E=%u", addr, p_data[0], size, status_);
+    if (Wire.endTransmission() != 0) {
+		pif_error = E_TRANSFER_FAILED;
         return IR_ERROR;
     }
     return IR_COMPLETE;
