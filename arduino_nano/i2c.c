@@ -14,8 +14,6 @@ static BOOL _waitTransmission(uint8_t twcr)
 	TWCR = twcr;
 	uint8_t count = 255;
 	while (!(TWCR & (1 << TWINT))) {
-		pifTaskManager_Yield();
-
 	    count--;
 	    if (count == 0) {              			// we are in a blocking state => we don't insist
 	    	TWCR = 0;                  			// and we force a reset on TWINT register

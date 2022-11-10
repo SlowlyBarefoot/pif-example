@@ -1,6 +1,7 @@
 #include "app_main.h"
 #include "main.h"
 
+#include "core/pif_log.h"
 #include "storage/pif_storage_var.h"
 
 
@@ -22,14 +23,14 @@
 	#define EEPROM_SECTOR_SIZE		64
 	#define EEPROM_VOLUME			32768
 	#define EEPROM_I_ADDR_SIZE		SIC_I_ADDR_SIZE_2
-	#define MIN_DATA_INFO_COUNT		10
+	#define MIN_DATA_INFO_COUNT		8
 #endif
 
 
 PifComm g_comm_log;
+PifI2cPort g_i2c_port;
 PifTimerManager g_timer_1ms;
 
-static PifI2cPort s_i2c_port;
 static PifStorageVar s_storage;
 
 static int _CmdFormat(int argc, char *argv[]);
@@ -268,12 +269,12 @@ void appSetup()
     pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
     pifTimer_Start(pstTimer1ms, 500);												// 500ms
 
-    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1, EEPROM_PAGE_SIZE)) return;
-    s_i2c_port.act_read = actI2cRead;
-    s_i2c_port.act_write = actI2cWrite;
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, EEPROM_PAGE_SIZE)) return;
+    g_i2c_port.act_read = actI2cRead;
+    g_i2c_port.act_write = actI2cWrite;
 
 	if (!pifStorageVar_Init(&s_storage, PIF_ID_AUTO)) return;
-	if (!pifStorageVar_AttachI2c(&s_storage, &s_i2c_port, ATMEL_I2C_ADDRESS, EEPROM_I_ADDR_SIZE, 10)) return;	// 10ms
+	if (!pifStorageVar_AttachI2c(&s_storage, &g_i2c_port, ATMEL_I2C_ADDRESS, EEPROM_I_ADDR_SIZE, 10)) return;	// 10ms
 	if (!pifStorageVar_SetMedia(&s_storage, EEPROM_SECTOR_SIZE, EEPROM_VOLUME, MIN_DATA_INFO_COUNT)) return;
 	if (!pifStorageVar_IsFormat(&s_storage.parent)) {
 		pifLog_Printf(LT_INFO, "Storage Init : EC=%d", pif_error);

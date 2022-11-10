@@ -40,7 +40,7 @@ void printData()
 		printf("%02X ", s_buffer[p]);
 	}
 
-	for (i = 0; i < s_storage._p_info->max_data_info_count; i++) {
+	for (i = 0; i < s_storage._p_info->data_info_count; i++) {
 		printf("\n%04X: ", p);
 		for (b = 0; b < sizeof(PifStorageVarDataInfo); b++, p++) {
 			printf("%02X ", s_buffer[p]);

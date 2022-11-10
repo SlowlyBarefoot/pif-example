@@ -78,27 +78,28 @@ void _evtBaroRead(int32_t pressure, float temperature)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
+	int line;
 	PifGy86Config config;
 
     pif_Init(act_timer1us);
 
-    if (!pifTaskManager_Init(8)) return;
+    if (!pifTaskManager_Init(5)) { line = __LINE__; goto fail; }
 
     pifLog_Init();
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) { line = __LINE__; goto fail; }			// 1000us
 
-	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
-	if (!pifComm_AllocTxBuffer(&g_comm_log, 256)) return;
+	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE)) { line = __LINE__; goto fail; }			// 1ms
+	if (!pifComm_AllocTxBuffer(&g_comm_log, 256)) { line = __LINE__; goto fail; }
 	g_comm_log.act_start_transfer = actLogStartTransfer;
 
-	if (!pifLog_AttachComm(&g_comm_log)) return;
+	if (!pifLog_AttachComm(&g_comm_log)) { line = __LINE__; goto fail; }
 
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
+    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) { line = __LINE__; goto fail; }								// 500ms
 
-    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3, 16)) return;
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3, 16)) { line = __LINE__; goto fail; }
     g_i2c_port.act_read = actI2cRead;
     g_i2c_port.act_write = actI2cWrite;
 
@@ -109,21 +110,28 @@ void appSetup(PifActTimer1us act_timer1us)
     config.mpu60x0_fs_sel = MPU60X0_FS_SEL_2000DPS;
     config.mpu60x0_afs_sel = MPU60X0_AFS_SEL_8G;
     config.mpu60x0_i2c_mst_clk = MPU60X0_I2C_MST_CLK_400KHZ;
+
     config.hmc5883_gain = HMC5883_GAIN_1_3GA;
     config.hmc5883_samples = HMC5883_SAMPLES_8;
     config.hmc5883_data_rate = HMC5883_DATARATE_75HZ;
     config.hmc5883_mode = HMC5883_MODE_CONTINOUS;
+
     config.ms5611_osr = MS5611_OSR_4096;
-    config.ms5611_read_period = 2000;												// 2000ms
+    config.ms5611_read_period = 2000;																		// 2000ms
     config.ms5611_evt_read = _evtBaroRead;
-    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, &s_imu_sensor, &config)) return;
+    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, &s_imu_sensor, &config)) { line = __LINE__; goto fail; }
 
     s_gy86._mpu6050.temp_scale = 100;
+    s_gy86._ms5611._p_task->pause = FALSE;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskMpu60x0, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskMpu60x0, NULL, TRUE)) { line = __LINE__; goto fail; }	// 500ms
 
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	return;
+
+fail:
+	pifLog_Printf(LT_ERROR, "E:%u L:%u\n", pif_error, line);
 }
 

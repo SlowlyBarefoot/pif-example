@@ -103,14 +103,16 @@ void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
-	HAL_GPIO_WritePin(GPIOB, LD2_Pin, unState & 1);
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, unState & 1);
 }
 
 uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 {
+	static GPIO_TypeDef* usPortSwitch[SWITCH_COUNT] = { Switch1_GPIO_Port, Switch2_GPIO_Port };
 	static uint16_t usPinSwitch[SWITCH_COUNT] = { Switch1_Pin, Switch2_Pin };
+	int index = p_owner->_id - PIF_ID_SWITCH;
 
-	return !HAL_GPIO_ReadPin(GPIOE, usPinSwitch[p_owner->_id - PIF_ID_SWITCH]);
+	return !HAL_GPIO_ReadPin(usPortSwitch[index], usPinSwitch[index]);
 }
 
 BOOL actUart1StartTransfer(PifComm* p_comm)

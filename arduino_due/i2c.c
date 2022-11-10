@@ -28,8 +28,6 @@ static BOOL TWI_WaitTransferComplete(Twi *_twi, uint32_t _timeout)
 			pif_error = E_TIMEOUT;
 			return FALSE;
 		}
-
-//		pifTaskManager_Yield();
 	}
 	return TRUE;
 }
@@ -50,8 +48,6 @@ static BOOL TWI_WaitByteSent(Twi *_twi, uint32_t _timeout)
 			pif_error = E_TIMEOUT;
 			return FALSE;
 		}
-
-//		pifTaskManager_Yield();
 	}
 
 	return TRUE;
@@ -73,8 +69,6 @@ static BOOL TWI_WaitByteReceived(Twi *_twi, uint32_t _timeout)
 			pif_error = E_TIMEOUT;
 			return FALSE;
 		}
-
-//		pifTaskManager_Yield();
 	}
 
 	return TRUE;
