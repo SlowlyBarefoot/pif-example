@@ -157,7 +157,7 @@ Discarded input sections
  .rodata.pifComm_AllocRxBuffer.str1.1
                 0x0000000000000000        0x3 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_AllocRxBuffer
-                0x0000000000000000       0x30 ./Core/pif/source/core/pif_comm.o
+                0x0000000000000000       0x4c ./Core/pif/source/core/pif_comm.o
  .text.pifComm_DetachClient
                 0x0000000000000000        0xa ./Core/pif/source/core/pif_comm.o
  .text.pifComm_GetRemainSizeOfRxBuffer
@@ -165,13 +165,13 @@ Discarded input sections
  .text.pifComm_GetFillSizeOfTxBuffer
                 0x0000000000000000        0x6 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_PutRxByte
-                0x0000000000000000       0x1c ./Core/pif/source/core/pif_comm.o
+                0x0000000000000000       0x2a ./Core/pif/source/core/pif_comm.o
  .text.pifComm_PutRxData
-                0x0000000000000000       0x1c ./Core/pif/source/core/pif_comm.o
+                0x0000000000000000       0x2a ./Core/pif/source/core/pif_comm.o
  .text.pifComm_GetTxByte
                 0x0000000000000000       0x2a ./Core/pif/source/core/pif_comm.o
  .text.pifComm_ReceiveRxData
-                0x0000000000000000       0x3e ./Core/pif/source/core/pif_comm.o
+                0x0000000000000000       0x50 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_SendTxData
                 0x0000000000000000       0x20 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_ForceSendData
@@ -247,11 +247,13 @@ Discarded input sections
  .text.pifLog_Print
                 0x0000000000000000       0x98 ./Core/pif/source/core/pif_log.o
  .text.pifLog_PrintInBuffer
-                0x0000000000000000       0x50 ./Core/pif/source/core/pif_log.o
+                0x0000000000000000       0x4c ./Core/pif/source/core/pif_log.o
  .text.pifLog_GetCommTask
                 0x0000000000000000        0xc ./Core/pif/source/core/pif_log.o
  .text.pifLog_DetachComm
                 0x0000000000000000       0x20 ./Core/pif/source/core/pif_log.o
+ .text.pifLog_SendAndExit
+                0x0000000000000000       0x1c ./Core/pif/source/core/pif_log.o
  .rodata.str1.1
                 0x0000000000000000       0x45 ./Core/pif/source/core/pif_log.o
  .rodata.c_log_flags
@@ -321,8 +323,6 @@ Discarded input sections
                 0x0000000000000000       0x1c ./Core/pif/source/core/pif_task.o
  .text.pifTaskManager_YieldUs
                 0x0000000000000000       0x40 ./Core/pif/source/core/pif_task.o
- .text.pifTaskManager_YieldPeriod
-                0x0000000000000000       0x44 ./Core/pif/source/core/pif_task.o
  .text          0x0000000000000000        0x0 ./Core/pif/source/core/pif_timer.o
  .data          0x0000000000000000        0x0 ./Core/pif/source/core/pif_timer.o
  .bss           0x0000000000000000        0x0 ./Core/pif/source/core/pif_timer.o

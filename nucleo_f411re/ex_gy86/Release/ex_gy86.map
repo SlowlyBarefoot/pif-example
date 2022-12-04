@@ -209,7 +209,7 @@ Discarded input sections
  .rodata.pifComm_AllocRxBuffer.str1.1
                 0x0000000000000000        0x3 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_AllocRxBuffer
-                0x0000000000000000       0x30 ./Core/pif/source/core/pif_comm.o
+                0x0000000000000000       0x4c ./Core/pif/source/core/pif_comm.o
  .text.pifComm_DetachClient
                 0x0000000000000000        0xa ./Core/pif/source/core/pif_comm.o
  .text.pifComm_GetRemainSizeOfRxBuffer
@@ -217,13 +217,13 @@ Discarded input sections
  .text.pifComm_GetFillSizeOfTxBuffer
                 0x0000000000000000        0x6 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_PutRxByte
-                0x0000000000000000       0x1c ./Core/pif/source/core/pif_comm.o
+                0x0000000000000000       0x2c ./Core/pif/source/core/pif_comm.o
  .text.pifComm_PutRxData
-                0x0000000000000000       0x1c ./Core/pif/source/core/pif_comm.o
+                0x0000000000000000       0x2c ./Core/pif/source/core/pif_comm.o
  .text.pifComm_GetTxByte
                 0x0000000000000000       0x2a ./Core/pif/source/core/pif_comm.o
  .text.pifComm_ReceiveRxData
-                0x0000000000000000       0x3e ./Core/pif/source/core/pif_comm.o
+                0x0000000000000000       0x50 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_SendTxData
                 0x0000000000000000       0x20 ./Core/pif/source/core/pif_comm.o
  .text.pifComm_ForceSendData

@@ -257,8 +257,6 @@ Discarded input sections
                 0x0000000000000000       0x1c ./Core/pif/source/core/pif_task.o
  .text.pifTaskManager_YieldUs
                 0x0000000000000000       0x40 ./Core/pif/source/core/pif_task.o
- .text.pifTaskManager_YieldPeriod
-                0x0000000000000000       0x44 ./Core/pif/source/core/pif_task.o
  .text          0x0000000000000000        0x0 ./Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.o
  .data          0x0000000000000000        0x0 ./Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.o
  .bss           0x0000000000000000        0x0 ./Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.o

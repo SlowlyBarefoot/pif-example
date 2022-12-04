@@ -3,10 +3,10 @@
   <FileVersion>3.0</FileVersion>
   <Workspace>
     <WorkspaceType>Single-project</WorkspaceType>
-    <WorkspacePath>/home/wonjh/github/pif-example/nucleo_f767zi/exTimer1/</WorkspacePath>
+    <WorkspacePath>E:\github\pif-example\nucleo_f767zi\exTimer1\</WorkspacePath>
     <underRoot>true</underRoot>
     <TrustZone>0</TrustZone>
-    <HAL_Driver>/home/wonjh/STM32Cube/Repository//STM32Cube_FW_F7_V1.16.1</HAL_Driver>
+    <HAL_Driver>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1</HAL_Driver>
     <CMSIS>Drivers/CMSIS</CMSIS>
     <Toolchain>STM32CubeIDE</Toolchain>
     <IocFile>exTimer1.ioc</IocFile>
@@ -30,12 +30,13 @@
             <memory access="xrw" name="RAM" size="512" start="0x20000000"/>
             <memory access="rx" name="FLASH" size="2048" start="0x8000000"/>
           </memories>
-          <startup>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/CMSIS/Device\ST\STM32F7xx\Source\Templates\gcc\startup_stm32f767xx.s</startup>
+          <startup>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\CMSIS\Device\ST\STM32F7xx\Source\Templates\gcc\startup_stm32f767xx.s</startup>
           <LinkSettings>
             <LinkAdditionalLibs/>
           </LinkSettings>
           <heapSize>0x200</heapSize>
           <stackSize>0x400</stackSize>
+          <cpuclock>96</cpuclock>
           <board>NUCLEO-F767ZI</board>
           <debugprobe>swd</debugprobe>
           <optimization/>
@@ -49,11 +50,11 @@
           </Cdefines>
           <Ldefines/>
           <Cincludes>
-            <include>Core/Inc</include>
-            <include>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Inc</include>
-            <include>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy</include>
-            <include>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/CMSIS/Device/ST/STM32F7xx/Include</include>
-            <include>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/CMSIS/Include</include>
+            <include>Core\Inc</include>
+            <include>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Inc</include>
+            <include>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Inc\Legacy</include>
+            <include>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\CMSIS\Device\ST\STM32F7xx\Include</include>
+            <include>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\CMSIS\Include</include>
           </Cincludes>
           <definestoremove>
             <Adefines/>
@@ -87,70 +88,70 @@
           <group>
             <name>STM32F7xx_HAL_Driver</name>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_cortex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_eth.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_rcc.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_rcc_ex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_flash.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash_ex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_flash_ex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_gpio.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_dma.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma_ex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_dma_ex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_pwr.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_pwr_ex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_i2c.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_i2c_ex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_exti.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_exti.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_tim.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim_ex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_tim_ex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_uart.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart_ex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_uart_ex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_pcd.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_hal_pcd_ex.c</name>
             </file>
             <file>
-              <name>/home/wonjh/STM32Cube/Repository/STM32Cube_FW_F7_V1.16.1/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c</name>
+              <name>C:\Users\wonjh\STM32Cube\Repository\STM32Cube_FW_F7_V1.16.1\Drivers\STM32F7xx_HAL_Driver\Src\stm32f7xx_ll_usb.c</name>
             </file>
           </group>
         </group>

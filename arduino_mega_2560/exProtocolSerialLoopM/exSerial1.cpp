@@ -153,7 +153,7 @@ BOOL exSerial1_Setup()
     g_serial1.act_send_data = actSerial1SendData;
 #endif
 #ifdef USE_USART
-	if (!pifComm_AllocRxBuffer(&g_serial1, 64)) return FALSE;
+	if (!pifComm_AllocRxBuffer(&g_serial1, 64, 10)) return FALSE;															// 10%
 	if (!pifComm_AllocTxBuffer(&g_serial1, 64)) return FALSE;
 	g_serial1.act_start_transfer = actUart1StartTransfer;
 #endif

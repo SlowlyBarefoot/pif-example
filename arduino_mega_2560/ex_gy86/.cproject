@@ -24,6 +24,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.831283904" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -34,6 +35,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.2073783717" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>

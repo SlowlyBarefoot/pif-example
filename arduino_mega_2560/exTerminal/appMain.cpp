@@ -74,7 +74,7 @@ void appSetup(PifActTimer1us act_timer1us)
     g_comm_log.act_send_data = actLogSendData;
 #endif
 #ifdef USE_USART
-	if (!pifComm_AllocRxBuffer(&g_comm_log, 64)) return;
+	if (!pifComm_AllocRxBuffer(&g_comm_log, 64, 100)) return;				// 100%
 	if (!pifComm_AllocTxBuffer(&g_comm_log, 64)) return;
 	g_comm_log.act_start_transfer = actLogStartTransfer;
 #endif

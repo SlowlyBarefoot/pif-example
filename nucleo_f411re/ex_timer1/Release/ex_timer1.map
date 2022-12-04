@@ -250,8 +250,6 @@ Discarded input sections
                 0x0000000000000000       0x1c ./Core/pif/source/core/pif_task.o
  .text.pifTaskManager_YieldUs
                 0x0000000000000000       0x40 ./Core/pif/source/core/pif_task.o
- .text.pifTaskManager_YieldPeriod
-                0x0000000000000000       0x44 ./Core/pif/source/core/pif_task.o
  .text          0x0000000000000000        0x0 ./Core/pif/source/core/pif_timer.o
  .data          0x0000000000000000        0x0 ./Core/pif/source/core/pif_timer.o
  .bss           0x0000000000000000        0x0 ./Core/pif/source/core/pif_timer.o

@@ -22,10 +22,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/display/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/link/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/sensor/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.197304714" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -34,10 +32,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/core/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/display/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/link/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/sensor/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1457125772" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -84,6 +80,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1681535747" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -93,6 +90,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gy86/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.530178458" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>

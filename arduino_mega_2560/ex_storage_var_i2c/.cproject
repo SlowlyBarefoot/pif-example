@@ -24,6 +24,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1697004960" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -34,6 +35,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.346670825" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -82,6 +84,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.2053482370" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -92,6 +95,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.155226" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
