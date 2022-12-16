@@ -3,7 +3,11 @@
 .metadata
 .vscode
 
+makefile
+
 *.d
+*.list
+*.mk
 *.o
 *.su
 *-workspace
