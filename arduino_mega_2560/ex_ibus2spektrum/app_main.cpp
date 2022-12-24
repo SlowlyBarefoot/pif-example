@@ -3,8 +3,8 @@
 
 #include "core/pif_log.h"
 #include "display/pif_led.h"
-#include "protocol/pif_rc_ibus.h"
-#include "protocol/pif_rc_spektrum.h"
+#include "rc/pif_rc_ibus.h"
+#include "rc/pif_rc_spektrum.h"
 
 
 PifTimerManager g_timer_1ms;
@@ -14,12 +14,13 @@ static PifLed s_led_l;
 static PifRcSpektrum s_spektrum;
 
 
-static void _evtIbusReceive(PifRc* p_parent, uint16_t* p_channel)
+static void _evtIbusReceive(PifRc* p_parent, uint16_t* p_channel, PifIssuerP p_issuer)
 {
 	int i;
 	uint16_t channel[PIF_SPEKTRUM_CHANNEL_COUNT];
 
 	(void)p_parent;
+	(void)p_issuer;
 
 	for (i = 0; i < PIF_SPEKTRUM_CHANNEL_COUNT; i++) {
 		channel[i] = (p_channel[i] - 988) * s_spektrum._pos_factor;
@@ -52,7 +53,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	s_comm_ibus.act_receive_data = actSerial1ReceiveData;
 
     if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) return;
-    s_ibus.evt_receive = _evtIbusReceive;
+    pifRc_AttachEvtReceive(&s_ibus.parent, _evtIbusReceive, NULL);
     pifRcIbus_AttachComm(&s_ibus, &s_comm_ibus);
 
 	if (!pifComm_Init(&s_comm_spektrum, PIF_ID_AUTO)) return;

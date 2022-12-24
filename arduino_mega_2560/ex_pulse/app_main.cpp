@@ -56,7 +56,7 @@ void appSetup(PifActTimer1us act_timer1us)
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
-    pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_COMMON_PERIOD | PIF_PMM_COMMON_COUNT | PIF_PMM_EDGE_LOW_WIDTH | PIF_PMM_EDGE_HIGH_WIDTH);
+    pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_COUNT | PIF_PMM_LOW_WIDTH | PIF_PMM_HIGH_WIDTH);
 
 	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;	// 100ms
 

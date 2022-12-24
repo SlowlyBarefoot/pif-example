@@ -77,6 +77,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>pif/include/rc</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>pif/source/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -88,6 +93,11 @@
 		</link>
 		<link>
 			<name>pif/source/protocol</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/source/rc</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -132,19 +142,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/protocol/pif_rc.h</name>
+			<name>pif/include/rc/pif_rc.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/protocol/pif_rc.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/rc/pif_rc.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/protocol/pif_rc_ibus.h</name>
+			<name>pif/include/rc/pif_rc_ibus.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/protocol/pif_rc_ibus.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/rc/pif_rc_ibus.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/protocol/pif_rc_sbus.h</name>
+			<name>pif/include/rc/pif_rc_sbus.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/protocol/pif_rc_sbus.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/rc/pif_rc_sbus.h</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core/pif.c</name>
@@ -187,19 +197,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/protocol/pif_rc.c</name>
+			<name>pif/source/rc/pif_rc.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/protocol/pif_rc.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/rc/pif_rc.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/protocol/pif_rc_ibus.c</name>
+			<name>pif/source/rc/pif_rc_ibus.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/protocol/pif_rc_ibus.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/rc/pif_rc_ibus.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/protocol/pif_rc_sbus.c</name>
+			<name>pif/source/rc/pif_rc_sbus.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/protocol/pif_rc_sbus.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/rc/pif_rc_sbus.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

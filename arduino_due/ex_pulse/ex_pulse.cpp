@@ -4,7 +4,7 @@
 
 
 #define PIN_LED_L				13
-#define PIN_PULSE				30
+#define PIN_PULSE				37
 
 
 void actLedL(SWITCH sw)
@@ -21,7 +21,7 @@ uint16_t actLogSendData(PifComm* p_comm, uint8_t* p_buffer, uint16_t size)
 
 static void _isrPulse()
 {
-	pifPulse_sigEdge(&g_pulse, digitalRead(PIN_PULSE) ? PE_RISING : PE_FALLING, micros());
+	pifPulse_sigEdge(&g_pulse, digitalRead(PIN_PULSE) ? PS_RISING_EDGE : PS_FALLING_EDGE, micros());
 }
 
 extern "C" {
