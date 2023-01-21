@@ -33,7 +33,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
     if (!pifHcSr04_Init(&g_hcsr04, PIF_ID_AUTO)) return;
 	g_hcsr04.act_trigger = actHcSr04Trigger;
-	g_hcsr04.evt_distance = _evtHcSr04Distance;
+	g_hcsr04.evt_read = _evtHcSr04Distance;
 	if (!pifHcSr04_StartTrigger(&g_hcsr04, 70)) return;								// 70ms
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms

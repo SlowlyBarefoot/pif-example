@@ -38,7 +38,7 @@ static uint16_t _taskMpu60x0(PifTask *pstTask)
 	switch (step) {
 	case 0:
 		pifLog_Printf(LT_NONE, "\n\n         X      Y      Z");
-		if (pifImuSensor_ReadGyro(&s_imu_sensor, gyro)) {
+		if (pifImuSensor_ReadGyro2(&s_imu_sensor, gyro)) {
 			pifLog_Printf(LT_NONE, "\nGyro : %6d %6d %6d", gyro[0], gyro[1], gyro[2]);
 		}
 		else {
@@ -48,7 +48,7 @@ static uint16_t _taskMpu60x0(PifTask *pstTask)
 		break;
 
 	case 1:
-		if (pifImuSensor_ReadAccel(&s_imu_sensor, accel)) {
+		if (pifImuSensor_ReadAccel2(&s_imu_sensor, accel)) {
 			pifLog_Printf(LT_NONE, "\nAccel: %6d %6d %6d", accel[0], accel[1], accel[2]);
 		}
 		else {
@@ -58,7 +58,7 @@ static uint16_t _taskMpu60x0(PifTask *pstTask)
 		break;
 
 	case 2:
-		if (pifImuSensor_ReadMag(&s_imu_sensor, mag)) {
+		if (pifImuSensor_ReadMag2(&s_imu_sensor, mag)) {
 			pifLog_Printf(LT_NONE, "\nMag  : %6d %6d %6d", mag[0], mag[1], mag[2]);
 		}
 		else {
@@ -70,10 +70,10 @@ static uint16_t _taskMpu60x0(PifTask *pstTask)
 	return 0;
 }
 
-void _evtBaroRead(int32_t pressure, float temperature)
+void _evtBaroRead(float pressure, float temperature)
 {
-	pifLog_Printf(LT_NONE, "\nBaro Temp : %2f", temperature);
-	pifLog_Printf(LT_NONE, "\nBaro : %ld, %f", pressure, getAltitude(pressure, 103100));
+	pifLog_Printf(LT_NONE, "\nBaro Temp : %2f DegC", temperature);
+	pifLog_Printf(LT_NONE, "\nBaro : %2f hPa, %f m", pressure, getAltitude(pressure, 103100));
 }
 
 void appSetup(PifActTimer1us act_timer1us)
