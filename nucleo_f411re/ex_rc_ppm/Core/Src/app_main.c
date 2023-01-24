@@ -25,9 +25,7 @@ static void _evtRcPpmReceive(PifRc* p_owner, uint16_t* p_channel, PifIssuerP p_i
 	for (i = 0; i < p_owner->_channel_count; i++) {
 		s_value[i] = p_channel[i];
 	}
-	if (!p_task->_running) {
-		p_task->immediate = TRUE;
-	}
+	pifTask_SetImmediate(p_task);
 }
 
 static uint16_t _taskPrint(PifTask* p_task)

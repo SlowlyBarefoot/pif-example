@@ -14,7 +14,7 @@ static void _evtPulseEdge(PifPulseState state, PifIssuerP p_issuer)
 
 	(void)state;
 
-	p_task->immediate = TRUE;
+	pifTask_SetImmediate(p_task);
 }
 
 static uint16_t _taskLedToggle(PifTask* p_task)
