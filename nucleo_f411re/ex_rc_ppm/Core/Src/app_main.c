@@ -25,7 +25,7 @@ static void _evtRcPpmReceive(PifRc* p_owner, uint16_t* p_channel, PifIssuerP p_i
 	for (i = 0; i < p_owner->_channel_count; i++) {
 		s_value[i] = p_channel[i];
 	}
-	pifTask_SetImmediate(p_task);
+	pifTask_SetTrigger(p_task);
 }
 
 static uint16_t _taskPrint(PifTask* p_task)
@@ -67,7 +67,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
 	if (!pifLog_AttachComm(&g_comm_log)) return;
 
-	p_task = pifTaskManager_Add(TM_NEED, 0, _taskPrint, NULL, FALSE);
+	p_task = pifTaskManager_Add(TM_EXTERNAL_ORDER, 0, _taskPrint, NULL, FALSE);
     if (!p_task) return;
 
     if (!pifRcPpm_Init(&g_rc_ppm, PIF_ID_AUTO, MAX_CHANNEL, 2700)) return;

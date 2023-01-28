@@ -14,7 +14,7 @@ static void _evtPulseEdge(PifPulseState state, PifIssuerP p_issuer)
 
 	(void)state;
 
-	pifTask_SetImmediate(p_task);
+	pifTask_SetTrigger(p_task);
 }
 
 static uint16_t _taskLedToggle(PifTask* p_task)
@@ -65,7 +65,7 @@ void appSetup(PifActTimer1us act_timer1us)
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
-	p_task = pifTaskManager_Add(TM_NEED, 0, _taskPulse, NULL, FALSE);
+	p_task = pifTaskManager_Add(TM_EXTERNAL_ORDER, 0, _taskPulse, NULL, FALSE);
     if (!p_task) return;
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
