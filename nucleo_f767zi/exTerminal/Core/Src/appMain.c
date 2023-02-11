@@ -10,26 +10,28 @@
 PifTimerManager g_timer_1ms;
 PifComm g_comm_log;
 
-
 static PifLed s_led_l;
 
-static BOOL bBlink = TRUE;
+static BOOL bBlink = FALSE;
 static int nPeriod = 500;
 
-static int _CmdLedControl(int argc, char *argv[]);
+static int _CmdBlinkControl(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "led", _CmdLedControl, "LED Control" },
+	{ "help", pifLog_CmdHelp, "This command", NULL },
+	{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
+	{ "task", pifLog_CmdPrintTask, "Print task", NULL },
+	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
+	{ "blink", _CmdBlinkControl, "Blink Control", NULL },
 
-	{ NULL, NULL, NULL }
+	{ NULL, NULL, NULL, NULL }
 };
 
 
-static int _CmdLedControl(int argc, char *argv[])
+static int _CmdBlinkControl(int argc, char *argv[])
 {
 	if (argc == 1) {
 		pifLog_Printf(LT_NONE, "  Blink=%u\n", bBlink);
-		pifLog_Printf(LT_NONE, "  Period=%u\n", nPeriod);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
@@ -58,6 +60,11 @@ static int _CmdLedControl(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
+void _evtLogControlChar(char ch)
+{
+	pifLog_Printf(LT_INFO, "Contorl Char = %xh\n", ch);
+}
+
 void appSetup()
 {
     pif_Init(NULL);
@@ -76,11 +83,10 @@ void appSetup()
 
 	if (!pifLog_AttachComm(&g_comm_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
+    pifLog_AttachEvent(_evtLogControlChar);
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, nPeriod)) return;
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-    bBlink = TRUE;
 
 	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
 }

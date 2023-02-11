@@ -16,7 +16,6 @@
 //#define USE_SERIAL
 #define USE_USART
 
-
 //add your function definitions for the project exTerminal here
 
 #ifdef USE_SERIAL

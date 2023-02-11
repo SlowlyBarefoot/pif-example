@@ -107,10 +107,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 void actLedLState(PifId usPifId, uint32_t unState)
 {
+	static uint32_t state;
+
 	(void)usPifId;
 
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, unState & 1);
-	pifLog_Printf(LT_INFO, "LED State=%u ", unState);
+	if (unState != state) {
+		pifLog_Printf(LT_INFO, "LED State=%u", unState);
+		state = unState;
+	}
 }
 
 /* USER CODE END 0 */

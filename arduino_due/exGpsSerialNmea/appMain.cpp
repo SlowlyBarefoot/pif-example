@@ -16,9 +16,13 @@ static PifLed s_led_l;
 static int _cmdPrintData(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "print", _cmdPrintData, "Print Data" },
+	{ "help", pifLog_CmdHelp, "This command", NULL },
+	{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
+	{ "task", pifLog_CmdPrintTask, "Print task", NULL },
+	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
+	{ "print", _cmdPrintData, "Print Data", NULL },
 
-	{ NULL, NULL, NULL }
+	{ NULL, NULL, NULL, NULL }
 };
 
 

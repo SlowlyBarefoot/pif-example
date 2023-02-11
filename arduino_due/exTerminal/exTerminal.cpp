@@ -31,10 +31,15 @@ BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 
 void actLedLState(PifId usPifId, uint32_t unState)
 {
+	static uint32_t state;
+
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
-	pifLog_Printf(LT_INFO, "LED State=%u", unState);
+	if (unState != state) {
+		pifLog_Printf(LT_INFO, "LED State=%u", unState);
+		state = unState;
+	}
 }
 
 extern "C" {

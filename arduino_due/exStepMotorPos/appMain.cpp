@@ -22,9 +22,13 @@ static PifSensorSwitch s_switch[SWITCH_COUNT];
 static int CmdStepMotorTest(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "mt", CmdStepMotorTest, "Motor Test" },
+	{ "help", pifLog_CmdHelp, "This command", NULL },
+	{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
+	{ "task", pifLog_CmdPrintTask, "Print task", NULL },
+	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
+	{ "mt", CmdStepMotorTest, "Motor Test", NULL },
 
-	{ NULL, NULL, NULL }
+	{ NULL, NULL, NULL, NULL }
 };
 
 #define STEP_MOTOR_STAGE_COUNT	5

@@ -13,9 +13,13 @@ static PifDutyMotor s_motor;
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-	{ "mt", CmdDutyMotorTest, "Motor Test" },
+	{ "help", pifLog_CmdHelp, "This command", NULL },
+	{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
+	{ "task", pifLog_CmdPrintTask, "Print task", NULL },
+	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
+	{ "mt", CmdDutyMotorTest, "Motor Test", NULL },
 
-	{ NULL, NULL, NULL }
+	{ NULL, NULL, NULL, NULL }
 };
 
 typedef struct {

@@ -13,9 +13,14 @@ static int _CmdWrite(int argc, char *argv[]);
 static int _CmdRead(int argc, char *argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
-		{ "write", _CmdWrite, "Storage write" },
-		{ "read", _CmdRead, "Storage read" },
-		{ NULL, NULL, NULL }
+		{ "help", pifLog_CmdHelp, "This command", NULL },
+		{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
+		{ "task", pifLog_CmdPrintTask, "Print task", NULL },
+		{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
+		{ "write", _CmdWrite, "Storage write", NULL },
+		{ "read", _CmdRead, "Storage read", NULL },
+
+		{ NULL, NULL, NULL, NULL }
 };
 
 

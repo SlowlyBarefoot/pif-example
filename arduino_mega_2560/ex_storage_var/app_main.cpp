@@ -20,16 +20,20 @@ static int _CmdDump(int argc, char *argv[]);
 #endif
 
 const PifLogCmdEntry c_psCmdTable[] = {
-		{ "format", _CmdFormat, "Storage format" },
-		{ "create", _CmdCreate, "Storage create" },
-		{ "delete", _CmdDelete, "Storage delete" },
-		{ "write", _CmdWrite, "Storage write" },
-		{ "read", _CmdRead, "Storage read" },
+		{ "help", pifLog_CmdHelp, "This command", NULL },
+		{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
+		{ "task", pifLog_CmdPrintTask, "Print task", NULL },
+		{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
+		{ "format", _CmdFormat, "Storage format", NULL },
+		{ "create", _CmdCreate, "Storage create", NULL },
+		{ "delete", _CmdDelete, "Storage delete", NULL },
+		{ "write", _CmdWrite, "Storage write", NULL },
+		{ "read", _CmdRead, "Storage read", NULL },
 #ifdef __PIF_DEBUG__
-		{ "info", _CmdPrintInfo, "Storage print info" },
-		{ "dump", _CmdDump, "Storage dump" },
+		{ "info", _CmdPrintInfo, "Storage print info", NULL },
+		{ "dump", _CmdDump, "Storage dump", NULL },
 #endif
-		{ NULL, NULL, NULL }
+		{ NULL, NULL, NULL, NULL }
 };
 
 
