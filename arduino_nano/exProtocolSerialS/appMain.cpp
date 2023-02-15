@@ -100,10 +100,10 @@ void appSetup()
 
     if (!pifTaskManager_Init(5)) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;		// 1000us
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;						// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;							// 500ms
 
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_stProtocolTest[i].pstDelay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
@@ -112,7 +112,7 @@ void appSetup()
     }
 
 	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
+    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE, NULL)) return;	// 1ms
     s_serial.act_receive_data = actSerialReceiveData;
     s_serial.act_send_data = actSerialSendData;
 

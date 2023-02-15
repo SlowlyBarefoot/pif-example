@@ -73,11 +73,11 @@ void appSetup()
 
     pifLog_Init();
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;		// 1000us
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
-	if (!pifComm_AllocRxBuffer(&g_comm_log, 64, 100)) return;				// 100%
+    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE, NULL)) return;	// 1ms
+	if (!pifComm_AllocRxBuffer(&g_comm_log, 64, 100)) return;					// 100%
 	if (!pifComm_AllocTxBuffer(&g_comm_log, 128)) return;
 	g_comm_log.act_start_transfer = actLogStartTransfer;
 

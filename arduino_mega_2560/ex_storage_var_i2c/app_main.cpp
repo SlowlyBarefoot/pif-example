@@ -257,19 +257,19 @@ void appSetup()
 	pifLog_Init();
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE, NULL)) return;									// 1ms
 	s_comm_log.act_send_data = actLogSendData;
 	s_comm_log.act_receive_data = actLogReceiveData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;										// 1000us
 
     pstTimer1ms = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!pstTimer1ms) return;
     pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
-    pifTimer_Start(pstTimer1ms, 500);												// 500ms
+    pifTimer_Start(pstTimer1ms, 500);																			// 500ms
 
     if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1, EEPROM_PAGE_SIZE)) return;
     s_i2c_port.act_read = actI2cRead;

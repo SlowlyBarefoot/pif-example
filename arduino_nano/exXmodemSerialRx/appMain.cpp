@@ -42,7 +42,7 @@ void appSetup()
 	pifSensor_AttachEvtChange(&stPushSwitch.parent, _evtPushSwitchChange);
 
 	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return;						// 1ms
+    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE, NULL)) return;				// 1ms
     s_serial.act_receive_data = actXmodemReceiveData;
     s_serial.act_send_data = actXmodemSendData;
 

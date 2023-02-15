@@ -119,10 +119,10 @@ void appSetup()
 
     pifLog_Init();
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE, "CommLog")) return;	// 1ms
 	s_comm_log.act_receive_data = actLogReceiveData;
 	s_comm_log.act_send_data = actLogSendData;
 
@@ -130,10 +130,10 @@ void appSetup()
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;						// 500ms
+    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
 
 	if (!pifComm_Init(&s_comm_gps, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_gps, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(&s_comm_gps, TM_PERIOD_MS, 1, TRUE, "CommGPS")) return;	// 1ms
     s_comm_gps.act_receive_data = actGpsReceiveData;
     s_comm_gps.act_send_data = actGpsSendData;
 

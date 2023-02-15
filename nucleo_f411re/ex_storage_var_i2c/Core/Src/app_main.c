@@ -259,20 +259,20 @@ void appSetup()
 	pifLog_Init();
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE)) return;			// 1ms
-	if (!pifComm_AllocRxBuffer(&g_comm_log, 64, 100)) return;						// 100%
+    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE, NULL)) return;									// 1ms
+	if (!pifComm_AllocRxBuffer(&g_comm_log, 64, 100)) return;													// 100%
 	if (!pifComm_AllocTxBuffer(&g_comm_log, 128)) return;
 	g_comm_log.act_start_transfer = actLogStartTransfer;
 
 	if (!pifLog_AttachComm(&g_comm_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;										// 1000us
 
     pstTimer1ms = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!pstTimer1ms) return;
     pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
-    pifTimer_Start(pstTimer1ms, 500);												// 500ms
+    pifTimer_Start(pstTimer1ms, 500);																			// 500ms
 
     if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, EEPROM_PAGE_SIZE)) return;
     g_i2c_port.act_read = actI2cRead;

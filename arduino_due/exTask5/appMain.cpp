@@ -53,12 +53,12 @@ void appSetup()
     pifLog_Init();
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
+    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE, NULL)) return;	// 1ms
 	g_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&g_comm_log)) return;
 
-	s_task = pifTaskManager_Add(TM_RATIO, 50, _taskLedToggle, NULL, TRUE);	// 50%
+	s_task = pifTaskManager_Add(TM_RATIO, 50, _taskLedToggle, NULL, TRUE);		// 50%
 	if (!s_task) return;
 
 #ifdef __PIF_DEBUG__
