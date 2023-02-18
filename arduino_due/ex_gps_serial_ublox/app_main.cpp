@@ -34,12 +34,12 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 static int _cmdPrintData(int argc, char *argv[])
 {
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Print Data: %d\n", g_print_data);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 1) {
-		switch (argv[1][0]) {
+	else if (argc > 0) {
+		switch (argv[0][0]) {
 		case '0':
 		case 'F':
 		case 'f':
@@ -68,24 +68,24 @@ static int _cmdPrintData(int argc, char *argv[])
 
 static int _cmdPollRequest(int argc, char *argv[])
 {
-	if (argc > 2) {
-		if (strcmp(argv[1], "GBQ") == 0) {
-			if (!pifGpsUblox_PollRequestGBQ(&s_gps_ublox, argv[2], FALSE)) {
+	if (argc > 1) {
+		if (strcmp(argv[0], "GBQ") == 0) {
+			if (!pifGpsUblox_PollRequestGBQ(&s_gps_ublox, argv[1], FALSE)) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 		}
-		else if (strcmp(argv[1], "GLQ") == 0) {
-			if (!pifGpsUblox_PollRequestGLQ(&s_gps_ublox, argv[2], FALSE)) {
+		else if (strcmp(argv[0], "GLQ") == 0) {
+			if (!pifGpsUblox_PollRequestGLQ(&s_gps_ublox, argv[1], FALSE)) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 		}
-		else if (strcmp(argv[1], "GNQ") == 0) {
-			if (!pifGpsUblox_PollRequestGNQ(&s_gps_ublox, argv[2], FALSE)) {
+		else if (strcmp(argv[0], "GNQ") == 0) {
+			if (!pifGpsUblox_PollRequestGNQ(&s_gps_ublox, argv[1], FALSE)) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 		}
-		else if (strcmp(argv[1], "GPQ") == 0) {
-			if (!pifGpsUblox_PollRequestGPQ(&s_gps_ublox, argv[2], FALSE)) {
+		else if (strcmp(argv[0], "GPQ") == 0) {
+			if (!pifGpsUblox_PollRequestGPQ(&s_gps_ublox, argv[1], FALSE)) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 		}

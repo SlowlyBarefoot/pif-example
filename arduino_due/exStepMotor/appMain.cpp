@@ -38,7 +38,7 @@ static ST_StepMotorTest s_stStepMotorTest = { 0, 1000, 200 };
 
 static int CmdStepMotorTest(int argc, char *argv[])
 {
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Operation: %d\n", s_motor._operation);
 		pifLog_Printf(LT_NONE, "  Direction: %d\n", s_motor._direction);
 		pifLog_Printf(LT_NONE, "  P/S: %u\n", s_motor._current_pps);
@@ -47,16 +47,16 @@ static int CmdStepMotorTest(int argc, char *argv[])
 		pifLog_Printf(LT_NONE, "  Break Time: %d\n", s_stStepMotorTest.usBreakTime);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 2) {
-		if (!strcmp(argv[1], "op")) {
-			int value = atoi(argv[2]);
+	else if (argc > 1) {
+		if (!strcmp(argv[0], "op")) {
+			int value = atoi(argv[1]);
 			if (value >= SMO_2P_4W_1S && value <= SMO_2P_4W_1_2S) {
 				pifStepMotor_SetOperation(&s_motor, (PifStepMotorOperation)value);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
-		else if (!strcmp(argv[1], "pps")) {
-			float value = atof(argv[2]);
+		else if (!strcmp(argv[0], "pps")) {
+			float value = atof(argv[1]);
 			if (value > 0) {
 				if (!pifStepMotor_SetPps(&s_motor, value)) {
 					pifLog_Printf(LT_ERROR, "  Invalid Parameter: %d", value);
@@ -64,8 +64,8 @@ static int CmdStepMotorTest(int argc, char *argv[])
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
-		else if (!strcmp(argv[1], "rpm")) {
-			float value = atof(argv[2]);
+		else if (!strcmp(argv[0], "rpm")) {
+			float value = atof(argv[1]);
 			if (value > 0) {
 				if (!pifStepMotor_SetRpm(&s_motor, value)) {
 					pifLog_Printf(LT_ERROR, "  Invalid Parameter: %d", value);
@@ -73,22 +73,22 @@ static int CmdStepMotorTest(int argc, char *argv[])
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
-		else if (!strcmp(argv[1], "dir")) {
-			int value = atoi(argv[2]);
+		else if (!strcmp(argv[0], "dir")) {
+			int value = atoi(argv[1]);
 			if (value == 0 || value == 1) {
 				pifStepMotor_SetDirection(&s_motor, value);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
-		else if (!strcmp(argv[1], "cnt")) {
-			int value = atoi(argv[2]);
+		else if (!strcmp(argv[0], "cnt")) {
+			int value = atoi(argv[1]);
 			if (value > 0) {
 				s_stStepMotorTest.unStepCount = value;
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
-		else if (!strcmp(argv[1], "cbt")) {
-			int value = atoi(argv[2]);
+		else if (!strcmp(argv[0], "cbt")) {
+			int value = atoi(argv[1]);
 			if (value > 0) {
 				s_stStepMotorTest.usBreakTime = value;
 				return PIF_LOG_CMD_NO_ERROR;
@@ -96,23 +96,23 @@ static int CmdStepMotorTest(int argc, char *argv[])
 		}
 		return PIF_LOG_CMD_INVALID_ARG;
 	}
-	else if (argc > 1) {
-		if (!strcmp(argv[1], "str")) {
+	else if (argc > 0) {
+		if (!strcmp(argv[0], "str")) {
 			s_stStepMotorTest.nMode = 1;
 			pifStepMotor_Start(&s_motor, 0);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
-		else if (!strcmp(argv[1], "sts")) {
+		else if (!strcmp(argv[0], "sts")) {
 			s_stStepMotorTest.nMode = 2;
 			pifStepMotor_Start(&s_motor, s_stStepMotorTest.unStepCount);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
-		else if (!strcmp(argv[1], "sp")) {
+		else if (!strcmp(argv[0], "sp")) {
 			s_stStepMotorTest.nMode = 0;
 			pifStepMotor_BreakRelease(&s_motor, s_stStepMotorTest.usBreakTime);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
-		else if (!strcmp(argv[1], "rel")) {
+		else if (!strcmp(argv[0], "rel")) {
 			pifStepMotor_Release(&s_motor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}

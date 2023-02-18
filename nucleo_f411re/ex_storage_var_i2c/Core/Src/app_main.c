@@ -80,13 +80,13 @@ static int _CmdCreate(int argc, char *argv[])
 {
 	uint16_t id, size;
 
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Print(LT_INFO, "create [id] [size]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 2) {
-		id = atoi(argv[1]);
-		size = atoi(argv[2]);
+	else if (argc > 1) {
+		id = atoi(argv[0]);
+		size = atoi(argv[1]);
 		if (!pifStorage_Create(&s_storage.parent, id, size)) {
 			pifLog_Printf(LT_INFO, "create: failed E=%d", pif_error);
 		}
@@ -104,12 +104,12 @@ static int _CmdDelete(int argc, char *argv[])
 {
 	uint16_t id;
 
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Print(LT_INFO, "delete [id]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 1) {
-		id = atoi(argv[1]);
+	else if (argc > 0) {
+		id = atoi(argv[0]);
 		if (!pifStorage_Delete(&s_storage.parent, id)) {
 			pifLog_Printf(LT_INFO, "delete: failed E=%d", pif_error);
 		}
@@ -130,19 +130,19 @@ static int _CmdWrite(int argc, char *argv[])
 	uint16_t id;
 	PifStorageVarDataInfo* p_data_info;
 
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Print(LT_INFO, "write [id] [value]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 1) {
-		id = atoi(argv[1]);
+	else if (argc > 0) {
+		id = atoi(argv[0]);
 		p_data_info = (PifStorageVarDataInfo*)pifStorage_Open(&s_storage.parent, id);
 		if (!p_data_info) {
 			pifLog_Printf(LT_INFO, "write: not alloc ID=%d E=%d", id, pif_error);
 		}
 		else {
-			if (argc > 2) {
-				value = atoi(argv[2]);
+			if (argc > 1) {
+				value = atoi(argv[1]);
 			}
 			else {
 				value = rand() & 0xFF;
@@ -171,12 +171,12 @@ static int _CmdRead(int argc, char *argv[])
 	uint16_t i, id, size;
 	PifStorageVarDataInfo* p_data_info;
 
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Print(LT_INFO, "read [id]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 1) {
-		id = atoi(argv[1]);
+	else if (argc > 0) {
+		id = atoi(argv[0]);
 		p_data_info = (PifStorageVarDataInfo*)pifStorage_Open(&s_storage.parent, id);
 		if (!p_data_info) {
 			pifLog_Printf(LT_INFO, "read: not alloc ID=%d EC=%d", id, pif_error);
@@ -211,15 +211,12 @@ static int _CmdRead(int argc, char *argv[])
 
 static int _CmdPrintInfo(int argc, char *argv[])
 {
-	(void)argc;
-	(void)argv;
-
-	if (argc == 1) {
+	if (argc == 0) {
 		pifStorageVar_PrintInfo(&s_storage, FALSE);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 1) {
-		if (argv[1][0] == 'h') {
+	else if (argc > 0) {
+		if (argv[0][0] == 'h') {
 			pifStorageVar_PrintInfo(&s_storage, TRUE);
 			return PIF_LOG_CMD_NO_ERROR;
 		}

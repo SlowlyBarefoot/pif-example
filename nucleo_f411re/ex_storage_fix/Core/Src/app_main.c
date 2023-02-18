@@ -31,20 +31,20 @@ static int _CmdWrite(int argc, char *argv[])
 	uint16_t id, size;
 	PifStorageFixDataInfo* p_data_info;
 
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Print(LT_INFO, "write [id] [size] [value]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 2) {
-		id = atoi(argv[1]);
-		size = atoi(argv[2]);
+	else if (argc > 1) {
+		id = atoi(argv[0]);
+		size = atoi(argv[1]);
 		p_data_info = (PifStorageFixDataInfo*)pifStorage_Open(&s_storage.parent, id);
 		if (!p_data_info) {
 			pifLog_Printf(LT_INFO, "write: not alloc ID=%d E=%d", id, pif_error);
 		}
 		else {
-			if (argc > 3) {
-				value = atoi(argv[3]);
+			if (argc > 2) {
+				value = atoi(argv[2]);
 			}
 			else {
 				value = rand() & 0xFF;
@@ -73,13 +73,13 @@ static int _CmdRead(int argc, char *argv[])
 	uint16_t i, id, size;
 	PifStorageFixDataInfo* p_data_info;
 
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Print(LT_INFO, "read [id] [size]");
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 2) {
-		id = atoi(argv[1]);
-		size = atoi(argv[2]);
+	else if (argc > 1) {
+		id = atoi(argv[0]);
+		size = atoi(argv[1]);
 		p_data_info = (PifStorageFixDataInfo*)pifStorage_Open(&s_storage.parent, id);
 		if (!p_data_info) {
 			pifLog_Printf(LT_INFO, "read: not alloc ID=%d EC=%d", id, pif_error);

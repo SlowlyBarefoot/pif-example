@@ -40,12 +40,12 @@ static void _evtGpsNmeaText(PifGpsNmeaTxt *pstTxt)
 
 static int _cmdPrintData(int argc, char *argv[])
 {
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Print Data: %d\n", s_print_data);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 1) {
-		switch (argv[1][0]) {
+	else if (argc > 0) {
+		switch (argv[0][0]) {
 		case '0':
 		case 'F':
 		case 'f':

@@ -75,13 +75,13 @@ static ST_DutyMotorTest s_stDutyMotorTest = { 0, 0 };
 
 static int CmdDutyMotorTest(int argc, char *argv[])
 {
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Stage: %d\n", s_stDutyMotorTest.ucStage);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 2) {
-		if (!strcmp(argv[1], "stage")) {
-			int value = atoi(argv[2]);
+	else if (argc > 1) {
+		if (!strcmp(argv[0], "stage")) {
+			int value = atoi(argv[1]);
 			if (!value) {
 				s_stDutyMotorTest.ucStage = 0;
 				pifDutyMotorPos_Stop(&s_motor);
@@ -101,20 +101,20 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 		}
 		return PIF_LOG_CMD_INVALID_ARG;
 	}
-	else if (argc > 1) {
-		if (!strcmp(argv[1], "off")) {
+	else if (argc > 0) {
+		if (!strcmp(argv[0], "off")) {
 			pifLog_Printf(LT_INFO, "Stop");
 			s_stDutyMotorTest.ucStage = 0;
 			pifDutyMotorPos_Stop(&s_motor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
-		else if (!strcmp(argv[1], "em")) {
+		else if (!strcmp(argv[0], "em")) {
 			pifLog_Printf(LT_INFO, "Emergency");
 			s_stDutyMotorTest.ucStage = 0;
 			pifDutyMotorPos_Emergency(&s_motor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
-		else if (!strcmp(argv[1], "init")) {
+		else if (!strcmp(argv[0], "init")) {
 			pifLog_Printf(LT_INFO, "Init Pos");
 		    s_stDutyMotorTest.ucInitPos = 1;
 			return PIF_LOG_CMD_NO_ERROR;

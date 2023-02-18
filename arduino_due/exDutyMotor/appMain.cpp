@@ -31,21 +31,21 @@ static ST_DutyMotorTest s_stDutyMotorTest = { 128 };
 
 static int CmdDutyMotorTest(int argc, char *argv[])
 {
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Duty: %d\n", s_motor._current_duty);
 		pifLog_Printf(LT_NONE, "  Direction: %d\n", s_motor._direction);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 2) {
-		if (!strcmp(argv[1], "duty")) {
-			int value = atoi(argv[2]);
+	else if (argc > 1) {
+		if (!strcmp(argv[0], "duty")) {
+			int value = atoi(argv[1]);
 			if (value > 0 && value < 256) {
 				pifDutyMotor_SetDuty(&s_motor, value);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
-		else if (!strcmp(argv[1], "dir")) {
-			int value = atoi(argv[2]);
+		else if (!strcmp(argv[0], "dir")) {
+			int value = atoi(argv[1]);
 			if (value == 0 || value == 1) {
 				pifDutyMotor_SetDirection(&s_motor, value);
 				return PIF_LOG_CMD_NO_ERROR;
@@ -53,16 +53,16 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 		}
 		return PIF_LOG_CMD_INVALID_ARG;
 	}
-	else if (argc > 1) {
-		if (!strcmp(argv[1], "stop")) {
+	else if (argc > 0) {
+		if (!strcmp(argv[0], "stop")) {
 			pifDutyMotor_BreakRelease(&s_motor, 0);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
-		else if (!strcmp(argv[1], "break")) {
+		else if (!strcmp(argv[0], "break")) {
 			pifDutyMotor_BreakRelease(&s_motor, 1000);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
-		else if (!strcmp(argv[1], "start")) {
+		else if (!strcmp(argv[0], "start")) {
 			pifDutyMotor_Start(&s_motor, s_stDutyMotorTest.usDuty);
 			return PIF_LOG_CMD_NO_ERROR;
 		}

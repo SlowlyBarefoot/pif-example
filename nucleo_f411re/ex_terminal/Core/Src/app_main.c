@@ -30,12 +30,12 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 static int _CmdBlinkControl(int argc, char *argv[])
 {
-	if (argc == 1) {
+	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Blink=%u\n", bBlink);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
-	else if (argc > 1) {
-		switch (argv[1][0]) {
+	else if (argc > 0) {
+		switch (argv[0][0]) {
 		case 'F':
 		case 'f':
 		    pifLed_SBlinkOff(&s_led_l, 1 << 0, OFF);
@@ -49,7 +49,7 @@ static int _CmdBlinkControl(int argc, char *argv[])
 			break;
 
 		default:
-			nPeriod = atoi(argv[1]);
+			nPeriod = atoi(argv[0]);
 			if (nPeriod) {
 				pifLed_ChangeBlinkPeriod(&s_led_l, nPeriod);
 			}
