@@ -29,38 +29,68 @@ double getAltitude(double pressure, double seaLevelPressure)
 static uint16_t _taskMpu60x0(PifTask *pstTask)
 {
 	static uint8_t step = 0;
-	int16_t gyro[3], accel[3], mag[3];
+	float gyro[3], accel[3], mag[3];
 
 	(void)pstTask;
 
 	switch (step) {
 	case 0:
-		pifLog_Printf(LT_NONE, "\n\n         X      Y      Z");
-		if (pifImuSensor_ReadGyro2(&s_imu_sensor, gyro)) {
-			pifLog_Printf(LT_NONE, "\nGyro : %6d %6d %6d", gyro[0], gyro[1], gyro[2]);
+		pifLog_Printf(LT_NONE, "\n\n\tX\t\tY\t\tZ");
+		if (pifImuSensor_ReadRawGyro(&s_imu_sensor, gyro)) {
+			pifLog_Printf(LT_NONE, "\nGyroR:\t%f\t%f\t%f", gyro[0], gyro[1], gyro[2]);
 		}
 		else {
-			pifLog_Printf(LT_NONE, "\nGyro : Error");
+			pifLog_Printf(LT_NONE, "\nGyroR:\tError");
 		}
 		step++;
 		break;
 
 	case 1:
-		if (pifImuSensor_ReadAccel2(&s_imu_sensor, accel)) {
-			pifLog_Printf(LT_NONE, "\nAccel: %6d %6d %6d", accel[0], accel[1], accel[2]);
+		if (pifImuSensor_ReadGyro(&s_imu_sensor, gyro)) {
+			pifLog_Printf(LT_NONE, "\nGyroN:\t%f\t%f\t%f", gyro[0], gyro[1], gyro[2]);
 		}
 		else {
-			pifLog_Printf(LT_NONE, "\nAccel: Error");
+			pifLog_Printf(LT_NONE, "\nGyroN:\tError");
 		}
 		step++;
 		break;
 
 	case 2:
-		if (pifImuSensor_ReadMag2(&s_imu_sensor, mag)) {
-			pifLog_Printf(LT_NONE, "\nMag  : %6d %6d %6d", mag[0], mag[1], mag[2]);
+		if (pifImuSensor_ReadRawAccel(&s_imu_sensor, accel)) {
+			pifLog_Printf(LT_NONE, "\nAccelR:\t%f\t%f\t%f", accel[0], accel[1], accel[2]);
 		}
 		else {
-			pifLog_Printf(LT_NONE, "\nMag   : Error");
+			pifLog_Printf(LT_NONE, "\nAccelR:\tError");
+		}
+		step++;
+		break;
+
+	case 3:
+		if (pifImuSensor_ReadAccel(&s_imu_sensor, accel)) {
+			pifLog_Printf(LT_NONE, "\nAccelN:\t%f\t%f\t%f", accel[0], accel[1], accel[2]);
+		}
+		else {
+			pifLog_Printf(LT_NONE, "\nAccelN:\tError");
+		}
+		step++;
+		break;
+
+	case 4:
+		if (pifImuSensor_ReadRawMag(&s_imu_sensor, mag)) {
+			pifLog_Printf(LT_NONE, "\nMagR:\t%f\t%f\t%f", mag[0], mag[1], mag[2]);
+		}
+		else {
+			pifLog_Printf(LT_NONE, "\nMagR:\tError");
+		}
+		step++;
+		break;
+
+	case 5:
+		if (pifImuSensor_ReadMag(&s_imu_sensor, mag)) {
+			pifLog_Printf(LT_NONE, "\nMagN:\t%f\t%f\t%f", mag[0], mag[1], mag[2]);
+		}
+		else {
+			pifLog_Printf(LT_NONE, "\nMagN:\tError");
 		}
 		step = 0;
 		break;
@@ -77,7 +107,7 @@ void _evtBaroRead(float pressure, float temperature)
 void appSetup(PifActTimer1us act_timer1us)
 {
 	static PifComm s_comm_log;
-	PifGy86Config config;
+	PifGy86Param gy86_param;
 
     pif_Init(act_timer1us);
 
@@ -102,19 +132,19 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifImuSensor_Init(&s_imu_sensor);
 
-    config.mpu60x0_clksel = MPU60X0_CLKSEL_PLL_ZGYRO;
-    config.mpu60x0_dlpf_cfg = MPU60X0_DLPF_CFG_A10HZ_G10HZ;
-    config.mpu60x0_fs_sel = MPU60X0_FS_SEL_2000DPS;
-    config.mpu60x0_afs_sel = MPU60X0_AFS_SEL_8G;
-    config.mpu60x0_i2c_mst_clk = MPU60X0_I2C_MST_CLK_400KHZ;
-    config.hmc5883_gain = HMC5883_GAIN_1_3GA;
-    config.hmc5883_samples = HMC5883_SAMPLES_8;
-    config.hmc5883_data_rate = HMC5883_DATARATE_75HZ;
-    config.hmc5883_mode = HMC5883_MODE_CONTINOUS;
-    config.ms5611_osr = MS5611_OSR_4096;
-    config.ms5611_read_period = 2000;												// 2000ms
-    config.ms5611_evt_read = _evtBaroRead;
-    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &s_i2c_port, &s_imu_sensor, &config)) return;
+    gy86_param.mpu60x0.clksel = MPU60X0_CLKSEL_PLL_ZGYRO;
+    gy86_param.mpu60x0.dlpf_cfg = MPU60X0_DLPF_CFG_A10HZ_G10HZ;
+    gy86_param.mpu60x0.fs_sel = MPU60X0_FS_SEL_2000DPS;
+    gy86_param.mpu60x0.afs_sel = MPU60X0_AFS_SEL_8G;
+    gy86_param.mpu60x0_i2c_mst_clk = MPU60X0_I2C_MST_CLK_400KHZ;
+    gy86_param.hmc5883.gain = HMC5883_GAIN_1_3GA;
+    gy86_param.hmc5883.samples = HMC5883_SAMPLES_8;
+    gy86_param.hmc5883.data_rate = HMC5883_DATARATE_75HZ;
+    gy86_param.hmc5883.mode = HMC5883_MODE_CONTINOUS;
+    gy86_param.ms5611.osr = MS5611_OSR_4096;
+    gy86_param.ms5611.read_period = 2000;												// 2000ms
+    gy86_param.ms5611.evt_read = _evtBaroRead;
+    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &s_i2c_port, &gy86_param, &s_imu_sensor)) return;
     s_gy86._mpu6050.temp_scale = 100;
     s_gy86._ms5611._p_task->pause = FALSE;
 
