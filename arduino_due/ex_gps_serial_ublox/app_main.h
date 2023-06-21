@@ -9,7 +9,7 @@ extern PifTimerManager g_timer_1ms;
 extern int g_print_data;
 
 
-void appSetup();
+void appSetup(uint32_t baurate);
 
 
 #endif	// APP_MAIN_H

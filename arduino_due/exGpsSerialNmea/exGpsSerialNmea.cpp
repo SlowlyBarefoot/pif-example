@@ -38,7 +38,7 @@ uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
-    return Serial1.write((char *)pucBuffer, usSize);
+    return Serial2.write((char *)pucBuffer, usSize);
 }
 
 BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData)
@@ -47,7 +47,7 @@ BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData)
 
 	(void)pstOwner;
 
-	rxData = Serial1.read();
+	rxData = Serial2.read();
 	if (rxData >= 0) {
 		*pucData = rxData;
 		return TRUE;
@@ -70,7 +70,7 @@ void setup()
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200);
-	Serial1.begin(9600);
+	Serial2.begin(9600);
 
     appSetup();
 }

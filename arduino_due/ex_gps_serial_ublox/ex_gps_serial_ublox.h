@@ -19,7 +19,7 @@
 void actLedLState(PifId usPifId, uint32_t unState);
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
-void actGpsSetBaudrate(uint32_t baudrate);
+void actGpsSetBaudrate(PifComm *p_owner, uint32_t baudrate);
 uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData);
 

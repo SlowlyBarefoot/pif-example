@@ -7,8 +7,11 @@ makefile
 
 *.bak
 *.d
+*.elf
 *.list
 *.mk
+*.map
 *.o
+*.prefs
 *.su
 *-workspace

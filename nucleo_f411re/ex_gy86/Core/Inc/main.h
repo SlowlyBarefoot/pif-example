@@ -48,8 +48,8 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define USE_POLLING
-//#define USE_INTERRUPT
+//#define USE_POLLING
+#define USE_INTERRUPT
 //#define USE_DMA
 
 /* USER CODE END EM */
@@ -80,6 +80,7 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

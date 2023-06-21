@@ -36,16 +36,18 @@ BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData)
 	return FALSE;
 }
 
-void actGpsSetBaudrate(uint32_t baudrate)
+void actGpsSetBaudrate(PifComm *p_owner, uint32_t baudrate)
 {
-	Serial1.begin(baudrate);
+	Serial2.end();
+	pifComm_AbortRx(p_owner);
+	Serial2.begin(baudrate);
 }
 
 uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
-    return Serial1.write((char *)pucBuffer, usSize);
+    return Serial2.write((char *)pucBuffer, usSize);
 }
 
 BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData)
@@ -54,7 +56,7 @@ BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData)
 
 	(void)pstOwner;
 
-	rxData = Serial1.read();
+	rxData = Serial2.read();
 	if (rxData >= 0) {
 		*pucData = rxData;
 		if (g_print_data == 2) Serial.write(rxData);
@@ -78,9 +80,10 @@ void setup()
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200);
-	Serial1.begin(9600);
+	Serial2.begin(9600);
 
-    appSetup();
+//    appSetup(9600);
+    appSetup(57600);
 }
 
 // The loop function is called in an endless loop

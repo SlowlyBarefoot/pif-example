@@ -20,6 +20,13 @@ static void _evtGpsNmeaFrame(char* p_frame)
 	pifLog_Print(LT_NONE, p_frame);
 }
 
+static BOOL _evtGpsNmeaReceive(PifGps *pstOwner, PifGpsNmeaMsgId msg_id)
+{
+	(void)pstOwner;
+
+	return msg_id == PIF_GPS_NMEA_MSG_ID_GGA;
+}
+
 static void _evtGpsReceive(PifGps *pstOwner)
 {
 	PifDegMin stLatDegMin, stLonDegMin;
@@ -104,7 +111,7 @@ void appSetup()
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
 	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
-	s_gps_nmea._gps.evt_nmea_msg_id = PIF_GPS_NMEA_MSG_ID_GGA;
+	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
