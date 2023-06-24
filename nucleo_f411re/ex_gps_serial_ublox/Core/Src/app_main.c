@@ -42,21 +42,21 @@ static void _evtGpsNmeaFrame(char* p_frame)
 	pifLog_Print(LT_NONE, p_frame);
 }
 
-static void _evtGpsNmeaText(PifGpsNmeaTxt *pstTxt)
+static void _evtGpsNmeaText(PifGpsNmeaTxt *p_txt)
 {
 	const char *acType[4] = { "Error", "Warning", "Notice", "User" };
 
-	pifLog_Printf(LT_NONE, "%s] %s\n", acType[pstTxt->type], pstTxt->text);
+	pifLog_Printf(LT_NONE, "%s] %s\n", acType[p_txt->type], p_txt->text);
 }
 
-static BOOL _evtGpsNmeaReceive(PifGps *pstOwner, PifGpsNmeaMsgId msg_id)
+static BOOL _evtGpsNmeaReceive(PifGps *p_owner, PifGpsNmeaMsgId msg_id)
 {
-	(void)pstOwner;
+	(void)p_owner;
 
 	return msg_id == PIF_GPS_NMEA_MSG_ID_GGA;
 }
 
-static uint16_t _taskNmeaSetup(PifTask *pstTask)
+static uint16_t _taskNmeaSetup(PifTask *p_task)
 {
 	uint32_t baudrates[] = { 115200, 57600, 38400, 19200, 9600 };
 	uint8_t n;
@@ -70,23 +70,22 @@ static uint16_t _taskNmeaSetup(PifTask *pstTask)
 		actGpsSetBaudrate(&g_comm_gps, baudrates[step - 0x10]);
 		step += 0x10;
 		retry = 2;
-		delay = 200;
 		break;
 
 	case 0x20:
 		if (pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x07, 0x03, s_baudrate, TRUE, 0)) {
-			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d", GUCI_CFG, GUMI_CFG_PRT);
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d Retry=%d", GUCI_CFG, GUMI_CFG_PRT, retry);
 			retry--;
 			if (!retry) {
 				n = step - 0x20;
 				n++;
 				if (n < sizeof(baudrates) / sizeof(baudrates[0])) {
-					step = (step - 0x10) + 1;
+					step -= 0x10;
+					step++;
 				}
 				else {
 					step = 0x30;
 				}
-				delay = 200;
 			}
 		}
 		break;
@@ -100,12 +99,12 @@ static uint16_t _taskNmeaSetup(PifTask *pstTask)
 
 		case 0x30:
 			actGpsSetBaudrate(&g_comm_gps, s_baudrate);
-			step++;
-			delay = 1000;
+			step = 0x40;
+			delay = 500;
 			break;
 
-		case 0x31:
-			pstTask->pause = TRUE;
+		case 0x40:
+			p_task->pause = TRUE;
 			s_booting = TRUE;
 			break;
 		}
@@ -143,16 +142,18 @@ static BOOL _evtGpsUbxReceive(PifGpsUblox* p_owner, PifGpsUbxPacket* p_packet)
 	return FALSE;
 }
 
-static uint16_t _taskUbloxSetup(PifTask *pstTask)
+static uint16_t _taskUbloxSetup(PifTask *p_task)
 {
 	uint32_t baudrates[] = { 115200, 57600, 38400, 19200, 9600 };
-    const uint8_t kCfgMsg[][3] = {
+    const uint8_t kCfgMsgNmea[][3] = {
 			{ GUCI_NMEA_STD, GUMI_NMEA_VTG, 0x00 }, // Course over ground and Ground speed
 			{ GUCI_NMEA_STD, GUMI_NMEA_GSV, 0x00 }, // GNSS Satellites in View
 			{ GUCI_NMEA_STD, GUMI_NMEA_GLL, 0x00 }, // Latitude and longitude, with time of position fix and status
 			{ GUCI_NMEA_STD, GUMI_NMEA_GGA, 0x00 }, // Global positioning system fix data
 			{ GUCI_NMEA_STD, GUMI_NMEA_GSA, 0x00 }, // GNSS DOP and Active Satellites
-			{ GUCI_NMEA_STD, GUMI_NMEA_RMC, 0x00 },	// Recommended Minimum data
+			{ GUCI_NMEA_STD, GUMI_NMEA_RMC, 0x00 }	// Recommended Minimum data
+    };
+    const uint8_t kCfgMsgNav[][3] = {
 		    { GUCI_NAV, GUMI_NAV_POSLLH, 0x01 },	// set POSLLH MSG rate
 		    { GUCI_NAV, GUMI_NAV_SOL, 0x01 },   	// set SOL MSG rate
 		    { GUCI_NAV, GUMI_NAV_SVINFO, 0x05 },   	// set SVINFO MSG rate
@@ -206,11 +207,12 @@ static uint16_t _taskUbloxSetup(PifTask *pstTask)
 		actGpsSetBaudrate(&g_comm_gps, baudrates[step - 0x10]);
 		step += 0x10;
 		retry = 2;
+		delay = 200;
 		break;
 
 	case 0x20:
 		if (pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x07, 0x03, s_baudrate, TRUE, 0)) {
-			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d Retry=%d: Result=%d", GUCI_CFG, GUMI_CFG_PRT, retry, s_gps_ublox._request_state);
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Retry=%d", GUCI_CFG, GUMI_CFG_PRT, retry);
 			retry--;
 			if (!retry) {
 				n = step - 0x20;
@@ -228,11 +230,26 @@ static uint16_t _taskUbloxSetup(PifTask *pstTask)
 
 	case 0x40:
 		n = step - 0x40;
-		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsg[n]), (uint8_t*)kCfgMsg[n], TRUE, 200);
+		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNmea[n]), (uint8_t*)kCfgMsgNmea[n], TRUE, 400);
+		pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
 		if (s_gps_ublox._request_state == GURS_ACK) {
-			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
 			n++;
-			if (n < sizeof(kCfgMsg) / sizeof(kCfgMsg[0])) step++; else step = 0x50;
+			if (n < sizeof(kCfgMsgNmea) / sizeof(kCfgMsgNmea[0])) step++; else step = 0x50;
+			delay = 400;
+		}
+		else {
+			step = 0x10;
+			delay = 500;
+		}
+		break;
+
+	case 0x50:
+		n = step - 0x50;
+		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], TRUE, 100);
+		pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
+		if (s_gps_ublox._request_state == GURS_ACK) {
+			n++;
+			if (n < sizeof(kCfgMsgNav) / sizeof(kCfgMsgNav[0])) step++; else step = 0x60;
 		}
 		else {
 			step = 0x10;
@@ -253,12 +270,12 @@ static uint16_t _taskUbloxSetup(PifTask *pstTask)
 			delay = 500;
 			break;
 
-		case 0x50:
+		case 0x60:
 			p_rate = (uint16_t*)kCfgRate;
 			*p_rate = 1000;	// 1000 = 1Hz
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE, 200);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE, 100);
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_RATE, s_gps_ublox._request_state);
 			if (s_gps_ublox._request_state == GURS_ACK) {
-				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_RATE, s_gps_ublox._request_state);
 				step++;
 			}
 			else {
@@ -267,10 +284,10 @@ static uint16_t _taskUbloxSetup(PifTask *pstTask)
 			}
 			break;
 
-		case 0x51:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE, 200);
+		case 0x61:
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE, 100);
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, s_gps_ublox._request_state);
 			if (s_gps_ublox._request_state == GURS_ACK) {
-				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, s_gps_ublox._request_state);
 				step++;
 			}
 			else {
@@ -279,10 +296,10 @@ static uint16_t _taskUbloxSetup(PifTask *pstTask)
 			}
 			break;
 
-		case 0x52:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE, 200);
+		case 0x62:
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE, 100);
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, s_gps_ublox._request_state);
 			if (s_gps_ublox._request_state == GURS_ACK) {
-				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, s_gps_ublox._request_state);
 				step++;
 			}
 			else {
@@ -291,8 +308,8 @@ static uint16_t _taskUbloxSetup(PifTask *pstTask)
 			}
 			break;
 
-		case 0x53:
-			pstTask->pause = TRUE;
+		case 0x63:
+			p_task->pause = TRUE;
 			s_booting = TRUE;
 			break;
 		}
@@ -438,7 +455,6 @@ void appSetup(uint32_t baurdate)
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;									// 500ms
-
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	if (!pifComm_Init(&g_comm_gps, PIF_ID_AUTO)) return;

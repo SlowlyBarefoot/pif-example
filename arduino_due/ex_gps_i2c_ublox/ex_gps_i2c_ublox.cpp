@@ -2,17 +2,21 @@
 #include "ex_gps_i2c_ublox.h"
 #include "linker.h"
 
-#include <Wire.h>
+#ifdef USE_I2C_WIRE
+	#include <Wire.h>
+#else
+	#include "../i2c.h"
+#endif
 
 
 #define PIN_LED_L				13
 
 
-void actLedLState(PifId usPifId, uint32_t unState)
+void actLedLState(PifId pif_id, uint32_t state)
 {
-	(void)usPifId;
+	(void)pif_id;
 
-	digitalWrite(PIN_LED_L, unState & 1);
+	digitalWrite(PIN_LED_L, state & 1);
 }
 
 uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
@@ -38,6 +42,7 @@ BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData)
 
 PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
+#ifdef USE_I2C_WIRE
 	int i;
 
 	Wire1.beginTransmission(addr);
@@ -53,11 +58,15 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
 		pif_error = E_TRANSFER_FAILED;
 		return IR_ERROR;
 	}
+#else
+	if (!I2C_WriteAddr(I2C_PORT_1, addr, iaddr, isize, p_data, size)) return IR_ERROR;
+#endif
     return IR_COMPLETE;
 }
 
 PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
+#ifdef USE_I2C_WIRE
 	int i;
 	uint8_t count;
 
@@ -81,6 +90,9 @@ PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_
     for (i = 0; i < (int)size; i++) {
     	p_data[i] = Wire1.read();
     }
+#else
+	if (!I2C_ReadAddr(I2C_PORT_1, addr, iaddr, isize, p_data, size)) return IR_ERROR;
+#endif
     return IR_COMPLETE;
 }
 
@@ -100,8 +112,13 @@ void setup()
 
 	Serial.begin(115200);
 
+#ifdef USE_I2C_WIRE
 	Wire1.begin();
 //	Wire1.setClock(400000);
+#else
+	I2C_Init(I2C_PORT_1, I2C_CLOCK_100KHz);
+//	I2C_Init(I2C_PORT_1, I2C_CLOCK_400KHz);
+#endif
 
     appSetup();
 }

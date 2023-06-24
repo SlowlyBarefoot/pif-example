@@ -68,7 +68,7 @@ PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_
     	p_data[n] = Wire.read();
     }
 #else
-	if (!I2C_ReadAddr(addr, iaddr, isize, p_data, size)) return IR_ERROR;
+	if (!I2C_ReadAddr(I2C_PORT_0, addr, iaddr, isize, p_data, size)) return IR_ERROR;
 #endif
     return IR_COMPLETE;
 }
@@ -93,7 +93,7 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
 		return IR_ERROR;
 	}
 #else
-	if (!I2C_WriteAddr(addr, iaddr, isize, p_data, size)) return IR_ERROR;
+	if (!I2C_WriteAddr(I2C_PORT_0, addr, iaddr, isize, p_data, size)) return IR_ERROR;
 #endif
     return IR_COMPLETE;
 }
@@ -117,7 +117,7 @@ void setup()
 #ifdef USE_I2C_WIRE
 	Wire.begin();
 #else
-	I2C_Init(I2C_CLOCK_100KHz);
+	I2C_Init(I2C_PORT_0, I2C_CLOCK_100KHz);
 #endif
 
 	appSetup();

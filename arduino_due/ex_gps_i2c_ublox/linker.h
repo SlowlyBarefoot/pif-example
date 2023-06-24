@@ -7,6 +7,9 @@
 #include "core/pif_timer.h"
 
 
+//#define USE_I2C_WIRE
+
+
 extern PifTimerManager g_timer_1ms;
 
 

@@ -7,9 +7,18 @@
 #include "variant.h"
 
 
-static Twi *twi;
-static uint32_t xmit_timeout = 100000;
-static uint32_t recv_timeout = 100000;
+typedef struct
+{
+	Twi *twi;
+	uint8_t id;
+	IRQn_Type irqn;
+
+	uint32_t xmit_timeout;
+	uint32_t recv_timeout;
+} ArduinoDueI2c;
+
+
+static ArduinoDueI2c s_i2c[2];
 
 
 static BOOL TWI_WaitTransferComplete(Twi *_twi, uint32_t _timeout)
@@ -74,108 +83,140 @@ static BOOL TWI_WaitByteReceived(Twi *_twi, uint32_t _timeout)
 	return TRUE;
 }
 
-void I2C_Init(uint32_t clock)
+void I2C_Init(uint8_t port, uint32_t clock)
 {
-	twi = WIRE_INTERFACE;
-	pmc_enable_periph_clk(WIRE_INTERFACE_ID);
-	PIO_Configure(
-			g_APinDescription[PIN_WIRE_SDA].pPort,
-			g_APinDescription[PIN_WIRE_SDA].ulPinType,
-			g_APinDescription[PIN_WIRE_SDA].ulPin,
-			g_APinDescription[PIN_WIRE_SDA].ulPinConfiguration);
-	PIO_Configure(
-			g_APinDescription[PIN_WIRE_SCL].pPort,
-			g_APinDescription[PIN_WIRE_SCL].ulPinType,
-			g_APinDescription[PIN_WIRE_SCL].ulPin,
-			g_APinDescription[PIN_WIRE_SCL].ulPinConfiguration);
+	ArduinoDueI2c* p_i2c = &s_i2c[port];
 
-	NVIC_DisableIRQ(WIRE_ISR_ID);
-	NVIC_ClearPendingIRQ(WIRE_ISR_ID);
-	NVIC_SetPriority(WIRE_ISR_ID, 0);
-	NVIC_EnableIRQ(WIRE_ISR_ID);
+	switch (port) {
+	case I2C_PORT_0:
+		s_i2c[port].twi = WIRE_INTERFACE;
+		s_i2c[port].id = WIRE_INTERFACE_ID;
+		p_i2c->irqn = WIRE_ISR_ID;
+		PIO_Configure(
+				g_APinDescription[PIN_WIRE_SDA].pPort,
+				g_APinDescription[PIN_WIRE_SDA].ulPinType,
+				g_APinDescription[PIN_WIRE_SDA].ulPin,
+				g_APinDescription[PIN_WIRE_SDA].ulPinConfiguration);
+		PIO_Configure(
+				g_APinDescription[PIN_WIRE_SCL].pPort,
+				g_APinDescription[PIN_WIRE_SCL].ulPinType,
+				g_APinDescription[PIN_WIRE_SCL].ulPin,
+				g_APinDescription[PIN_WIRE_SCL].ulPinConfiguration);
+		break;
+
+	case I2C_PORT_1:
+		p_i2c->twi = WIRE1_INTERFACE;
+		p_i2c->id = WIRE1_INTERFACE_ID;
+		p_i2c->irqn = WIRE1_ISR_ID;
+		PIO_Configure(
+				g_APinDescription[PIN_WIRE1_SDA].pPort,
+				g_APinDescription[PIN_WIRE1_SDA].ulPinType,
+				g_APinDescription[PIN_WIRE1_SDA].ulPin,
+				g_APinDescription[PIN_WIRE1_SDA].ulPinConfiguration);
+		PIO_Configure(
+				g_APinDescription[PIN_WIRE1_SCL].pPort,
+				g_APinDescription[PIN_WIRE1_SCL].ulPinType,
+				g_APinDescription[PIN_WIRE1_SCL].ulPin,
+				g_APinDescription[PIN_WIRE1_SCL].ulPinConfiguration);
+		break;
+
+	default:
+		return;
+	}
+
+	pmc_enable_periph_clk(p_i2c->id);
+
+	NVIC_DisableIRQ(p_i2c->irqn);
+	NVIC_ClearPendingIRQ(p_i2c->irqn);
+	NVIC_SetPriority(p_i2c->irqn, 0);
+	NVIC_EnableIRQ(p_i2c->irqn);
 
 	// Disable PDC channel
-	twi->TWI_PTCR = UART_PTCR_RXTDIS | UART_PTCR_TXTDIS;
+	p_i2c->twi->TWI_PTCR = UART_PTCR_RXTDIS | UART_PTCR_TXTDIS;
 
-	TWI_ConfigureMaster(twi, clock, VARIANT_MCK);
+	TWI_ConfigureMaster(p_i2c->twi, clock, VARIANT_MCK);
 }
 
-void I2C_Exit()
+void I2C_Exit(uint8_t port)
 {
-	TWI_Disable(twi);
+	ArduinoDueI2c* p_i2c = &s_i2c[port];
+
+	TWI_Disable(p_i2c->twi);
 
 	// Enable PDC channel
-	twi->TWI_PTCR &= ~(UART_PTCR_RXTDIS | UART_PTCR_TXTDIS);
+	p_i2c->twi->TWI_PTCR &= ~(UART_PTCR_RXTDIS | UART_PTCR_TXTDIS);
 
-	NVIC_DisableIRQ(WIRE_ISR_ID);
-	NVIC_ClearPendingIRQ(WIRE_ISR_ID);
+	NVIC_DisableIRQ(p_i2c->irqn);
+	NVIC_ClearPendingIRQ(p_i2c->irqn);
 
-	pmc_disable_periph_clk(WIRE_INTERFACE_ID);
+	pmc_disable_periph_clk(p_i2c->id);
 
 	// no need to undo PIO_Configure,
 	// as Peripheral A was enable by default before,
 	// and pullups were not enabled
 }
 
-void I2C_XmitTimeout(uint32_t timeout)
+void I2C_XmitTimeout(uint8_t port, uint32_t timeout)
 {
-	xmit_timeout = timeout;
+	s_i2c[port].xmit_timeout = timeout;
 }
 
-void I2C_RecvTimeout(uint32_t timeout)
+void I2C_RecvTimeout(uint8_t port, uint32_t timeout)
 {
-	recv_timeout = timeout;
+	s_i2c[port].recv_timeout = timeout;
 }
 
-BOOL I2C_ReadAddr(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint8_t size)
+BOOL I2C_ReadAddr(uint8_t port, uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint8_t size)
 {
+	ArduinoDueI2c* p_i2c = &s_i2c[port];
 	int readed = 0;
 
-	TWI_StartRead(twi, addr, iaddr, isize);
+	TWI_StartRead(p_i2c->twi, addr, iaddr, isize);
 	do {
 		// Stop condition must be set during the reception of last byte
 		if (readed + 1 == size)
-			TWI_SendSTOPCondition( twi);
+			TWI_SendSTOPCondition(p_i2c->twi);
 
-		if (TWI_WaitByteReceived(twi, recv_timeout))
-			p_data[readed++] = TWI_ReadByte(twi);
+		if (TWI_WaitByteReceived(p_i2c->twi, p_i2c->recv_timeout))
+			p_data[readed++] = TWI_ReadByte(p_i2c->twi);
 		else
 			break;
 	}
 	while (readed < size);
-	if (!TWI_WaitTransferComplete(twi, recv_timeout)) return FALSE;
+	if (!TWI_WaitTransferComplete(p_i2c->twi, p_i2c->recv_timeout)) return FALSE;
 	return readed >= size;
 }
 
-BOOL I2C_Read(uint8_t addr, uint8_t* p_data, uint8_t size)
+BOOL I2C_Read(uint8_t port, uint8_t addr, uint8_t* p_data, uint8_t size)
 {
-	return I2C_ReadAddr(addr, 0, 0, p_data, size);
+	return I2C_ReadAddr(port, addr, 0, 0, p_data, size);
 }
 
-BOOL I2C_WriteAddr(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint8_t size)
+BOOL I2C_WriteAddr(uint8_t port, uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint8_t size)
 {
+	ArduinoDueI2c* p_i2c = &s_i2c[port];
 	pif_error = E_SUCCESS;
 
-	TWI_StartWrite(twi, addr, iaddr, isize, p_data[0]);
-	TWI_WaitByteSent(twi, xmit_timeout);
+	TWI_StartWrite(p_i2c->twi, addr, iaddr, isize, p_data[0]);
+	TWI_WaitByteSent(p_i2c->twi, p_i2c->xmit_timeout);
 
 	if (pif_error == E_SUCCESS) {
 		uint16_t sent = 1;
 		while (sent < size) {
-			TWI_WriteByte(twi, p_data[sent++]);
-			if (!TWI_WaitByteSent(twi, xmit_timeout)) break;
+			TWI_WriteByte(p_i2c->twi, p_data[sent++]);
+			if (!TWI_WaitByteSent(p_i2c->twi, p_i2c->xmit_timeout)) break;
 		}
 	}
 
 	if (pif_error == E_SUCCESS) {
-		TWI_Stop(twi);
-		TWI_WaitTransferComplete(twi, xmit_timeout);
+		TWI_Stop(p_i2c->twi);
+		TWI_WaitTransferComplete(p_i2c->twi, p_i2c->xmit_timeout);
 	}
 	return pif_error == E_SUCCESS;
 }
 
-BOOL I2C_Write(uint8_t addr, uint8_t* p_data, uint8_t size)
+BOOL I2C_Write(uint8_t port, uint8_t addr, uint8_t* p_data, uint8_t size)
 {
-	return I2C_WriteAddr(addr, 0, 0, p_data, size);
+	return I2C_WriteAddr(port, addr, 0, 0, p_data, size);
 }
 

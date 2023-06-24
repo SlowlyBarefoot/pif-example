@@ -12,6 +12,7 @@
 
 
 PifTimerManager g_timer_1ms;
+
 int g_print_data = 0;
 
 static PifGpsUblox s_gps_ublox;
@@ -139,7 +140,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 	uint16_t* p_rate;
 	uint8_t sbas = 0;		// 0 = Auto
 	uint8_t n;
-	uint16_t delay = 1100;
+	uint16_t delay = 100;
 	static uint8_t step = 0;
 
 	pifLog_Printf(LT_INFO, "UBX: Step=%xh", step);
@@ -147,22 +148,29 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 	switch (step & 0xF0) {
 	case 0x10:
 		n = step - 0x10;
-		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNmea[n]), (uint8_t*)kCfgMsgNmea[n], TRUE, 1000);
+		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNmea[n]), (uint8_t*)kCfgMsgNmea[n], TRUE, 400);
 		if (s_gps_ublox._request_state == GURS_ACK) {
 			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
 			n++;
-			if (n < sizeof(kCfgMsgNmea) / sizeof(kCfgMsgNmea[0])) step++; else step = 0x20;
+			if (n < sizeof(kCfgMsgNmea) / sizeof(kCfgMsgNmea[0])) step++;
+			else {
+				pifTask_ChangePeriod(s_gps_ublox._p_task, 50);	// 50ms
+				step = 0x20;
+			}
+			delay = 400;
 		}
+		else delay = 500;
 		break;
 
 	case 0x20:
 		n = step - 0x20;
-		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], TRUE, 1000);
+		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], TRUE, 100);
 		if (s_gps_ublox._request_state == GURS_ACK) {
 			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
 			n++;
 			if (n < sizeof(kCfgMsgNav) / sizeof(kCfgMsgNav[0])) step++; else step = 0x30;
 		}
+		else delay = 500;
 		break;
 
 	default:
@@ -175,30 +183,34 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 		case 0x30:
 			p_rate = (uint16_t*)kCfgRate;
 			*p_rate = 1000;	// 1000 = 1Hz
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE, 1000);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE, 100);
 			if (s_gps_ublox._request_state == GURS_ACK) {
 				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_RATE, s_gps_ublox._request_state);
 				step++;
 			}
+			else delay = 500;
 			break;
 
 		case 0x31:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE, 1000);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE, 100);
 			if (s_gps_ublox._request_state == GURS_ACK) {
 				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, s_gps_ublox._request_state);
 				step++;
 			}
+			else delay = 500;
 			break;
 
 		case 0x32:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE, 1000);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE, 100);
 			if (s_gps_ublox._request_state == GURS_ACK) {
 				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, s_gps_ublox._request_state);
 				step++;
 			}
+			else delay = 500;
 			break;
 
 		case 0x33:
+			pifTask_ChangePeriod(s_gps_ublox._p_task, 500);	// 500ms
 			p_task->pause = TRUE;
 			s_booting = TRUE;
 			break;

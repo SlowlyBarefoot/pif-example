@@ -157,13 +157,14 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 				pifTask_ChangePeriod(s_gps_ublox._p_task, 50);	// 50ms
 				step = 0x20;
 			}
+			delay = 400;
 		}
 		else delay = 500;
 		break;
 
 	case 0x20:
 		n = step - 0x20;
-		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], TRUE, 200);
+		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], TRUE, 100);
 		if (s_gps_ublox._request_state == GURS_ACK) {
 			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
 			n++;
@@ -182,7 +183,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 		case 0x30:
 			p_rate = (uint16_t*)kCfgRate;
 			*p_rate = 1000;	// 1000 = 1Hz
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE, 200);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE, 100);
 			if (s_gps_ublox._request_state == GURS_ACK) {
 				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_RATE, s_gps_ublox._request_state);
 				step++;
@@ -191,7 +192,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 			break;
 
 		case 0x31:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE, 200);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE, 100);
 			if (s_gps_ublox._request_state == GURS_ACK) {
 				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, s_gps_ublox._request_state);
 				step++;
@@ -200,7 +201,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 			break;
 
 		case 0x32:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE, 200);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE, 100);
 			if (s_gps_ublox._request_state == GURS_ACK) {
 				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, s_gps_ublox._request_state);
 				step++;
