@@ -57,7 +57,7 @@ void actLedRGBState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_RED, unState & 1);
 	digitalWrite(PIN_LED_YELLOW, (unState >> 1) & 1);
 	digitalWrite(PIN_LED_GREEN, (unState >> 2) & 1);
-	pifLog_Printf(LT_INFO, "RGB:%u S:%xh", __LINE__, unState);
+	pifLog_Printf(LT_INFO, "RGB:%u S:%x", __LINE__, unState);
 }
 
 static void sysTickHook()

@@ -63,7 +63,7 @@ static uint16_t _taskNmeaSetup(PifTask *p_task)
 	uint16_t delay = 100;
 	static uint8_t step = 0, retry;
 
-	pifLog_Printf(LT_INFO, "NMEA: Step=%xh", step);
+	pifLog_Printf(LT_INFO, "NMEA: Step=%x", step);
 
 	switch (step & 0xF0) {
 	case 0x10:
@@ -200,7 +200,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 	uint16_t delay = 100;
 	static uint8_t step = 0, retry;
 
-	pifLog_Printf(LT_INFO, "UBX: Step=%xh", step);
+	pifLog_Printf(LT_INFO, "UBX: Step=%x", step);
 
 	switch (step & 0xF0) {
 	case 0x10:

@@ -62,7 +62,7 @@ static int _CmdBlinkControl(int argc, char *argv[])
 
 void _evtLogControlChar(char ch)
 {
-	pifLog_Printf(LT_INFO, "Contorl Char = %xh\n", ch);
+	pifLog_Printf(LT_INFO, "Contorl Char = %xn", ch);
 }
 
 void appSetup()

@@ -56,7 +56,7 @@ static int _CmdWrite(int argc, char *argv[])
 					pifLog_Printf(LT_INFO, "write: failed E=%d", pif_error);
 				}
 				else {
-					pifLog_Printf(LT_INFO, "write: value = %Xh", value);
+					pifLog_Printf(LT_INFO, "write: value = %X", value);
 				}
 				free(p_buffer);
 			}
