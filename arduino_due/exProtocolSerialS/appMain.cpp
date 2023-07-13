@@ -148,7 +148,7 @@ void appSetup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;											// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE, "CommLog")) return;									// 1ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;										// 1ms
 	s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
@@ -167,7 +167,7 @@ void appSetup()
     }
 
 	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE, "CommSerial")) return;								// 1ms
+    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, "CommSerial")) return;										// 1ms
     s_serial.act_receive_data = actSerialReceiveData;
     s_serial.act_send_data = actSerialSendData;
 

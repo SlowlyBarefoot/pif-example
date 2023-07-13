@@ -43,13 +43,13 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;						// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE, "CommLog")) return;				// 1ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;					// 1ms
     s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
 	if (!pifComm_Init(&s_comm_ibus, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_ibus, TM_PERIOD_MS, 1, TRUE, "CommIbus")) return;			// 1ms
+    if (!pifComm_AttachTask(&s_comm_ibus, TM_PERIOD_MS, 1, "CommIbus")) return;					// 1ms
 	s_comm_ibus.act_receive_data = actSerial1ReceiveData;
 
     if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) return;
@@ -57,7 +57,7 @@ void appSetup(PifActTimer1us act_timer1us)
     pifRcIbus_AttachComm(&s_ibus, &s_comm_ibus);
 
 	if (!pifComm_Init(&s_comm_spektrum, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_spektrum, TM_PERIOD_MS, 1, TRUE, "CommSpektrum")) return;	// 1ms
+    if (!pifComm_AttachTask(&s_comm_spektrum, TM_PERIOD_MS, 1, "CommSpektrum")) return;			// 1ms
     s_comm_spektrum.act_send_data = actSerial2SendData;
 
 //    if (!pifRcSpektrum_Init(&s_spektrum, PIF_ID_AUTO, PIF_SPEKTRUM_PROTOCOL_ID_22MS_2048_DSMS)) return;

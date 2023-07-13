@@ -347,7 +347,7 @@ void appSetup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;					// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 10, TRUE, "CommLog")) return;		// 10ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 10, "CommLog")) return;				// 10ms
 	s_comm_log.act_receive_data = actLogReceiveData;
 	s_comm_log.act_send_data = actLogSendData;
 

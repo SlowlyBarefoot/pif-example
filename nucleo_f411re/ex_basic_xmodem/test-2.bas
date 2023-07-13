@@ -1,0 +1,3 @@
+FOR	I=1 TO 100
+	FORMAT	"% % %", I,I*I,I/5
+END FOR

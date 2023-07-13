@@ -42,13 +42,13 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;				// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE, "CommLog")) return;		// 1ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;			// 1ms
     s_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&s_comm_log)) return;
 
 	if (!pifComm_Init(&s_comm_ibus, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_ibus, TM_PERIOD_MS, 1, TRUE, "CommIbus")) return;	// 1ms
+    if (!pifComm_AttachTask(&s_comm_ibus, TM_PERIOD_MS, 1, "CommIbus")) return;			// 1ms
 	s_comm_ibus.act_receive_data = actSerial1ReceiveData;
 
     if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) return;
@@ -56,7 +56,7 @@ void appSetup(PifActTimer1us act_timer1us)
     pifRcIbus_AttachComm(&s_ibus, &s_comm_ibus);
 
 	if (!pifComm_Init(&s_comm_sumd, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_sumd, TM_PERIOD_MS, 1, TRUE, "CommSumd")) return;	// 1ms
+    if (!pifComm_AttachTask(&s_comm_sumd, TM_PERIOD_MS, 1, "CommSumd")) return;			// 1ms
     s_comm_sumd.act_send_data = actSerial2SendData;
 
     if (!pifRcSumd_Init(&s_sumd, PIF_ID_AUTO)) return;

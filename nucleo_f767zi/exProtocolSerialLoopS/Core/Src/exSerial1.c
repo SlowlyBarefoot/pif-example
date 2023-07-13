@@ -149,7 +149,7 @@ BOOL exSerial1_Setup()
     }
 
 	if (!pifComm_Init(&g_serial1, PIF_ID_AUTO)) return FALSE;
-    if (!pifComm_AttachTask(&g_serial1, TM_PERIOD_MS, 1, TRUE, "CommSerial1")) return FALSE;								// 1ms
+    if (!pifComm_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "CommSerial1")) return FALSE;										// 1ms
 	if (!pifComm_AllocRxBuffer(&g_serial1, 64, 10)) return FALSE;															// 10%
 	if (!pifComm_AllocTxBuffer(&g_serial1, 64)) return FALSE;
 	g_serial1.act_start_transfer = actUart1StartTransfer;

@@ -33,7 +33,7 @@ void appSetup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;				// 1000us
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE, NULL)) return;			// 1ms
+    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, NULL)) return;				// 1ms
 	g_comm_log.act_send_data = actLogSendData;
 
 	if (!pifLog_AttachComm(&g_comm_log)) return;

@@ -120,7 +120,7 @@ void appSetup(PifActTimer1us act_timer1us)
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) { line = __LINE__; goto fail; }			// 1000us
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE, NULL)) { line = __LINE__; goto fail; }		// 1ms
+    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, NULL)) { line = __LINE__; goto fail; }			// 1ms
 	if (!pifComm_AllocTxBuffer(&g_comm_log, 256)) { line = __LINE__; goto fail; }
 	g_comm_log.act_start_transfer = actLogStartTransfer;
 

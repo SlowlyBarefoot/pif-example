@@ -1,0 +1,5 @@
+N = EXEC 1,4
+FORMAT "N=%", N
+
+N = EXEC 2,8,9
+FORMAT "N=%", N

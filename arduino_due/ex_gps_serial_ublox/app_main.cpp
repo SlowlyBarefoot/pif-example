@@ -446,7 +446,7 @@ void appSetup(uint32_t baurdate)
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;				// 1000us
 
 	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 10, TRUE, "CommLog")) return;	// 10ms
+    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 10, "CommLog")) return;			// 10ms
 	s_comm_log.act_receive_data = actLogReceiveData;
 	s_comm_log.act_send_data = actLogSendData;
 
@@ -458,7 +458,7 @@ void appSetup(uint32_t baurdate)
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	if (!pifComm_Init(&s_comm_gps, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_gps, TM_PERIOD_MS, 10, TRUE, "CommGPS")) return;	// 10ms
+    if (!pifComm_AttachTask(&s_comm_gps, TM_PERIOD_MS, 10, "CommGPS")) return;			// 10ms
     s_comm_gps.act_receive_data = actGpsReceiveData;
     s_comm_gps.act_send_data = actGpsSendData;
 

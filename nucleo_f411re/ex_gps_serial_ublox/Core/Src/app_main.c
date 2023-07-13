@@ -445,7 +445,7 @@ void appSetup(uint32_t baurdate)
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;				// 1000us
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE, "CommLog")) return;		// 1ms
+    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;			// 1ms
 	if (!pifComm_AllocRxBuffer(&g_comm_log, 64, 100)) return;							// 64bytes, 100%
 	if (!pifComm_AllocTxBuffer(&g_comm_log, 128)) return;								// 128bytes
 	g_comm_log.act_start_transfer = actLogStartTransfer;
@@ -458,7 +458,7 @@ void appSetup(uint32_t baurdate)
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
 	if (!pifComm_Init(&g_comm_gps, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_gps, TM_PERIOD_MS, 1, TRUE, "CommGPS")) return;		// 1ms
+    if (!pifComm_AttachTask(&g_comm_gps, TM_PERIOD_MS, 1, "CommGPS")) return;			// 1ms
 	if (!pifComm_AllocRxBuffer(&g_comm_gps, 64, 100)) return;							// 256bytes, 100%
 	if (!pifComm_AllocTxBuffer(&g_comm_gps, 32)) return;								// 32bytes
 	g_comm_gps.act_start_transfer = actGpsStartTransfer;

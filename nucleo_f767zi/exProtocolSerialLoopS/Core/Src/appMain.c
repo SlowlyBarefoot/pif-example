@@ -24,7 +24,7 @@ void appSetup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 7)) return;			// 1000us
 
 	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, TRUE, "CommLog")) return;	// 1ms
+    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;		// 1ms
 	if (!pifComm_AllocTxBuffer(&g_comm_log, 64)) return;
 	g_comm_log.act_start_transfer = actLogStartTransfer;
 

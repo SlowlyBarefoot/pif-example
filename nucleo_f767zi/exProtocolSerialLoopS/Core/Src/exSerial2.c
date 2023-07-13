@@ -127,7 +127,7 @@ static void _evtDelay(void *pvIssuer)
 BOOL exSerial2_Setup()
 {
 	if (!pifComm_Init(&g_serial2, PIF_ID_AUTO)) return FALSE;
-    if (!pifComm_AttachTask(&g_serial2, TM_PERIOD_MS, 1, TRUE, "CommSerial2")) return FALSE;	// 1ms
+    if (!pifComm_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "CommSerial2")) return FALSE;			// 1ms
 	if (!pifComm_AllocRxBuffer(&g_serial2, 64, 10)) return FALSE;								// 10%
 	if (!pifComm_AllocTxBuffer(&g_serial2, 64)) return FALSE;
 	g_serial2.act_start_transfer = actUart2StartTransfer;
