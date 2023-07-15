@@ -9,8 +9,8 @@
 
 PifTimerManager g_timer_1ms;
 
-static PifComm s_comm_log;
-static PifComm s_serial;
+static PifUart s_uart_log;
+static PifUart s_serial;
 static PifProtocol s_protocol;
 
 static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket);
@@ -135,19 +135,19 @@ BOOL appInit()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 4)) return FALSE;	// 1000us
 
-	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return FALSE;
-	s_comm_log.act_send_data = actLogSendData;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return FALSE;
+	s_uart_log.act_send_data = actLogSendData;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
-	if (!pifLog_AttachComm(&s_comm_log)) return FALSE;
+	if (!pifLog_AttachUart(&s_uart_log)) return FALSE;
 
-	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return FALSE;
+	if (!pifUart_Init(&s_serial, PIF_ID_AUTO)) return FALSE;
 	s_serial.act_receive_data = actSerialReceiveData;
 	s_serial.act_send_data = actSerialSendData;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
+    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_MEDIUM, stProtocolQuestions)) return FALSE;
-    pifProtocol_AttachComm(&s_protocol, &s_serial);
+    pifProtocol_AttachUart(&s_protocol, &s_serial);
     s_protocol.evt_error = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {
@@ -164,8 +164,8 @@ void appExit()
 {
 	pifProtocol_Clear(&s_protocol);
 	pifTimerManager_Clear(&g_timer_1ms);
-	pifComm_Clear(&s_serial);
-	pifComm_Clear(&s_comm_log);
+	pifUart_Clear(&s_serial);
+	pifUart_Clear(&s_uart_log);
     pifLog_Clear();
     pif_Exit();
 }

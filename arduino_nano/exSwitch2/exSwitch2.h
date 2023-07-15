@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exSwitch2 here
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 #include "sensor/pif_sensor.h"
 
 //end of add your includes here
@@ -17,7 +17,7 @@
 
 //add your function definitions for the project exSwitch2 here
 
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actLedLState(PifId usPifId, uint32_t unState);
 void evtSwitchAcquire(void *pvIssuer);
 void evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer);

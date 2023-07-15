@@ -25,9 +25,9 @@ static void actTaskYield()
 
 #endif
 
-uint16_t actLogSendData(PifComm* p_comm, uint8_t* p_buffer, uint16_t size)
+uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size)
 {
-	(void)p_comm;
+	(void)p_uart;
 
     return Serial.write((char *)p_buffer, size);
 }

@@ -8,7 +8,7 @@
 
 
 PifTimerManager g_timer_1ms;
-PifComm g_comm_log;
+PifUart g_uart_log;
 
 
 void appSetup()
@@ -23,11 +23,11 @@ void appSetup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 7)) return;			// 1000us
 
-	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;		// 1ms
-    g_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;		// 1ms
+    g_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&g_comm_log)) return;
+	if (!pifLog_AttachUart(&g_uart_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms

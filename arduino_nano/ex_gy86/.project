@@ -102,14 +102,14 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/core/pif_comm.h</name>
+			<name>pif/include/communication/pif_uart.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_comm.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_uart.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/core/pif_i2c.h</name>
+			<name>pif/include/communication/pif_i2c.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_i2c.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_i2c.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/core/pif_list.h</name>
@@ -172,14 +172,14 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/core/pif_comm.c</name>
+			<name>pif/source/communication/pif_uart.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_comm.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_uart.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/core/pif_i2c.c</name>
+			<name>pif/source/communication/pif_i2c.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_i2c.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_i2c.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core/pif_list.c</name>

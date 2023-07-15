@@ -4,7 +4,7 @@
 #include "core/pif_log.h"
 
 
-PifComm g_comm_log;
+PifUart g_uart_log;
 
 static PifTask* s_task;
 static int s_state = 0;
@@ -52,11 +52,11 @@ void appSetup()
 
     pifLog_Init();
 
-	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, NULL)) return;		// 1ms
-	g_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) return;		// 1ms
+	g_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&g_comm_log)) return;
+	if (!pifLog_AttachUart(&g_uart_log)) return;
 
 	s_task = pifTaskManager_Add(TM_RATIO, 50, _taskLedToggle, NULL, TRUE);		// 50%
 	if (!s_task) return;

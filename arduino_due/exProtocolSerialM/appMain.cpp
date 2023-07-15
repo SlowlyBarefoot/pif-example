@@ -10,7 +10,7 @@
 
 PifTimerManager g_timer_1ms;
 
-static PifComm s_serial;
+static PifUart s_serial;
 static PifProtocol s_protocol;
 
 static void _fnProtocolQuestion20(PifProtocolPacket *pstPacket);
@@ -136,7 +136,7 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 void appSetup()
 {
 	int i;
-	static PifComm s_comm_log;
+	static PifUart s_uart_log;
 	static PifLed s_led_l;
 
     pif_Init(NULL);
@@ -147,11 +147,11 @@ void appSetup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;											// 1000us
 
-	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;										// 1ms
-	s_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;										// 1ms
+	s_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&s_comm_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log)) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;																// 500ms
@@ -166,13 +166,13 @@ void appSetup()
     	s_stProtocolTest[i].ucDataCount = 0;
     }
 
-	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, "CommSerial")) return;										// 1ms
+	if (!pifUart_Init(&s_serial, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, "UartSerial")) return;										// 1ms
     s_serial.act_receive_data = actSerialReceiveData;
     s_serial.act_send_data = actSerialSendData;
 
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_MEDIUM, stProtocolQuestions)) return;
-    pifProtocol_AttachComm(&s_protocol, &s_serial);
+    pifProtocol_AttachUart(&s_protocol, &s_serial);
     s_protocol.evt_error = _evtProtocolError;
 
     pifLed_SBlinkOn(&s_led_l, 1 << 0);

@@ -15,18 +15,18 @@
 
 #ifdef USE_SERIAL
 
-uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actLogReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 	rxData = Serial.read();
 	if (rxData >= 0) {
@@ -40,21 +40,21 @@ BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
 
 #ifdef USE_USART
 
-BOOL actLogStartTransfer(PifComm* p_comm)
+BOOL actLogStartTransfer(PifUart* p_uart)
 {
-	(void)p_comm;
+	(void)p_uart;
 
 	return USART_StartTransfer();
 }
 
 ISR(USART_UDRE_vect)
 {
-	USART_Send(&g_comm_log);
+	USART_Send(&g_uart_log);
 }
 
 ISR(USART_RX_vect)
 {
-	USART_Receive(&g_comm_log);
+	USART_Receive(&g_uart_log);
 }
 
 #endif

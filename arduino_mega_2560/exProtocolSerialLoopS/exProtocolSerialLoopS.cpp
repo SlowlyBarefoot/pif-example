@@ -18,9 +18,9 @@ static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITC
 
 #ifdef USE_SERIAL
 
-uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
@@ -29,16 +29,16 @@ uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
 
 #ifdef USE_USART
 
-BOOL actLogStartTransfer(PifComm* p_comm)
+BOOL actLogStartTransfer(PifUart* p_uart)
 {
-	(void)p_comm;
+	(void)p_uart;
 
 	return USART_StartTransfer(0);
 }
 
 ISR(USART0_UDRE_vect)
 {
-	USART_Send(0, &g_comm_log);
+	USART_Send(0, &g_uart_log);
 }
 
 #endif
@@ -57,18 +57,18 @@ uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 
 #ifdef USE_SERIAL
 
-uint16_t actSerial1SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerial1SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial1.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerial1ReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actSerial1ReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 	rxData = Serial1.read();
 	if (rxData >= 0) {
@@ -78,18 +78,18 @@ BOOL actSerial1ReceiveData(PifComm *pstComm, uint8_t *pucData)
 	return FALSE;
 }
 
-uint16_t actSerial2SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerial2SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerial2ReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actSerial2ReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 	rxData = Serial2.read();
 	if (rxData >= 0) {
@@ -103,9 +103,9 @@ BOOL actSerial2ReceiveData(PifComm *pstComm, uint8_t *pucData)
 
 #ifdef USE_USART
 
-BOOL actUart1StartTransfer(PifComm* p_comm)
+BOOL actUart1StartTransfer(PifUart* p_uart)
 {
-	(void)p_comm;
+	(void)p_uart;
 
 	return USART_StartTransfer(1);
 }
@@ -120,9 +120,9 @@ ISR(USART1_RX_vect)
 	USART_Receive(1, &g_serial1);
 }
 
-BOOL actUart2StartTransfer(PifComm* p_comm)
+BOOL actUart2StartTransfer(PifUart* p_uart)
 {
-	(void)p_comm;
+	(void)p_uart;
 
 	return USART_StartTransfer(2);
 }

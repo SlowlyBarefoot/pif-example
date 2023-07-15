@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exCollectSignal1 here
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 #include "sensor/pif_sensor.h"
 
 //end of add your includes here
@@ -22,8 +22,8 @@ void actGpioRGBState(PifId usPifId, uint8_t unState);
 void actLedCollectState(PifId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PifSensor* p_owner);
 uint16_t actPushSwitchCollectAcquire(PifSensor* p_owner);
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData);
 
 //Do not add code below this line
 #endif /* _exCollectSignal1_H_ */

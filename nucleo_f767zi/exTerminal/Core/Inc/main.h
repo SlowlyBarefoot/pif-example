@@ -32,7 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 
 /* USER CODE END Includes */
 
@@ -55,7 +55,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-BOOL actLogStartTransfer(PifComm* p_comm);
+BOOL actLogStartTransfer(PifUart* p_uart);
 void actLedLState(PifId usPifId, uint32_t unState);
 
 /* USER CODE END EFP */

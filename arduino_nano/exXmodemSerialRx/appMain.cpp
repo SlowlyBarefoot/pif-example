@@ -8,7 +8,7 @@
 
 PifTimerManager g_timer_1ms;
 
-static PifComm s_serial;
+static PifUart s_serial;
 static PifXmodem s_xmodem;
 
 
@@ -41,13 +41,13 @@ void appSetup()
     if (!pifSensorSwitch_AttachTaskAcquire(&stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
 	pifSensor_AttachEvtChange(&stPushSwitch.parent, _evtPushSwitchChange);
 
-	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, NULL)) return;						// 1ms
+	if (!pifUart_Init(&s_serial, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, NULL)) return;						// 1ms
     s_serial.act_receive_data = actXmodemReceiveData;
     s_serial.act_send_data = actXmodemSendData;
 
     if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return;
-    pifXmodem_AttachComm(&s_xmodem, &s_serial);
+    pifXmodem_AttachUart(&s_xmodem, &s_serial);
 
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
 }

@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exProtocolSerialLoopM here
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 #include "sensor/pif_sensor.h"
 
 //end of add your includes here
@@ -20,22 +20,22 @@
 //add your function definitions for the project exProtocolSerialLoopM here
 
 #ifdef USE_SERIAL
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 #endif
 #ifdef USE_USART
-BOOL actLogStartTransfer(PifComm* p_comm);
+BOOL actLogStartTransfer(PifUart* p_uart);
 #endif
 void actLedLState(PifId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PifSensor* p_owner);
 #ifdef USE_SERIAL
-uint16_t actSerial1SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actSerial1ReceiveData(PifComm *pstComm, uint8_t *pucData);
-uint16_t actSerial2SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actSerial2ReceiveData(PifComm *pstComm, uint8_t *pucData);
+uint16_t actSerial1SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actSerial1ReceiveData(PifUart *p_uart, uint8_t *pucData);
+uint16_t actSerial2SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actSerial2ReceiveData(PifUart *p_uart, uint8_t *pucData);
 #endif
 #ifdef USE_USART
-BOOL actUart1StartTransfer(PifComm* p_comm);
-BOOL actUart2StartTransfer(PifComm* p_comm);
+BOOL actUart1StartTransfer(PifUart* p_uart);
+BOOL actUart2StartTransfer(PifUart* p_uart);
 #endif
 
 //Do not add code below this line

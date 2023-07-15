@@ -14,9 +14,9 @@
 static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
-uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
@@ -33,9 +33,9 @@ uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 	return !digitalRead(s_ucPinSwitch[p_owner->_id - PIF_ID_SWITCH]);
 }
 
-uint16_t actSerialSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
 #ifdef USE_SERIAL_USB
     return SerialUSB.write((char *)pucBuffer, usSize);
@@ -45,11 +45,11 @@ uint16_t actSerialSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize
 #endif
 }
 
-BOOL actSerialReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 #ifdef USE_SERIAL_USB
    	rxData = SerialUSB.read();

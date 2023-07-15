@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project ex_storage_var here
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 #include "storage/pif_storage.h"
 
 //end of add your includes here
@@ -19,8 +19,8 @@
 
 //add your function definitions for the project ex_storage_var here
 
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData);
 void actLedL(SWITCH sw);
 BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size);
 BOOL actStorageWrite(PifStorage* p_owner, uint32_t dst, uint8_t* src, size_t size);

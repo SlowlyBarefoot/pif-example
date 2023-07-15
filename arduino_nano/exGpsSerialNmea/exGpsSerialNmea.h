@@ -9,7 +9,7 @@
 #include "Arduino.h"
 //add your includes for the project exGpsSerialNmea here
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 #include "sensor/pif_sensor.h"
 
 //end of add your includes here
@@ -19,9 +19,9 @@
 
 void actLedLState(PifId usPifId, uint32_t unState);
 uint16_t actPushSwitchAcquire(PifSensor* p_owner);
-uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData);
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actGpsReceiveData(PifUart *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 
 //Do not add code below this line
 #endif /* _exGpsSerialNmea_H_ */

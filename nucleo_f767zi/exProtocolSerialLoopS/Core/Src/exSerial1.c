@@ -9,7 +9,7 @@
 #include "sensor/pif_sensor_switch.h"
 
 
-PifComm g_serial1;
+PifUart g_serial1;
 
 static PifProtocol s_protocol;
 
@@ -148,17 +148,17 @@ BOOL exSerial1_Setup()
     	s_stProtocolTest[i].ucDataCount = 0;
     }
 
-	if (!pifComm_Init(&g_serial1, PIF_ID_AUTO)) return FALSE;
-    if (!pifComm_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "CommSerial1")) return FALSE;										// 1ms
-	if (!pifComm_AllocRxBuffer(&g_serial1, 64, 10)) return FALSE;															// 10%
-	if (!pifComm_AllocTxBuffer(&g_serial1, 64)) return FALSE;
+	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO)) return FALSE;
+    if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "UartSerial1")) return FALSE;										// 1ms
+	if (!pifUart_AllocRxBuffer(&g_serial1, 64, 10)) return FALSE;															// 10%
+	if (!pifUart_AllocTxBuffer(&g_serial1, 64)) return FALSE;
 	g_serial1.act_start_transfer = actUart1StartTransfer;
 
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions1)) return FALSE;
 #ifdef USE_DMA
     if (!pifProtocol_SetFrameSize(&s_protocol, UART_FRAME_SIZE)) return FALSE;
 #endif
-    pifProtocol_AttachComm(&s_protocol, &g_serial1);
+    pifProtocol_AttachUart(&s_protocol, &g_serial1);
     s_protocol.evt_error = _evtProtocolError;
 
     return TRUE;

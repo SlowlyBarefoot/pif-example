@@ -2,7 +2,7 @@
 #define LINKER_H
 
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 #include "core/pif_timer.h"
 
 
@@ -13,8 +13,8 @@ void appSetup();
 
 
 void actLedLState(PifId pif_id, uint32_t state);
-uint16_t actLogSendData(PifComm *p_owner, uint8_t *p_buffer, uint16_t size);
-BOOL actLogReceiveData(PifComm *p_owner, uint8_t *p_data);
+uint16_t actLogSendData(PifUart *p_owner, uint8_t *p_buffer, uint16_t size);
+BOOL actLogReceiveData(PifUart *p_owner, uint8_t *p_data);
 
 
 #endif	// LINKER_H

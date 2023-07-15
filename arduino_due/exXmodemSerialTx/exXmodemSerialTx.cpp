@@ -6,9 +6,9 @@
 #define PIN_LED_L				13
 
 
-uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
@@ -20,18 +20,18 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actXmodemSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actXmodemSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial3.write((char *)pucBuffer, usSize);
 }
 
-BOOL actXmodemReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actXmodemReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 	rxData = Serial3.read();
 	if (rxData >= 0) {

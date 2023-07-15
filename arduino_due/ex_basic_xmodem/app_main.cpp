@@ -11,14 +11,14 @@
 #define TASK_SIZE		10
 #define TIMER_1MS_SIZE	5
 
-#define CHNAGE_COMM_NONE			0
-#define CHNAGE_COMM_LOG_TO_XMODEM	1
-#define CHNAGE_COMM_XMODEM_TO_LOG	2
+#define CHANGE_UART_NONE			0
+#define CHANGE_UART_LOG_TO_XMODEM	1
+#define CHANGE_UART_XMODEM_TO_LOG	2
 
 
 PifTimerManager g_timer_1ms;
 
-static PifComm s_comm;
+static PifUart s_uart;
 static PifTask* s_task;
 static PifXmodem s_xmodem;
 
@@ -42,7 +42,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 static char s_basic[1024];
 static int s_basic_length;
-static int s_change_comm = CHNAGE_COMM_NONE;
+static int s_change_uart = CHANGE_UART_NONE;
 
 
 static int _basicProcess1(int count, int* p_params);
@@ -75,7 +75,7 @@ static int _basicProcess2(int count, int* p_params)
 
 static int _cmdBasicDownload(int argc, char *argv[])
 {
-	s_change_comm = CHNAGE_COMM_LOG_TO_XMODEM;
+	s_change_uart = CHANGE_UART_LOG_TO_XMODEM;
 	pifTask_SetTrigger(s_task);
 	return PIF_LOG_CMD_NO_ERROR;
 }
@@ -173,28 +173,28 @@ static void _evtXmodemRxReceive(uint8_t code, PifXmodemPacket *p_packet)
 			s_basic_length--;
 		}
 
-		s_change_comm = CHNAGE_COMM_XMODEM_TO_LOG;
+		s_change_uart = CHANGE_UART_XMODEM_TO_LOG;
 		pifTask_SetTrigger(s_task);
 	}
 }
 
-static uint16_t _taskChangeComm(PifTask *pstTask)
+static uint16_t _taskChangeUart(PifTask *pstTask)
 {
-	switch (s_change_comm) {
-	case CHNAGE_COMM_LOG_TO_XMODEM:
-		pifLog_DetachComm();
-	    pifXmodem_AttachComm(&s_xmodem, &s_comm);
+	switch (s_change_uart) {
+	case CHANGE_UART_LOG_TO_XMODEM:
+		pifLog_DetachUart();
+	    pifXmodem_AttachUart(&s_xmodem, &s_uart);
 
 	    pifXmodem_ReadyReceive(&s_xmodem);
 		s_basic_length = 0;
-		s_change_comm = CHNAGE_COMM_NONE;
+		s_change_uart = CHANGE_UART_NONE;
 		break;
 
-	case CHNAGE_COMM_XMODEM_TO_LOG:
-		pifXmodem_DetachComm(&s_xmodem);
-	    pifLog_AttachComm(&s_comm);
+	case CHANGE_UART_XMODEM_TO_LOG:
+		pifXmodem_DetachUart(&s_xmodem);
+	    pifLog_AttachUart(&s_uart);
 
-		s_change_comm = CHNAGE_COMM_NONE;
+		s_change_uart = CHANGE_UART_NONE;
 		break;
 	}
     return 0;
@@ -225,12 +225,12 @@ void appSetup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-	if (!pifComm_Init(&s_comm, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm, TM_PERIOD_MS, 1, "CommLog")) return;				// 1ms
-	s_comm.act_receive_data = actLogReceiveData;
-	s_comm.act_send_data = actLogSendData;
+	if (!pifUart_Init(&s_uart, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
+	s_uart.act_receive_data = actLogReceiveData;
+	s_uart.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&s_comm)) return;
+	if (!pifLog_AttachUart(&s_uart)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
@@ -242,7 +242,7 @@ void appSetup()
 
 	pifBasic_Init(p_process, _evtComplete);
 
-	s_task = pifTaskManager_Add(TM_EXTERNAL_ORDER, 0, _taskChangeComm, NULL, FALSE);
+	s_task = pifTaskManager_Add(TM_EXTERNAL_ORDER, 0, _taskChangeUart, NULL, FALSE);
 	if (!s_task) return;
 
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);

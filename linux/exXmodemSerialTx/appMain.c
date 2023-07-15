@@ -7,8 +7,8 @@
 
 PifTimerManager g_timer_1ms;
 
-static PifComm s_comm_log;
-static PifComm s_serial;
+static PifUart s_uart_log;
+static PifUart s_serial;
 static PifXmodem s_xmodem;
 
 
@@ -78,19 +78,19 @@ BOOL appInit()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return FALSE;	// 1000us
 
-	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return FALSE;
-	s_comm_log.act_send_data = actLogSendData;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return FALSE;
+	s_uart_log.act_send_data = actLogSendData;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
-	if (!pifLog_AttachComm(&s_comm_log)) return FALSE;
+	if (!pifLog_AttachUart(&s_uart_log)) return FALSE;
 
-	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return FALSE;
+	if (!pifUart_Init(&s_serial, PIF_ID_AUTO)) return FALSE;
 	s_serial.act_receive_data = actSerialReceiveData;
 	s_serial.act_send_data = actSerialSendData;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
+    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
 
     if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return FALSE;
-    pifXmodem_AttachComm(&s_xmodem, &s_serial);
+    pifXmodem_AttachUart(&s_xmodem, &s_serial);
     pifXmodem_AttachEvtTxReceive(&s_xmodem, _evtXmodemTxReceive);
 
 	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
@@ -101,8 +101,8 @@ void appExit()
 {
 	pifXmodem_Clear(&s_xmodem);
 	pifTimerManager_Clear(&g_timer_1ms);
-	pifComm_Clear(&s_serial);
-	pifComm_Clear(&s_comm_log);
+	pifUart_Clear(&s_serial);
+	pifUart_Clear(&s_uart_log);
     pifLog_Clear();
     pif_Exit();
 }

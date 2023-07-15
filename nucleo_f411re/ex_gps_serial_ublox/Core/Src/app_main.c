@@ -10,8 +10,8 @@
 #define UBX
 
 
-PifComm g_comm_log;
-PifComm g_comm_gps;
+PifUart g_uart_log;
+PifUart g_uart_gps;
 PifTimerManager g_timer_1ms;
 int g_print_data = 0;
 
@@ -67,7 +67,7 @@ static uint16_t _taskNmeaSetup(PifTask *p_task)
 
 	switch (step & 0xF0) {
 	case 0x10:
-		actGpsSetBaudrate(&g_comm_gps, baudrates[step - 0x10]);
+		actGpsSetBaudrate(&g_uart_gps, baudrates[step - 0x10]);
 		step += 0x10;
 		retry = 2;
 		break;
@@ -98,7 +98,7 @@ static uint16_t _taskNmeaSetup(PifTask *p_task)
 			break;
 
 		case 0x30:
-			actGpsSetBaudrate(&g_comm_gps, s_baudrate);
+			actGpsSetBaudrate(&g_uart_gps, s_baudrate);
 			step = 0x40;
 			delay = 500;
 			break;
@@ -204,7 +204,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 
 	switch (step & 0xF0) {
 	case 0x10:
-		actGpsSetBaudrate(&g_comm_gps, baudrates[step - 0x10]);
+		actGpsSetBaudrate(&g_uart_gps, baudrates[step - 0x10]);
 		step += 0x10;
 		retry = 2;
 		delay = 200;
@@ -265,7 +265,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 			break;
 
 		case 0x30:
-			actGpsSetBaudrate(&g_comm_gps, s_baudrate);
+			actGpsSetBaudrate(&g_uart_gps, s_baudrate);
 			step = 0x40;
 			delay = 500;
 			break;
@@ -444,27 +444,27 @@ void appSetup(uint32_t baurdate)
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;				// 1000us
 
-	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;			// 1ms
-	if (!pifComm_AllocRxBuffer(&g_comm_log, 64, 100)) return;							// 64bytes, 100%
-	if (!pifComm_AllocTxBuffer(&g_comm_log, 128)) return;								// 128bytes
-	g_comm_log.act_start_transfer = actLogStartTransfer;
+	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;			// 1ms
+	if (!pifUart_AllocRxBuffer(&g_uart_log, 64, 100)) return;							// 64bytes, 100%
+	if (!pifUart_AllocTxBuffer(&g_uart_log, 128)) return;								// 128bytes
+	g_uart_log.act_start_transfer = actLogStartTransfer;
 
-	if (!pifLog_AttachComm(&g_comm_log)) return;
+	if (!pifLog_AttachUart(&g_uart_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;									// 500ms
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
 
-	if (!pifComm_Init(&g_comm_gps, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_gps, TM_PERIOD_MS, 1, "CommGPS")) return;			// 1ms
-	if (!pifComm_AllocRxBuffer(&g_comm_gps, 64, 100)) return;							// 256bytes, 100%
-	if (!pifComm_AllocTxBuffer(&g_comm_gps, 32)) return;								// 32bytes
-	g_comm_gps.act_start_transfer = actGpsStartTransfer;
+	if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD_MS, 1, "UartGPS")) return;			// 1ms
+	if (!pifUart_AllocRxBuffer(&g_uart_gps, 64, 100)) return;							// 256bytes, 100%
+	if (!pifUart_AllocTxBuffer(&g_uart_gps, 32)) return;								// 32bytes
+	g_uart_gps.act_start_transfer = actGpsStartTransfer;
 
 	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return;
-	pifGpsUblox_AttachComm(&s_gps_ublox, &g_comm_gps);
+	pifGpsUblox_AttachUart(&s_gps_ublox, &g_uart_gps);
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;

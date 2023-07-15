@@ -6,8 +6,8 @@
 #include "gps/pif_gps_nmea.h"
 
 
-PifComm g_comm_log;
-PifComm g_comm_gps;
+PifUart g_uart_log;
+PifUart g_uart_gps;
 PifTimerManager g_timer_1ms;
 
 static int s_print_data = 1;
@@ -127,23 +127,23 @@ void appSetup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;			// 1000us
 
-	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;		// 1ms
-	if (!pifComm_AllocRxBuffer(&g_comm_log, 64, 100)) return;						// 64bytes, 100%
-	if (!pifComm_AllocTxBuffer(&g_comm_log, 128)) return;							// 128bytes
-	g_comm_log.act_start_transfer = actLogStartTransfer;
+	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;		// 1ms
+	if (!pifUart_AllocRxBuffer(&g_uart_log, 64, 100)) return;						// 64bytes, 100%
+	if (!pifUart_AllocTxBuffer(&g_uart_log, 128)) return;							// 128bytes
+	g_uart_log.act_start_transfer = actLogStartTransfer;
 
-	if (!pifLog_AttachComm(&g_comm_log)) return;
+	if (!pifLog_AttachUart(&g_uart_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
-	if (!pifComm_Init(&g_comm_gps, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_gps, TM_PERIOD_MS, 1, "CommGPS")) return;		// 1ms
-	if (!pifComm_AllocRxBuffer(&g_comm_gps, 256, 100)) return;						// 256bytes, 100%
-	if (!pifComm_AllocTxBuffer(&g_comm_gps, 32)) return;							// 32bytes
-	g_comm_gps.act_start_transfer = actGpsStartTransfer;
+	if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD_MS, 1, "UartGPS")) return;		// 1ms
+	if (!pifUart_AllocRxBuffer(&g_uart_gps, 256, 100)) return;						// 256bytes, 100%
+	if (!pifUart_AllocTxBuffer(&g_uart_gps, 32)) return;							// 32bytes
+	g_uart_gps.act_start_transfer = actGpsStartTransfer;
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
-	pifGpsNmea_AttachComm(&s_gps_nmea, &g_comm_gps);
+	pifGpsNmea_AttachUart(&s_gps_nmea, &g_uart_gps);
 	if (!pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText)) return;
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;

@@ -32,8 +32,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "core/pif_comm.h"
-#include "core/pif_i2c.h"
+#include "communication/pif_uart.h"
+#include "communication/pif_i2c.h"
 
 /* USER CODE END Includes */
 
@@ -56,7 +56,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-BOOL actLogStartTransfer(PifComm* p_comm);
+BOOL actLogStartTransfer(PifUart* p_uart);
 void actLedLState(PifId usPifId, uint32_t unState);
 PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size);
 

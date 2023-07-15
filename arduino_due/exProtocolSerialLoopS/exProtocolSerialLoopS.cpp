@@ -11,9 +11,9 @@
 static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
-uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
@@ -30,18 +30,18 @@ uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 	return !digitalRead(s_ucPinSwitch[p_owner->_id - PIF_ID_SWITCH]);
 }
 
-uint16_t actSerial1SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerial1SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial1.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerial1ReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actSerial1ReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 	rxData = Serial1.read();
 	if (rxData >= 0) {
@@ -51,18 +51,18 @@ BOOL actSerial1ReceiveData(PifComm *pstComm, uint8_t *pucData)
 	return FALSE;
 }
 
-uint16_t actSerial2SendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerial2SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerial2ReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actSerial2ReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 	rxData = Serial2.read();
 	if (rxData >= 0) {

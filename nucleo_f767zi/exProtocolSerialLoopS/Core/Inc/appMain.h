@@ -18,7 +18,7 @@
 
 
 extern PifTimerManager g_timer_1ms;
-extern PifComm g_comm_log;
+extern PifUart g_uart_log;
 
 
 void appSetup();

@@ -54,13 +54,13 @@ BOOL USART_StartTransfer(int port)
 	return TRUE;
 }
 
-void USART_Send(int port, PifComm *pstComm)
+void USART_Send(int port, PifUart *p_uart)
 {
 	stUsart *p_stUsart = &s_stUsart[port];
 	uint8_t ucData = 0, ucState;
 
-	ucState = pifComm_GetTxByte(pstComm, &ucData);
-	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
+	ucState = pifUart_GetTxByte(p_uart, &ucData);
+	if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {
 		*p_stUsart->udr = ucData;
 
 #ifdef MPCM0
@@ -69,18 +69,18 @@ void USART_Send(int port, PifComm *pstComm)
 		*p_stUsart->ucsra = (*p_stUsart->ucsra & ((1 << U2X0) | (1 << TXC0)));
 #endif
 	}
-	if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
-		pifComm_FinishTransfer(pstComm);
+	if (ucState & PIF_UART_SEND_DATA_STATE_EMPTY) {
+		pifUart_FinishTransfer(p_uart);
 		*p_stUsart->ucsrb &= ~(1 << UDRIE0); // Disables the Interrupt, uncomment for one time transmission of data
 	}
 }
 
-void USART_Receive(int port, PifComm *pstComm)
+void USART_Receive(int port, PifUart *p_uart)
 {
 	stUsart *p_stUsart = &s_stUsart[port];
 
 	if (!(*p_stUsart->ucsra & (1 << UPE0))) {
-		pifComm_PutRxByte(pstComm, *p_stUsart->udr);
+		pifUart_PutRxByte(p_uart, *p_stUsart->udr);
 	}
 	else {
 		*p_stUsart->udr;

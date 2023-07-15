@@ -2,12 +2,12 @@
 #define APP_MAIN_H
 
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 #include "core/pif_timer.h"
 
 
-extern PifComm g_comm_log;
-extern PifComm g_comm_gps;
+extern PifUart g_uart_log;
+extern PifUart g_uart_gps;
 extern PifTimerManager g_timer_1ms;
 
 

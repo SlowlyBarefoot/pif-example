@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 
 /* USER CODE END Includes */
 
@@ -54,7 +54,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-BOOL actLogStartTransfer(PifComm* p_comm);
+BOOL actLogStartTransfer(PifUart* p_uart);
 void actHcSr04Trigger(SWITCH state);
 
 uint16_t taskLedToggle(PifTask* p_task);

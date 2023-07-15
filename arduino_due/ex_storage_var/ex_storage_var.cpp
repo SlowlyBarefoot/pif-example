@@ -11,18 +11,18 @@
 static DueFlashStorage dueFlashStorage;
 
 
-uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actLogReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actLogReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 	rxData = Serial.read();
 	if (rxData >= 0) {

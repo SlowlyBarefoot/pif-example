@@ -2,10 +2,10 @@
 #define MAIN_H_
 
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 
 
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 
 
 #endif /* MAIN_H_ */

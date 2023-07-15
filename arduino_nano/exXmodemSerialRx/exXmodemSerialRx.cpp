@@ -23,18 +23,18 @@ uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-uint16_t actXmodemSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actXmodemSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actXmodemReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actXmodemReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
-	(void)pstComm;
+	(void)p_uart;
 
 	rxData = Serial.read();
 	if (rxData >= 0) {

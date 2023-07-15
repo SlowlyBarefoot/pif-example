@@ -9,14 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exDotMatrixS_SR here
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exDotMatrixS_SR here
 
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData);
 uint16_t taskLedToggle(PifTask *pstTask);
 

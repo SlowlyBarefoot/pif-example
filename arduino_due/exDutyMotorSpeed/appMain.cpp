@@ -218,7 +218,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 void appSetup()
 {
-	static PifComm s_comm_log;
+	static PifUart s_uart_log;
 	static PifLed s_led_l;
 	PifTask* p_task;
 
@@ -230,12 +230,12 @@ void appSetup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;						// 1000us
 
-	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, NULL)) return;						// 1ms
-    s_comm_log.act_receive_data = actLogReceiveData;
-    s_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;						// 1ms
+    s_uart_log.act_receive_data = actLogReceiveData;
+    s_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&s_comm_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;

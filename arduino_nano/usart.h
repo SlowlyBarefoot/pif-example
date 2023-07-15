@@ -2,7 +2,7 @@
 #define USART_H
 
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 
 
 #define ASYNCHRONOUS					(0 << UMSEL00)		// USART Mode Selection
@@ -30,8 +30,8 @@ extern "C" {
 void USART_Init(uint32_t baud, uint8_t config, BOOL bRxInt);
 void USART_SetMultiProcessCommMode(BOOL mpcm);
 BOOL USART_StartTransfer();
-void USART_Send(PifComm *pstComm);
-void USART_Receive(PifComm *pstComm);
+void USART_Send(PifUart *p_uart);
+void USART_Receive(PifUart *p_uart);
 
 #ifdef __cplusplus
 }

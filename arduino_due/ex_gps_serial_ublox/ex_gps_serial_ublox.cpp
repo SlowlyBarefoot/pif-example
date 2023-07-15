@@ -15,14 +15,14 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData)
+BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData)
 {
 	int rxData;
 
@@ -36,21 +36,21 @@ BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData)
 	return FALSE;
 }
 
-void actGpsSetBaudrate(PifComm *p_owner, uint32_t baudrate)
+void actGpsSetBaudrate(PifUart *p_owner, uint32_t baudrate)
 {
 	Serial2.end();
-	pifComm_AbortRx(p_owner);
+	pifUart_AbortRx(p_owner);
 	Serial2.begin(baudrate);
 }
 
-uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData)
+BOOL actGpsReceiveData(PifUart *pstOwner, uint8_t *pucData)
 {
 	int rxData;
 

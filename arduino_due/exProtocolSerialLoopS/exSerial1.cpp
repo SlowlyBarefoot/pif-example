@@ -7,7 +7,7 @@
 #include "sensor/pif_sensor_switch.h"
 
 
-PifComm g_serial1;
+PifUart g_serial1;
 
 static PifProtocol s_protocol;
 
@@ -146,13 +146,13 @@ BOOL exSerial1_Setup()
     	s_stProtocolTest[i].ucDataCount = 0;
     }
 
-	if (!pifComm_Init(&g_serial1, PIF_ID_AUTO)) return FALSE;
-    if (!pifComm_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "CommSerial1")) return FALSE;										// 1ms
+	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO)) return FALSE;
+    if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "UartSerial1")) return FALSE;										// 1ms
     g_serial1.act_receive_data = actSerial1ReceiveData;
     g_serial1.act_send_data = actSerial1SendData;
 
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions1)) return FALSE;
-    pifProtocol_AttachComm(&s_protocol, &g_serial1);
+    pifProtocol_AttachUart(&s_protocol, &g_serial1);
     s_protocol.evt_error = _evtProtocolError;
 
     return TRUE;

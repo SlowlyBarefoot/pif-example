@@ -9,14 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project ex_hc_sr04 here
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project ex_hc_sr04 here
 
-uint16_t actLogSendData(PifComm* p_comm, uint8_t* p_buffer, uint16_t size);
+uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size);
 void actHcSr04Trigger(SWITCH state);
 
 uint16_t taskLedToggle(PifTask* p_task);

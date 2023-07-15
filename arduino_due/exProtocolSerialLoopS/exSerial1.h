@@ -2,10 +2,10 @@
 #define EXSERIAL1_H_
 
 
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 
 
-extern PifComm g_serial1;
+extern PifUart g_serial1;
 
 
 BOOL exSerial1_Setup();

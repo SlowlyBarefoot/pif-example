@@ -22,7 +22,7 @@ void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
@@ -36,14 +36,14 @@ uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-uint16_t actGpsSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
     return serialGps.write((char *)pucBuffer, usSize);
 }
 
-BOOL actGpsReceiveData(PifComm *pstOwner, uint8_t *pucData)
+BOOL actGpsReceiveData(PifUart *pstOwner, uint8_t *pucData)
 {
 	int rxData;
 

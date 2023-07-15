@@ -4,7 +4,7 @@
 #include "core/pif_log.h"
 
 
-PifComm g_comm_log;
+PifUart g_uart_log;
 PifPulse g_pulse;
 PifTimerManager g_timer_1ms;
 
@@ -48,12 +48,12 @@ void appSetup(PifActTimer1us act_timer1us)
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
 
-	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	if (!pifComm_AllocTxBuffer(&g_comm_log, 64)) return;
-	g_comm_log.act_start_transfer = actLogStartTransfer;
+	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
+	if (!pifUart_AllocTxBuffer(&g_uart_log, 64)) return;
+	g_uart_log.act_start_transfer = actLogStartTransfer;
 
-	if (!pifLog_AttachComm(&g_comm_log)) return;
+	if (!pifLog_AttachUart(&g_uart_log)) return;
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
     pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_COUNT | PIF_PMM_LOW_WIDTH | PIF_PMM_HIGH_WIDTH);

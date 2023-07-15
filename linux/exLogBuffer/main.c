@@ -30,9 +30,9 @@ static void _TimerHandler()
     }
 }
 
-uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
     return fwrite((char *)pucBuffer, 1, usSize, stdout);
 }

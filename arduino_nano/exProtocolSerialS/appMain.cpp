@@ -8,7 +8,7 @@
 
 PifTimerManager g_timer_1ms;
 
-static PifComm s_serial;
+static PifUart s_serial;
 static PifProtocol s_protocol;
 
 static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket);
@@ -111,13 +111,13 @@ void appSetup()
 		pifTimer_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
 
-	if (!pifComm_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_serial, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
+	if (!pifUart_Init(&s_serial, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
     s_serial.act_receive_data = actSerialReceiveData;
     s_serial.act_send_data = actSerialSendData;
 
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions)) return;
-    pifProtocol_AttachComm(&s_protocol, &s_serial);
+    pifProtocol_AttachUart(&s_protocol, &s_serial);
 
     pifLed_SBlinkOn(&s_led_l, 1 << 0);
 }

@@ -50,12 +50,12 @@ BOOL USART_StartTransfer()
 	return TRUE;
 }
 
-void USART_Send(PifComm *pstComm)
+void USART_Send(PifUart *p_uart)
 {
 	uint8_t ucData = 0, ucState;
 
-	ucState = pifComm_GetTxByte(pstComm, &ucData);
-	if (ucState & PIF_COMM_SEND_DATA_STATE_DATA) {
+	ucState = pifUart_GetTxByte(p_uart, &ucData);
+	if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {
 		*s_stUsart.udr = ucData;
 
 #ifdef MPCM0
@@ -64,15 +64,15 @@ void USART_Send(PifComm *pstComm)
 		*s_stUsart.ucsra = (*s_stUsart.ucsra & ((1 << U2X0) | (1 << TXC0)));
 #endif
 	}
-	if (ucState & PIF_COMM_SEND_DATA_STATE_EMPTY) {
+	if (ucState & PIF_UART_SEND_DATA_STATE_EMPTY) {
 		*s_stUsart.ucsrb &= ~(1 << UDRIE0); // Disables the Interrupt, uncomment for one time transmission of data
 	}
 }
 
-void USART_Receive(PifComm *pstComm)
+void USART_Receive(PifUart *p_uart)
 {
 	if (!(*s_stUsart.ucsra & (1 << UPE0))) {
-		pifComm_PutRxByte(pstComm, *s_stUsart.udr);
+		pifUart_PutRxByte(p_uart, *s_stUsart.udr);
 	}
 	else {
 		*s_stUsart.udr;

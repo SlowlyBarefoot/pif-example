@@ -9,7 +9,7 @@
 PifTimerManager g_timer_1ms;
 
 static int s_print_data = 1;
-static PifComm s_comm_gps;
+static PifUart s_uart_gps;
 static PifGpsNmea s_gps_nmea;
 static PifLed s_led_l;
 
@@ -118,7 +118,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 
 void appSetup()
 {
-	static PifComm s_comm_log;
+	static PifUart s_uart_log;
 
 	pif_Init(NULL);
 
@@ -128,24 +128,24 @@ void appSetup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
 
-	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, "CommLog")) return;		// 1ms
-	s_comm_log.act_receive_data = actLogReceiveData;
-	s_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;		// 1ms
+	s_uart_log.act_receive_data = actLogReceiveData;
+	s_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&s_comm_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
     if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
     if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
 
-	if (!pifComm_Init(&s_comm_gps, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_gps, TM_PERIOD_MS, 1, "CommGPS")) return;		// 1ms
-    s_comm_gps.act_receive_data = actGpsReceiveData;
-    s_comm_gps.act_send_data = actGpsSendData;
+	if (!pifUart_Init(&s_uart_gps, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_gps, TM_PERIOD_MS, 1, "UartGPS")) return;		// 1ms
+    s_uart_gps.act_receive_data = actGpsReceiveData;
+    s_uart_gps.act_send_data = actGpsSendData;
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
-	pifGpsNmea_AttachComm(&s_gps_nmea, &s_comm_gps);
+	pifGpsNmea_AttachUart(&s_gps_nmea, &s_uart_gps);
 	if (!pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText)) return;
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;

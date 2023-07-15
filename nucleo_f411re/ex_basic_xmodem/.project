@@ -46,6 +46,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/include/communication</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/include/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -62,6 +67,11 @@
 		</link>
 		<link>
 			<name>Core/pif/include/protocol</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/communication</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -86,14 +96,14 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/include/communication/pif_uart.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_uart.h</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/include/core/pif.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/include/core/pif_comm.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_comm.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/include/core/pif_list.h</name>
@@ -136,14 +146,14 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/protocol/pif_xmodem.h</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/source/communication/pif_uart.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_uart.c</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/source/core/pif.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/source/core/pif_comm.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_comm.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/source/core/pif_list.c</name>

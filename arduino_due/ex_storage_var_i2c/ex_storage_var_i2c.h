@@ -9,8 +9,8 @@
 #include "Arduino.h"
 //add your includes for the project ex_storage_var_i2c here
 
-#include "core/pif_comm.h"
-#include "core/pif_i2c.h"
+#include "communication/pif_uart.h"
+#include "communication/pif_i2c.h"
 
 //end of add your includes here
 
@@ -18,8 +18,8 @@
 
 //add your function definitions for the project ex_storage_var_i2c here
 
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PifComm *pstOwner, uint8_t *pucData);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData);
 void actLedL(SWITCH sw);
 PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size);
 PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size);

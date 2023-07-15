@@ -2,12 +2,12 @@
 #include "ex_max31855.h"
 
 #include "core/pif_log.h"
-#include "core/pif_spi.h"
+#include "communication/pif_spi.h"
 #include "display/pif_led.h"
 #include "sensor/pif_max31855.h"
 
 
-PifComm g_comm_log;
+PifUart g_uart_log;
 PifTimerManager g_timer_1ms;
 
 
@@ -32,11 +32,11 @@ void appSetup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;				// 1000us
 
-	if (!pifComm_Init(&g_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&g_comm_log, TM_PERIOD_MS, 1, NULL)) return;				// 1ms
-	g_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) return;				// 1ms
+	g_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&g_comm_log)) return;
+	if (!pifLog_AttachUart(&g_uart_log)) return;
 
     if (!pifSpiPort_Init(&spi_port, PIF_ID_AUTO, 1, 16)) return;
     spi_port.act_transfer = actTransfer;

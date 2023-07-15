@@ -19,19 +19,19 @@
 static int s_fd;
 
 
-uint16_t actLogSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
-	(void)pstComm;
+	(void)p_uart;
 
 	return fwrite((char *)pucBuffer, 1, usSize, stdout);
 }
 
-uint16_t actSerialSendData(PifComm *pstComm, uint8_t *pucBuffer, uint16_t usSize)
+uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
     return write(s_fd, pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PifComm *pstComm, uint8_t *pucData)
+BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	uint8_t data;
 

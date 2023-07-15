@@ -79,12 +79,12 @@ void actLedLState(PifId pif_id, uint32_t new_state)
 	}
 }
 
-BOOL actLogStartTransfer(PifComm* p_comm)
+BOOL actLogStartTransfer(PifUart* p_uart)
 {
 	uint8_t *p_data, state;
 
-	state = pifComm_StartGetTxData(p_comm, &p_data, &s_log_tx);
-	if (state & PIF_COMM_SEND_DATA_STATE_DATA) {
+	state = pifUart_StartGetTxData(p_uart, &p_data, &s_log_tx);
+	if (state & PIF_UART_SEND_DATA_STATE_DATA) {
 		HAL_UART_Transmit_IT(&huart2, p_data, s_log_tx);
 		return TRUE;
 	}
@@ -97,14 +97,14 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *p_data, state;
 
 	if (huart->Instance == USART2) {
-		state = pifComm_EndGetTxData(&g_comm_log, s_log_tx);
-		if (state & PIF_COMM_SEND_DATA_STATE_EMPTY) {
-			pifComm_FinishTransfer(&g_comm_log);
+		state = pifUart_EndGetTxData(&g_uart_log, s_log_tx);
+		if (state & PIF_UART_SEND_DATA_STATE_EMPTY) {
+			pifUart_FinishTransfer(&g_uart_log);
 		}
 		else {
 			s_log_tx = 0;
-			state = pifComm_StartGetTxData(&g_comm_log, &p_data, &s_log_tx);
-			if (state & PIF_COMM_SEND_DATA_STATE_DATA) {
+			state = pifUart_StartGetTxData(&g_uart_log, &p_data, &s_log_tx);
+			if (state & PIF_UART_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, p_data, s_log_tx);
 			}
 		}
@@ -114,7 +114,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART2) {
-		pifComm_PutRxByte(&g_comm_log, s_log_rx);
+		pifUart_PutRxByte(&g_uart_log, s_log_rx);
 		HAL_UART_Receive_IT(huart, &s_log_rx, 1);
 	}
 }

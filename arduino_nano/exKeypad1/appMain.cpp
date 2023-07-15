@@ -35,7 +35,7 @@ static void _evtKeypadDoublePressed(char cChar)
 
 void appSetup()
 {
-	static PifComm s_comm_log;
+	static PifUart s_uart_log;
 	static PifKeypad s_keypad;
 
 	pif_Init(NULL);
@@ -44,11 +44,11 @@ void appSetup()
 
 	pifLog_Init();
 
-	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	s_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
+	s_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&s_comm_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log)) return;
 
     if (!pifKeypad_Init(&s_keypad, PIF_ID_AUTO, ROWS * COLS, c_cKeys)) return;
     pifKeypad_AttachAction(&s_keypad, actKeypadAcquire);

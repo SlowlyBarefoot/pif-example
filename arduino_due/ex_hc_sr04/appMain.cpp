@@ -15,7 +15,7 @@ static void _evtHcSr04Distance(int32_t distance)
 
 void appSetup(PifActTimer1us act_timer1us)
 {
-	static PifComm s_comm_log;
+	static PifUart s_uart_log;
 
 	pif_Init(act_timer1us);
 
@@ -23,11 +23,11 @@ void appSetup(PifActTimer1us act_timer1us)
 
     pifLog_Init();
 
-	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return;
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	s_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
+	s_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&s_comm_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log)) return;
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
 

@@ -5,7 +5,7 @@
 #include "protocol/pif_protocol.h"
 
 
-PifComm g_serial2;
+PifUart g_serial2;
 
 static PifProtocol s_protocol;
 
@@ -124,20 +124,20 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL exSerial2_Setup()
 {
-	if (!pifComm_Init(&g_serial2, PIF_ID_AUTO)) return FALSE;
-    if (!pifComm_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "CommSerial2")) return FALSE;			// 1ms
+	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO)) return FALSE;
+    if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return FALSE;			// 1ms
 #ifdef USE_SERIAL
     g_serial2.act_receive_data = actSerial2ReceiveData;
     g_serial2.act_send_data = actSerial2SendData;
 #endif
 #ifdef USE_USART
-	if (!pifComm_AllocRxBuffer(&g_serial2, 64, 10)) return FALSE;								// 10%
-	if (!pifComm_AllocTxBuffer(&g_serial2, 64)) return FALSE;
+	if (!pifUart_AllocRxBuffer(&g_serial2, 64, 10)) return FALSE;								// 10%
+	if (!pifUart_AllocTxBuffer(&g_serial2, 64)) return FALSE;
 	g_serial2.act_start_transfer = actUart2StartTransfer;
 #endif
 
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions2)) return FALSE;
-    pifProtocol_AttachComm(&s_protocol, &g_serial2);
+    pifProtocol_AttachUart(&s_protocol, &g_serial2);
     s_protocol.evt_error = _evtProtocolError;
 
     for (int i = 0; i < 2; i++) {

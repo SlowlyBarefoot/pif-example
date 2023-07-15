@@ -10,14 +10,14 @@
 //add your includes for the project exSolenoid1P here
 
 #include "actulator/pif_solenoid.h"
-#include "core/pif_comm.h"
+#include "communication/pif_uart.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exSolenoid1P here
 
-uint16_t actLogSendData(PifComm *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
+uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
 void actSolenoidOrder(SWITCH swOrder, PifSolenoidDir enDir);
 uint16_t taskLedToggle(PifTask *pstTask);
 

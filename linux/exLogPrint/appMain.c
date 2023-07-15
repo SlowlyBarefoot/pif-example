@@ -6,7 +6,7 @@
 
 BOOL appInit()
 {
-	static PifComm s_comm_log;
+	static PifUart s_uart_log;
 
     pif_Init(NULL);
 
@@ -14,12 +14,12 @@ BOOL appInit()
 
     pifLog_Init();
 
-	if (!pifComm_Init(&s_comm_log, PIF_ID_AUTO)) return FALSE;
-	s_comm_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return FALSE;
+	s_uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachComm(&s_comm_log)) return FALSE;
+	if (!pifLog_AttachUart(&s_uart_log)) return FALSE;
 
-    if (!pifComm_AttachTask(&s_comm_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
 
 	pifLog_Printf(LT_INFO, "Task=%d\n", pifTaskManager_Count());
     return TRUE;
