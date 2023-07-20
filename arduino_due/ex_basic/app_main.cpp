@@ -11,7 +11,7 @@
 
 PifTimerManager g_timer_1ms;
 
-static int _cmdBasicExecute(int argc, char *argv[]);
+static int _cmdBasicExecute(int argc, char* argv[]);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -159,14 +159,14 @@ static int _basicProcess2(int count, int* p_params)
 	return p_params[0] + 2;
 }
 
-static int _cmdBasicExecute(int argc, char *argv[])
+static int _cmdBasicExecute(int argc, char* argv[])
 {
 	int n;
 
 	if (argc == 1) {
 		n = atoi(argv[0]) - 1;
 		if (n < sizeof(c_basics) / sizeof(c_basics[0])) {
-			pifBasic_Execute((char*)c_basics[n]);
+			pifBasic_Execute((char*)c_basics[n], 32);		// 32 :  Count of opcodes processed at one time
 		}
 		else {
 			return PIF_LOG_CMD_INVALID_ARG;
@@ -178,7 +178,7 @@ static int _cmdBasicExecute(int argc, char *argv[])
 
 static void _evtComplete(PifBasic* p_owner)
 {
-	char* sym[2] = { "<=", ">" };
+	char *sym[2] = { "<=", ">" };
 
 	pifLog_Print(LT_INFO, "Complete:");
 	pifLog_Printf(LT_NONE, "\n\tProgram Size = %d %s %d", p_owner->_program_size, sym[p_owner->_program_size > PIF_BASIC_PROGRAM], PIF_BASIC_PROGRAM);
@@ -191,8 +191,8 @@ static void _evtComplete(PifBasic* p_owner)
 
 void appSetup()
 {
-	static PifUart s_uart_log;
-	static PifLed s_led_l;
+	PifUart uart_log;
+	PifLed led_l;
 
 	pif_Init(NULL);
 
@@ -202,17 +202,17 @@ void appSetup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 10, "UartLog")) return;			// 10ms
-	s_uart_log.act_receive_data = actLogReceiveData;
-	s_uart_log.act_send_data = actLogSendData;
+	if (!pifUart_Init(&uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&uart_log, TM_PERIOD_MS, 10, "UartLog")) return;			// 10ms
+	uart_log.act_receive_data = actLogReceiveData;
+	uart_log.act_send_data = actLogSendData;
 
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&uart_log)) return;
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
 
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;									// 500ms
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
+    if (!pifLed_Init(&led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
+    if (!pifLed_AttachSBlink(&led_l, 500)) return;										// 500ms
+    pifLed_SBlinkOn(&led_l, 1 << 0);
 
 	pifBasic_Init(p_process, _evtComplete);
 
