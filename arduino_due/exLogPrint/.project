@@ -77,19 +77,29 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>pif/include/display</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>pif/source/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/include/core/pif.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
+			<name>pif/source/display</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>pif/include/communication/pif_uart.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_uart.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/core/pif_list.h</name>
@@ -117,14 +127,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
 		</link>
 		<link>
-			<name>pif/source/core/pif.c</name>
+			<name>pif/include/display/pif_led.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_uart.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_uart.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core/pif_list.c</name>
@@ -150,6 +165,11 @@
 			<name>pif/source/core/pif_timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/display/pif_led.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

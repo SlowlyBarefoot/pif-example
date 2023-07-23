@@ -2,13 +2,16 @@
 #define APP_MAIN_H
 
 
+#include "communication/pif_i2c.h"
+#include "core/pif_log.h"
 #include "core/pif_timer.h"
 
 
+extern PifI2cPort g_i2c_port;
 extern PifTimerManager g_timer_1ms;
 
 
-void appSetup(PifActTimer1us act_timer1us);
+BOOL appSetup();
 
 
 #endif	// APP_MAIN_H

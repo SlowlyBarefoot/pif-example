@@ -9,17 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exStepMotor here
 
-#include "communication/pif_uart.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exStepMotor here
 
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData);
-void actSetStep(uint16_t usPhase);
-void actLedLState(PifId usPifId, uint32_t unState);
+
+
 
 //Do not add code below this line
 #endif /* _exStepMotor_H_ */

@@ -1,23 +1,12 @@
 #include "appMain.h"
-#include "exStepMotorPos.h"
-
-#include "core/pif_log.h"
-#include "display/pif_led.h"
-#include "motor/pif_step_motor_pos.h"
-#include "sensor/pif_sensor_switch.h"
 
 
-#define SWITCH_COUNT         	3
-
-#define STEP_MOTOR_RESOLUTION				200
-#define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
-
-
+PifLed g_led_l;
+PifStepMotorPos g_motor;
+PifSensorSwitch g_switch[SWITCH_COUNT];
 PifTimerManager g_timer_1ms;
 PifTimerManager g_timer_200us;
 
-static PifStepMotorPos s_motor;
-static PifSensorSwitch s_switch[SWITCH_COUNT];
 
 static int CmdStepMotorTest(int argc, char *argv[]);
 
@@ -36,7 +25,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 const PifStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		{
 				MM_D_CCW | MM_RT_TIME | MM_CFPS_YES,
-				NULL, NULL, &s_switch[0].parent,
+				NULL, NULL, &g_switch[0].parent,
 				0, 0,
 				50, 0,
 				0, 0, 100,
@@ -44,7 +33,7 @@ const PifStepMotorPosStage s_stStepMotorStages[STEP_MOTOR_STAGE_COUNT] = {
 		},
 		{
 				MM_D_CW | MM_RT_TIME | MM_CFPS_YES,
-				NULL, NULL, &s_switch[2].parent,
+				NULL, NULL, &g_switch[2].parent,
 				0, 0,
 				50, 0,
 				0, 0, 100,
@@ -90,14 +79,14 @@ static int CmdStepMotorTest(int argc, char *argv[])
 {
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Stage: %d\n", s_stStepMotorTest.ucStage);
-		pifLog_Printf(LT_NONE, "  Operation: %d\n", s_motor.parent._operation);
+		pifLog_Printf(LT_NONE, "  Operation: %d\n", g_motor.parent._operation);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
 		if (!strcmp(argv[0], "op")) {
 			int value = atoi(argv[1]);
 			if (value >= SMO_2P_4W_1S && value <= SMO_2P_4W_1_2S) {
-				pifStepMotor_SetOperation(&s_motor.parent, (PifStepMotorOperation)value);
+				pifStepMotor_SetOperation(&g_motor.parent, (PifStepMotorOperation)value);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
@@ -105,13 +94,13 @@ static int CmdStepMotorTest(int argc, char *argv[])
 			int value = atoi(argv[1]);
 			if (!value) {
 				s_stStepMotorTest.ucStage = 0;
-				pifStepMotorPos_Stop(&s_motor);
+				pifStepMotorPos_Stop(&g_motor);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 			else if (value <= STEP_MOTOR_STAGE_COUNT) {
 				if (!s_stStepMotorTest.ucStage) {
 					s_stStepMotorTest.ucStage = value;
-					pifStepMotorPos_Start(&s_motor, s_stStepMotorTest.ucStage - 1, 2000);
+					pifStepMotorPos_Start(&g_motor, s_stStepMotorTest.ucStage - 1, 2000);
 				}
 				else {
 					pifLog_Printf(LT_NONE, "Error: Stage=%d\n", s_stStepMotorTest.ucStage);
@@ -137,12 +126,12 @@ static int CmdStepMotorTest(int argc, char *argv[])
 	else if (argc > 0) {
 		if (!strcmp(argv[0], "off")) {
 			s_stStepMotorTest.ucStage = 0;
-			pifStepMotorPos_Stop(&s_motor);
+			pifStepMotorPos_Stop(&g_motor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[0], "em")) {
 			s_stStepMotorTest.ucStage = 0;
-			pifStepMotorPos_Emergency(&s_motor);
+			pifStepMotorPos_Emergency(&g_motor);
 		}
 		else if (!strcmp(argv[0], "init")) {
 			pifLog_Printf(LT_INFO, "Init Pos");
@@ -193,12 +182,12 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 	case 2:
 		if (!s_stStepMotorTest.ucStage) {
-			if (s_switch[0].parent._curr_state == ON) {
+			if (g_switch[0].parent._curr_state == ON) {
 				pifLog_Printf(LT_INFO, "InitPos: Find");
 				s_stStepMotorTest.ucInitPos = 0;
 			}
 			else {
-				if (pifStepMotorPos_Start(&s_motor, 0, unTime)) {
+				if (pifStepMotorPos_Start(&g_motor, 0, unTime)) {
 					s_stStepMotorTest.ucStage = 1;
 					s_stStepMotorTest.ucInitPos = 3;
 					unTime += 500;
@@ -212,7 +201,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 	case 3:
 		if (!s_stStepMotorTest.ucStage) {
-			if (pifStepMotorPos_Start(&s_motor, 1, unTime)) {
+			if (pifStepMotorPos_Start(&g_motor, 1, unTime)) {
 				s_stStepMotorTest.ucStage = 2;
 				s_stStepMotorTest.ucInitPos = 2;
 				unTime += 500;
@@ -247,7 +236,7 @@ static uint16_t _taskRepeat(PifTask *pstTask)
 			if (s_stStepMotorTest.ucRepeatStop) {
 				s_stStepMotorTest.ucRepeat = 5;
 			}
-			else if (pifStepMotorPos_Start(&s_motor, 2, 0)) {
+			else if (pifStepMotorPos_Start(&g_motor, 2, 0)) {
 				s_stStepMotorTest.ucStage = 3;
 				s_stStepMotorTest.ucRepeat = 3;
 			}
@@ -262,7 +251,7 @@ static uint16_t _taskRepeat(PifTask *pstTask)
 			if (s_stStepMotorTest.ucRepeatStop) {
 				s_stStepMotorTest.ucRepeat = 5;
 			}
-			if (pifStepMotorPos_Start(&s_motor, 3, 0)) {
+			if (pifStepMotorPos_Start(&g_motor, 3, 0)) {
 				s_stStepMotorTest.ucStage = 2;
 				s_stStepMotorTest.ucRepeat = 2;
 			}
@@ -287,57 +276,31 @@ static uint16_t _taskRepeat(PifTask *pstTask)
 	return 0;
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-	static PifLed s_led_l;
 	PifTask* p_task;
 
-	pif_Init(act_timer1us);
+	if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-    if (!pifTaskManager_Init(10)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;						// 1000us
-
-    if (!pifTimerManager_Init(&g_timer_200us, PIF_ID_AUTO, 200, 3)) return;						// 200us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;						// 1ms
-	s_uart_log.act_receive_data = actLogReceiveData;
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;											// 500ms
-
-    if (!pifStepMotorPos_Init(&s_motor, PIF_ID_AUTO, &g_timer_200us,
-    		STEP_MOTOR_RESOLUTION, SMO_2P_4W_1S, 100)) return;									// 100ms
-    s_motor.parent.act_set_step = actSetStep;
-    s_motor.parent.evt_stable = _evtStable;
-    s_motor.parent.evt_stop = _evtStop;
-    s_motor.parent.evt_error = _evtError;
-    pifStepMotor_SetReductionGearRatio(&s_motor.parent, STEP_MOTOR_REDUCTION_GEAR_RATIO);
-    pifStepMotorPos_AddStages(&s_motor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
+    g_motor.parent.evt_stable = _evtStable;
+    g_motor.parent.evt_stop = _evtStop;
+    g_motor.parent.evt_error = _evtError;
+    pifStepMotorPos_AddStages(&g_motor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&s_switch[i], PIF_ID_SWITCH + i, 0, actPhotoInterruptAcquire, &s_motor)) return;
-	    if (!pifSensorSwitch_AttachTaskAcquire(&s_switch[i], TM_PERIOD_MS, 1, TRUE)) return;	// 1ms
+	    g_switch[i].parent.p_issuer = &g_motor;
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
     }
 
-    p_task = pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE);					// 10ms
-    if (!p_task) return;
+    p_task = pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE);						// 10ms
+    if (!p_task) return FALSE;
     p_task->name = "InitPos";
 
-    p_task = pifTaskManager_Add(TM_PERIOD_MS, 10, _taskRepeat, NULL, TRUE);						// 10ms
-    if (!p_task) return;
+    p_task = pifTaskManager_Add(TM_PERIOD_MS, 10, _taskRepeat, NULL, TRUE);							// 10ms
+    if (!p_task) return FALSE;
     p_task->name = "Repeat";
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer 1ms=%d Timer 200us=%d\n", pifTaskManager_Count(),
-			pifTimerManager_Count(&g_timer_1ms), pifTimerManager_Count(&g_timer_200us));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }

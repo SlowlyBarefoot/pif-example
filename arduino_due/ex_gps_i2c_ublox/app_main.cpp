@@ -1,9 +1,5 @@
 #include "linker.h"
-#include "ex_gps_i2c_ublox.h"
 
-#include "communication/pif_i2c.h"
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 #include "gps/pif_gps_ublox.h"
 
 
@@ -11,13 +7,13 @@
 #define UBX
 
 
+PifI2cPort g_i2c_port;
+PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 
 int g_print_data = 0;
 
 static PifGpsUblox s_gps_ublox;
-static PifI2cPort s_i2c_port;
-static PifLed s_led_l;
 
 static BOOL s_booting = FALSE;
 
@@ -227,7 +223,7 @@ static void _evtGpsReceive(PifGps *p_owner)
 	PifDegMin lat_deg_min, lon_deg_min;
 	PifDegMinSec lat_deg_min_sec, lon_deg_min_sec;
 
-	pifLed_PartToggle(&s_led_l, 1 << 1);
+	pifLed_PartToggle(&g_led_l, 1 << 1);
 
 	if (!s_booting) return;
 
@@ -334,46 +330,24 @@ static int _cmdPollRequest(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-void appSetup()
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-	pif_Init(NULL);
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifTaskManager_Init(5)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;					// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 10, "UartLog")) return;				// 10ms
-	s_uart_log.act_receive_data = actLogReceiveData;
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;										// 500ms
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1, 30)) return;
-    s_i2c_port.act_read = actI2cRead;
-    s_i2c_port.act_write = actI2cWrite;
-
-	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return;
-	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &s_i2c_port, 0x42, 500, TRUE, NULL)) return;	// 0x42 : Ublox I2c addrress, 500ms
+    if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
+	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &g_i2c_port, 0x42, 500, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;
-	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) return;
+	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) return FALSE;
 	s_booting = TRUE;
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskUbloxSetup, NULL, TRUE)) return;		// 100ms
+	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskUbloxSetup, NULL, TRUE)) return FALSE;		// 100ms
 #endif
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	return TRUE;
 }

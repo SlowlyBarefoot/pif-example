@@ -1,19 +1,17 @@
 #include "app_main.h"
-#include "ex_gy86.h"
 
-#include "communication/pif_i2c.h"
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 #include "sensor/pif_imu_sensor.h"
 #include "sensor/pif_gy86.h"
 
+#include <math.h>
 
+
+PifI2cPort g_i2c_port;
+PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 
 static PifGy86 s_gy86;
-static PifI2cPort s_i2c_port;
 static PifImuSensor s_imu_sensor;
-static PifLed s_led_l;
 
 
 double getSeaLevel(double pressure, double altitude)
@@ -104,31 +102,9 @@ void _evtBaroRead(float pressure, float temperature)
 	pifLog_Printf(LT_NONE, "\nBaro : %2f hPa, %f m", pressure, getAltitude(pressure, 103100));
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
 	PifGy86Param* p_param;
-
-    pif_Init(act_timer1us);
-
-    if (!pifTaskManager_Init(5)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-    s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
-
-    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 3, 16)) return;
-    s_i2c_port.act_read = actI2cRead;
-    s_i2c_port.act_write = actI2cWrite;
 
     pifImuSensor_Init(&s_imu_sensor);
 
@@ -143,16 +119,16 @@ void appSetup(PifActTimer1us act_timer1us)
     p_param->hmc5883_data_rate = HMC5883_DATARATE_75HZ;
     p_param->hmc5883_mode = HMC5883_MODE_CONTINOUS;
     p_param->ms5611_osr = MS5611_OSR_4096;
-    p_param->ms5611_read_period = 2000;												// 2000ms
+    p_param->ms5611_read_period = 2000;													// 2000ms
     p_param->ms5611_evt_read = _evtBaroRead;
-    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &s_i2c_port, p_param, &s_imu_sensor)) return;
+    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, p_param, &s_imu_sensor)) return FALSE;
     s_gy86._mpu6050.temp_scale = 100;
     s_gy86._ms5611._p_task->pause = FALSE;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskMpu60x0, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskMpu60x0, NULL, TRUE)) return FALSE;	// 500ms
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;								// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }
 

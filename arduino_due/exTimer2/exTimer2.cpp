@@ -12,11 +12,20 @@
 #include <DueTimer.h>
 
 #include "exTimer2.h"
-#include "appMain.h"
+
+#include "core/pif_timer.h"
 
 
 #define PIN_LED_RED				23
 #define PIN_LED_YELLOW			25
+
+#define TASK_SIZE				2
+#define TIMER_1MS_SIZE			1
+#define TIMER_100US_SIZE		1
+
+
+PifTimerManager g_timer_1ms;
+PifTimerManager g_timer_100us;
 
 
 extern "C" {
@@ -56,12 +65,31 @@ void evtLedYellowToggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	PifTimer *pstTimer1ms;
+	PifTimer *pstTimer100us;
+
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 
 	Timer3.attachInterrupt(timer_100us).start(100);
 
-	appSetup();
+    pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+    if (!pifTimerManager_Init(&g_timer_100us, PIF_ID_AUTO, 100, TIMER_100US_SIZE)) return;	// 100us
+
+    pstTimer1ms = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+    if (!pstTimer1ms) return;
+    pifTimer_AttachEvtFinish(pstTimer1ms, evtLedRedToggle, NULL);
+    if (!pifTimer_Start(pstTimer1ms, 5)) return;											// 5 * 1ms = 5ms
+
+    pstTimer100us = pifTimerManager_Add(&g_timer_100us, TT_REPEAT);
+    if (!pstTimer100us) return;
+    pifTimer_AttachEvtFinish(pstTimer100us, evtLedYellowToggle, NULL);
+    if (!pifTimer_Start(pstTimer100us, 5)) return;											// 5 * 100us = 500us
 }
 
 // The loop function is called in an endless loop

@@ -9,17 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exPmlcdI2c here
 
-#include "communication/pif_uart.h"
-#include "communication/pif_i2c.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exPmlcdI2c here
 
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actLedLState(PifId usPifId, uint32_t unState);
-PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size);
+
+
 
 //Do not add code below this line
 #endif /* _exPmlcdI2c_H_ */

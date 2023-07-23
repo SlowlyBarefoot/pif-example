@@ -17,11 +17,8 @@
 
 //add your function definitions for the project exStepMotorSpeed here
 
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData);
-uint16_t actPhotoInterruptAcquire(PifSensor* p_owner);
-void actSetStep(uint16_t usPhase);
-void actLedLState(PifId usPifId, uint32_t unState);
+
+
 
 //Do not add code below this line
 #endif /* _exStepMotorSpeed_H_ */

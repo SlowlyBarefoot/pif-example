@@ -4,8 +4,12 @@
 
 
 #define PIN_LED_L				13
+
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
+
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			3
 
 #define USE_SERIAL_USB		// Linux or Windows
 //#define USE_SERIAL_3			// Other Anduino
@@ -14,26 +18,26 @@
 static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
-uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actLedLState(PifId usPifId, uint32_t unState)
+static void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actPushSwitchAcquire(PifSensor* p_owner)
+static uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 {
 	return !digitalRead(s_ucPinSwitch[p_owner->_id - PIF_ID_SWITCH]);
 }
 
-uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
@@ -45,7 +49,7 @@ uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 #endif
 }
 
-BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
+static BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
@@ -76,6 +80,8 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
 	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
@@ -88,7 +94,33 @@ void setup()
 	Serial3.begin(115200);
 #endif
 
-	appSetup();
+    pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
+	s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+
+    for (int i = 0; i < SWITCH_COUNT; i++) {
+		if (!pifSensorSwitch_Init(&g_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;
+    }
+
+	if (!pifUart_Init(&g_serial, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_serial, TM_PERIOD_MS, 1, "UartSerial")) return;				// 1ms
+    g_serial.act_receive_data = actSerialReceiveData;
+    g_serial.act_send_data = actSerialSendData;
+
+	if (!appSetup()) return;
+
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

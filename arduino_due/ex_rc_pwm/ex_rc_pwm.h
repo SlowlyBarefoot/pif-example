@@ -9,7 +9,6 @@
 #include "Arduino.h"
 //add your includes for the project ex_rc_pwm here
 
-#include "communication/pif_uart.h"
 
 //end of add your includes here
 
@@ -18,8 +17,6 @@
 
 
 
-void actLedL(SWITCH sw);
-uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size);
 
 //Do not add code below this line
 #endif /* _ex_rc_pwm_H_ */

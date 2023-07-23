@@ -1,13 +1,8 @@
 #include "appMain.h"
-#include "exFnd4Sx2_SR2.h"
-
-#include "core/pif_log.h"
-#include "display/pif_fnd.h"
 
 
+PifFnd g_fnd;
 PifTimerManager g_timer_1ms;
-
-static PifFnd s_fnd;
 
 const uint8_t c_ucUserChar[] = { 0x01, 0x08 };
 
@@ -21,24 +16,24 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	(void)pstTask;
 
 	if (swFloat) {
-		s_fnd.sub_numeric_digits = 0;
+		g_fnd.sub_numeric_digits = 0;
 		int32_t nValue = rand() % 1400000 - 200000;
 		if (nValue <= -100000) {
-			pifFnd_SetString(&s_fnd, (char *)"AAAAAAAA");
+			pifFnd_SetString(&g_fnd, (char *)"AAAAAAAA");
 		}
 		else if (nValue < 1000000) {
-			pifFnd_SetInterger(&s_fnd, nValue);
+			pifFnd_SetInterger(&g_fnd, nValue);
 		}
 		else {
-			pifFnd_SetString(&s_fnd, (char *)"BBBBBBBB");
+			pifFnd_SetString(&g_fnd, (char *)"BBBBBBBB");
 		}
 
 		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
 	}
 	else {
-		s_fnd.sub_numeric_digits = 2;
+		g_fnd.sub_numeric_digits = 2;
 		double dValue = (rand() % 1100000 - 100000) / 100.0;
-		pifFnd_SetFloat(&s_fnd, dValue);
+		pifFnd_SetFloat(&g_fnd, dValue);
 
 		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%2f", swBlink, swFloat, dValue);
 	}
@@ -46,41 +41,22 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	nBlink = (nBlink + 1) % 20;
 	if (!nBlink) {
 		if (swBlink) {
-		    pifFnd_BlinkOff(&s_fnd);
+		    pifFnd_BlinkOff(&g_fnd);
 		}
 		else {
-		    pifFnd_BlinkOn(&s_fnd, 200);
+		    pifFnd_BlinkOn(&g_fnd, 200);
 		}
 		swBlink ^= 1;
 	}
 	return 0;
 }
 
-void appSetup()
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-
-    pif_Init(NULL);
-
-    if (!pifTaskManager_Init(5)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
     pifFnd_SetUserChar(c_ucUserChar, 2);
-    if (!pifFnd_Init(&s_fnd, PIF_ID_AUTO, &g_timer_1ms, 8, actFndDisplay)) return;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 3000, _taskFndTest, NULL, TRUE)) return;	// 3000ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 3000, _taskFndTest, NULL, TRUE)) return FALSE;	// 3000ms
 
-    pifFnd_Start(&s_fnd);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    pifFnd_Start(&g_fnd);
+    return TRUE;
 }

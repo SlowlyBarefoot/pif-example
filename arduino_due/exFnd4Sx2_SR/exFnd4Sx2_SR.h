@@ -9,16 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exFnd4Sx2_SR here
 
-#include "communication/pif_uart.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exFnd4Sx2_SR here
 
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit);
-uint16_t taskLedToggle(PifTask *pstTask);
+
+
 
 //Do not add code below this line
 #endif /* _exFnd4Sx2_SR_H_ */

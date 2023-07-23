@@ -9,18 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exGpsSerialNmea here
 
-#include "communication/pif_uart.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exGpsSerialNmea here
 
-void actLedLState(PifId usPifId, uint32_t unState);
-uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actGpsReceiveData(PifUart *pstOwner, uint8_t *pucData);
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData);
+
+
 
 //Do not add code below this line
 #endif /* _exGpsSerialNmea_H_ */

@@ -1,16 +1,13 @@
 #include "appMain.h"
-#include "exXmodemSerialTx.h"
 
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 #include "protocol/pif_xmodem.h"
 
 
+PifLed g_led_l;
+PifUart g_serial;
 PifTimerManager g_timer_1ms;
 
-static PifUart s_serial;
 static PifXmodem s_xmodem;
-
 
 static struct {
 	uint8_t step;
@@ -92,38 +89,13 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 	}
 }
 
-void appSetup()
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-	static PifLed s_led_l;
-
-    pif_Init(NULL);
-
-    if (!pifTaskManager_Init(3)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;		// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
-
-	if (!pifUart_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, "UartSerial")) return;		// 1ms
-    s_serial.act_receive_data = actXmodemReceiveData;
-    s_serial.act_send_data = actXmodemSendData;
-
-	if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return;
-    pifXmodem_AttachUart(&s_xmodem, &s_serial);
+	if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return FALSE;
+    pifXmodem_AttachUart(&s_xmodem, &g_serial);
     pifXmodem_AttachEvtTxReceive(&s_xmodem, _evtXmodemTxReceive);
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;						// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }

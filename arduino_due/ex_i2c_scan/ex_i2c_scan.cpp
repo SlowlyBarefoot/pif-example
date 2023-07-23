@@ -2,6 +2,8 @@
 #include "ex_i2c_scan.h"
 #include "app_main.h"
 
+//#define USE_I2C_WIRE
+
 #ifdef USE_I2C_WIRE
 	#include <Wire.h>
 #else
@@ -11,22 +13,25 @@
 
 #define PIN_LED_L				13
 
+#define TASK_SIZE				3
+#define TIMER_1MS_SIZE			1
 
-uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actLedLState(PifId usPifId, uint32_t unState)
+static void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 #ifdef USE_I2C_WIRE
 	int i;
@@ -62,6 +67,8 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200);
@@ -72,7 +79,25 @@ void setup()
 	I2C_Init(I2C_PORT_0, I2C_CLOCK_100KHz);
 #endif
 
-    appSetup(NULL);
+    pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
+    s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 16)) return;
+    g_i2c_port.act_write = actI2cWrite;
+
+    if (!appSetup()) return;
+
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

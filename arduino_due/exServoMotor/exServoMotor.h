@@ -16,9 +16,8 @@
 
 //add your function definitions for the project exServoMotor here
 
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actLedLState(PifId usPifId, uint32_t unState);
-void actPulsePwm(SWITCH swValue);
+
+
 
 //Do not add code below this line
 #endif /* _exServoMotor_H_ */

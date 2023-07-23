@@ -3,22 +3,26 @@
 #include "appMain.h"
 
 
-#define PIN_LED_L		13
-#define PIN_TRIGGER 	23
-#define PIN_ECHO		22
+#define PIN_LED_L				13
+
+#define PIN_TRIGGER 			23
+#define PIN_ECHO				22
+
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			1
 
 
 static SWITCH s_echo_state;
 
 
-uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size)
+static uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size)
 {
 	(void)p_uart;
 
     return Serial.write((char *)p_buffer, size);
 }
 
-void actHcSr04Trigger(SWITCH state)
+static void actHcSr04Trigger(SWITCH state)
 {
     digitalWrite(PIN_TRIGGER, state);
     s_echo_state = 0;
@@ -30,7 +34,7 @@ static void _isrUltrasonicEcho()
 	pifHcSr04_sigReceiveEcho(&g_hcsr04, s_echo_state);
 }
 
-uint16_t taskLedToggle(PifTask* p_task)
+static uint16_t taskLedToggle(PifTask* p_task)
 {
 	static BOOL swLed = OFF;
 
@@ -53,6 +57,8 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_TRIGGER, OUTPUT);
 	pinMode(PIN_ECHO, INPUT_PULLUP);
@@ -61,7 +67,27 @@ void setup()
 
     attachInterrupt(PIN_ECHO, _isrUltrasonicEcho, CHANGE);
 
-	appSetup((PifActTimer1us)micros);
+	pif_Init((PifActTimer1us)micros);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;				// 1ms
+    s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    if (!pifHcSr04_Init(&g_hcsr04, PIF_ID_AUTO)) return;
+	g_hcsr04.act_trigger = actHcSr04Trigger;
+
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;		// 500ms
+
+	if (!appSetup()) return;
+
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

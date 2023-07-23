@@ -9,19 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exXmodemSerialRx here
 
-#include "communication/pif_uart.h"
-#include "sensor/pif_sensor.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exXmodemSerialRx here
 
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-void actLedLState(PifId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PifSensor* p_owner);
-uint16_t actXmodemSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actXmodemReceiveData(PifUart *pstOwner, uint8_t *pucData);
+
+
 
 //Do not add code below this line
 #endif /* _exXmodemSerialRx_H_ */

@@ -1,7 +1,4 @@
 #include "app_main.h"
-#include "ex_pulse.h"
-
-#include "core/pif_log.h"
 
 
 PifPulse g_pulse;
@@ -15,17 +12,6 @@ static void _evtPulseEdge(PifPulseState state, PifIssuerP p_issuer)
 	(void)state;
 
 	pifTask_SetTrigger(p_task);
-}
-
-static uint16_t _taskLedToggle(PifTask* p_task)
-{
-	static BOOL sw = LOW;
-
-	(void)p_task;
-
-   	actLedL(sw);
-	sw ^= 1;
-    return 0;
 }
 
 static uint16_t _taskPulse(PifTask* p_task)
@@ -46,33 +32,15 @@ static uint16_t _taskPulse(PifTask* p_task)
     return 0;
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
 	PifTask* p_task;
 
-	pif_Init(act_timer1us);
-
-    if (!pifTaskManager_Init(4)) return;
-
-	pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
 	p_task = pifTaskManager_Add(TM_EXTERNAL_ORDER, 0, _taskPulse, NULL, FALSE);
-    if (!p_task) return;
+    if (!p_task) return FALSE;
 
-    if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return;
+    if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return FALSE;
     pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_COUNT | PIF_PMM_LOW_WIDTH | PIF_PMM_HIGH_WIDTH);
     pifPulse_AttachEvtEdge(&g_pulse, _evtPulseEdge, p_task);
-
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;	// 100ms
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	return TRUE;
 }

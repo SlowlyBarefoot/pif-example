@@ -1,22 +1,17 @@
 #include "appMain.h"
-#include "exPmlcdI2c.h"
-
-#include "core/pif_log.h"
-#include "display/pif_led.h"
-#include "display/pif_pmlcd_i2c.h"
 
 
 #define SINGLE_SHOT
 
 
+PifI2cPort g_i2c_port;
+PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 
-static PifI2cPort s_i2c_port;
-static PifLed s_led_l;
 static PifPmlcdI2c s_pmlcd_i2c;
 
 
-uint16_t _taskPmlcdI2c(PifTask *pstTask)
+static uint16_t _taskPmlcdI2c(PifTask *pstTask)
 {
 	static int nStep = 0;
 	static int nNumber = 0;
@@ -63,41 +58,19 @@ uint16_t _taskPmlcdI2c(PifTask *pstTask)
 	return 0;
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-
-    pif_Init(act_timer1us);
-
-    if (!pifTaskManager_Init(3)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
-
-    if (!pifI2cPort_Init(&s_i2c_port, PIF_ID_AUTO, 1, 16)) return;
-    s_i2c_port.act_write = actI2cWrite;
-
-    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &s_i2c_port, 0x27)) return;
+    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27)) return FALSE;
 #if 0
-    pifI2cPort_ScanAddress(&s_i2c_port);
+    pifI2cPort_ScanAddress(&g_i2c_port);
 #else
-    if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) return;
-    if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) return;
+    if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) return FALSE;
+    if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) return FALSE;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskPmlcdI2c, NULL, TRUE)) return;	// 1000ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskPmlcdI2c, NULL, TRUE)) return FALSE;	// 1000ms
 #endif
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }

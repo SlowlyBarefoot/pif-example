@@ -6,20 +6,28 @@
 
 
 #define PIN_LED_L				13
+
 #define PIN_STEP_MOTOR_1		30
 #define PIN_STEP_MOTOR_2		32
 #define PIN_STEP_MOTOR_3		34
 #define PIN_STEP_MOTOR_4		36
 
+#define TASK_SIZE				4
+#define TIMER_1MS_SIZE			1
+#define TIMER_200US_SIZE		1
 
-uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+#define STEP_MOTOR_RESOLUTION				200
+#define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
+
+
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actLogReceiveData(PifUart *p_uart, uint8_t *pucData)
+static BOOL actLogReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
@@ -33,7 +41,7 @@ BOOL actLogReceiveData(PifUart *p_uart, uint8_t *pucData)
 	return FALSE;
 }
 
-void actSetStep(uint16_t usPhase)
+static void actSetStep(uint16_t usPhase)
 {
 	digitalWrite(PIN_STEP_MOTOR_1, usPhase & 1);
 	digitalWrite(PIN_STEP_MOTOR_2, (usPhase >> 1) & 1);
@@ -41,7 +49,7 @@ void actSetStep(uint16_t usPhase)
 	digitalWrite(PIN_STEP_MOTOR_4, (usPhase >> 3) & 1);
 }
 
-void actLedLState(PifId usPifId, uint32_t unState)
+static void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
@@ -65,6 +73,8 @@ static void _sigTimer200us()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_STEP_MOTOR_1, OUTPUT);
 	pinMode(PIN_STEP_MOTOR_2, OUTPUT);
@@ -75,7 +85,32 @@ void setup()
 
 	Serial.begin(115200);
 
-	appSetup(micros);
+	pif_Init(micros);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+    if (!pifTimerManager_Init(&g_timer_200us, PIF_ID_AUTO, 200, TIMER_200US_SIZE)) return;		// 200us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;		// 1ms
+	s_uart_log.act_receive_data = actLogReceiveData;
+	s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+
+    if (!pifStepMotor_Init(&g_motor, PIF_ID_AUTO, &g_timer_200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_2S)) return;
+    pifStepMotor_SetReductionGearRatio(&g_motor, STEP_MOTOR_REDUCTION_GEAR_RATIO);
+    g_motor.act_set_step = actSetStep;
+
+	if (!appSetup()) return;
+
+    pifLog_Printf(LT_INFO, "Task=%d/%d Timer1ms=%d/%d Timer200us=%d/%d\n", pifTaskManager_Count(), TASK_SIZE,
+    		pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE, pifTimerManager_Count(&g_timer_200us), TIMER_200US_SIZE);
 }
 
 // The loop function is called in an endless loop

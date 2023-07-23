@@ -1,14 +1,9 @@
 #include "linker.h"
 
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 #include "interpreter/pif_basic.h"
 
 
-#define TASK_SIZE		10
-#define TIMER_1MS_SIZE	3
-
-
+PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 
 static int _cmdBasicExecute(int argc, char* argv[]);
@@ -189,32 +184,13 @@ static void _evtComplete(PifBasic* p_owner)
 	pifLog_Printf(LT_NONE, "\n\tProcess Time = %ldms\n", p_owner->_process_time);
 }
 
-void appSetup()
+BOOL appSetup()
 {
-	PifUart uart_log;
-	PifLed led_l;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-	pif_Init(NULL);
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;					// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
-
-	if (!pifUart_Init(&uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&uart_log, TM_PERIOD_MS, 10, "UartLog")) return;			// 10ms
-	uart_log.act_receive_data = actLogReceiveData;
-	uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&uart_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
-
-    if (!pifLed_Init(&led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&led_l, 500)) return;										// 500ms
-    pifLed_SBlinkOn(&led_l, 1 << 0);
-
-	pifBasic_Init(p_process, _evtComplete);
-
-	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
+    pifBasic_Init(p_process, _evtComplete);
+    return TRUE;
 }

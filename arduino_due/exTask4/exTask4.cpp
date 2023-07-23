@@ -1,14 +1,17 @@
 // Do not remove the include below
 #include "exTask4.h"
-#include "appMain.h"
+
+#include "core/pif_task.h"
 
 
 #define PIN_LED_L				13
 #define PIN_LED_RED				23
 #define PIN_LED_YELLOW			25
 
+#define TASK_SIZE				3
 
-uint16_t taskLedToggle(PifTask *pstTask)
+
+static uint16_t taskLedToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -19,7 +22,7 @@ uint16_t taskLedToggle(PifTask *pstTask)
 	return 0;
 }
 
-uint16_t taskLedRedToggle(PifTask *pstTask)
+static uint16_t taskLedRedToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -30,7 +33,7 @@ uint16_t taskLedRedToggle(PifTask *pstTask)
 	return 0;
 }
 
-uint16_t taskLedYellowToggle(PifTask *pstTask)
+static uint16_t taskLedYellowToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -56,7 +59,13 @@ void setup()
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 
-	appSetup(micros);
+	pif_Init(micros);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
+    if (!pifTaskManager_Add(TM_ALWAYS, 100, taskLedRedToggle, NULL, TRUE)) return;			// 100%
+    if (!pifTaskManager_Add(TM_PERIOD_US, 200, taskLedYellowToggle, NULL, TRUE)) return;	// 200us
 }
 
 // The loop function is called in an endless loop

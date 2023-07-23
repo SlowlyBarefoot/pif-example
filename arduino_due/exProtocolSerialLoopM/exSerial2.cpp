@@ -1,7 +1,5 @@
-#include "exProtocolSerialLoopM.h"
 #include "appMain.h"
 
-#include "core/pif_log.h"
 #include "protocol/pif_protocol.h"
 
 
@@ -127,11 +125,6 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL exSerial2_Setup()
 {
-	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO)) return FALSE;
-    if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return FALSE;	// 1ms
-    g_serial2.act_receive_data = actSerial2ReceiveData;
-    g_serial2.act_send_data = actSerial2SendData;
-
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_MEDIUM, stProtocolQuestions2)) return FALSE;
     pifProtocol_AttachUart(&s_protocol, &g_serial2);
     s_protocol.evt_error = _evtProtocolError;

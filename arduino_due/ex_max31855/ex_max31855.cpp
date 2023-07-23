@@ -1,28 +1,31 @@
 // Do not remove the include below
-#include <SPI.h>
-
 #include "ex_max31855.h"
 #include "app_main.h"
+
+#include <SPI.h>
 
 
 #define PIN_LED_L				13
 
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			2
 
-uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
+
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
 {
 	(void)p_uart;
 
     return Serial.write((char *)p_buffer, size);
 }
 
-void actLedLState(PifId id, uint32_t state)
+static void actLedLState(PifId id, uint32_t state)
 {
 	(void)id;
 
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-BOOL actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
+static BOOL actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
 {
 	uint16_t i;
 
@@ -64,6 +67,8 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 
 	SPI.begin();
@@ -72,7 +77,27 @@ void setup()
 
 	Serial.begin(115200);
 
-    appSetup();
+    pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
+    s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) return;
+    g_spi_port.act_transfer = actTransfer;
+
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+
+    if (!appSetup()) return;
+
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

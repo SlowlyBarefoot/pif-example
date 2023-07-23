@@ -1,20 +1,10 @@
 #include "appMain.h"
-#include "exDutyMotorPos.h"
-
-#include "core/pif_log.h"
-#include "display/pif_led.h"
-#include "motor/pif_duty_motor_pos.h"
-#include "sensor/pif_sensor_switch.h"
 
 
-#define SWITCH_COUNT         	3
-
-
-PifPulse g_encoder;
+PifLed g_led_l;
+PifDutyMotorPos g_motor;
+PifSensorSwitch g_switch[SWITCH_COUNT];
 PifTimerManager g_timer_1ms;
-
-static PifDutyMotorPos s_motor;
-static PifSensorSwitch s_switch[SWITCH_COUNT];
 
 static int CmdDutyMotorTest(int argc, char *argv[]);
 
@@ -33,7 +23,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 const PifDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 		{
 				MM_D_CCW | MM_RT_TIME | MM_CFPS_YES,
-				NULL, NULL, &s_switch[0].parent,
+				NULL, NULL, &g_switch[0].parent,
 				0, 0,
 				50, 0,
 				0, 0, 100,
@@ -41,7 +31,7 @@ const PifDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 		},
 		{
 				MM_D_CW | MM_RT_TIME | MM_CFPS_YES,
-				NULL, NULL, &s_switch[2].parent,
+				NULL, NULL, &g_switch[2].parent,
 				0, 0,
 				50, 0,
 				0, 0, 100,
@@ -49,7 +39,7 @@ const PifDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 		},
 		{
 				MM_D_CW | MM_PC_YES | MM_CIAS_YES,
-				&s_switch[0].parent, &s_switch[1].parent, &s_switch[2].parent,
+				&g_switch[0].parent, &g_switch[1].parent, &g_switch[2].parent,
 				50, 50,
 				200, 50000,
 				40, 50, 500,
@@ -57,7 +47,7 @@ const PifDutyMotorPosStage s_stDutyMotorStages[DUTY_MOTOR_STAGE_COUNT] = {
 		},
 		{
 				MM_D_CCW | MM_PC_YES | MM_CIAS_YES,
-				&s_switch[2].parent, &s_switch[1].parent, &s_switch[0].parent,
+				&g_switch[2].parent, &g_switch[1].parent, &g_switch[0].parent,
 				50, 50,
 				200, 50000,
 				40, 50, 500,
@@ -84,12 +74,12 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 			int value = atoi(argv[1]);
 			if (!value) {
 				s_stDutyMotorTest.ucStage = 0;
-				pifDutyMotorPos_Stop(&s_motor);
+				pifDutyMotorPos_Stop(&g_motor);
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 			else if (value <= DUTY_MOTOR_STAGE_COUNT) {
 				if (!s_stDutyMotorTest.ucStage) {
-					if (pifDutyMotorPos_Start(&s_motor, value - 1, 2000)) {
+					if (pifDutyMotorPos_Start(&g_motor, value - 1, 2000)) {
 						s_stDutyMotorTest.ucStage = value;
 					}
 				}
@@ -105,13 +95,13 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 		if (!strcmp(argv[0], "off")) {
 			pifLog_Printf(LT_INFO, "Stop");
 			s_stDutyMotorTest.ucStage = 0;
-			pifDutyMotorPos_Stop(&s_motor);
+			pifDutyMotorPos_Stop(&g_motor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[0], "em")) {
 			pifLog_Printf(LT_INFO, "Emergency");
 			s_stDutyMotorTest.ucStage = 0;
-			pifDutyMotorPos_Emergency(&s_motor);
+			pifDutyMotorPos_Emergency(&g_motor);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[0], "init")) {
@@ -166,12 +156,12 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 	case 2:
 		if (!s_stDutyMotorTest.ucStage) {
-			if (s_switch[0].parent._curr_state == ON) {
+			if (g_switch[0].parent._curr_state == ON) {
 				pifLog_Printf(LT_INFO, "InitPos: Find");
 				s_stDutyMotorTest.ucInitPos = 0;
 			}
 			else {
-				if (pifDutyMotorPos_Start(&s_motor, 0, unTime)) {
+				if (pifDutyMotorPos_Start(&g_motor, 0, unTime)) {
 					s_stDutyMotorTest.ucStage = 1;
 					s_stDutyMotorTest.ucInitPos = 3;
 					unTime += 200;
@@ -185,7 +175,7 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 
 	case 3:
 		if (!s_stDutyMotorTest.ucStage) {
-			if (pifDutyMotorPos_Start(&s_motor, 1, unTime)) {
+			if (pifDutyMotorPos_Start(&g_motor, 1, unTime)) {
 				s_stDutyMotorTest.ucStage = 2;
 				s_stDutyMotorTest.ucInitPos = 2;
 				unTime += 200;
@@ -204,52 +194,27 @@ static uint16_t _taskInitPos(PifTask *pstTask)
 	return 0;
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-	static PifLed s_led_l;
 	PifTask* p_task;
 
-	pif_Init(act_timer1us);
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-    if (!pifTaskManager_Init(8)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;							// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;							// 1ms
-    s_uart_log.act_receive_data = actLogReceiveData;
-    s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;												// 500ms
-
-    if (!pifPulse_Init(&g_encoder, PIF_ID_AUTO)) return;
-
-    if (!pifDutyMotorPos_Init(&s_motor, PIF_ID_AUTO, &g_timer_1ms, 255, 100, &g_encoder)) return;	// 100ms
-    pifDutyMotorPos_AddStages(&s_motor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
-    s_motor.parent.act_set_duty = actSetDuty;
-    s_motor.parent.act_set_direction = actSetDirection;
-    s_motor.parent.act_operate_break = actOperateBreak;
-    s_motor.parent.evt_stable = _evtStable;
-    s_motor.parent.evt_stop = _evtStop;
-    s_motor.parent.evt_error = _evtError;
+    pifDutyMotorPos_AddStages(&g_motor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
+    g_motor.parent.evt_stable = _evtStable;
+    g_motor.parent.evt_stop = _evtStop;
+    g_motor.parent.evt_error = _evtError;
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&s_switch[i], PIF_ID_SWITCH + i, 0, actPhotoInterruptAcquire, &s_motor)) return;
-	    if (!pifSensorSwitch_AttachTaskAcquire(&s_switch[i], TM_PERIOD_MS, 1, TRUE)) return;		// 1ms
+    	g_switch[i].parent.p_issuer = &g_motor;
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
     }
 
     p_task = pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE);						// 10ms
-    if (!p_task) return;
+    if (!p_task) return FALSE;
     p_task->name = "InitPos";
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }

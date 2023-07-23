@@ -1,16 +1,11 @@
 #include <stdlib.h>
 
 #include "appMain.h"
-#include "exTerminal.h"
-
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 
 
+PifLed s_led_l;
 PifTimerManager g_timer_1ms;
-PifUart g_uart_log;
 
-static PifLed s_led_l;
 
 static BOOL bBlink = FALSE;
 static int nPeriod = 500;
@@ -60,32 +55,16 @@ static int _CmdBlinkControl(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-void _evtLogControlChar(char ch)
+static void _evtLogControlChar(char ch)
 {
 	pifLog_Printf(LT_INFO, "Contorl Char = %x\n", ch);
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
-    pif_Init(act_timer1us);
-
-    if (!pifTaskManager_Init(3)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;		// 1000us
-
-	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) return;		// 1ms
-    g_uart_log.act_receive_data = actLogReceiveData;
-    g_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&g_uart_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
     pifLog_AttachEvent(_evtLogControlChar);
 
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, nPeriod)) return;
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    if (!pifLed_AttachSBlink(&s_led_l, nPeriod)) return FALSE;
+    return TRUE;
 }

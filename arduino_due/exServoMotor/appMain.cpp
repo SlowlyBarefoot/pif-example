@@ -1,11 +1,7 @@
 #include "appMain.h"
-#include "exServoMotor.h"
-
-#include "core/pif_log.h"
-#include "core/pif_timer.h"
-#include "display/pif_led.h"
 
 
+PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 PifTimerManager g_timer_100us;
 PifTimer *g_pstPwm = NULL;
@@ -44,38 +40,11 @@ static uint16_t _taskServoMotor(PifTask *pstTask)
     return 0;
 }
 
-void appSetup()
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-	static PifLed s_led_l;
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 700, _taskServoMotor, NULL, TRUE)) return FALSE;	// 1000ms
 
-	pif_Init(NULL);
-
-    if (!pifTaskManager_Init(4)) return;
-
-	pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;				// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;				// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
-    if (!pifTimerManager_Init(&g_timer_100us, PIF_ID_AUTO, 100, 1)) return;				// 100us
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;									// 500ms
-
-    g_pstPwm = pifTimerManager_Add(&g_timer_100us, TT_PWM);
-    if (!g_pstPwm) return;
-    g_pstPwm->act_pwm = actPulsePwm;
-
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 700, _taskServoMotor, NULL, TRUE)) return;	// 1000ms
-
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer 1ms=%d Timer 100us=%d\n", pifTaskManager_Count(),
-			pifTimerManager_Count(&g_timer_1ms), pifTimerManager_Count(&g_timer_100us));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }

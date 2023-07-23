@@ -9,14 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exTimer3 here
 
-#include "core/pif.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project exTimer3 here
 
-void actLedRGBState(PifId usPifId, uint32_t unState);
+
+
 
 //Do not add code below this line
 #endif /* _exTimer3_H_ */

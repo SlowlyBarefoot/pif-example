@@ -5,22 +5,25 @@
 
 #define PIN_LED_L				13
 
+#define TASK_SIZE				4
+#define TIMER_1MS_SIZE			1
 
-void actLedLState(PifId usPifId, uint32_t unState)
+
+static void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData)
+static BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData)
 {
 	int rxData;
 
@@ -34,14 +37,14 @@ BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData)
 	return FALSE;
 }
 
-uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)pstOwner;
 
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-BOOL actGpsReceiveData(PifUart *pstOwner, uint8_t *pucData)
+static BOOL actGpsReceiveData(PifUart *pstOwner, uint8_t *pucData)
 {
 	int rxData;
 
@@ -67,12 +70,37 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(115200);
 	Serial2.begin(9600);
 
-    appSetup();
+	pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;			// 1ms
+	s_uart_log.act_receive_data = actLogReceiveData;
+	s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
+
+	if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD_MS, 1, "UartGPS")) return;			// 1ms
+    g_uart_gps.act_receive_data = actGpsReceiveData;
+    g_uart_gps.act_send_data = actGpsSendData;
+
+    if (!appSetup()) return;
+
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

@@ -3,12 +3,13 @@
 
 
 #include "core/pif_timer.h"
+#include "core/pif_log.h"
 
 
 extern PifTimerManager g_timer_1ms;
 
 
-void appSetup(PifActTimer1us act_timer1us);
+BOOL appSetup();
 
 
 #endif	// APP_MAIN_H
