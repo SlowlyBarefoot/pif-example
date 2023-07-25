@@ -6,7 +6,7 @@
 #include "display/pif_led.h"
 
 
-extern PifLed s_led_l;
+extern PifLed g_led_l;
 extern PifTimerManager g_timer_1ms;
 
 

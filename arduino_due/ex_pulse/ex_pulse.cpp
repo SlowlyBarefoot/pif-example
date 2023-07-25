@@ -59,16 +59,16 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;				// 1ms
-    s_uart_log.act_send_data = actLogSendData;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
+	s_uart_log.act_send_data = actLogSendData;
 
 	pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;		// 100ms
+	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;			// 100ms
 
 	if (!appSetup()) return;
 

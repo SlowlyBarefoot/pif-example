@@ -86,17 +86,17 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;				// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
 	s_uart_log.act_send_data = actLogSendData;
 	s_uart_log.act_receive_data = actLogReceiveData;
 
 	pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-    g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+	g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!g_timer_led) return;
     pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
 

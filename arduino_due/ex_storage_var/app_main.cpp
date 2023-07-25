@@ -3,7 +3,7 @@
 
 PifStorageVar g_storage;
 PifTimerManager g_timer_1ms;
-PifTimer *g_timer_led;
+PifTimer* g_timer_led;
 
 static int _CmdFormat(int argc, char *argv[]);
 static int _CmdCreate(int argc, char *argv[]);

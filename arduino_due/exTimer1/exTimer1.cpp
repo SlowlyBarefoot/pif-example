@@ -8,16 +8,13 @@
 
 // Do not remove the include below
 #include "exTimer1.h"
-
-#include "core/pif_timer.h"
+#include "appMain.h"
 
 
 #define PIN_LED_L				13
 
 #define TASK_SIZE				1
-
-
-PifTimerManager g_timer_1ms;
+#define TIMER_1MS_SIZE			1
 
 
 extern "C" {
@@ -29,7 +26,7 @@ extern "C" {
 	}
 }
 
-void evtLedToggle(void *pvIssuer)
+static void evtLedToggle(void *pvIssuer)
 {
 	static BOOL sw = LOW;
 
@@ -42,20 +39,19 @@ void evtLedToggle(void *pvIssuer)
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PifTimer *pstTimer1ms;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
 	pif_Init(NULL);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-    pstTimer1ms = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
-    if (!pstTimer1ms) return;
-    pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
-    pifTimer_Start(pstTimer1ms, 500);										// 500ms
+    g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+    if (!g_timer_led) return;
+    pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
+
+    if (!appSetup()) return;
 }
 
 // The loop function is called in an endless loop

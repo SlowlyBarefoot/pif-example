@@ -1,7 +1,7 @@
 #include "app_main.h"
 
-#include "sensor/pif_imu_sensor.h"
 #include "sensor/pif_gy86.h"
+#include "sensor/pif_imu_sensor.h"
 
 #include <math.h>
 
@@ -14,12 +14,12 @@ static PifGy86 s_gy86;
 static PifImuSensor s_imu_sensor;
 
 
-double getSeaLevel(double pressure, double altitude)
+static double getSeaLevel(double pressure, double altitude)
 {
     return ((double)pressure / pow(1.0f - ((double)altitude / 44330.0f), 5.255f));
 }
 
-double getAltitude(double pressure, double seaLevelPressure)
+static double getAltitude(double pressure, double seaLevelPressure)
 {
     return (44330.0f * (1.0f - pow((double)pressure / (double)seaLevelPressure, 0.1902949f)));
 }
@@ -96,7 +96,7 @@ static uint16_t _taskMpu60x0(PifTask *pstTask)
 	return 0;
 }
 
-void _evtBaroRead(float pressure, float temperature)
+static void _evtBaroRead(float pressure, float temperature)
 {
 	pifLog_Printf(LT_NONE, "\nBaro Temp : %2f DegC", temperature);
 	pifLog_Printf(LT_NONE, "\nBaro : %2f hPa, %f m", pressure, getAltitude(pressure, 103100));

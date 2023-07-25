@@ -3,9 +3,8 @@
 #include "appMain.h"
 
 
-PifLed s_led_l;
+PifLed g_led_l;
 PifTimerManager g_timer_1ms;
-
 
 static BOOL bBlink = FALSE;
 static int nPeriod = 500;
@@ -33,20 +32,20 @@ static int _CmdBlinkControl(int argc, char *argv[])
 		switch (argv[0][0]) {
 		case 'F':
 		case 'f':
-		    pifLed_SBlinkOff(&s_led_l, 1 << 0, OFF);
+		    pifLed_SBlinkOff(&g_led_l, 1 << 0, OFF);
 		    bBlink = FALSE;
 			break;
 
 		case 'T':
 		case 't':
-		    pifLed_SBlinkOn(&s_led_l, 1 << 0);
+		    pifLed_SBlinkOn(&g_led_l, 1 << 0);
 		    bBlink = TRUE;
 			break;
 
 		default:
 			nPeriod = atoi(argv[0]);
 			if (nPeriod) {
-				pifLed_ChangeBlinkPeriod(&s_led_l, nPeriod);
+				pifLed_ChangeBlinkPeriod(&g_led_l, nPeriod);
 			}
 			else return PIF_LOG_CMD_INVALID_ARG;
 		}
@@ -65,6 +64,6 @@ BOOL appSetup()
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
     pifLog_AttachEvent(_evtLogControlChar);
 
-    if (!pifLed_AttachSBlink(&s_led_l, nPeriod)) return FALSE;
-    return TRUE;
+	if (!pifLed_AttachSBlink(&g_led_l, nPeriod)) return FALSE;
+	return TRUE;
 }

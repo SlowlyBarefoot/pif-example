@@ -11,7 +11,7 @@
 extern PifI2cPort g_i2c_port;
 extern PifStorageVar g_storage;
 extern PifTimerManager g_timer_1ms;
-extern PifTimer *g_timer_led;
+extern PifTimer* g_timer_led;
 
 
 BOOL appSetup();

@@ -2,15 +2,16 @@
 #define APP_MAIN_H
 
 
-#include "communication/pif_uart.h"
+#include "core/pif_log.h"
 #include "core/pif_timer.h"
+#include "sound/pif_buzzer.h"
 
 
+extern PifBuzzer g_buzzer;
 extern PifTimerManager g_timer_1ms;
-extern PifUart g_uart_log;
 
 
-void appSetup();
+BOOL appSetup();
 
 
 #endif	// APP_MAIN_H

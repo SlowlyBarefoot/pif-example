@@ -102,10 +102,10 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "Log")) return;				// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
@@ -118,12 +118,12 @@ void setup()
     }
 
 	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "Serial1")) return;			// 1ms
+    if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "UartSerial1")) return;			// 1ms
     g_serial1.act_receive_data = actSerial1ReceiveData;
     g_serial1.act_send_data = actSerial1SendData;
 
 	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "Serial2")) return;			// 1ms
+    if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return;			// 1ms
     g_serial2.act_receive_data = actSerial2ReceiveData;
     g_serial2.act_send_data = actSerial2SendData;
 

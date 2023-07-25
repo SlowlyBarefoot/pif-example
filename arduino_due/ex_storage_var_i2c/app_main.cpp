@@ -4,7 +4,7 @@
 PifI2cPort g_i2c_port;
 PifStorageVar g_storage;
 PifTimerManager g_timer_1ms;
-PifTimer *g_timer_led;
+PifTimer* g_timer_led;
 
 static int _CmdFormat(int argc, char *argv[]);
 static int _CmdCreate(int argc, char *argv[]);
@@ -211,7 +211,7 @@ BOOL appSetup()
 {
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-    pifTimer_Start(g_timer_led, 500);																			// 500ms
+    pifTimer_Start(g_timer_led, 500);									// 500ms
 
 	if (!pifStorageVar_IsFormat(&g_storage.parent)) {
 		pifLog_Printf(LT_INFO, "Storage Init : EC=%d", pif_error);

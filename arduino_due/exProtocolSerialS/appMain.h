@@ -20,12 +20,12 @@ typedef struct {
 	PifNoiseFilterBit stPushSwitchFilter;
 } ProtocolTest;
 
-extern ProtocolTest g_stProtocolTest[SWITCH_COUNT];
-
 
 extern PifLed g_led_l;
 extern PifUart g_serial;
 extern PifTimerManager g_timer_1ms;
+
+extern ProtocolTest g_stProtocolTest[SWITCH_COUNT];
 
 
 BOOL appSetup();

@@ -2,13 +2,18 @@
 #define APP_MAIN_H
 
 
+#include "core/pif_log.h"
 #include "core/pif_timer.h"
+#include "display/pif_led.h"
 
 
+extern PifLed g_led_l;
 extern PifTimerManager g_timer_1ms;
+extern PifUart g_uart_ibus;
+extern PifUart g_uart_sumd;
 
 
-void appSetup(PifActTimer1us act_timer1us);
+BOOL appSetup();
 
 
 #endif	// APP_MAIN_H

@@ -13,7 +13,6 @@ static void _evtHcSr04Distance(int32_t distance)
 BOOL appSetup()
 {
 	g_hcsr04.evt_read = _evtHcSr04Distance;
-
 	if (!pifHcSr04_StartTrigger(&g_hcsr04, 70)) return FALSE;		// 70ms
 	return TRUE;
 }

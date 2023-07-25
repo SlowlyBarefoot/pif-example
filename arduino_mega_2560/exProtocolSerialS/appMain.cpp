@@ -1,16 +1,14 @@
 #include "appMain.h"
-#include "exProtocolSerialS.h"
 
-#include "core/pif_log.h"
-#include "display/pif_led.h"
-#include "filter/pif_noise_filter_bit.h"
 #include "protocol/pif_protocol.h"
-#include "sensor/pif_sensor_switch.h"
 
 
+PifLed g_led_l;
+PifUart g_serial;
 PifTimerManager g_timer_1ms;
 
-static PifUart s_serial;
+ProtocolTest g_stProtocolTest[SWITCH_COUNT];
+
 static PifProtocol s_protocol;
 
 static void _fnProtocolQuestion20(PifProtocolPacket *pstPacket);
@@ -30,13 +28,6 @@ const PifProtocolRequest stProtocolRequests[] = {
 		{ 0x31, PF_RESPONSE_NO | PF_LOG_PRINT_YES, _fnProtocolResponse31, 3, 300 },
 		{ 0, PF_DEFAULT, NULL, 0, 0 }
 };
-
-static struct {
-	PifSensorSwitch stPushSwitch;
-	uint8_t ucDataCount;
-	uint8_t ucData[8];
-	PifNoiseFilterBit stPushSwitchFilter;
-} s_stProtocolTest[SWITCH_COUNT];
 
 
 static void _fnProtocolPrint(PifProtocolPacket *pstPacket, const char *pcName)
@@ -59,9 +50,9 @@ static void _fnCompareData(PifProtocolPacket *pstPacket, uint8_t ucIndex)
 {
 	uint16_t i;
 
-	if (pstPacket->data_count == s_stProtocolTest[ucIndex].ucDataCount) {
+	if (pstPacket->data_count == g_stProtocolTest[ucIndex].ucDataCount) {
 		for (i = 0; i < pstPacket->data_count; i++) {
-			if (pstPacket->p_data[i] != s_stProtocolTest[ucIndex].ucData[i]) break;
+			if (pstPacket->p_data[i] != g_stProtocolTest[ucIndex].ucData[i]) break;
 		}
 		if (i < pstPacket->data_count) {
 			pifLog_Printf(LT_INFO, "Different data");
@@ -71,7 +62,7 @@ static void _fnCompareData(PifProtocolPacket *pstPacket, uint8_t ucIndex)
 		}
 	}
 	else {
-		pifLog_Printf(LT_ERROR, "Different count: %u != %u", s_stProtocolTest[ucIndex].ucDataCount, pstPacket->data_count);
+		pifLog_Printf(LT_ERROR, "Different count: %u != %u", g_stProtocolTest[ucIndex].ucDataCount, pstPacket->data_count);
 	}
 }
 
@@ -116,66 +107,41 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 	(void)p_issuer;
 
 	if (state) {
-		s_stProtocolTest[index].ucDataCount = rand() % 8;
-		for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) s_stProtocolTest[index].ucData[i] = rand() & 0xFF;
-		if (!pifProtocol_MakeRequest(&s_protocol, &stProtocolRequests[index], s_stProtocolTest[index].ucData, s_stProtocolTest[index].ucDataCount)) {
+		g_stProtocolTest[index].ucDataCount = rand() % 8;
+		for (int i = 0; i < g_stProtocolTest[index].ucDataCount; i++) g_stProtocolTest[index].ucData[i] = rand() & 0xFF;
+		if (!pifProtocol_MakeRequest(&s_protocol, &stProtocolRequests[index], g_stProtocolTest[index].ucData, g_stProtocolTest[index].ucDataCount)) {
 			pifLog_Printf(LT_ERROR, "PushSwitchChange(%d): DC=%d E=%d", index, s_protocol._id, pif_error);
 		}
 		else {
-			pifLog_Printf(LT_INFO, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_protocol._id, s_stProtocolTest[index].ucDataCount);
-			if (s_stProtocolTest[index].ucDataCount) {
+			pifLog_Printf(LT_INFO, "PushSwitchChange(%d): DC=%d CNT=%u", index, s_protocol._id, g_stProtocolTest[index].ucDataCount);
+			if (g_stProtocolTest[index].ucDataCount) {
 				pifLog_Printf(LT_NONE, "\nData:");
-				for (int i = 0; i < s_stProtocolTest[index].ucDataCount; i++) {
-					pifLog_Printf(LT_NONE, " %u", s_stProtocolTest[index].ucData[i]);
+				for (int i = 0; i < g_stProtocolTest[index].ucDataCount; i++) {
+					pifLog_Printf(LT_NONE, " %u", g_stProtocolTest[index].ucData[i]);
 				}
 			}
 		}
 	}
 }
 
-void appSetup()
+BOOL appSetup()
 {
 	int i;
-	static PifUart s_uart_log;
-	static PifLed s_led_l;
-
-    pif_Init(NULL);
-
-    if (!pifTaskManager_Init(5)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 3)) return;											// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;										// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;																// 500ms
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-	    if (!pifNoiseFilterBit_Init(&s_stProtocolTest[i].stPushSwitchFilter, 7)) return;
+	    if (!pifNoiseFilterBit_Init(&g_stProtocolTest[i].stPushSwitchFilter, 7)) return FALSE;
 
-		if (!pifSensorSwitch_Init(&s_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire, NULL)) return;
-	    if (!pifSensorSwitch_AttachTaskAcquire(&s_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return;	// 10ms
-		pifSensor_AttachEvtChange(&s_stProtocolTest[i].stPushSwitch.parent, _evtPushSwitchChange);
-		s_stProtocolTest[i].stPushSwitch.p_filter = &s_stProtocolTest[i].stPushSwitchFilter.parent;
-	    s_stProtocolTest[i].ucDataCount = 0;
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
+		g_stProtocolTest[i].stPushSwitch.parent.evt_change = _evtPushSwitchChange;
+		g_stProtocolTest[i].stPushSwitch.p_filter = &g_stProtocolTest[i].stPushSwitchFilter.parent;
+	    g_stProtocolTest[i].ucDataCount = 0;
     }
 
-	if (!pifUart_Init(&s_serial, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, "UartSerial")) return;										// 1ms
-    s_serial.act_receive_data = actSerialReceiveData;
-    s_serial.act_send_data = actSerialSendData;
-
-    if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions)) return;
-    pifProtocol_AttachUart(&s_protocol, &s_serial);
+    if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions)) return FALSE;
+    pifProtocol_AttachUart(&s_protocol, &g_serial);
     s_protocol.evt_error = _evtProtocolError;
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																	// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }

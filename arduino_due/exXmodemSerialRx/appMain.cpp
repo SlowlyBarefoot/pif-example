@@ -34,13 +34,13 @@ BOOL appSetup()
 {
 	static PifXmodem s_xmodem;
 
-    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return FALSE;
-    pifXmodem_AttachUart(&s_xmodem, &g_serial);
-    pifXmodem_AttachEvtRxReceive(&s_xmodem, _evtXmodemRxReceive);
-
     if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
 	g_push_switch.parent.evt_change = _evtPushSwitchChange;
 	g_push_switch.parent.p_issuer = &s_xmodem;
+
+    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return FALSE;
+    pifXmodem_AttachUart(&s_xmodem, &g_serial);
+    pifXmodem_AttachEvtRxReceive(&s_xmodem, _evtXmodemRxReceive);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);

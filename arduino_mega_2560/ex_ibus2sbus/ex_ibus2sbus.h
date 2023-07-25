@@ -9,17 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project ex_ibus2sbus here
 
-#include "communication/pif_uart.h"
 
 //end of add your includes here
 
 
 //add your function definitions for the project ex_ibus2sbus here
 
-uint16_t actLogSendData(PifUart* p_owner, uint8_t* p_buffer, uint16_t size);
-void actLedLState(PifId id, uint32_t state);
-BOOL actSerial1ReceiveData(PifUart* p_owner, uint8_t* p_data);
-uint16_t actSerial2SendData(PifUart* p_owner, uint8_t* p_buffer, uint16_t size);
+
+
 
 //Do not add code below this line
 #endif /* _ex_ibus2sbus_H_ */

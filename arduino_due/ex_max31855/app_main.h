@@ -4,7 +4,6 @@
 
 #include "communication/pif_spi.h"
 #include "core/pif_log.h"
-#include "core/pif_timer.h"
 #include "display/pif_led.h"
 
 
