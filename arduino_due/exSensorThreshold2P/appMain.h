@@ -3,7 +3,6 @@
 
 
 #include "core/pif_log.h"
-#include "filter/pif_noise_filter_uint16.h"
 #include "sensor/pif_sensor_digital.h"
 
 

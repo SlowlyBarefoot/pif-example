@@ -30,9 +30,11 @@ static void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValue
 
 BOOL appSetup()
 {
+    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
     if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_RATIO, 3, TRUE)) return FALSE;	// 3%
     g_push_switch.parent.evt_change = evtPushSwitchChange;
 
+	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
 	if (!pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, TM_RATIO, 3, TRUE)) return FALSE;	// 3%
 	g_tilt_switch.parent.evt_change = evtTiltSwitchChange;
 

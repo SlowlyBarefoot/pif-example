@@ -21,11 +21,23 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static void actLedLState(PifId pif_id, uint32_t state)
+static void _evtLedToggle(void *pvIssuer)
 {
-	(void)pif_id;
+	static BOOL sw = LOW;
+	static int count = 19;
 
-	digitalWrite(PIN_LED_L, state & 1);
+	(void)pvIssuer;
+
+	digitalWrite(PIN_LED_L, sw);
+	sw ^= 1;
+
+	pifLog_Printf(LT_INFO, "LED: %u", sw);
+
+	if (count) count--;
+	else {
+	    pifLog_PrintInBuffer();
+	    count = 19;
+	}
 }
 
 extern "C" {
@@ -52,15 +64,16 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-    if (!pifLog_InitStatic(LOG_BUFFER_SIZE, s_aucLog)) return;
-
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
 	s_uart_log.act_send_data = actLogSendData;
 
+    if (!pifLog_InitStatic(LOG_BUFFER_SIZE, s_aucLog)) return;
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+	g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+    if (!g_timer_led) return;
+    pifTimer_AttachEvtFinish(g_timer_led, _evtLedToggle, NULL);
 
     if (!appSetup()) return;
 

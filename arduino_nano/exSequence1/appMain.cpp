@@ -1,7 +1,5 @@
 #include "appMain.h"
-#include "exSequence1.h"
 
-#include "core/pif_log.h"
 #include "core/pif_sequence.h"
 
 
@@ -148,32 +146,14 @@ static uint16_t _taskSequence(PifTask *pstTask)
 	return 0;
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-
-	pif_Init(act_timer1us);
-
-    if (!pifTaskManager_Init(5)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
     if (!pifSequence_Init(&s_sequence, PIF_ID_AUTO, &g_timer_1ms, 10,
-    		s_astSequencePhaseList, NULL)) return;									// 10ms
+    		s_astSequencePhaseList, NULL)) return FALSE;									// 10ms
     s_sequence.evt_error = _evtSequenceError;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskSequence, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskSequence, NULL, TRUE)) return FALSE;	// 500ms
 
     pifSequence_Start(&s_sequence);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    return TRUE;
 }

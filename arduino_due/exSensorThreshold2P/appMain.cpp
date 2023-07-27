@@ -1,5 +1,7 @@
 #include "appMain.h"
 
+#include "filter/pif_noise_filter_uint16.h"
+
 
 #define USE_FILTER_AVERAGE		1
 

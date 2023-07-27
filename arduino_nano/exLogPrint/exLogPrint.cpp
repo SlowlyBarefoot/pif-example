@@ -13,17 +13,27 @@
 
 #define PIN_LED_L				13
 
+#define TASK_SIZE				2
+#define TIMER_1MS_SIZE			1
 
-uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actLedL(SWITCH sw)
+static void evtLedToggle(void *pvIssuer)
 {
+	static BOOL sw = LOW;
+
+	(void)pvIssuer;
+
 	digitalWrite(PIN_LED_L, sw);
+	sw ^= 1;
+
+	pifLog_Printf(LT_INFO, "LED: %u", sw);
 }
 
 static void sysTickHook()
@@ -35,6 +45,8 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 
 	MsTimer2::set(1, sysTickHook);
@@ -42,7 +54,26 @@ void setup()
 
 	Serial.begin(115200);
 
-	appSetup();
+	pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
+	s_uart_log.act_send_data = actLogSendData;
+
+	pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+    if (!g_timer_led) return;
+    pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
+
+	if (!appSetup()) return;
+
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

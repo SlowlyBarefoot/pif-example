@@ -9,23 +9,14 @@
 #include "Arduino.h"
 //add your includes for the project exTerminal here
 
-#include "communication/pif_uart.h"
 
 //end of add your includes here
 
-//#define USE_SERIAL
-#define USE_USART
 
 //add your function definitions for the project exTerminal here
 
-#ifdef USE_SERIAL
-uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t usSize);
-BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData);
-#endif
-#ifdef USE_USART
-BOOL actLogStartTransfer(PifUart* p_uart);
-#endif
-void actLedLState(PifId usPifId, uint32_t unState);
+
+
 
 //Do not add code below this line
 #endif /* _exTerminal_H_ */

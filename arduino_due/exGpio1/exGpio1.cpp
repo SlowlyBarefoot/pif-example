@@ -68,7 +68,7 @@ void setup()
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;	// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;		// 1ms
 	s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();

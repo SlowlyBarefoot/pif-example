@@ -87,10 +87,6 @@ void setup()
     if (!g_timer_switch) return;
     pifTimer_AttachEvtFinish(g_timer_switch, evtSwitchAcquire, NULL);
 
-    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, NULL)) return;
-
-	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF, NULL)) return;
-
 	if (!appSetup()) return;
 
     pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);

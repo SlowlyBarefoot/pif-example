@@ -1,18 +1,15 @@
 #include "appMain.h"
-#include "exGpsSerialNmea.h"
 
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 #include "gps/pif_gps_nmea.h"
-#include "sensor/pif_sensor_switch.h"
 
 
+PifLed g_led_l;
+PifSensorSwitch g_push_switch;
 PifTimerManager g_timer_1ms;
+PifUart g_uart_gps;
 
 static int s_print_data = 1;
-static PifUart s_uart_gps;
 static PifGpsNmea s_gps_nmea;
-static PifLed s_led_l;
 
 
 static void _evtGpsNmeaFrame(char* p_frame)
@@ -32,7 +29,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 	PifDegMin stLatDegMin, stLonDegMin;
 	PifDegMinSec stLatDegMinSec, stLonDegMinSec;
 
-	pifLed_PartToggle(&s_led_l, 1 << 1);
+	pifLed_PartToggle(&g_led_l, 1 << 1);
 
 	pifGps_ConvertLatitude2DegMin(pstOwner, &stLatDegMin);
 	pifGps_ConvertLongitude2DegMin(pstOwner, &stLonDegMin);
@@ -78,43 +75,17 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 	}
 }
 
-void appSetup()
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-	static PifSensorSwitch s_push_switch;
+    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10m
+	g_push_switch.parent.evt_change = _evtPushSwitchChange;
 
-	pif_Init(NULL);
-
-    if (!pifTaskManager_Init(4)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;					// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;										// 500ms
-
-	if (!pifSensorSwitch_Init(&s_push_switch, PIF_ID_AUTO, 0, actPushSwitchAcquire, NULL)) return;
-    if (!pifSensorSwitch_AttachTaskAcquire(&s_push_switch, TM_PERIOD_MS, 10, TRUE)) return;	// 10m
-	pifSensor_AttachEvtChange(&s_push_switch.parent, _evtPushSwitchChange);
-
-	if (!pifUart_Init(&s_uart_gps, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_gps, TM_PERIOD_MS, 1, "UartGPS")) return;				// 1ms
-    s_uart_gps.act_receive_data = actGpsReceiveData;
-    s_uart_gps.act_send_data = actGpsSendData;
-
-	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return;
-	pifGpsNmea_AttachUart(&s_gps_nmea, &s_uart_gps);
+	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return FALSE;
+	pifGpsNmea_AttachUart(&s_gps_nmea, &g_uart_gps);
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }

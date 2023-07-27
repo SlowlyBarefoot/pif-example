@@ -8,18 +8,22 @@
 #define PIN_LED_L				13
 #define PIN_LED_RED				2
 #define PIN_LED_YELLOW			3
+
 #define PIN_PUSH_SWITCH			5
 #define PIN_TILT_SWITCH			6
 
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			3
 
-uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-void actLedState(PifId usPifId, uint32_t unState)
+static void actLedState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
@@ -28,7 +32,7 @@ void actLedState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_YELLOW, (unState >> 2) & 1);
 }
 
-void evtSwitchAcquire(void *pvIssuer)
+static void evtSwitchAcquire(void *pvIssuer)
 {
 	(void)pvIssuer;
 
@@ -45,6 +49,8 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_LED_RED, OUTPUT);
 	pinMode(PIN_LED_YELLOW, OUTPUT);
@@ -56,7 +62,28 @@ void setup()
 
 	Serial.begin(115200); //Doesn't matter speed
 
-	appSetup();
+    pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
+	s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    if (!pifLed_Init(&g_led, PIF_ID_AUTO, &g_timer_1ms, 3, actLedState)) return;
+
+    g_timer_switch = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+    if (!g_timer_switch) return;
+    pifTimer_AttachEvtFinish(g_timer_switch, evtSwitchAcquire, NULL);
+
+	if (!appSetup()) return;
+
+    pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

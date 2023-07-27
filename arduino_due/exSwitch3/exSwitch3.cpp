@@ -75,10 +75,6 @@ void setup()
 
     if (!pifLed_Init(&g_led, PIF_ID_AUTO, &g_timer_1ms, 3, actLedState)) return;
 
-    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, NULL)) return;
-
-    if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF, NULL)) return;
-
     g_timer_switch = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!g_timer_switch) return;
     pifTimer_AttachEvtFinish(g_timer_switch, evtSwitchAcquire, NULL);

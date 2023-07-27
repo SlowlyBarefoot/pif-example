@@ -2,9 +2,10 @@
 #include "ex_gy86.h"
 #include "app_main.h"
 
-#include "core/pif_log.h"
-
 #include <MsTimer2.h>
+
+#define USE_I2C_WIRE
+
 #ifdef USE_I2C_WIRE
 	#include <Wire.h>
 #else
@@ -13,6 +14,9 @@
 
 
 #define PIN_LED_L				13
+
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			1
 
 
 #ifdef __PIF_DEBUG__
@@ -26,21 +30,21 @@ static void actTaskYield()
 
 #endif
 
-uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size)
+static uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size)
 {
 	(void)p_uart;
 
     return Serial.write((char *)p_buffer, size);
 }
 
-void actLedLState(PifId id, uint32_t state)
+static void actLedLState(PifId id, uint32_t state)
 {
 	(void)id;
 
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 #ifdef USE_I2C_WIRE
 	int i;
@@ -64,7 +68,7 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
     return IR_COMPLETE;
 }
 
-PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 #ifdef USE_I2C_WIRE
 	int i;
@@ -105,6 +109,8 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	static PifUart s_uart_log;
+
 	pinMode(PIN_LED_L, OUTPUT);
 #ifdef __PIF_DEBUG__
 	pinMode(52, OUTPUT);
@@ -122,12 +128,32 @@ void setup()
 	I2C_Init(I2C_CLOCK_400KHz);
 #endif
 
+    pif_Init(micros);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
 #ifdef __PIF_DEBUG__
 	pif_act_task_yield = actTaskYield;
 #endif
 
-    appSetup(NULL);
-    //appSetup(micros);
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
+    s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return;
+
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3, 16)) return;
+    g_i2c_port.act_read = actI2cRead;
+    g_i2c_port.act_write = actI2cWrite;
+
+    if (!appSetup()) return;
+
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

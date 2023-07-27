@@ -15,6 +15,9 @@
 
 #define PIN_LED_L				13
 
+#define TASK_SIZE				1
+#define TIMER_1MS_SIZE			1
+
 
 static void sysTickHook()
 {
@@ -22,7 +25,7 @@ static void sysTickHook()
 	pifTimerManager_sigTick(&g_timer_1ms);
 }
 
-void evtLedToggle(void *pvIssuer)
+static void evtLedToggle(void *pvIssuer)
 {
 	static BOOL sw = LOW;
 
@@ -40,7 +43,17 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	appSetup();
+	pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+    g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+    if (!g_timer_led) return;
+    pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
+
+    if (!appSetup()) return;
 }
 
 // The loop function is called in an endless loop

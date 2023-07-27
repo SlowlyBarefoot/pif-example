@@ -45,9 +45,11 @@ BOOL appSetup()
     if (!pifNoiseFilterBit_SetContinue(&s_tilt_switch_filter, 5)) return FALSE;
 #endif
 
+    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
 	if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD_MS, 100, TRUE)) return FALSE;	// 100ms
     g_push_switch.parent.evt_change = _evtPushSwitchChange;
 
+    if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
     if (!pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, TM_PERIOD_MS, 100, TRUE)) return FALSE;	// 100ms
 	g_tilt_switch.parent.evt_change = _evtTiltSwitchChange;
 

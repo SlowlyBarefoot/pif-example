@@ -3,11 +3,11 @@
 
 
 #include "core/pif_log.h"
-#include "display/pif_led.h"
+#include "core/pif_timer.h"
 
 
-extern PifLed g_led_l;
 extern PifTimerManager g_timer_1ms;
+extern PifTimer* g_timer_led;
 
 
 BOOL appSetup();

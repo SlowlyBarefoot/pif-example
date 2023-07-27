@@ -1,13 +1,8 @@
 #include "appMain.h"
-#include "exFnd4S.h"
-
-#include "core/pif_log.h"
-#include "display/pif_fnd.h"
 
 
+PifFnd g_fnd;
 PifTimerManager g_timer_1ms;
-
-static PifFnd s_fnd;
 
 const uint8_t c_ucUserChar[] = { 0x01, 0x08 };
 
@@ -25,7 +20,7 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	if (swRun) {
 		nRun++;
 		if (nRun >= 30) {
-			pifFnd_Stop(&s_fnd);
+			pifFnd_Stop(&g_fnd);
 			swRun = FALSE;
 			nRun = 0;
 		}
@@ -33,30 +28,30 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	else {
 		nRun++;
 		if (nRun >= 3) {
-			pifFnd_Start(&s_fnd);
+			pifFnd_Start(&g_fnd);
 			swRun = TRUE;
 			nRun = 0;
 		}
 	}
 	if (swFloat) {
-		s_fnd.sub_numeric_digits = 0;
+		g_fnd.sub_numeric_digits = 0;
 		int32_t nValue = rand() % 14000 - 2000;
 		if (nValue <= -1000) {
-			pifFnd_SetString(&s_fnd, (char *)"AAAA");
+			pifFnd_SetString(&g_fnd, (char *)"AAAA");
 		}
 		else if (nValue < 10000) {
-			pifFnd_SetInterger(&s_fnd, nValue);
+			pifFnd_SetInterger(&g_fnd, nValue);
 		}
 		else {
-			pifFnd_SetString(&s_fnd, (char *)"BBBB");
+			pifFnd_SetString(&g_fnd, (char *)"BBBB");
 		}
 
 		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%d", swBlink, swFloat, nValue);
 	}
 	else {
-		s_fnd.sub_numeric_digits = 1;
+		g_fnd.sub_numeric_digits = 1;
 		double dValue = (rand() % 11000 - 1000) / 10.0;
-		pifFnd_SetFloat(&s_fnd, dValue);
+		pifFnd_SetFloat(&g_fnd, dValue);
 
 		pifLog_Printf(LT_INFO, "Blink:%d Float:%d Value:%1f", swBlink, swFloat, dValue);
 	}
@@ -64,40 +59,21 @@ static uint16_t _taskFndTest(PifTask *pstTask)
 	nBlink = (nBlink + 1) % 20;
 	if (!nBlink) {
 		if (swBlink) {
-		    pifFnd_BlinkOff(&s_fnd);
+		    pifFnd_BlinkOff(&g_fnd);
 		}
 		else {
-		    pifFnd_BlinkOn(&s_fnd, 200);
+		    pifFnd_BlinkOn(&g_fnd, 200);
 		}
 		swBlink ^= 1;
 	}
 	return 0;
 }
 
-void appSetup()
+BOOL appSetup()
 {
-	static PifUart s_uart_log;
-
-    pif_Init(NULL);
-
-    if (!pifTaskManager_Init(5)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-    s_uart_log.act_send_data = actLogSendData;
-
-	if (!pifLog_AttachUart(&s_uart_log)) return;
-
     pifFnd_SetUserChar(c_ucUserChar, 2);
-    if (!pifFnd_Init(&s_fnd, PIF_ID_AUTO, &g_timer_1ms, 4, actFndDisplay)) return;
-    pifFnd_SetPeriodPerDigit(&s_fnd, 20);											// 20ms
+    pifFnd_SetPeriodPerDigit(&g_fnd, 20);													// 20ms
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;	// 500ms
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return;	// 1000ms
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return FALSE;	// 1000ms
+	return TRUE;
 }

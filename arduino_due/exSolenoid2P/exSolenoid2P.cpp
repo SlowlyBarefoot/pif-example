@@ -94,9 +94,9 @@ void setup()
     if (!pifSolenoid_Init(&g_solenoid, PIF_ID_AUTO, &g_timer_1ms,
     		ST_2POINT, 30, actSolenoidOrder)) return;										// 30ms
 
-	if (!appSetup()) return;
-
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
+
+	if (!appSetup()) return;
 
     pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }

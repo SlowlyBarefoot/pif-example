@@ -21,8 +21,11 @@
 #define PIN_LED_YELLOW			3
 #define PIN_LED_GREEN			4
 
+#define TASK_SIZE				1
+#define TIMER_1MS_SIZE			3
 
-void actLedRGBState(PifId usPifId, uint32_t unState)
+
+static void actLedRGBState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
@@ -47,7 +50,15 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	appSetup();
+	pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+    if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, &g_timer_1ms, 3, actLedRGBState)) return;
+
+	if (!appSetup()) return;
 }
 
 // The loop function is called in an endless loop

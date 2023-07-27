@@ -7,22 +7,25 @@
 
 #define PIN_LED_L				13
 
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			3
 
-void actLedLState(PifId usPifId, uint32_t unState)
+
+static void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
+static BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
 {
 	int rxData;
 
@@ -52,7 +55,20 @@ void setup()
 
 	Serial.begin(115200);
 
-	appSetup();
+    pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+
+	if (!pifUart_Init(&g_serial, PIF_ID_AUTO)) return;
+    if (!pifUart_AttachTask(&g_serial, TM_PERIOD_MS, 1, NULL)) return;						// 1ms
+    g_serial.act_receive_data = actSerialReceiveData;
+    g_serial.act_send_data = actSerialSendData;
+
+	if (!appSetup()) return;
 }
 
 // The loop function is called in an endless loop

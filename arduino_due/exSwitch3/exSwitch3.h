@@ -9,7 +9,6 @@
 #include "Arduino.h"
 //add your includes for the project exSwitch3 here
 
-#include "communication/pif_uart.h"
 
 //end of add your includes here
 

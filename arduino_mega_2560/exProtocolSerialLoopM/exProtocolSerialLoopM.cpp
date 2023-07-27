@@ -1,11 +1,12 @@
 // Do not remove the include below
 #include <MsTimer2.h>
 
+#include "exProtocolSerialLoopM.h"
+#include "appMain.h"
+
 //#define USE_SERIAL
 #define USE_USART
 
-#include "exProtocolSerialLoopM.h"
-#include "appMain.h"
 #ifdef USE_USART
 #include "../usart.h"
 #endif

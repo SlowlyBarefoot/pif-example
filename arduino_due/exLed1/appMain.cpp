@@ -5,6 +5,7 @@ PifLed g_led_l;
 PifLed g_led_rgb;
 PifTimerManager g_timer_1ms;
 
+
 static uint16_t _taskLed(PifTask *pstTask)
 {
 	static uint16_t usStep = 0;
@@ -95,11 +96,11 @@ static uint16_t _taskLed(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;							// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;								// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifLed_AttachMBlink(&g_led_rgb, 100, 3, 1, 2, 3)) return FALSE;			// 100ms
+    if (!pifLed_AttachMBlink(&g_led_rgb, 100, 3, 1, 2, 3)) return FALSE;				// 100ms
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 200, _taskLed, NULL, TRUE)) return FALSE;	// 200ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 200, _taskLed, NULL, TRUE)) return FALSE;		// 200ms
     return TRUE;
 }

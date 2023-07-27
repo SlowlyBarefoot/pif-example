@@ -2,7 +2,16 @@
 #define APP_MAIN_H
 
 
-void appSetup();
+#include "core/pif_gpio.h"
+#include "core/pif_log.h"
+
+
+extern PifGpio g_gpio_l;
+extern PifGpio g_gpio_rg;
+extern PifGpio g_gpio_switch;
+
+
+BOOL appSetup();
 
 
 #endif	// APP_MAIN_H

@@ -15,18 +15,23 @@
 #define TIMER_1MS_SIZE			1
 
 
-uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static void actLedLState(PifId pif_id, uint32_t state)
+static void evtLedToggle(void *pvIssuer)
 {
-	(void)pif_id;
+	static BOOL sw = LOW;
 
-	digitalWrite(PIN_LED_L, state & 1);
+	(void)pvIssuer;
+
+	digitalWrite(PIN_LED_L, sw);
+	sw ^= 1;
+
+	pifLog_Printf(LT_INFO, "LED: %u", sw);
 }
 
 extern "C" {
@@ -60,7 +65,9 @@ void setup()
 	pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+    if (!g_timer_led) return;
+    pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
 
 	if (!appSetup()) return;
 

@@ -60,11 +60,11 @@ static BOOL actLogReceiveData(PifUart *p_uart, uint8_t *pucData)
 	return FALSE;
 }
 
-static void evtLedToggle(void *pvIssuer)
+static void evtLedToggle(void* p_issuer)
 {
 	static BOOL sw = OFF;
 
-	(void)pvIssuer;
+	(void)p_issuer;
 
 	digitalWrite(PIN_LED_L, sw);
 	sw ^= 1;
