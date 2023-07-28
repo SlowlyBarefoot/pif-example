@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app_main.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,6 +32,34 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TASK_SIZE				3
+#define TIMER_1MS_SIZE			1
+
+#define USE_I2C_POLLING
+//#define USE_I2C_INTERRUPT
+//#define USE_I2C_DMA
+
+#define ATMEL_I2C_ADDRESS		0x50
+
+//#define EEPROM_AT24C08
+#define EEPROM_AT24C256
+
+#ifdef EEPROM_AT24C08
+	#define EEPROM_PAGE_SIZE		16
+	#define EEPROM_SECTOR_SIZE		16
+	#define EEPROM_VOLUME			1024
+	#define EEPROM_I_ADDR_SIZE		SIC_I_ADDR_SIZE_1
+	#define MIN_DATA_INFO_COUNT		5
+#endif
+
+#ifdef EEPROM_AT24C256
+	#define EEPROM_PAGE_SIZE		64
+	#define EEPROM_SECTOR_SIZE		64
+	#define EEPROM_VOLUME			32768
+	#define EEPROM_I_ADDR_SIZE		SIC_I_ADDR_SIZE_2
+	#define MIN_DATA_INFO_COUNT		8
+#endif
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -48,8 +77,11 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
+static PifUart s_uart_log;
+
 static uint16_t s_usLogTx;
 static uint8_t s_ucLogRx;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -64,7 +96,7 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-BOOL actLogStartTransfer(PifUart* p_uart)
+static BOOL actLogStartTransfer(PifUart* p_uart)
 {
 	uint8_t *pucData, ucState;
 
@@ -82,13 +114,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *pucData, ucState;
 
 	if (huart->Instance == USART2) {
-		ucState = pifUart_EndGetTxData(&g_uart_log, s_usLogTx);
+		ucState = pifUart_EndGetTxData(&s_uart_log, s_usLogTx);
 		if (ucState & PIF_UART_SEND_DATA_STATE_EMPTY) {
-			pifUart_FinishTransfer(&g_uart_log);
+			pifUart_FinishTransfer(&s_uart_log);
 		}
 		else {
 			s_usLogTx = 0;
-			ucState = pifUart_StartGetTxData(&g_uart_log, &pucData, &s_usLogTx);
+			ucState = pifUart_StartGetTxData(&s_uart_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
 			}
@@ -99,19 +131,24 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART2) {
-		pifUart_PutRxByte(&g_uart_log, s_ucLogRx);
+		pifUart_PutRxByte(&s_uart_log, s_ucLogRx);
 		HAL_UART_Receive_IT(huart, &s_ucLogRx, 1);
 	}
 }
 
-void actLedL(SWITCH sw)
+static void evtLedToggle(void *pvIssuer)
 {
+	static BOOL sw = OFF;
+
+	(void)pvIssuer;
+
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, sw);
+	sw ^= 1;
 }
 
 #ifdef USE_I2C_POLLING
 
-PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	if (isize) {
 		return (HAL_I2C_Mem_Read(&hi2c1, (addr << 1) | 1, iaddr, isize, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
@@ -121,7 +158,7 @@ PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_
 	}
 }
 
-PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	if (isize) {
 		return (HAL_I2C_Mem_Write(&hi2c1, addr << 1, iaddr, isize, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
@@ -135,7 +172,7 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
 
 #ifdef USE_I2C_INTERRUPT
 
-PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	if (isize) {
 		return (HAL_I2C_Mem_Read_IT(&hi2c1, (addr << 1) | 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
@@ -145,7 +182,7 @@ PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_
 	}
 }
 
-PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	if (isize) {
 		return (HAL_I2C_Mem_Write_IT(&hi2c1, addr << 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
@@ -159,7 +196,7 @@ PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p
 
 #ifdef USE_I2C_DMA
 
-PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	if (isize) {
 		return (HAL_I2C_Mem_Read_DMA(&hi2c1, (addr << 1) | 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
@@ -169,7 +206,7 @@ PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_
 	}
 }
 
-PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	if (isize) {
 		return (HAL_I2C_Mem_Write_DMA(&hi2c1, addr << 1, iaddr, isize, p_data, size) == HAL_OK) ? IR_WAIT : IR_ERROR;
@@ -232,9 +269,39 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  appSetup();
+  pif_Init(NULL);
+
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;							// 1000us
+
+  if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return -1;
+  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return -1;											// 1ms
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) return -1;														// 100%
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;
+  s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
+
+  pifLog_Init();
+  if (!pifLog_AttachUart(&s_uart_log)) return -1;
+
+  g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+  if (!g_timer_led) return -1;
+  pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
+
+  if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, EEPROM_PAGE_SIZE)) return -1;
+  g_i2c_port.act_read = actI2cRead;
+  g_i2c_port.act_write = actI2cWrite;
+
+  if (!pifStorageVar_Init(&g_storage, PIF_ID_AUTO)) return -1;
+  if (!pifStorageVar_AttachI2c(&g_storage, &g_i2c_port, ATMEL_I2C_ADDRESS, EEPROM_I_ADDR_SIZE, 10)) return -1;		// 10ms
+  if (!pifStorageVar_SetMedia(&g_storage, EEPROM_SECTOR_SIZE, EEPROM_VOLUME, MIN_DATA_INFO_COUNT)) return -1;
+
+  if (!appSetup()) return -1;
+
+  pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

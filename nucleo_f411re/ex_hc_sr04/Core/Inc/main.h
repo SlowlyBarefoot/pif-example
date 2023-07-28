@@ -31,7 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "communication/pif_uart.h"
 
 /* USER CODE END Includes */
 
@@ -54,10 +53,6 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-BOOL actLogStartTransfer(PifUart* p_uart);
-void actHcSr04Trigger(SWITCH state);
-
-uint16_t taskLedToggle(PifTask* p_task);
 
 /* USER CODE END EFP */
 
@@ -81,6 +76,7 @@ uint16_t taskLedToggle(PifTask* p_task);
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

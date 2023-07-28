@@ -53,8 +53,6 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void evtLedRedToggle(void *pvIssuer);
-void evtLedYellowToggle(void *pvIssuer);
 
 /* USER CODE END EFP */
 

@@ -4,13 +4,16 @@
 
 #include "core/pif_log.h"
 #include "core/pif_timer.h"
+#include "storage/pif_storage_fix.h"
 
 
-extern PifUart g_uart_log;
+extern PifStorageFix g_storage;
 extern PifTimerManager g_timer_1ms;
 
+extern PifTimer* g_timer_led;
 
-void appSetup();
+
+BOOL appSetup();
 
 
 #endif	// APP_MAIN_H

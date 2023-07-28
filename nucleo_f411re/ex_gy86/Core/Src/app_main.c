@@ -1,29 +1,25 @@
 #include "app_main.h"
-#include "main.h"
 
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 #include "sensor/pif_imu_sensor.h"
 #include "sensor/pif_gy86.h"
 
 #include <math.h>
 
 
-PifUart g_uart_log;
 PifI2cPort g_i2c_port;
+PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 
 static PifGy86 s_gy86;
 static PifImuSensor s_imu_sensor;
-static PifLed s_led_l;
 
 
-double getSeaLevel(double pressure, double altitude)
+static double getSeaLevel(double pressure, double altitude)
 {
     return ((double)pressure / pow(1.0f - ((double)altitude / 44330.0f), 5.255f));
 }
 
-double getAltitude(double pressure, double seaLevelPressure)
+static double getAltitude(double pressure, double seaLevelPressure)
 {
     return (44330.0f * (1.0f - pow((double)pressure / (double)seaLevelPressure, 0.1902949f)));
 }
@@ -100,38 +96,16 @@ static uint16_t _taskMpu60x0(PifTask *pstTask)
 	return 0;
 }
 
-void _evtBaroRead(float pressure, float temperature)
+static void _evtBaroRead(float pressure, float temperature)
 {
 	pifLog_Printf(LT_NONE, "\nBaro Temp : %2f DegC", temperature);
 	pifLog_Printf(LT_NONE, "\nBaro : %2f hPa, %f m", pressure, getAltitude(pressure, 103100));
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
 	int line;
 	PifGy86Param param;
-
-    pif_Init(act_timer1us);
-
-    if (!pifTaskManager_Init(5)) { line = __LINE__; goto fail; }
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) { line = __LINE__; goto fail; }			// 1000us
-
-	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) { line = __LINE__; goto fail; }			// 1ms
-	if (!pifUart_AllocTxBuffer(&g_uart_log, 256)) { line = __LINE__; goto fail; }
-	g_uart_log.act_start_transfer = actLogStartTransfer;
-
-	if (!pifLog_AttachUart(&g_uart_log)) { line = __LINE__; goto fail; }
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) { line = __LINE__; goto fail; }								// 500ms
-
-    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3, 16)) { line = __LINE__; goto fail; }
-    g_i2c_port.act_read = actI2cRead;
-    g_i2c_port.act_write = actI2cWrite;
 
     pifImuSensor_Init(&s_imu_sensor);
 
@@ -157,12 +131,12 @@ void appSetup(PifActTimer1us act_timer1us)
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskMpu60x0, NULL, TRUE)) { line = __LINE__; goto fail; }	// 500ms
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
-	return;
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }								// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+	return TRUE;;
 
 fail:
 	pifLog_Printf(LT_ERROR, "E:%u L:%u\n", pif_error, line);
+	return FALSE;
 }
 

@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app_main.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,6 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TASK_SIZE				3
+#define TIMER_1MS_SIZE			1
+
 #define ADDR_FLASH_SECTOR_0     ((uint32_t)0x08000000) /* Base @ of Sector 0, 16 Kbytes */
 #define ADDR_FLASH_SECTOR_1     ((uint32_t)0x08004000) /* Base @ of Sector 1, 16 Kbytes */
 #define ADDR_FLASH_SECTOR_2     ((uint32_t)0x08008000) /* Base @ of Sector 2, 16 Kbytes */
@@ -41,6 +45,10 @@
 #define ADDR_FLASH_SECTOR_7     ((uint32_t)0x08060000) /* Base @ of Sector 7, 128 Kbytes */
 
 #define FLASH_USER_START_ADDR   ADDR_FLASH_SECTOR_6   /* Start @ of user Flash area */
+
+#define STORAGE_SECTOR_SIZE		131072		// 128kbytes
+#define STORAGE_VOLUME			262144		// 256kbytes
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -54,8 +62,11 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
+static PifUart s_uart_log;
+
 static uint16_t s_usLogTx;
 static uint8_t s_ucLogRx;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,7 +80,7 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-BOOL actLogStartTransfer(PifUart* p_uart)
+static BOOL actLogStartTransfer(PifUart* p_uart)
 {
 	uint8_t *pucData, ucState;
 
@@ -87,13 +98,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *pucData, ucState;
 
 	if (huart->Instance == USART2) {
-		ucState = pifUart_EndGetTxData(&g_uart_log, s_usLogTx);
+		ucState = pifUart_EndGetTxData(&s_uart_log, s_usLogTx);
 		if (ucState & PIF_UART_SEND_DATA_STATE_EMPTY) {
-			pifUart_FinishTransfer(&g_uart_log);
+			pifUart_FinishTransfer(&s_uart_log);
 		}
 		else {
 			s_usLogTx = 0;
-			ucState = pifUart_StartGetTxData(&g_uart_log, &pucData, &s_usLogTx);
+			ucState = pifUart_StartGetTxData(&s_uart_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
 			}
@@ -104,14 +115,19 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART2) {
-		pifUart_PutRxByte(&g_uart_log, s_ucLogRx);
+		pifUart_PutRxByte(&s_uart_log, s_ucLogRx);
 		HAL_UART_Receive_IT(huart, &s_ucLogRx, 1);
 	}
 }
 
-void actLedL(SWITCH sw)
+static void evtLedToggle(void *pvIssuer)
 {
+	static BOOL sw = OFF;
+
+	(void)pvIssuer;
+
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, sw);
+	sw ^= 1;
 }
 
 static uint32_t GetSector(uint32_t address)
@@ -180,7 +196,7 @@ static HAL_StatusTypeDef EraseFlash(uint32_t start_addr)
 	return HAL_OK;
 }
 
-BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size)
+static BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size)
 {
 	uint32_t address = FLASH_USER_START_ADDR + src;
 	uint32_t* dp = (uint32_t*)dst;
@@ -195,7 +211,7 @@ BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size
 	return TRUE;
 }
 
-BOOL actStorageWrite(PifStorage* p_owner, uint32_t dst, uint8_t* src, size_t size)
+static BOOL actStorageWrite(PifStorage* p_owner, uint32_t dst, uint8_t* src, size_t size)
 {
 	uint32_t address = FLASH_USER_START_ADDR + dst;
 	uint32_t* sp = (uint32_t*)src;
@@ -255,9 +271,35 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  appSetup();
+  pif_Init(NULL);
+
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+
+  if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return -1;
+  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return -1;						// 1ms
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) return -1;									// 100%
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;
+  s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
+
+  pifLog_Init();
+  if (!pifLog_AttachUart(&s_uart_log)) return -1;
+
+  g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+  if (!g_timer_led) return -1;
+  pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
+
+  if (!pifStorageFix_Init(&g_storage, PIF_ID_AUTO)) return -1;
+  if (!pifStorageFix_AttachActStorage(&g_storage, actStorageRead, actStorageWrite)) return -1;
+  if (!pifStorageFix_SetMedia(&g_storage, STORAGE_SECTOR_SIZE, STORAGE_VOLUME)) return -1;
+
+  if (!appSetup()) return -1;
+
+  pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

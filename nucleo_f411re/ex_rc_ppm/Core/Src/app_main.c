@@ -1,7 +1,4 @@
 #include "app_main.h"
-#include "main.h"
-
-#include "core/pif_log.h"
 
 
 #define MAX_CHANNEL		8
@@ -10,7 +7,6 @@
 #define PULSE_MAX   (2250)      // maximum PWM pulse width which is considered valid
 
 
-PifUart g_uart_log;
 PifRcPpm g_rc_ppm;
 PifTimerManager g_timer_1ms;
 
@@ -37,44 +33,15 @@ static uint16_t _taskPrint(PifTask* p_task)
     return 0;
 }
 
-static uint16_t _taskLedToggle(PifTask* p_task)
-{
-	static BOOL sw = FALSE;
-
-	(void)p_task;
-
-   	actLedL(sw);
-	sw ^= 1;
-    return 0;
-}
-
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
 	PifTask* p_task;
 
-	pif_Init(act_timer1us);
-
-    if (!pifTaskManager_Init(4)) return;
-
-	pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	if (!pifUart_AllocTxBuffer(&g_uart_log, 64)) return;
-	g_uart_log.act_start_transfer = actLogStartTransfer;
-
-	if (!pifLog_AttachUart(&g_uart_log)) return;
-
 	p_task = pifTaskManager_Add(TM_EXTERNAL_ORDER, 0, _taskPrint, NULL, FALSE);
-    if (!p_task) return;
+    if (!p_task) return FALSE;
 
-    if (!pifRcPpm_Init(&g_rc_ppm, PIF_ID_AUTO, MAX_CHANNEL, 2700)) return;
+    if (!pifRcPpm_Init(&g_rc_ppm, PIF_ID_AUTO, MAX_CHANNEL, 2700)) return FALSE;
     pifRcPpm_SetValidRange(&g_rc_ppm, PULSE_MIN, PULSE_MAX);
     pifRc_AttachEvtReceive(&g_rc_ppm.parent, _evtRcPpmReceive, p_task);
-
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return;	// 100ms
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    return TRUE;
 }

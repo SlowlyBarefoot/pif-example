@@ -1,8 +1,5 @@
 #include "app_main.h"
-#include "main.h"
 
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 #include "gps/pif_gps_ublox.h"
 
 
@@ -10,13 +7,13 @@
 #define UBX
 
 
-PifUart g_uart_log;
-PifUart g_uart_gps;
+PifLed g_led_l;
 PifTimerManager g_timer_1ms;
+PifUart g_uart_gps;
+
 int g_print_data = 0;
 
 static PifGpsUblox s_gps_ublox;
-static PifLed s_led_l;
 static uint32_t s_baudrate;
 static BOOL s_booting = FALSE;
 
@@ -67,7 +64,7 @@ static uint16_t _taskNmeaSetup(PifTask *p_task)
 
 	switch (step & 0xF0) {
 	case 0x10:
-		actGpsSetBaudrate(&g_uart_gps, baudrates[step - 0x10]);
+		(*g_uart_gps.act_set_baudrate)(&g_uart_gps, baudrates[step - 0x10]);
 		step += 0x10;
 		retry = 2;
 		break;
@@ -98,7 +95,7 @@ static uint16_t _taskNmeaSetup(PifTask *p_task)
 			break;
 
 		case 0x30:
-			actGpsSetBaudrate(&g_uart_gps, s_baudrate);
+			(*g_uart_gps.act_set_baudrate)(&g_uart_gps, s_baudrate);
 			step = 0x40;
 			delay = 500;
 			break;
@@ -204,7 +201,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 
 	switch (step & 0xF0) {
 	case 0x10:
-		actGpsSetBaudrate(&g_uart_gps, baudrates[step - 0x10]);
+		(*g_uart_gps.act_set_baudrate)(&g_uart_gps, baudrates[step - 0x10]);
 		step += 0x10;
 		retry = 2;
 		delay = 200;
@@ -265,7 +262,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 			break;
 
 		case 0x30:
-			actGpsSetBaudrate(&g_uart_gps, s_baudrate);
+			(*g_uart_gps.act_set_baudrate)(&g_uart_gps, s_baudrate);
 			step = 0x40;
 			delay = 500;
 			break;
@@ -325,7 +322,7 @@ static void _evtGpsReceive(PifGps *p_owner)
 	PifDegMin lat_deg_min, lon_deg_min;
 	PifDegMinSec lat_deg_min_sec, lon_deg_min_sec;
 
-	pifLed_PartToggle(&s_led_l, 1 << 1);
+	pifLed_PartToggle(&g_led_l, 1 << 1);
 
 	if (!s_booting) return;
 
@@ -432,49 +429,26 @@ static int _cmdPollRequest(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-void appSetup(uint32_t baurdate)
+BOOL appSetup(uint32_t baurdate)
 {
 	s_baudrate = baurdate;
 
-	pif_Init(NULL);
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-    if (!pifTaskManager_Init(5)) return;
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;				// 1000us
-
-	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;			// 1ms
-	if (!pifUart_AllocRxBuffer(&g_uart_log, 64, 100)) return;							// 64bytes, 100%
-	if (!pifUart_AllocTxBuffer(&g_uart_log, 128)) return;								// 128bytes
-	g_uart_log.act_start_transfer = actLogStartTransfer;
-
-	if (!pifLog_AttachUart(&g_uart_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;									// 500ms
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD_MS, 1, "UartGPS")) return;			// 1ms
-	if (!pifUart_AllocRxBuffer(&g_uart_gps, 64, 100)) return;							// 256bytes, 100%
-	if (!pifUart_AllocTxBuffer(&g_uart_gps, 32)) return;								// 32bytes
-	g_uart_gps.act_start_transfer = actGpsStartTransfer;
-
-	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return;
+	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
 	pifGpsUblox_AttachUart(&s_gps_ublox, &g_uart_gps);
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;
-	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) return;
-	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskNmeaSetup, NULL, TRUE)) return;		// 100ms
+	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) return FALSE;
+	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskNmeaSetup, NULL, TRUE)) return FALSE;		// 100ms
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskUbloxSetup, NULL, TRUE)) return;	// 100ms
+	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskUbloxSetup, NULL, TRUE)) return FALSE;		// 100ms
 #endif
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	return TRUE;
 }

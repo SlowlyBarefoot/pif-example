@@ -2,19 +2,15 @@
 #define LINKER_H
 
 
-#include "communication/pif_uart.h"
-#include "core/pif_timer.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
 
 
-extern PifUart g_uart_log;
+extern PifLed g_led_l;
 extern PifTimerManager g_timer_1ms;
 
 
-void appSetup();
-
-
-void actLedLState(PifId pif_id, uint32_t state);
-BOOL actLogStartTransfer(PifUart* p_uart);
+BOOL appSetup();
 
 
 #endif	// LINKER_H

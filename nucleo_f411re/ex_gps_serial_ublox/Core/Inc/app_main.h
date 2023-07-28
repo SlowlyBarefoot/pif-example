@@ -2,17 +2,18 @@
 #define APP_MAIN_H
 
 
-#include "communication/pif_uart.h"
-#include "core/pif_timer.h"
+#include "core/pif_log.h"
+#include "display/pif_led.h"
 
 
-extern PifUart g_uart_log;
-extern PifUart g_uart_gps;
+extern PifLed g_led_l;
 extern PifTimerManager g_timer_1ms;
+extern PifUart g_uart_gps;
+
 extern int g_print_data;
 
 
-void appSetup(uint32_t baurdate);
+BOOL appSetup(uint32_t baurdate);
 
 
 #endif	// APP_MAIN_H

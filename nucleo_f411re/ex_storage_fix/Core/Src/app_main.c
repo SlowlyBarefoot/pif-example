@@ -1,13 +1,11 @@
 #include "app_main.h"
-#include "main.h"
-
-#include "storage/pif_storage_fix.h"
 
 
-PifUart g_uart_log;
+PifStorageFix g_storage;
 PifTimerManager g_timer_1ms;
 
-static PifStorageFix s_storage;
+PifTimer* g_timer_led;
+
 
 static int _CmdWrite(int argc, char *argv[]);
 static int _CmdRead(int argc, char *argv[]);
@@ -38,7 +36,7 @@ static int _CmdWrite(int argc, char *argv[])
 	else if (argc > 1) {
 		id = atoi(argv[0]);
 		size = atoi(argv[1]);
-		p_data_info = (PifStorageFixDataInfo*)pifStorage_Open(&s_storage.parent, id);
+		p_data_info = (PifStorageFixDataInfo*)pifStorage_Open(&g_storage.parent, id);
 		if (!p_data_info) {
 			pifLog_Printf(LT_INFO, "write: not alloc ID=%d E=%d", id, pif_error);
 		}
@@ -52,7 +50,7 @@ static int _CmdWrite(int argc, char *argv[])
 			p_buffer = (uint8_t*)malloc(size);
 			if (p_buffer) {
 				memset(p_buffer, value, size);
-				if (!pifStorage_Write(&s_storage.parent, (PifStorageDataInfoP)p_data_info, p_buffer, size)) {
+				if (!pifStorage_Write(&g_storage.parent, (PifStorageDataInfoP)p_data_info, p_buffer, size)) {
 					pifLog_Printf(LT_INFO, "write: failed E=%d", pif_error);
 				}
 				else {
@@ -80,7 +78,7 @@ static int _CmdRead(int argc, char *argv[])
 	else if (argc > 1) {
 		id = atoi(argv[0]);
 		size = atoi(argv[1]);
-		p_data_info = (PifStorageFixDataInfo*)pifStorage_Open(&s_storage.parent, id);
+		p_data_info = (PifStorageFixDataInfo*)pifStorage_Open(&g_storage.parent, id);
 		if (!p_data_info) {
 			pifLog_Printf(LT_INFO, "read: not alloc ID=%d EC=%d", id, pif_error);
 		}
@@ -88,7 +86,7 @@ static int _CmdRead(int argc, char *argv[])
 			p_buffer = (uint8_t*)malloc(size);
 			if (p_buffer) {
 				memset(p_buffer, 0, size);
-				if (!pifStorage_Read(&s_storage.parent, p_buffer, (PifStorageDataInfoP)p_data_info, size)) {
+				if (!pifStorage_Read(&g_storage.parent, p_buffer, (PifStorageDataInfoP)p_data_info, size)) {
 					pifLog_Printf(LT_INFO, "read: failed E=%d", pif_error);
 				}
 				else {
@@ -109,45 +107,10 @@ static int _CmdRead(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static void evtLedToggle(void *pvIssuer)
+BOOL appSetup()
 {
-	static BOOL sw = OFF;
+	if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-	(void)pvIssuer;
-
-	actLedL(sw);
-	sw ^= 1;
-}
-
-void appSetup()
-{
-	PifTimer *pstTimer1ms;
-
-	pif_Init(NULL);
-
-    if (!pifTaskManager_Init(3)) return;
-
-	pifLog_Init();
-
-	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	if (!pifUart_AllocRxBuffer(&g_uart_log, 64, 100)) return;						// 100%
-	if (!pifUart_AllocTxBuffer(&g_uart_log, 128)) return;
-	g_uart_log.act_start_transfer = actLogStartTransfer;
-
-	if (!pifLog_AttachUart(&g_uart_log)) return;
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return;
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-    pstTimer1ms = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
-    if (!pstTimer1ms) return;
-    pifTimer_AttachEvtFinish(pstTimer1ms, evtLedToggle, NULL);
-    pifTimer_Start(pstTimer1ms, 500);												// 500ms
-
-	if (!pifStorageFix_Init(&s_storage, PIF_ID_AUTO)) return;
-	if (!pifStorageFix_AttachActStorage(&s_storage, actStorageRead, actStorageWrite)) return;
-	if (!pifStorageFix_SetMedia(&s_storage, STORAGE_SECTOR_SIZE, STORAGE_VOLUME)) return;
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	pifTimer_Start(g_timer_led, 500);		// 500ms
+	return TRUE;
 }

@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app_main.h"
+#include "core/pif_task.h"
 
 /* USER CODE END Includes */
 
@@ -32,6 +32,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TASK_SIZE				1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,9 +58,21 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void actLedL(SWITCH sw)
+static uint16_t _taskLedToggle(PifTask *pstTask)
 {
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, sw);
+	static int nCount = 0;
+	static BOOL sw = OFF;
+
+	(void)pstTask;
+
+    if (!nCount) {
+    	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, sw);
+		sw ^= 1;
+
+		nCount = 9999;
+    }
+    else nCount--;
+    return 0;
 }
 
 /* USER CODE END 0 */
@@ -93,7 +107,11 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  appSetup();
+  pif_Init(NULL);
+
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTaskManager_Add(TM_RATIO, 50, _taskLedToggle, NULL, TRUE)) return -1;		// 50%
 
   /* USER CODE END 2 */
 

@@ -23,8 +23,6 @@
 /* USER CODE BEGIN Includes */
 #include "app_main.h"
 
-#include "core/pif_log.h"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,6 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,6 +48,8 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+static PifUart s_uart_log;
+
 static uint16_t s_usLogTx;
 static SWITCH s_echo_state;
 
@@ -63,12 +66,12 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint32_t micros()
+static uint32_t micros()
 {
     return htim2.Instance->CNT;
 }
 
-BOOL actLogStartTransfer(PifUart* p_uart)
+static BOOL actLogStartTransfer(PifUart* p_uart)
 {
 	uint8_t *pucData, ucState;
 
@@ -86,13 +89,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *pucData, ucState;
 
   if (huart->Instance == USART2) {
-		ucState = pifUart_EndGetTxData(&g_uart_log, s_usLogTx);
+		ucState = pifUart_EndGetTxData(&s_uart_log, s_usLogTx);
 		if (ucState & PIF_UART_SEND_DATA_STATE_EMPTY) {
-			pifUart_FinishTransfer(&g_uart_log);
+			pifUart_FinishTransfer(&s_uart_log);
 		}
 		else {
 			s_usLogTx = 0;
-			ucState = pifUart_StartGetTxData(&g_uart_log, &pucData, &s_usLogTx);
+			ucState = pifUart_StartGetTxData(&s_uart_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
 			}
@@ -100,7 +103,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	}
 }
 
-void actHcSr04Trigger(SWITCH state)
+static void actHcSr04Trigger(SWITCH state)
 {
 	HAL_GPIO_WritePin(SONAR_TRIGGER_GPIO_Port, SONAR_TRIGGER_Pin, state);
     s_echo_state = 0;
@@ -112,7 +115,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	pifHcSr04_sigReceiveEcho(&g_hcsr04, s_echo_state);
 }
 
-uint16_t taskLedToggle(PifTask* p_task)
+static uint16_t taskLedToggle(PifTask* p_task)
 {
 	static BOOL swLed = OFF;
 
@@ -158,7 +161,28 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-  appSetup(micros);
+  pif_Init(micros);
+
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+
+  if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return -1;
+  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return -1;						// 1ms
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return -1;
+  s_uart_log.act_start_transfer = actLogStartTransfer;
+
+  pifLog_Init();
+  if (!pifLog_AttachUart(&s_uart_log)) return -1;
+
+  if (!pifHcSr04_Init(&g_hcsr04, PIF_ID_AUTO)) return -1;
+  g_hcsr04.act_trigger = actHcSr04Trigger;
+
+  if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return -1;				// 500ms
+
+  if (!appSetup()) return -1;
+
+  pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 
   /* USER CODE END 2 */
 

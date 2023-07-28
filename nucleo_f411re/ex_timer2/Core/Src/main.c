@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app_main.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,6 +32,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TASK_SIZE				2
+#define TIMER_1MS_SIZE			1
+#define TIMER_100US_SIZE		1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -58,7 +63,7 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void evtLedRedToggle(void *pvIssuer)
+static void evtLedRedToggle(void *pvIssuer)
 {
 	static BOOL sw = OFF;
 
@@ -68,7 +73,7 @@ void evtLedRedToggle(void *pvIssuer)
 	sw ^= 1;
 }
 
-void evtLedYellowToggle(void *pvIssuer)
+static void evtLedYellowToggle(void *pvIssuer)
 {
 	static BOOL sw = OFF;
 
@@ -112,7 +117,24 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
-  appSetup();
+
+  pif_Init(NULL);
+
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+
+  if (!pifTimerManager_Init(&g_timer_100us, PIF_ID_AUTO, 100, TIMER_100US_SIZE)) return -1;		// 100us
+
+  g_timer_red = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+  if (!g_timer_red) return -1;
+  pifTimer_AttachEvtFinish(g_timer_red, evtLedRedToggle, NULL);
+
+  g_timer_yellow = pifTimerManager_Add(&g_timer_100us, TT_REPEAT);
+  if (!g_timer_yellow) return -1;
+  pifTimer_AttachEvtFinish(g_timer_yellow, evtLedYellowToggle, NULL);
+
+  if (!appSetup()) return -1;
 
   /* USER CODE END 2 */
 

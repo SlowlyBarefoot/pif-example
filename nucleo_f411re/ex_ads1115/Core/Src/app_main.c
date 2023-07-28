@@ -1,20 +1,16 @@
 #include "linker.h"
-#include "main.h"
 
-#include "core/pif_log.h"
-#include "display/pif_led.h"
 #include "sensor/pif_ads1x1x.h"
 
 
 #define SINGLE_SHOT
 
 
-PifUart g_uart_log;
+PifLed g_led_l;
 PifI2cPort g_i2c_port;
 PifTimerManager g_timer_1ms;
 
 static PifAds1x1x s_ads1x1x;
-static PifLed s_led_l;
 
 static int channel = ADS1X1X_MUX_SINGLE_0;
 
@@ -34,33 +30,11 @@ uint16_t _taskAds1115(PifTask *p_task)
 	return 0;
 }
 
-void appSetup(PifActTimer1us act_timer1us)
+BOOL appSetup()
 {
 	PifAds1x1xConfig config;
 
-    pif_Init(act_timer1us);
-
-    if (!pifTaskManager_Init(3)) return;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 1)) return;			// 1000us
-
-	if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
-	if (!pifUart_AllocTxBuffer(&g_uart_log, 64)) return;
-	g_uart_log.act_start_transfer = actLogStartTransfer;
-
-	if (!pifLog_AttachUart(&g_uart_log)) return;
-
-    if (!pifLed_Init(&s_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
-    if (!pifLed_AttachSBlink(&s_led_l, 500)) return;								// 500ms
-
-    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 16)) return;
-    g_i2c_port.act_read = actI2cRead;
-    g_i2c_port.act_write = actI2cWrite;
-
-    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR(0))) return;
+    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR(0))) return FALSE;
 
     config = s_ads1x1x._config;
 #if 1
@@ -86,9 +60,9 @@ void appSetup(PifActTimer1us act_timer1us)
     pifAds1x1x_SetLoThreshVoltage(&s_ads1x1x, 1.0);
     pifAds1x1x_SetHiThreshVoltage(&s_ads1x1x, 2.0);
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskAds1115, NULL, TRUE)) return;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskAds1115, NULL, TRUE)) return FALSE;		// 500ms
 
-    pifLed_SBlinkOn(&s_led_l, 1 << 0);
-
-	pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+    return TRUE;
 }

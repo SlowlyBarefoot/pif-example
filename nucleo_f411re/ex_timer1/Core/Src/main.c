@@ -32,6 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TASK_SIZE				1
+#define TIMER_1MS_SIZE			1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -57,7 +60,7 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void evtLedToggle(void *pvIssuer)
+static void evtLedToggle(void *pvIssuer)
 {
 	static BOOL sw = OFF;
 
@@ -99,8 +102,17 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  pif_Init(NULL);
 
-  appSetup();
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+
+  g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
+  if (!g_timer_led) return -1;
+  pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
+
+  if (!appSetup()) return -1;
 
   /* USER CODE END 2 */
 

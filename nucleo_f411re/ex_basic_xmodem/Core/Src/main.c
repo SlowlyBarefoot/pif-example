@@ -23,8 +23,6 @@
 /* USER CODE BEGIN Includes */
 #include "linker.h"
 
-#include "core/pif_log.h"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,6 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TASK_SIZE		10
+#define TIMER_1MS_SIZE	5
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -61,14 +62,14 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void actLedLState(PifId pif_id, uint32_t state)
+static void actLedLState(PifId pif_id, uint32_t state)
 {
 	(void)pif_id;
 
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, state & 1);
 }
 
-BOOL actLogStartTransfer(PifUart* p_uart)
+static BOOL actLogStartTransfer(PifUart* p_uart)
 {
 	uint8_t *p_data, state;
 
@@ -140,9 +141,28 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  appSetup();
+  pif_Init(NULL);
+
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+
+  if (!pifUart_Init(&g_uart, PIF_ID_AUTO)) return -1;
+  if (!pifUart_AttachTask(&g_uart, TM_PERIOD_MS, 1, "UartLog")) return -1;						// 1ms
+  if (!pifUart_AllocRxBuffer(&g_uart, 64, 100)) return -1;										// 100%
+  if (!pifUart_AllocTxBuffer(&g_uart, 128)) return -1;
+  g_uart.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_log_rx, 1);
+
+  pifLog_Init();
+  if (!pifLog_AttachUart(&g_uart)) return -1;
+
+  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return -1;
+
+  if (!appSetup()) return -1;
+
+  pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 
   /* USER CODE END 2 */
 
