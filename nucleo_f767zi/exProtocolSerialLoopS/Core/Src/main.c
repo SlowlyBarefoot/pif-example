@@ -24,8 +24,6 @@
 /* USER CODE BEGIN Includes */
 #include "appMain.h"
 
-#include "core/pif_log.h"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,7 +32,19 @@
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
+#define TASK_SIZE				6
+#define TIMER_1MS_SIZE			7
+
 /* USER CODE BEGIN PD */
+#define USE_INTERRUPT
+//#define USE_DMA
+
+#ifdef USE_INTERRUPT
+	#define UART_FRAME_SIZE		1
+#endif
+#ifdef USE_DMA
+	#define UART_FRAME_SIZE		8
+#endif
 
 /* USER CODE END PD */
 
@@ -56,15 +66,11 @@ DMA_HandleTypeDef hdma_uart5_tx;
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
+static PifUart s_uart_log;
+
 static uint8_t s_ucLogRx;
-#ifdef USE_INTERRUPT
-static uint8_t s_ucSerial1Rx;
-static uint8_t s_ucSerial2Rx;
-#endif
-#ifdef USE_DMA
 static uint8_t s_ucSerial1Buffer[UART_FRAME_SIZE];
 static uint8_t s_ucSerial2Buffer[UART_FRAME_SIZE];
-#endif
 
 static uint16_t s_usLogTx;
 static uint16_t s_usSerial1Tx;
@@ -86,7 +92,7 @@ static void MX_UART5_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-BOOL actLogStartTransfer(PifUart* p_uart)
+static BOOL actLogStartTransfer(PifUart* p_uart)
 {
 	uint8_t *pucData, ucState;
 
@@ -99,14 +105,14 @@ BOOL actLogStartTransfer(PifUart* p_uart)
 	return FALSE;
 }
 
-void actLedLState(PifId usPifId, uint32_t unState)
+static void actLedLState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, unState & 1);
 }
 
-uint16_t actPushSwitchAcquire(PifSensor* p_owner)
+static uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 {
 	static GPIO_TypeDef* usPortSwitch[SWITCH_COUNT] = { Switch1_GPIO_Port, Switch2_GPIO_Port };
 	static uint16_t usPinSwitch[SWITCH_COUNT] = { Switch1_Pin, Switch2_Pin };
@@ -115,7 +121,7 @@ uint16_t actPushSwitchAcquire(PifSensor* p_owner)
 	return !HAL_GPIO_ReadPin(usPortSwitch[index], usPinSwitch[index]);
 }
 
-BOOL actUart1StartTransfer(PifUart* p_uart)
+static BOOL actUart1StartTransfer(PifUart* p_uart)
 {
 	uint8_t *pucData, ucState;
 
@@ -134,7 +140,7 @@ BOOL actUart1StartTransfer(PifUart* p_uart)
 	return FALSE;
 }
 
-BOOL actUart2StartTransfer(PifUart* p_uart)
+static BOOL actUart2StartTransfer(PifUart* p_uart)
 {
 	uint8_t *pucData, ucState;
 
@@ -158,13 +164,13 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	uint8_t *pucData, ucState;
 
 	if (huart->Instance == USART3) {
-		ucState = pifUart_EndGetTxData(&g_uart_log, s_usLogTx);
+		ucState = pifUart_EndGetTxData(&s_uart_log, s_usLogTx);
 		if (ucState & PIF_UART_SEND_DATA_STATE_EMPTY) {
-			pifUart_FinishTransfer(&g_uart_log);
+			pifUart_FinishTransfer(&s_uart_log);
 		}
 		else {
 			s_usLogTx = 0;
-			ucState = pifUart_StartGetTxData(&g_uart_log, &pucData, &s_usLogTx);
+			ucState = pifUart_StartGetTxData(&s_uart_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
 			}
@@ -213,28 +219,26 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART3) {
-		pifUart_PutRxByte(&g_uart_log, s_ucLogRx);
+		pifUart_PutRxByte(&s_uart_log, s_ucLogRx);
 		HAL_UART_Receive_IT(huart, &s_ucLogRx, 1);
 	}
 	else if (huart->Instance == UART4) {
-#ifdef USE_INTERRUPT
-		pifUart_PutRxByte(&g_serial1, s_ucSerial1Rx);
-		HAL_UART_Receive_IT(huart, &s_ucSerial1Rx, 1);
-#endif
-
-#ifdef USE_DMA
 		pifUart_PutRxData(&g_serial1, s_ucSerial1Buffer, UART_FRAME_SIZE);
+
+#ifdef USE_INTERRUPT
+		HAL_UART_Receive_IT(huart, s_ucSerial1Buffer, 1);
+#endif
+#ifdef USE_DMA
 		HAL_UART_Receive_DMA(huart, s_ucSerial1Buffer, UART_FRAME_SIZE);
 #endif
 	}
 	else if (huart->Instance == UART5) {
-#ifdef USE_INTERRUPT
-		pifUart_PutRxByte(&g_serial2, s_ucSerial2Rx);
-		HAL_UART_Receive_IT(huart, &s_ucSerial2Rx, 1);
-#endif
-
-#ifdef USE_DMA
 		pifUart_PutRxData(&g_serial2, s_ucSerial2Buffer, UART_FRAME_SIZE);
+
+#ifdef USE_INTERRUPT
+		HAL_UART_Receive_IT(huart, s_ucSerial2Buffer, 1);
+#endif
+#ifdef USE_DMA
 		HAL_UART_Receive_DMA(huart, s_ucSerial2Buffer, UART_FRAME_SIZE);
 #endif
 	}
@@ -276,19 +280,61 @@ int main(void)
   MX_USB_OTG_FS_PCD_Init();
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
-  appSetup();
+  pif_Init(NULL);
+
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+
+  if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return -1;
+  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return -1;					// 1ms
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return -1;
+  s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart3, &s_ucLogRx, 1);
 
+  pifLog_Init();
+  if (!pifLog_AttachUart(&s_uart_log)) return -1;
+
+  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return -1;
+
+  for (int i = 0; i < SWITCH_COUNT; i++) {
+    if (!pifSensorSwitch_Init(&g_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return FALSE;
+  }
+
+  if (!pifUart_Init(&g_serial1, PIF_ID_AUTO)) return -1;
+  if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "UartSerial1")) return -1;				// 1ms
+  if (!pifUart_AllocRxBuffer(&g_serial1, 64, 10)) return -1;									// 10%
+  if (!pifUart_AllocTxBuffer(&g_serial1, 64)) return -1;
+  g_serial1.act_start_transfer = actUart1StartTransfer;
+
 #ifdef USE_INTERRUPT
-  HAL_UART_Receive_IT(&huart4, &s_ucSerial1Rx, 1);
-  HAL_UART_Receive_IT(&huart5, &s_ucSerial2Rx, 1);
+  HAL_UART_Receive_IT(&huart4, s_ucSerial1Buffer, UART_FRAME_SIZE);
+#endif
+#ifdef USE_DMA
+  if (!pifUart_SetFrameSize(&g_serial1, UART_FRAME_SIZE)) return -1;
+
+  HAL_UART_Receive_DMA(&huart4, s_ucSerial1Buffer, UART_FRAME_SIZE);
 #endif
 
+  if (!pifUart_Init(&g_serial2, PIF_ID_AUTO)) return -1;
+  if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return -1;				// 1ms
+  if (!pifUart_AllocRxBuffer(&g_serial2, 64, 10)) return -1;									// 10%
+  if (!pifUart_AllocTxBuffer(&g_serial2, 64)) return -1;
+  g_serial2.act_start_transfer = actUart2StartTransfer;
+
+#ifdef USE_INTERRUPT
+  HAL_UART_Receive_IT(&huart5, s_ucSerial1Buffer, UART_FRAME_SIZE);
+#endif
 #ifdef USE_DMA
-  HAL_UART_Receive_DMA(&huart4, s_ucSerial1Buffer, UART_FRAME_SIZE);
+  if (!pifUart_SetFrameSize(&g_serial2, UART_FRAME_SIZE)) return -1;
+
   HAL_UART_Receive_DMA(&huart5, s_ucSerial2Buffer, UART_FRAME_SIZE);
 #endif
+
+  if (!appSetup()) return -1;
+
+  pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 
   /* USER CODE END 2 */
 

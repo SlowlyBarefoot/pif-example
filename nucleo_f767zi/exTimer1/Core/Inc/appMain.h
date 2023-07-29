@@ -7,8 +7,10 @@
 
 extern PifTimerManager g_timer_1ms;
 
+extern PifTimer* g_timer_led;
 
-void appSetup();
+
+BOOL appSetup();
 
 
 #endif	// APP_MAIN_H

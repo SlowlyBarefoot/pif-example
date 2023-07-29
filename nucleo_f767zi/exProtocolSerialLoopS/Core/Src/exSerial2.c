@@ -1,9 +1,5 @@
-#include <string.h>
-
-#include "main.h"
 #include "appMain.h"
 
-#include "core/pif_log.h"
 #include "protocol/pif_protocol.h"
 
 
@@ -126,16 +122,7 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL exSerial2_Setup()
 {
-	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO)) return FALSE;
-    if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return FALSE;			// 1ms
-	if (!pifUart_AllocRxBuffer(&g_serial2, 64, 10)) return FALSE;								// 10%
-	if (!pifUart_AllocTxBuffer(&g_serial2, 64)) return FALSE;
-	g_serial2.act_start_transfer = actUart2StartTransfer;
-
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions2)) return FALSE;
-#ifdef USE_DMA
-    if (!pifProtocol_SetFrameSize(&s_protocol, UART_FRAME_SIZE)) return FALSE;
-#endif
     pifProtocol_AttachUart(&s_protocol, &g_serial2);
     s_protocol.evt_error = _evtProtocolError;
 

@@ -32,8 +32,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "communication/pif_uart.h"
-#include "sensor/pif_sensor.h"
 
 /* USER CODE END Includes */
 
@@ -50,20 +48,12 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
-#define USE_INTERRUPT
-//#define USE_DMA
-
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-BOOL actLogStartTransfer(PifUart* p_uart);
-void actLedLState(PifId usPifId, uint32_t unState);
-uint16_t actPushSwitchAcquire(PifSensor* p_owner);
-BOOL actUart1StartTransfer(PifUart* p_uart);
-BOOL actUart2StartTransfer(PifUart* p_uart);
 
 /* USER CODE END EFP */
 

@@ -32,7 +32,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "core/pif_task.h"
 
 /* USER CODE END Includes */
 
@@ -55,7 +54,6 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void actLedL(SWITCH sw);
 
 /* USER CODE END EFP */
 

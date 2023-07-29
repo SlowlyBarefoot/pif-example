@@ -23,8 +23,6 @@
 /* USER CODE BEGIN Includes */
 #include "app_main.h"
 
-#include "core/pif_log.h"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,6 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TASK_SIZE				4
+#define TIMER_1MS_SIZE			1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -50,6 +51,8 @@ UART_HandleTypeDef huart3;
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
+static PifUart g_uart_log;
+
 static uint16_t s_usLogTx;
 
 /* USER CODE END PV */
@@ -66,12 +69,12 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint32_t micros()
+static uint32_t micros()
 {
     return htim2.Instance->CNT;
 }
 
-BOOL actLogStartTransfer(PifUart* p_uart)
+static BOOL actLogStartTransfer(PifUart* p_uart)
 {
 	uint8_t *pucData, ucState;
 
@@ -103,9 +106,15 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	}
 }
 
-void actLedL(SWITCH sw)
+static uint16_t _taskLedToggle(PifTask* p_task)
 {
+	static BOOL sw = FALSE;
+
+	(void)p_task;
+
 	HAL_GPIO_WritePin(GPIOB, LD2_Pin, sw);
+	sw ^= 1;
+    return 0;
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -149,7 +158,25 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-  appSetup(micros);
+  pif_Init(micros);
+
+  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+
+  if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO)) return -1;
+  if (!pifUart_AttachTask(&g_uart_log, TM_PERIOD_MS, 1, NULL)) return -1;						// 1ms
+  if (!pifUart_AllocTxBuffer(&g_uart_log, 64)) return -1;
+  g_uart_log.act_start_transfer = actLogStartTransfer;
+
+  pifLog_Init();
+  if (!pifLog_AttachUart(&g_uart_log)) return -1;
+
+  if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskLedToggle, NULL, TRUE)) return -1;			// 100ms
+
+  if (!appSetup()) return -1;
+
+  pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 
   /* USER CODE END 2 */
 

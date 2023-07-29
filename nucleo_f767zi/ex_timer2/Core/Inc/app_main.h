@@ -8,8 +8,11 @@
 extern PifTimerManager g_timer_1ms;
 extern PifTimerManager g_timer_100us;
 
+extern PifTimer* g_timer_red;
+extern PifTimer* g_timer_yellow;
 
-void appSetup();
+
+BOOL appSetup();
 
 
 #endif	// APP_MAIN_H
