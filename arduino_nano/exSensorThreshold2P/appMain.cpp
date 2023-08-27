@@ -1,6 +1,6 @@
 #include "appMain.h"
 
-#include "filter/pif_noise_filter_uint16.h"
+#include "filter/pif_noise_filter_int16.h"
 
 
 #define USE_FILTER_AVERAGE		1
@@ -20,17 +20,18 @@ static void _evtSensorThreshold(PifSensor* p_owner, SWITCH state, PifSensorValue
 BOOL appSetup()
 {
 #if USE_FILTER_AVERAGE
-    static PifNoiseFilterUint16 s_filter;
+    static PifNoiseFilter s_filter;
 #endif
 
 #if USE_FILTER_AVERAGE
-    if (!pifNoiseFilterUint16_Init(&s_filter, 7)) return FALSE;
+    if (!pifNoiseFilter_Init(&s_filter, 1)) return FALSE;
+    if (!pifNoiseFilterInt16_AddAverage(&s_filter, 7)) return FALSE;
 #endif
 
     pifSensorDigital_SetThreshold(&g_sensor, 200, 300);
     if (!pifSensorDigital_AttachTaskAcquire(&g_sensor, TM_PERIOD_MS, 100, TRUE)) return FALSE;	// 100ms
 #if USE_FILTER_AVERAGE
-    g_sensor.p_filter = &s_filter.parent;
+    if (!pifSensorDigital_AttachFilter(&g_sensor, &s_filter, 0)) return FALSE;
 #endif
     g_sensor.parent.evt_change = _evtSensorThreshold;
     return TRUE;

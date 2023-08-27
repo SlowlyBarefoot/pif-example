@@ -25,7 +25,7 @@ static void actLedLState(PifId id, uint32_t state)
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-static BOOL actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
+static void actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
 {
 	uint16_t i;
 
@@ -52,7 +52,6 @@ static BOOL actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t si
 		}
 	}
 	digitalWrite(SS, HIGH);
-	return TRUE;
 }
 
 extern "C" {

@@ -13,7 +13,6 @@ typedef struct {
 	PifSensorSwitch stPushSwitch;
 	uint8_t ucDataCount;
 	uint8_t ucData[8];
-	PifNoiseFilterBit stPushSwitchFilter;
 } ProtocolTest;
 
 
