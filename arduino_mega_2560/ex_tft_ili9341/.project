@@ -172,6 +172,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter_int16.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/filter/pif_noise_filter_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter_manager.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/input/pif_touch_screen.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/input/pif_touch_screen.h</locationURI>
@@ -235,6 +240,11 @@
 			<name>pif/source/filter/pif_noise_filter_int16.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter_int16.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/filter/pif_noise_filter_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter_manager.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/input/pif_touch_screen.c</name>

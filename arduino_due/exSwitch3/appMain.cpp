@@ -35,13 +35,9 @@ static void _evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 BOOL appSetup()
 {
 #if USE_FILTER
-	static PifNoiseFilter s_switch_filter;
-#endif
+	static PifNoiseFilterManager s_switch_filter;
 
-#if USE_FILTER
-    if (!pifNoiseFilter_Init(&s_switch_filter, 2)) return FALSE;
-    if (!pifNoiseFilterBit_AddCount(&s_switch_filter, 0)) return FALSE;
-    if (!pifNoiseFilterBit_AddContinue(&s_switch_filter, 1)) return FALSE;
+    if (!pifNoiseFilterManager_Init(&s_switch_filter, 2)) return FALSE;
 #endif
 
     if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
@@ -53,8 +49,10 @@ BOOL appSetup()
 	g_tilt_switch.parent.evt_change = _evtTiltSwitchChange;
 
 #if USE_FILTER
-	if (!pifSensorSwitch_AttachFilter(&g_push_switch, &s_switch_filter, 0)) return FALSE;
-	if (!pifSensorSwitch_AttachFilter(&g_tilt_switch, &s_switch_filter, 1)) return FALSE;
+	g_push_switch.p_filter = pifNoiseFilterBit_AddCount(&s_switch_filter, 5);
+    if (!g_push_switch.p_filter) return FALSE;
+    g_tilt_switch.p_filter = pifNoiseFilterBit_AddContinue(&s_switch_filter, 5);
+    if (!g_tilt_switch.p_filter) return FALSE;
 #endif
 
     if (!pifLed_AttachSBlink(&g_led, 500)) return FALSE;											// 500ms

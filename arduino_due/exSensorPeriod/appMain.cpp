@@ -20,18 +20,18 @@ static void _evtTimerPeriodFinish(PifIssuerP p_issuer)
 BOOL appSetup()
 {
 #if USE_FILTER_AVERAGE
-    static PifNoiseFilter s_filter;
+    static PifNoiseFilterManager s_filter;
 #endif
     PifTimer* p_timer;
 
 #if USE_FILTER_AVERAGE
-	if (!pifNoiseFilter_Init(&s_filter, 1)) return FALSE;
-	if (!pifNoiseFilterInt16_AddAverage(&s_filter, 7)) return FALSE;
+	if (!pifNoiseFilterManager_Init(&s_filter, 1)) return FALSE;
 #endif
 
     if (!pifSensorDigital_AttachTaskAcquire(&g_sensor, TM_PERIOD_MS, 50, TRUE)) return FALSE;		// 50ms
 #if USE_FILTER_AVERAGE
-    if (!pifSensorDigital_AttachFilter(&g_sensor, &s_filter, 0)) return FALSE;
+    g_sensor.p_filter = pifNoiseFilterInt16_AddAverage(&s_filter, 7);
+	if (!g_sensor.p_filter) return FALSE;
 #endif
 
 	p_timer = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);

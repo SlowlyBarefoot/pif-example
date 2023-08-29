@@ -135,19 +135,22 @@ static void _evtTouchData(int16_t x, int16_t y)
 
 BOOL appSetup()
 {
-    static PifNoiseFilter s_filter;
+    static PifNoiseFilterManager s_filter;
+    PifNoiseFilter* p_filter[2];
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;								// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-	if (!pifNoiseFilter_Init(&s_filter, 2)) return FALSE;
-	if (!pifNoiseFilterInt16_AddAverage(&s_filter, 5)) return FALSE;					// touch x
-	if (!pifNoiseFilterInt16_AddAverage(&s_filter, 5)) return FALSE;					// touch y
+	if (!pifNoiseFilterManager_Init(&s_filter, 2)) return FALSE;
+	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch x
+	if (!p_filter[0]) return FALSE;
+	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch y
+	if (!p_filter[1]) return FALSE;
 
     g_touch_screen.evt_touch_data = _evtTouchData;
-    if (!pifTouchScreen_AttachFilter(&g_touch_screen, &s_filter, 0)) return FALSE;
+    if (!pifTouchScreen_AttachFilter(&g_touch_screen, p_filter[0], p_filter[1])) return FALSE;
     if (!pifTouchScreen_Start(&g_touch_screen, NULL)) return FALSE;
 
     p_task = pifTaskManager_Add(TM_PERIOD_MS, 2000, _taskFillScreen, NULL, FALSE);		// 2000ms

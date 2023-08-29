@@ -126,15 +126,14 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 BOOL exSerial1_Setup()
 {
 	int i;
-	static PifNoiseFilter stPushSwitchFilter;
+	static PifNoiseFilterManager stPushSwitchFilter;
 
-    if (!pifNoiseFilter_Init(&stPushSwitchFilter, SWITCH_COUNT)) return FALSE;
+    if (!pifNoiseFilterManager_Init(&stPushSwitchFilter, SWITCH_COUNT)) return FALSE;
     for (i = 0; i < SWITCH_COUNT; i++) {
-	    if (!pifNoiseFilterBit_AddCount(&stPushSwitchFilter, 7)) return FALSE;
-
 	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stProtocolTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
 		g_stProtocolTest[i].stPushSwitch.parent.evt_change = _evtPushSwitchChange;
-		if (!pifSensorSwitch_AttachFilter(&g_stProtocolTest[i].stPushSwitch, &stPushSwitchFilter, i)) return FALSE;
+		g_stProtocolTest[i].stPushSwitch.p_filter = pifNoiseFilterBit_AddCount(&stPushSwitchFilter, 7);
+	    if (!g_stProtocolTest[i].stPushSwitch.p_filter) return FALSE;
     	g_stProtocolTest[i].ucDataCount = 0;
     }
 
