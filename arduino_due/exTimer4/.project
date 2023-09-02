@@ -82,9 +82,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/core/pif_list.h</name>
+			<name>pif/include/core/pif_obj_array.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_list.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_obj_array.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/core/pif_task.h</name>
@@ -107,9 +107,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/core/pif_list.c</name>
+			<name>pif/source/core/pif_obj_array.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_list.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_obj_array.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core/pif_task.c</name>
