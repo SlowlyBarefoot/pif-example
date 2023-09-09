@@ -2,6 +2,7 @@
 #define APP_MAIN_H
 
 
+#include "core/pif.h"
 #include "core/pif_collect_signal.h"
 #include "core/pif_gpio.h"
 #include "core/pif_log.h"

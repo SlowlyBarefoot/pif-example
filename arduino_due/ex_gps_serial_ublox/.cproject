@@ -12,13 +12,14 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildProperties="" description="" id="io.sloeber.core.toolChain.release.783772827" name="Release" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=" parent="org.eclipse.cdt.build.core.emptycfg">
+				<configuration artifactName="${ProjName}" buildProperties="" description="" id="io.sloeber.core.toolChain.release.783772827" name="Release" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="org.eclipse.cdt.build.core.emptycfg">
 					<folderInfo id="io.sloeber.core.toolChain.release.783772827.1267754843" name="/" resourcePath="">
 						<toolChain id="io.sloeber.core.toolChain.release.747687305" name="Arduino Toolchain (Sloeber edition)" superClass="io.sloeber.core.toolChain.release">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="io.sloeber.targetplatform.1441928780" name="Arduino Target" osList="all" superClass="io.sloeber.targetplatform"/>
 							<builder buildPath="${workspace_loc:/ex_gps_serial_ublox}/Release" id="io.sloeber.sketch.builder.734249285" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.1227260811" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.307563861" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_serial_ublox}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_serial_ublox/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_serial_ublox/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
@@ -27,6 +28,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.55436755" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.1654873714" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_serial_ublox}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_serial_ublox/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_serial_ublox/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>

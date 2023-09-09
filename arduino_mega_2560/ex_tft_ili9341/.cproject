@@ -19,6 +19,7 @@
 							<builder buildPath="${workspace_loc:/ex_tft_ili9341}/Release" id="io.sloeber.sketch.builder.844625215" keepEnvironmentInBuildfile="false" name="Arduino sketch builder" parallelBuildOn="false" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.2041474418" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.1384411428" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/libraries/MsTimer2}&quot;"/>
@@ -28,6 +29,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.1502280128" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.216638527" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/libraries/MsTimer2}&quot;"/>

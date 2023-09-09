@@ -19,6 +19,7 @@
 							<builder buildPath="${workspace_loc:/exStepMotor}/Release" id="io.sloeber.sketch.builder.1940710826" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.818637824" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.1844215214" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exStepMotor}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exStepMotor/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exStepMotor/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exStepMotor/libraries/DueTimer}&quot;"/>
@@ -28,6 +29,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.1402377492" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.1695208645" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exStepMotor}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exStepMotor/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exStepMotor/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exStepMotor/libraries/DueTimer}&quot;"/>

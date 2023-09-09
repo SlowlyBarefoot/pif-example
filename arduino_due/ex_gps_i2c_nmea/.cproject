@@ -19,6 +19,7 @@
 							<builder buildPath="${workspace_loc:/ex_gps_i2c_nmea}/Release" id="io.sloeber.sketch.builder.364336838" keepEnvironmentInBuildfile="false" name="Arduino sketch builder" parallelBuildOn="false" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.1690367360" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.1109331524" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_i2c_nmea}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_i2c_nmea/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_i2c_nmea/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_i2c_nmea/libraries/Wire/src}&quot;"/>
@@ -28,6 +29,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.1418955690" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.258413420" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_i2c_nmea}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_i2c_nmea/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_i2c_nmea/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_gps_i2c_nmea/libraries/Wire/src}&quot;"/>

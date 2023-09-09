@@ -12,13 +12,14 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildProperties="" description="" id="io.sloeber.core.toolChain.release.1827459594" name="Release" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=" parent="org.eclipse.cdt.build.core.emptycfg">
+				<configuration artifactName="${ProjName}" buildProperties="" description="" id="io.sloeber.core.toolChain.release.1827459594" name="Release" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="org.eclipse.cdt.build.core.emptycfg">
 					<folderInfo id="io.sloeber.core.toolChain.release.1827459594.370008675" name="/" resourcePath="">
 						<toolChain id="io.sloeber.core.toolChain.release.378299132" name="Arduino Toolchain (Sloeber edition)" superClass="io.sloeber.core.toolChain.release">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="io.sloeber.targetplatform.1186398913" name="Arduino Target" osList="all" superClass="io.sloeber.targetplatform"/>
 							<builder buildPath="${workspace_loc:/exTimer2}/Release" id="io.sloeber.sketch.builder.203977028" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.596377215" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.1412064692" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTimer2/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTimer2/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTimer2/libraries/DueTimer}&quot;"/>
@@ -28,6 +29,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.545857866" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.762139429" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTimer2/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTimer2/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTimer2/libraries/DueTimer}&quot;"/>

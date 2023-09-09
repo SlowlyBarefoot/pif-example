@@ -46,7 +46,7 @@ static uint16_t _taskLedToggle(PifTask *pstTask)
 			break;
 		}
 		count = 100;
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 		pifTaskManager_PrintRatioTable();
 #endif
 	}
@@ -87,7 +87,7 @@ void setup()
 
 	pifLog_Printf(LT_INFO, "Task=%d\n", pifTaskManager_Count());
 
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 	pifTaskManager_PrintRatioTable();
 #endif
 }

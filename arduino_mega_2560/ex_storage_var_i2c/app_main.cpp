@@ -11,7 +11,7 @@ static int _CmdCreate(int argc, char *argv[]);
 static int _CmdDelete(int argc, char *argv[]);
 static int _CmdWrite(int argc, char *argv[]);
 static int _CmdRead(int argc, char *argv[]);
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 static int _CmdPrintInfo(int argc, char *argv[]);
 static int _CmdDump(int argc, char *argv[]);
 #endif
@@ -26,7 +26,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 		{ "delete", _CmdDelete, "Storage delete", NULL },
 		{ "write", _CmdWrite, "Storage write", NULL },
 		{ "read", _CmdRead, "Storage read", NULL },
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 		{ "info", _CmdPrintInfo, "Storage print info", NULL },
 		{ "dump", _CmdDump, "Storage dump", NULL },
 #endif
@@ -62,7 +62,7 @@ static int _CmdCreate(int argc, char *argv[])
 		if (!pifStorage_Create(&g_storage.parent, id, size)) {
 			pifLog_Printf(LT_INFO, "create: failed E=%d", pif_error);
 		}
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 		else {
 			pifStorageVar_PrintInfo(&g_storage, TRUE);
 		}
@@ -85,7 +85,7 @@ static int _CmdDelete(int argc, char *argv[])
 		if (!pifStorage_Delete(&g_storage.parent, id)) {
 			pifLog_Printf(LT_INFO, "delete: failed E=%d", pif_error);
 		}
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 		else {
 			pifStorageVar_PrintInfo(&g_storage, TRUE);
 		}
@@ -179,7 +179,7 @@ static int _CmdRead(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 
 static int _CmdPrintInfo(int argc, char *argv[])
 {
@@ -223,7 +223,7 @@ BOOL appSetup()
 		}
 	}
 
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 	if (!pifStorageVar_IsFormat(&g_storage.parent)) {
 		pifStorageVar_PrintInfo(&g_storage, TRUE);
 	}

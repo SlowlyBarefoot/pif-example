@@ -18,7 +18,7 @@
 #define TIMER_1MS_SIZE			1
 
 
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 
 static void actTaskYield()
 {
@@ -111,7 +111,7 @@ void setup()
 	static PifUart s_uart_log;
 
 	pinMode(PIN_LED_L, OUTPUT);
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 	pinMode(52, OUTPUT);
 #endif
 
@@ -131,7 +131,7 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-#ifdef __PIF_DEBUG__
+#ifdef PIF_DEBUG
 	pif_act_task_yield = actTaskYield;
 #endif
 

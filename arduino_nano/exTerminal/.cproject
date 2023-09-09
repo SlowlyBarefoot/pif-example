@@ -19,6 +19,7 @@
 							<builder buildPath="${workspace_loc:/exTerminal}/Release" id="io.sloeber.sketch.builder.2037887351" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.71483739" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.480738904" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
@@ -29,6 +30,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.1537075640" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.99401252" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
@@ -76,6 +78,7 @@
 							<builder buildPath="${workspace_loc:/exTerminal}/Release" id="io.sloeber.sketch.builder.1843375051" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.1076963561" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.2071356568" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
@@ -86,6 +89,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.281368259" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.293345870" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>

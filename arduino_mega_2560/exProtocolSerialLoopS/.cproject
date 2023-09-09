@@ -19,6 +19,7 @@
 							<builder buildPath="${workspace_loc:/exProtocolSerialLoopS}/Release" id="io.sloeber.sketch.builder.1998325848" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.1091341289" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.1869923973" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exProtocolSerialLoopS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exProtocolSerialLoopS/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exProtocolSerialLoopS/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exProtocolSerialLoopS/libraries/MsTimer2}&quot;"/>
@@ -29,6 +30,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.2071331511" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.865258284" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exProtocolSerialLoopS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exProtocolSerialLoopS/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exProtocolSerialLoopS/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exProtocolSerialLoopS/libraries/MsTimer2}&quot;"/>

@@ -19,6 +19,7 @@
 							<builder buildPath="${workspace_loc:/ex_storage_var_i2c}/Release" id="io.sloeber.sketch.builder.476330495" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.124993875" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.1187680791" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/Wire/src}&quot;"/>
@@ -29,6 +30,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.1863169848" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.1734239591" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/Wire/src}&quot;"/>
@@ -76,6 +78,7 @@
 							<builder buildPath="${workspace_loc:/ex_storage_var_i2c}/Release" id="io.sloeber.sketch.builder.1375950440" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.349273594" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.871631327" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/Wire/src}&quot;"/>
@@ -86,6 +89,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.1336839462" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.1630189292" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_storage_var_i2c/libraries/Wire/src}&quot;"/>
