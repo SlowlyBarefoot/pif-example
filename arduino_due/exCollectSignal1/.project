@@ -67,6 +67,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>pif/include/filter</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>pif/include/sensor</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -78,6 +83,11 @@
 		</link>
 		<link>
 			<name>pif/source/display</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/source/filter</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -145,6 +155,11 @@
 			<name>pif/include/display/pif_led.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/filter/pif_noise_filter.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/sensor/pif_sensor.h</name>
@@ -215,6 +230,11 @@
 			<name>pif/source/display/pif_led.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/filter/pif_noise_filter.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/sensor/pif_sensor.c</name>

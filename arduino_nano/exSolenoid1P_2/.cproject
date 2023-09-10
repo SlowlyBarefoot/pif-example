@@ -19,6 +19,7 @@
 							<builder buildPath="${workspace_loc:/exSolenoid1P_2}/Release" id="io.sloeber.sketch.builder.643287757" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.513101054" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.107845265" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSolenoid1P}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSolenoid1P_2/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSolenoid1P_2/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSolenoid1P_2/libraries/MsTimer2}&quot;"/>
@@ -28,6 +29,7 @@
 							</tool>
 							<tool id="io.sloeber.tool.compiler.c.161205125" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.2009547173" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSolenoid1P}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSolenoid1P_2/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSolenoid1P_2/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exSolenoid1P_2/libraries/MsTimer2}&quot;"/>
