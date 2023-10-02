@@ -81,7 +81,7 @@ static int _CmdBackLight(int argc, char *argv[])
 		if (bl < 0) backlight = 0;
 		else if (bl > 100) backlight = 100;
 		else backlight = bl;
-		if (g_ili9341.act_backlight) (*g_ili9341.act_backlight)(backlight);
+		if (g_ili9341.parent.act_backlight) (*g_ili9341.parent.act_backlight)(backlight);
 		pifLog_Printf(LT_NONE, "  BackLight=%u\n", backlight);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
@@ -193,6 +193,8 @@ BOOL appSetup()
 	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, p_filter[0], p_filter[1])) return FALSE;
 	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) return FALSE;
 #endif
+
+	pifIli9341_SetRotation(&g_ili9341.parent, TLR_0_DEGREE);
 
     p_task = pifTaskManager_Add(TM_PERIOD_MS, 2000, _taskFillScreen, NULL, FALSE);		// 2000ms
     if (!p_task) return FALSE;
