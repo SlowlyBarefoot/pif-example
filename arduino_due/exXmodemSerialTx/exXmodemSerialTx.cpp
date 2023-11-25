@@ -30,19 +30,20 @@ static uint16_t actXmodemSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t 
     return Serial3.write((char *)pucBuffer, usSize);
 }
 
-static BOOL actXmodemReceiveData(PifUart *p_uart, uint8_t *pucData)
+static uint16_t actXmodemReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int rxData;
+	int i, data;
 
 	(void)p_uart;
 
-	rxData = Serial3.read();
-	if (rxData >= 0) {
-		if (rxData == 'C') Serial.write('C');
-		*pucData = rxData;
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		data = Serial3.read();
+		if (data < 0) break;
+		if (data == 'C') Serial.write('C');
+		p_data[i] = data;
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * Serial3.available() / SERIAL_BUFFER_SIZE;
+	return i;
 }
 
 extern "C" {

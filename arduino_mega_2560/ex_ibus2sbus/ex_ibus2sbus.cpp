@@ -25,18 +25,20 @@ static void actLedLState(PifId id, uint32_t state)
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-static BOOL actSerial1ReceiveData(PifUart* p_owner, uint8_t* p_data)
+static uint16_t actSerial1ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
 	int data;
+	uint16_t i;
 
-	(void)p_owner;
+	(void)p_uart;
 
-	data = Serial1.read();
-	if (data >= 0) {
-		*p_data = data;
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		data = Serial1.read();
+		if (data < 0) break;
+		p_data[i] = data;
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * Serial1.available() / SERIAL_RX_BUFFER_SIZE;
+	return i;
 }
 
 static uint16_t actSerial2SendData(PifUart* p_owner, uint8_t* p_buffer, uint16_t size)

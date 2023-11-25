@@ -25,18 +25,20 @@ static uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t 
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
+static uint16_t actSerialReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int rxData;
+	int data;
+	uint16_t i;
 
 	(void)p_uart;
 
-	rxData = Serial.read();
-	if (rxData >= 0) {
-		*pucData = rxData;
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		data = Serial.read();
+		if (data < 0) break;
+		p_data[i] = data;
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * Serial.available() / SERIAL_RX_BUFFER_SIZE;
+	return i;
 }
 
 static void sysTickHook()

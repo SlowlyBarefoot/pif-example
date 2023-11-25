@@ -4,8 +4,8 @@
 #include "exProtocolSerialLoopS.h"
 #include "appMain.h"
 
-//#define USE_SERIAL
-#define USE_USART
+#define USE_SERIAL
+//#define USE_USART
 
 #ifdef USE_USART
 #include "../usart.h"
@@ -74,18 +74,20 @@ static uint16_t actSerial1SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t
     return Serial1.write((char *)pucBuffer, usSize);
 }
 
-static BOOL actSerial1ReceiveData(PifUart *p_uart, uint8_t *pucData)
+static uint16_t actSerial1ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int rxData;
+	int data;
+	uint16_t i;
 
 	(void)p_uart;
 
-	rxData = Serial1.read();
-	if (rxData >= 0) {
-		*pucData = rxData;
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		data = Serial1.read();
+		if (data < 0) break;
+		p_data[i] = data;
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * Serial1.available() / SERIAL_RX_BUFFER_SIZE;
+	return i;
 }
 
 static uint16_t actSerial2SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
@@ -95,18 +97,20 @@ static uint16_t actSerial2SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-static BOOL actSerial2ReceiveData(PifUart *p_uart, uint8_t *pucData)
+static uint16_t actSerial2ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int rxData;
+	int data;
+	uint16_t i;
 
 	(void)p_uart;
 
-	rxData = Serial2.read();
-	if (rxData >= 0) {
-		*pucData = rxData;
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		data = Serial2.read();
+		if (data < 0) break;
+		p_data[i] = data;
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * Serial2.available() / SERIAL_RX_BUFFER_SIZE;
+	return i;
 }
 
 #endif

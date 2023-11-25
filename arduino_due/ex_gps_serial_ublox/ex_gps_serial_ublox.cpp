@@ -23,18 +23,19 @@ static uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t u
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static BOOL actLogReceiveData(PifUart *pstOwner, uint8_t *pucData)
+static uint16_t actLogReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int rxData;
+	int i, data;
 
-	(void)pstOwner;
+	(void)p_owner;
 
-	rxData = Serial.read();
-	if (rxData >= 0) {
-		*pucData = rxData;
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		data = Serial.read();
+		if (data < 0) break;
+		p_data[i] = data;
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * Serial.available() / SERIAL_BUFFER_SIZE;
+	return i;
 }
 
 static BOOL actGpsSetBaudrate(PifUart *p_owner, uint32_t baudrate)
@@ -52,19 +53,20 @@ static uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t u
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-static BOOL actGpsReceiveData(PifUart *pstOwner, uint8_t *pucData)
+static uint16_t actGpsReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int rxData;
+	int i, data;
 
-	(void)pstOwner;
+	(void)p_owner;
 
-	rxData = Serial2.read();
-	if (rxData >= 0) {
-		*pucData = rxData;
-		if (g_print_data == 2) Serial.write(rxData);
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		data = Serial2.read();
+		if (data < 0) break;
+		p_data[i] = data;
+		if (g_print_data == 2) Serial.write(data);
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * Serial2.available() / SERIAL_BUFFER_SIZE;
+	return i;
 }
 
 extern "C" {

@@ -30,18 +30,20 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static BOOL actLogReceiveData(PifUart *p_uart, uint8_t *pucData)
+static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *pucData, uint16_t size, uint8_t* p_rate)
 {
 	int rxData;
+	uint16_t i;
 
 	(void)p_uart;
 
-	rxData = Serial.read();
-	if (rxData >= 0) {
-		*pucData = rxData;
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		rxData = Serial.read();
+		if (rxData < 0) break;
+		pucData[i] = rxData;
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * Serial.available() / SERIAL_RX_BUFFER_SIZE;
+	return i;
 }
 
 #endif
@@ -104,7 +106,7 @@ void setup()
 	sei();
 #endif
 
-	pif_Init(micros);
+	pif_Init(NULL);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

@@ -45,18 +45,20 @@ static uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t u
     return serialGps.write((char *)pucBuffer, usSize);
 }
 
-static BOOL actGpsReceiveData(PifUart *pstOwner, uint8_t *pucData)
+static uint16_t actGpsReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int rxData;
+	int data;
+	uint16_t i;
 
-	(void)pstOwner;
+	(void)p_uart;
 
-	rxData = serialGps.read();
-	if (rxData >= 0) {
-		*pucData = rxData;
-		return TRUE;
+	for (i = 0; i < size; i++) {
+		data = serialGps.read();
+		if (data < 0) break;
+		p_data[i] = data;
 	}
-	return FALSE;
+	if (p_rate) *p_rate = 100 * serialGps.available() / SERIAL_RX_BUFFER_SIZE;
+	return i;
 }
 
 static void sysTickHook()

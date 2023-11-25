@@ -49,23 +49,29 @@ static uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t 
 #endif
 }
 
-static BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
+static uint16_t actSerialReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int rxData;
+	int i, data;
 
 	(void)p_uart;
 
+	for (i = 0; i < size; i++) {
 #ifdef USE_SERIAL_USB
-   	rxData = SerialUSB.read();
+		data = SerialUSB.read();
 #endif
 #ifdef USE_SERIAL_3
-	rxData = Serial3.read();
+		data = Serial3.read();
 #endif
-	if (rxData >= 0) {
-		*pucData = rxData;
-		return TRUE;
+		if (data < 0) break;
+		p_data[i] = data;
 	}
-	return FALSE;
+#ifdef USE_SERIAL_USB
+	if (p_rate) *p_rate = 100 * SerialUSB.available() / SERIAL_BUFFER_SIZE;
+#endif
+#ifdef USE_SERIAL_3
+	if (p_rate) *p_rate = 100 * Serial3.available() / SERIAL_BUFFER_SIZE;
+#endif
+	return i;
 }
 
 extern "C" {

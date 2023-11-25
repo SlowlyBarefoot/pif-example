@@ -1,7 +1,8 @@
-.hg
-.hgignore
-.metadata
-.vscode
+.hg/
+.hgignore/
+.metadata/
+.settings/
+.vscode/
 
 makefile
 
@@ -12,6 +13,5 @@ makefile
 *.mk
 *.map
 *.o
-*.prefs
 *.su
 *-workspace
