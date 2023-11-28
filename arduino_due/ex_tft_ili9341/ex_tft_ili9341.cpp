@@ -2,7 +2,7 @@
 #include "ex_tft_ili9341.h"
 #include "linker.h"
 
-#if LCD_TYPE == LCD_3_2_INCH
+#if LCD_TYPE == LCD_2_2_INCH_SPI || LCD_TYPE == LCD_3_2_INCH
 	#include <SPI.h>
 #endif
 
@@ -14,23 +14,32 @@
 // double up the pins with the touch screen (see the TFT paint example).
 #define PIN_LCD_CS				A3 // Chip Select goes to Analog 3
 #define PIN_LCD_RS				A2 // Command/Data goes to Analog 2
-#define PIN_LCD_WR				A1 // LCD Write goes to Analog 1
-#define PIN_LCD_RD				A0 // LCD Read goes to Analog 0
 #define PIN_LCD_RST				A4 // Can alternately just connect to Arduino's reset pin
 
-#if LCD_TYPE == LCD_2_4_INCH
+#if LCD_TYPE == LCD_2_2_INCH_SPI
 
-#define PIN_TS_YP 				A1  // must be an analog pin, use "An" notation!
-#define PIN_TS_XP 				A2  // must be an analog pin, use "An" notation!
-#define PIN_TS_YM 				7   // can be a digital pin
-#define PIN_TS_XM 				6   // can be a digital pin
+	#define PIN_LCD_BL			7
 
-#elif LCD_TYPE == LCD_3_2_INCH
+#else
 
-#define PIN_LCD_BL				7
+	#define PIN_LCD_WR			A1 // LCD Write goes to Analog 1
+	#define PIN_LCD_RD			A0 // LCD Read goes to Analog 0
 
-#define PIN_TS_CS				3
-#define PIN_TS_PEN				4
+	#if LCD_TYPE == LCD_2_4_INCH
+
+		#define PIN_TS_YP		A1  // must be an analog pin, use "An" notation!
+		#define PIN_TS_XP		A2  // must be an analog pin, use "An" notation!
+		#define PIN_TS_YM		7   // can be a digital pin
+		#define PIN_TS_XM		6   // can be a digital pin
+
+	#elif LCD_TYPE == LCD_3_2_INCH
+
+		#define PIN_LCD_BL		7
+
+		#define PIN_TS_CS		3
+		#define PIN_TS_PEN		4
+
+	#endif
 
 #endif
 
@@ -54,7 +63,8 @@ static uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size
 
 static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
 {
-	int i, data;
+	int data;
+	uint16_t i;
 
 	(void)p_uart;
 
@@ -79,6 +89,15 @@ static void actLcdChipSelect(SWITCH sw)
 {
 	digitalWrite(PIN_LCD_CS, sw ? LOW : HIGH);
 }
+
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+
+static void _LcdWritBus(uint32_t d)
+{
+	SPI.transfer(d);
+}
+
+#else
 
 static uint32_t _LcdReadBus()
 {
@@ -141,6 +160,8 @@ static void actLcdReadCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 #endif
 	}
 }
+
+#endif
 
 static void actLcdWriteCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 {
@@ -238,11 +259,6 @@ static BOOL actTouchPressure(PifTouchScreen* p_owner)
 
 #elif LCD_TYPE == LCD_3_2_INCH
 
-static void actLcdBackLight(uint8_t level)
-{
-	analogWrite(PIN_LCD_BL, level * 255 / 100);
-}
-
 static BOOL actPen()
 {
 	return digitalRead(PIN_TS_PEN);
@@ -266,6 +282,15 @@ static void actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t si
 
 #endif
 
+#if LCD_TYPE == LCD_2_2_INCH_SPI || LCD_TYPE == LCD_3_2_INCH
+
+static void actLcdBackLight(uint8_t level)
+{
+	analogWrite(PIN_LCD_BL, (uint16_t)level * 255 / 100);
+}
+
+#endif
+
 extern "C" {
 	int sysTickHook()
 	{
@@ -278,7 +303,7 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-#if LCD_TYPE == LCD_2_4_INCH
+#if LCD_TYPE == LCD_2_2_INCH_SPI || LCD_TYPE == LCD_2_4_INCH
 	const uint8_t lcd_setup[] = {
 		ILI9341_CMD_POWER_CTRL_A, 			5, 0x39, 0x2C, 0x00, 0x34, 0x02,
 		ILI9341_CMD_POWER_CTRL_B, 			3, 0x00, 0xC1, 0x30,
@@ -334,17 +359,36 @@ void setup()
 	};
 #endif
 	static PifUart s_uart_log;
+	int line;
 
 	pinMode(PIN_LED_L, OUTPUT);
 
-	pinMode(PIN_LCD_RD, OUTPUT);
-	pinMode(PIN_LCD_WR, OUTPUT);
 	pinMode(PIN_LCD_RS, OUTPUT);
 	pinMode(PIN_LCD_CS, OUTPUT);
 	pinMode(PIN_LCD_RST, OUTPUT);
-#if LCD_TYPE == LCD_2_4_INCH
+
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+
+	pinMode(PIN_LCD_BL, OUTPUT);
+
+	analogWrite(PIN_LCD_BL, 0x7F);
+
+    SPI.begin();
+    SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setDataMode(SPI_MODE0);
+
+#else
+
+	pinMode(PIN_LCD_RD, OUTPUT);
+	pinMode(PIN_LCD_WR, OUTPUT);
+
+	#if LCD_TYPE == LCD_2_4_INCH
+
 	for (int i = 2; i < 10; i++) pinMode(i, OUTPUT);
-#elif LCD_TYPE == LCD_3_2_INCH
+
+	#elif LCD_TYPE == LCD_3_2_INCH
+
 	for (int i = 0; i < 8; i++) {
 		pinMode(34 + i, OUTPUT);
 		pinMode(44 + i, OUTPUT);
@@ -358,10 +402,13 @@ void setup()
 	SPI.begin();
 //	SPI.setClockDivider(SPI_CLOCK_DIV16);
 	digitalWrite(SS, HIGH);
-#endif
+
+	#endif
 
 	digitalWrite(PIN_LCD_RD, HIGH);
 	digitalWrite(PIN_LCD_WR, HIGH);
+#endif
+
 	digitalWrite(PIN_LCD_RS, HIGH);
 	digitalWrite(PIN_LCD_CS, HIGH);
 	digitalWrite(PIN_LCD_RST, HIGH);
@@ -370,40 +417,50 @@ void setup()
 
 	pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return;
+    if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) { line = __LINE__; goto fail; }					// 1ms
 	s_uart_log.act_send_data = actLogSendData;
     s_uart_log.act_receive_data = actLogReceiveData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;			// 2EA
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) { line = __LINE__; goto fail; }			// 2EA
 
-#if LCD_TYPE == LCD_2_4_INCH
-	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) return;
-
-	if (!pifTouchScreen_Init(&g_touch_screen, PIF_ID_AUTO, &g_ili9341.parent, 136, 907, 139, 942)) return;
-	if (!pifTouchScreen_AttachAction(&g_touch_screen, actTouchPosition, actTouchPressure)) return;
-#elif LCD_TYPE == LCD_3_2_INCH
-    if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) return;
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }
     g_ili9341.parent.act_backlight = actLcdBackLight;
 
-    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) return;
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, NULL, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+#elif LCD_TYPE == LCD_2_4_INCH
+	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }
+
+	if (!pifTouchScreen_Init(&g_touch_screen, PIF_ID_AUTO, &g_ili9341.parent, 136, 907, 139, 942)) { line = __LINE__; goto fail; }
+	if (!pifTouchScreen_AttachAction(&g_touch_screen, actTouchPosition, actTouchPressure)) { line = __LINE__; goto fail; }
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+#elif LCD_TYPE == LCD_3_2_INCH
+    if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) { line = __LINE__; goto fail; }
+    g_ili9341.parent.act_backlight = actLcdBackLight;
+
+    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) { line = __LINE__; goto fail; }
     g_spi_port.act_transfer = actTransfer;
 
-    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, actPen)) return;
+    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, actPen)) { line = __LINE__; goto fail; }
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
 #endif
-    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) return;
     pifIli9341_Setup(&g_ili9341, lcd_setup, lcd_rotation);
 
-	if (!appSetup()) return;
+	if (!appSetup()) { line = __LINE__; goto fail; }
 
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
+	return;
+
+fail:
+	pifLog_Printf(LT_INFO, "Initial failed. %d\n", line);
 }
 
 // The loop function is called in an endless loop

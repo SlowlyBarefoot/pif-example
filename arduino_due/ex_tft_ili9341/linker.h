@@ -8,11 +8,13 @@
 #include "input/pif_tsc2046.h"
 
 
-#define LCD_2_4_INCH			0
-#define LCD_3_2_INCH			1
+#define LCD_2_2_INCH_SPI		0
+#define LCD_2_4_INCH			1
+#define LCD_3_2_INCH			2
 
+#define LCD_TYPE				LCD_2_2_INCH_SPI
 //#define LCD_TYPE				LCD_2_4_INCH
-#define LCD_TYPE				LCD_3_2_INCH
+//#define LCD_TYPE				LCD_3_2_INCH
 
 
 extern PifLed g_led_l;

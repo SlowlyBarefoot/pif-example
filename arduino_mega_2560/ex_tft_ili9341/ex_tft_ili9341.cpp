@@ -3,6 +3,9 @@
 #include "linker.h"
 
 #include <MsTimer2.h>
+#if LCD_TYPE == LCD_2_2_INCH_SPI || LCD_TYPE == LCD_3_2_INCH
+	#include <SPI.h>
+#endif
 
 
 #define PIN_LED_L				13
@@ -10,20 +13,29 @@
 // The control pins for the LCD can be assigned to any digital or
 // analog pins...but we'll use the analog pins as this allows us to
 // double up the pins with the touch screen (see the TFT paint example).
-#define PIN_LCD_CS		A3 // Chip Select goes to Analog 3
-#define PIN_LCD_RS		A2 // Command/Data goes to Analog 2
-#define PIN_LCD_WR		A1 // LCD Write goes to Analog 1
-#define PIN_LCD_RD		A0 // LCD Read goes to Analog 0
-#define PIN_LCD_RST		A4 // Can alternately just connect to Arduino's reset pin
+#define PIN_LCD_CS				A3 // Chip Select goes to Analog 3
+#define PIN_LCD_RS				A2 // Command/Data goes to Analog 2
+#define PIN_LCD_RST				A4 // Can alternately just connect to Arduino's reset pin
 
-#define PIN_TS_YP 		A1  // must be an analog pin, use "An" notation!
-#define PIN_TS_XP 		A2  // must be an analog pin, use "An" notation!
-#define PIN_TS_YM 		7   // can be a digital pin
-#define PIN_TS_XM 		6   // can be a digital pin
+#if LCD_TYPE == LCD_2_2_INCH_SPI
 
-#define EMASK       0x38
-#define GMASK       0x20
-#define HMASK       0x78
+	#define PIN_LCD_BL			7
+
+#else
+
+	#define PIN_LCD_WR			A1 // LCD Write goes to Analog 1
+	#define PIN_LCD_RD			A0 // LCD Read goes to Analog 0
+
+	#define PIN_TS_YP 			A1  // must be an analog pin, use "An" notation!
+	#define PIN_TS_XP 			A2  // must be an analog pin, use "An" notation!
+	#define PIN_TS_YM 			7   // can be a digital pin
+	#define PIN_TS_XM 			6   // can be a digital pin
+
+	#define EMASK    			0x38
+	#define GMASK   		    0x20
+	#define HMASK   		    0x78
+
+#endif
 
 #define TASK_SIZE				10
 #define TIMER_1MS_SIZE			3
@@ -61,16 +73,27 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 
 static void actLcdReset()
 {
-	digitalWrite(PIN_LCD_RST, LOW);
-	delay(100);
 	digitalWrite(PIN_LCD_RST, HIGH);
-	delay(50);
+	delay(5);
+	digitalWrite(PIN_LCD_RST, LOW);
+	delay(15);
+	digitalWrite(PIN_LCD_RST, HIGH);
+	delay(15);
 }
 
 static void actLcdChipSelect(SWITCH sw)
 {
 	digitalWrite(PIN_LCD_CS, sw ? LOW : HIGH);
 }
+
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+
+static void _LcdWritBus(uint32_t d)
+{
+	SPI.transfer(d);
+}
+
+#else
 
 static uint32_t _LcdReadBus()
 {
@@ -116,13 +139,17 @@ static void actLcdReadCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 	}
 }
 
+#endif
+
 static void actLcdWriteCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 {
-	digitalWrite(PIN_LCD_RS, LOW);
+	*(portOutputRegister(digitalPinToPort(PIN_LCD_RS))) &= ~digitalPinToBitMask(PIN_LCD_RS);
+//	digitalWrite(PIN_LCD_RS, LOW);
 	_LcdWritBus(cmd);
 
 	if (size) {
-		digitalWrite(PIN_LCD_RS, HIGH);
+		*(portOutputRegister(digitalPinToPort(PIN_LCD_RS))) |= digitalPinToBitMask(PIN_LCD_RS);
+//		digitalWrite(PIN_LCD_RS, HIGH);
 		for (uint32_t i = 0; i < size; i++) {
 			_LcdWritBus(p_data[i]);
 		}
@@ -131,7 +158,8 @@ static void actLcdWriteCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 
 static void actLcdWriteData(uint32_t* p_data, uint32_t size)
 {
-	digitalWrite(PIN_LCD_RS, HIGH);
+	*(portOutputRegister(digitalPinToPort(PIN_LCD_RS))) |= digitalPinToBitMask(PIN_LCD_RS);
+//	digitalWrite(PIN_LCD_RS, HIGH);
 	for (uint32_t i = 0; i < size; i++) {
 		_LcdWritBus(p_data[i]);
 	}
@@ -141,13 +169,16 @@ static void actLcdWriteRepeat(uint32_t* p_data, uint8_t size, uint32_t len)
 {
 	uint8_t p = 0;
 
-	digitalWrite(PIN_LCD_RS, HIGH);
+	*(portOutputRegister(digitalPinToPort(PIN_LCD_RS))) |= digitalPinToBitMask(PIN_LCD_RS);
+//	digitalWrite(PIN_LCD_RS, HIGH);
 	for (uint32_t i = 0; i < size * len; i++) {
 		_LcdWritBus(p_data[p]);
 		p++;
 		if (p >= size) p = 0;
 	}
 }
+
+#if LCD_TYPE == LCD_2_4_INCH
 
 static void actTouchPosition(PifTouchScreen* p_owner, int16_t* x, int16_t* y)
 {
@@ -208,6 +239,17 @@ static BOOL actTouchPressure(PifTouchScreen* p_owner)
     return z > 150;
 }
 
+#endif
+
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+
+static void actLcdBackLight(uint8_t level)
+{
+	analogWrite(PIN_LCD_BL, (uint16_t)level * 255 / 100);
+}
+
+#endif
+
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
@@ -241,18 +283,35 @@ void setup()
 		ILI9341_MADCTL_MX | ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR
 	};
 	static PifUart s_uart_log;
+	int line;
 
 	pinMode(PIN_LED_L, OUTPUT);
 
-	pinMode(PIN_LCD_RD, OUTPUT);
-	pinMode(PIN_LCD_WR, OUTPUT);
 	pinMode(PIN_LCD_RS, OUTPUT);
 	pinMode(PIN_LCD_CS, OUTPUT);
 	pinMode(PIN_LCD_RST, OUTPUT);
+
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+
+	pinMode(PIN_LCD_BL, OUTPUT);
+
+	analogWrite(PIN_LCD_BL, 0x7F);
+
+    SPI.begin();
+    SPI.setClockDivider(SPI_CLOCK_DIV4); // 4 MHz (half speed)
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setDataMode(SPI_MODE0);
+
+#elif LCD_TYPE == LCD_2_4_INCH
+
+	pinMode(PIN_LCD_RD, OUTPUT);
+	pinMode(PIN_LCD_WR, OUTPUT);
 	for (int i = 2; i < 10; i++) pinMode(i, OUTPUT);
 
 	digitalWrite(PIN_LCD_RD, HIGH);
 	digitalWrite(PIN_LCD_WR, HIGH);
+#endif
+
 	digitalWrite(PIN_LCD_RS, HIGH);
 	digitalWrite(PIN_LCD_CS, HIGH);
 	digitalWrite(PIN_LCD_RST, HIGH);
@@ -264,30 +323,41 @@ void setup()
 
 	pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return;
+    if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) { line = __LINE__; goto fail; }					// 1ms
 	s_uart_log.act_send_data = actLogSendData;
     s_uart_log.act_receive_data = actLogReceiveData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;			// 2EA
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) { line = __LINE__; goto fail; }			// 2EA
 
-	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) return;
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }
+    g_ili9341.parent.act_backlight = actLcdBackLight;
 
-	if (!pifTouchScreen_Init(&g_touch_screen, PIF_ID_AUTO, &g_ili9341.parent, 136, 907, 139, 942)) return;
-	if (!pifTouchScreen_AttachAction(&g_touch_screen, actTouchPosition, actTouchPressure)) return;
-    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) return;
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, NULL, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+#elif LCD_TYPE == LCD_2_4_INCH
+	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }
+
+	if (!pifTouchScreen_Init(&g_touch_screen, PIF_ID_AUTO, &g_ili9341.parent, 136, 907, 139, 942)) { line = __LINE__; goto fail; }
+	if (!pifTouchScreen_AttachAction(&g_touch_screen, actTouchPosition, actTouchPressure)) { line = __LINE__; goto fail; }
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+#endif
     pifIli9341_Setup(&g_ili9341, lcd_setup, lcd_rotation);
 
-	if (!appSetup()) return;
+	if (!appSetup()) { line = __LINE__; goto fail; }
 
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
+	return;
+
+fail:
+	pifLog_Printf(LT_INFO, "Initial failed. %d\n", line);
 }
 
 // The loop function is called in an endless loop

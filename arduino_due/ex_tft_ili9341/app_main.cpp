@@ -14,16 +14,22 @@ PifTimerManager g_timer_1ms;
 #endif
 
 static PifTftLcdRotation rotation = TLR_0_DEGREE;
-static uint8_t backlight = 50;
+#if LCD_TYPE != LCD_2_4_INCH
+	static uint8_t backlight = 50;
+#endif
 static BOOL draw = FALSE;
 
 static PifTask* p_task = NULL;
 
 static int _CmdFillRect(int argc, char *argv[]);
 static int _CmdRotation(int argc, char *argv[]);
-static int _CmdBackLight(int argc, char *argv[]);
-static int _CmdTouchCalibration(int argc, char *argv[]);
-static int _CmdDraw(int argc, char *argv[]);
+#if LCD_TYPE != LCD_2_4_INCH
+	static int _CmdBackLight(int argc, char *argv[]);
+#endif
+#if LCD_TYPE != LCD_2_2_INCH_SPI
+	static int _CmdTouchCalibration(int argc, char *argv[]);
+	static int _CmdDraw(int argc, char *argv[]);
+#endif
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -32,9 +38,13 @@ const PifLogCmdEntry c_psCmdTable[] = {
 	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
 	{ "fr", _CmdFillRect, "Fill Rect", NULL },
 	{ "rot", _CmdRotation, "Change Rotation", NULL },
+#if LCD_TYPE != LCD_2_4_INCH
 	{ "bl", _CmdBackLight, "Change Back Light", NULL },
+#endif
+#if LCD_TYPE != LCD_2_2_INCH_SPI
 	{ "tc", _CmdTouchCalibration, "Touch Calibration", NULL },
 	{ "draw", _CmdDraw, "Drawing", NULL },
+#endif
 
 	{ NULL, NULL, NULL, NULL }
 };
@@ -59,7 +69,7 @@ static int _CmdRotation(int argc, char *argv[])
 			rotation = (PifTftLcdRotation)rot;
 #if LCD_TYPE == LCD_2_4_INCH
 			pifTouchScreen_SetRotation(&g_touch_screen, rotation);
-#elif LCD_TYPE == LCD_3_2_INCH
+#else
 			pifIli9341_SetRotation(&g_ili9341.parent, rotation);
 #endif
 			return PIF_LOG_CMD_NO_ERROR;
@@ -69,6 +79,8 @@ static int _CmdRotation(int argc, char *argv[])
 
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
+
+#if LCD_TYPE != LCD_2_4_INCH
 
 static int _CmdBackLight(int argc, char *argv[])
 {
@@ -88,6 +100,10 @@ static int _CmdBackLight(int argc, char *argv[])
 
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
+
+#endif
+
+#if LCD_TYPE != LCD_2_2_INCH_SPI
 
 static int _CmdTouchCalibration(int argc, char *argv[])
 {
@@ -116,6 +132,8 @@ static int _CmdDraw(int argc, char *argv[])
 	pifLog_Printf(LT_NONE, "  Draw=%u\n", draw);
 	return PIF_LOG_CMD_NO_ERROR;
 }
+
+#endif
 
 static uint16_t _taskFillScreen(PifTask *pstTask)
 {
@@ -153,6 +171,8 @@ static uint16_t _taskFillScreen(PifTask *pstTask)
 	return 0;
 }
 
+#if LCD_TYPE != LCD_2_2_INCH_SPI
+
 static void _evtTouchData(int16_t x, int16_t y)
 {
     static int time = 0;
@@ -168,36 +188,45 @@ static void _evtTouchData(int16_t x, int16_t y)
 	}
 }
 
+#endif
+
 BOOL appSetup()
 {
     static PifNoiseFilterManager s_filter;
     PifNoiseFilter* p_filter[2];
+    int line;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;								// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }			// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
-
-	if (!pifNoiseFilterManager_Init(&s_filter, 2)) return FALSE;
-	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch x
-	if (!p_filter[0]) return FALSE;
-	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch y
-	if (!p_filter[1]) return FALSE;
+    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }
 
 #if LCD_TYPE == LCD_2_4_INCH
+	if (!pifNoiseFilterManager_Init(&s_filter, 2)) { line = __LINE__; goto fail; }
+	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch x
+	if (!p_filter[0]) { line = __LINE__; goto fail; }
+	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch y
+	if (!p_filter[1]) { line = __LINE__; goto fail; }
+
     g_touch_screen.evt_touch_data = _evtTouchData;
-    if (!pifTouchScreen_AttachFilter(&g_touch_screen, p_filter[0], p_filter[1])) return FALSE;
-    if (!pifTouchScreen_Start(&g_touch_screen, NULL)) return FALSE;
+    if (!pifTouchScreen_AttachFilter(&g_touch_screen, p_filter[0], p_filter[1])) { line = __LINE__; goto fail; }
+    if (!pifTouchScreen_Start(&g_touch_screen, NULL)) { line = __LINE__; goto fail; }
 #elif LCD_TYPE == LCD_3_2_INCH
 	g_tsc2046.parent.evt_touch_data = _evtTouchData;
-	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, p_filter[0], p_filter[1])) return FALSE;
-	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) return FALSE;
+	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, p_filter[0], p_filter[1])) { line = __LINE__; goto fail; }
+	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) { line = __LINE__; goto fail; }
 #endif
 
 	pifIli9341_SetRotation(&g_ili9341.parent, TLR_0_DEGREE);
 
     p_task = pifTaskManager_Add(TM_PERIOD_MS, 2000, _taskFillScreen, NULL, FALSE);		// 2000ms
-    if (!p_task) return FALSE;
+    if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
+
+	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, WHITE);
     return TRUE;
+
+fail:
+	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);
+	return FALSE;
 }
