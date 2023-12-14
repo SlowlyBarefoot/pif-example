@@ -75,7 +75,7 @@ static void actLedLState(PifId pif_id, uint32_t state)
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, state & 1);
 }
 
-static BOOL actLogStartTransfer(PifUart* p_uart)
+static BOOL actLogStartTransfer(PifUart *p_uart)
 {
 	uint8_t *p_data, state;
 
@@ -87,7 +87,7 @@ static BOOL actLogStartTransfer(PifUart* p_uart)
 	return FALSE;
 }
 
-static BOOL actHostStartTransfer(PifUart* p_uart)
+static BOOL actHostStartTransfer(PifUart *p_uart)
 {
 	uint8_t *p_data, state;
 
@@ -165,6 +165,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+  int line;
 
   /* USER CODE END 1 */
 
@@ -191,32 +192,32 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	pif_Init(NULL);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+    if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return -1;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return -1;				// 1ms
-    if (!pifUart_AllocRxBuffer(&s_uart_log, 32, 100)) return -1;								// 32bytes, 100%
-    if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;									// 128bytes
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AllocRxBuffer(&s_uart_log, 32, 100)) { line = __LINE__; goto fail; }								// 32bytes, 100%
+    if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) { line = __LINE__; goto fail; }									// 128bytes
     s_uart_log.act_start_transfer = actLogStartTransfer;
 
     HAL_UART_Receive_IT(&huart2, &s_log_rx, 1);
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return -1;
+	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
-	if (!pifUart_Init(&g_uart_host, PIF_ID_AUTO)) return -1;
-    if (!pifUart_AttachTask(&g_uart_host, TM_PERIOD_MS, 1, "UartHost")) return -1;				// 1ms
-    if (!pifUart_AllocRxBuffer(&g_uart_host, 32, 10)) return -1;								// 32bytes, 10%
-    if (!pifUart_AllocTxBuffer(&g_uart_host, 128)) return -1;									// 128bytes
+	if (!pifUart_Init(&g_uart_host, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachTask(&g_uart_host, TM_PERIOD_MS, 1, "UartHost")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AllocRxBuffer(&g_uart_host, 32, 10)) { line = __LINE__; goto fail; }								// 32bytes, 10%
+    if (!pifUart_AllocTxBuffer(&g_uart_host, 128)) { line = __LINE__; goto fail; }									// 128bytes
     g_uart_host.act_start_transfer = actHostStartTransfer;
 
     HAL_UART_Receive_IT(&huart6, &s_host_rx, 1);
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return -1;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }
 
-	if (!appSetup()) return -1;
+	if (!appSetup()) { line = __LINE__; goto fail; }
 
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
   /* USER CODE END 2 */
@@ -230,6 +231,10 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
   }
+  return 0;
+
+fail:
+  pifLog_Printf(LT_INFO, "Initial failed. %d\n", line);
   /* USER CODE END 3 */
 }
 

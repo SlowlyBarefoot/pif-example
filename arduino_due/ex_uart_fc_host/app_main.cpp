@@ -6,34 +6,19 @@
 PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 PifUart g_uart_host;
-
-static int s_step = -1;
-
-static int _CmdFlowControl(int argc, char *argv[]);
-static int _CmdSendData(int argc, char *argv[]);
-
-const PifLogCmdEntry c_psCmdTable[] = {
-	{ "help", pifLog_CmdHelp, "This command", NULL },
-	{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
-	{ "task", pifLog_CmdPrintTask, "Print task", NULL },
-	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
-	{ "fc", _CmdFlowControl, "Set and print flow control", NULL },
-	{ "send", _CmdSendData, "Send data", NULL },
-
-	{ NULL, NULL, NULL, NULL }
-};
+PifTask* p_task = NULL;
 
 
-static void _evtUartTxFlowState(void* p_client, SWITCH state)
+static void _evtUartTxFlowState(void *p_client, SWITCH state)
 {
 	(void)p_client;
 
-	pifLog_Printf(LT_INFO, "Tx Flow State=%d Step=%d", state, s_step);
+	pifLog_Printf(LT_INFO, "Tx Flow State=%d", state);
 }
 
 static int _CmdFlowControl(int argc, char *argv[])
 {
-	const char* name[] = { "None", "Software", "hardware" };
+	const char *name[] = { "None", "Software", "Software", "hardware", "hardware" };
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Flow Control=%s\n", name[g_uart_host._flow_control]);
@@ -41,10 +26,10 @@ static int _CmdFlowControl(int argc, char *argv[])
 	}
 	else if (argc > 0) {
 		if (!strcmp(argv[0], "sw")) {
-			pifUart_SetFlowControl(&g_uart_host, UFC_SOFTWARE, _evtUartTxFlowState);
+			pifUart_SetFlowControl(&g_uart_host, UFC_HOST_SOFTWARE, _evtUartTxFlowState);
 		}
 		else if (!strcmp(argv[0], "hw")) {
-			pifUart_SetFlowControl(&g_uart_host, UFC_HARDWARE, _evtUartTxFlowState);
+			pifUart_SetFlowControl(&g_uart_host, UFC_HOST_HARDWARE, _evtUartTxFlowState);
 		}
 		else if (!strcmp(argv[0], "no")) {
 			pifUart_ResetFlowControl(&g_uart_host);
@@ -59,7 +44,7 @@ static int _CmdFlowControl(int argc, char *argv[])
 
 static int _CmdSendData(int argc, char *argv[])
 {
-	s_step = 0;
+	p_task->pause = FALSE;
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
@@ -68,13 +53,13 @@ static void _evtLogControlChar(char ch)
 	pifLog_Printf(LT_INFO, "Contorl Char = %x", ch);
 }
 
-BOOL _evtUartSending(void* p_client, PifActUartSendData act_send_data)
+static uint16_t _taskSendMessage(PifTask *p_task)
 {
 	uint8_t text[3];
 	static int p = 0;
+	static int s_step = 0;
 
-	if (s_step < 0) return FALSE;
-	if (!g_uart_host._fc_state) return FALSE;
+	if (!g_uart_host._fc_state) return 0;
 
 	if (p < 26) {
 		text[0] = 'a' + p;
@@ -84,28 +69,48 @@ BOOL _evtUartSending(void* p_client, PifActUartSendData act_send_data)
 		text[0] = '\r';
 		text[0] = '\n';
 	}
+	pifUart_SendTxData(&g_uart_host, text, 2);
 
-	if (!(*act_send_data)(&g_uart_host, text, 2)) {
-		pifLog_Print(LT_INFO, "Not send\n");
-		return FALSE;
-	}
 	p += 2;
 	if (p >= 28) {
 		p = 0;
 		s_step++;
-		if (s_step == 100) s_step = -1;
+		if (s_step == 100) {
+			p_task->pause = TRUE;
+			s_step = 0;
+		}
 	}
-	return TRUE;
+	return 0;
 }
+
+const PifLogCmdEntry c_cmd_table[] = {
+	{ "help", pifLog_CmdHelp, "This command", NULL },
+	{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
+	{ "task", pifLog_CmdPrintTask, "Print task", NULL },
+	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
+	{ "fc", _CmdFlowControl, "Set and print flow control", NULL },
+	{ "send", _CmdSendData, "Send data", NULL },
+
+	{ NULL, NULL, NULL, NULL }
+};
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
-    pifLog_AttachEvent(_evtLogControlChar);
+	int line;
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;							// 500ms
+	if (!pifLog_UseCommand(c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }
+	pifLog_AttachEvent(_evtLogControlChar);
+
+	g_uart_host._p_task->pause = FALSE;
+
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-	pifUart_AttachClient(&g_uart_host, NULL, NULL, _evtUartSending);
+	p_task = pifTaskManager_Add(TM_PERIOD_MS, 1, _taskSendMessage, NULL, FALSE);			// 1ms
+	if (!p_task) { line = __LINE__; goto fail; }
 	return TRUE;
+
+fail:
+	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);
+	return FALSE;
 }

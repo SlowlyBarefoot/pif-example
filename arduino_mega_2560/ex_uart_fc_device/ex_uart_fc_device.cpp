@@ -32,7 +32,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size
     return Serial.write((char *)p_buffer, size);
 }
 
-static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t *p_rate)
 {
 	int data;
 	uint16_t i;
@@ -55,7 +55,7 @@ static uint16_t actDeviceSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t s
     return Serial1.write((char *)p_buffer, size);
 }
 
-static uint16_t actDeviceReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actDeviceReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t *p_rate)
 {
 	int data;
 	uint16_t i;
@@ -75,7 +75,7 @@ static uint16_t actDeviceReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t 
 
 #ifdef USE_USART
 
-static BOOL actLogStartTransfer(PifUart* p_uart)
+static BOOL actLogStartTransfer(PifUart *p_uart)
 {
 	(void)p_uart;
 
@@ -92,7 +92,7 @@ ISR(USART0_RX_vect)
 	USART_Receive(0, &s_uart_log);
 }
 
-static BOOL actDeviceStartTransfer(PifUart* p_uart)
+static BOOL actDeviceStartTransfer(PifUart *p_uart)
 {
 	(void)p_uart;
 
@@ -111,7 +111,7 @@ ISR(USART1_RX_vect)
 
 #endif
 
-static void actUartRxFlowState(PifUart* p_uart, SWITCH state)
+static void actUartRxFlowState(PifUart *p_uart, SWITCH state)
 {
 	digitalWrite(PIN_UART_RTS, state ? 0 : 1);
 	digitalWrite(PIN_UART_DTR, state ? 0 : 1);
@@ -133,6 +133,8 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	int line;
+
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_UART_RTS, OUTPUT);
 	pinMode(PIN_UART_DTR, OUTPUT);
@@ -151,43 +153,47 @@ void setup()
 
 	pif_Init(NULL);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return;
+    if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
 #ifdef USE_SERIAL
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 #endif
 #ifdef USE_USART
-	if (!pifUart_AllocRxBuffer(&s_uart_log, 32, 50)) return;								// 50%
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return;
+	if (!pifUart_AllocRxBuffer(&s_uart_log, 32, 50)) { line = __LINE__; goto fail; }								// 50%
+	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) { line = __LINE__; goto fail; }
 	s_uart_log.act_start_transfer = actLogStartTransfer;
 #endif
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
-	if (!pifUart_Init(&g_uart_device, PIF_ID_AUTO)) return;
-    if (!pifUart_AttachTask(&g_uart_device, TM_PERIOD_MS, 1, "UartDevice")) return;			// 1ms
+	if (!pifUart_Init(&g_uart_device, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachTask(&g_uart_device, TM_PERIOD_MS, 1, "UartDevice")) { line = __LINE__; goto fail; }			// 1ms
 #ifdef USE_SERIAL
     g_uart_device.act_receive_data = actDeviceReceiveData;
     g_uart_device.act_send_data = actDeviceSendData;
 #endif
 #ifdef USE_USART
-	if (!pifUart_AllocRxBuffer(&g_uart_device, 64, 50)) return;								// 50%
-	if (!pifUart_AllocTxBuffer(&g_uart_device, 16)) return;
+	if (!pifUart_AllocRxBuffer(&g_uart_device, 64, 50)) { line = __LINE__; goto fail; }								// 50%
+	if (!pifUart_AllocTxBuffer(&g_uart_device, 16)) { line = __LINE__; goto fail; }
 	g_uart_device.act_start_transfer = actDeviceStartTransfer;
 #endif
     g_uart_device.act_rx_flow_state = actUartRxFlowState;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }
 
-	if (!appSetup()) return;
+	if (!appSetup()) { line = __LINE__; goto fail; }
 
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
+	return;
+
+fail:
+	pifLog_Printf(LT_INFO, "Initial failed. %d\n", line);
 }
 
 // The loop function is called in an endless loop
