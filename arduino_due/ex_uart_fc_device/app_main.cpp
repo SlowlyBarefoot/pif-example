@@ -19,7 +19,7 @@ static void _evtUartTxFlowState(void *p_client, SWITCH state)
 
 static int _CmdFlowControl(int argc, char *argv[])
 {
-	const char *name[] = { "None", "Software", "Software", "hardware", "hardware" };
+	const char *name[] = { "None", "", "Software", "Hardware", "Software", "Hardware" };
 	int limit;
 
 	if (argc == 0) {
@@ -59,15 +59,15 @@ static void _evtLogControlChar(char ch)
 static void _evtUartParsing(void *p_client, PifActUartReceiveData act_receive_data)
 {
 	uint8_t data[2] = { 0, 0 };
-	uint8_t rate;
 
 	(void)p_client;
 
 	if (!s_count_down) return;
 	s_count_down = 0;
 
-	if (!(*act_receive_data)(&g_uart_device, data, 1, &rate)) return;
-	pifLog_Print(LT_NONE, (char*)data);
+	if ((*act_receive_data)(&g_uart_device, data, 1)) {
+		pifLog_Print(LT_NONE, (char *)data);
+	}
 }
 
 static uint16_t _taskSlowProcess(PifTask *p_task)
@@ -95,13 +95,13 @@ BOOL appSetup()
     if (!pifLog_UseCommand(c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }
     pifLog_AttachEvent(_evtLogControlChar);
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }									// 500ms
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }								// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifUart_AttachClient(&g_uart_device, NULL, _evtUartParsing, NULL);
 
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 5, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }		// 5ms
-    return TRUE;
+	if (!pifTaskManager_Add(TM_PERIOD_MS, 5, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
+	return TRUE;
 
 fail:
 	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);

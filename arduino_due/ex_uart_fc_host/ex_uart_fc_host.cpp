@@ -7,8 +7,8 @@
 #define PIN_UART_CTS			4
 #define PIN_UART_DSR			5
 
-#define TASK_SIZE				10
-#define TIMER_1MS_SIZE			3
+#define TASK_SIZE				6
+#define TIMER_1MS_SIZE			2
 
 
 static PifUart s_uart_log;
@@ -21,7 +21,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size
     return Serial.write((char *)p_buffer, size);
 }
 
-static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t *p_rate)
+static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int data;
 	uint16_t i;
@@ -33,7 +33,6 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial.available() / SERIAL_BUFFER_SIZE;
 	return i;
 }
 
@@ -44,7 +43,7 @@ static uint16_t actHostSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t siz
     return Serial1.write((char *)p_buffer, size);
 }
 
-static uint16_t actHostReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t *p_rate)
+static uint16_t actHostReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int data;
 	uint16_t i;
@@ -56,7 +55,6 @@ static uint16_t actHostReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t si
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial1.available() / SERIAL_BUFFER_SIZE;
 	return i;
 }
 

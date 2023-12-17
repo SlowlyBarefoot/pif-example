@@ -32,8 +32,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE		5
-#define TIMER_1MS_SIZE	3
+#define TASK_SIZE		6
+#define TIMER_1MS_SIZE	2
 
 /* USER CODE END PD */
 
@@ -102,12 +102,8 @@ static BOOL actHostStartTransfer(PifUart *p_uart)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	switch (GPIO_Pin) {
-	case FC_CTS_Pin:
-		pifUart_SigTxFlowState(&g_uart_host, !HAL_GPIO_ReadPin(GPIOB, FC_CTS_Pin));
-		break;
-
-	case FC_DSR_Pin:
-		pifUart_SigTxFlowState(&g_uart_host, !HAL_GPIO_ReadPin(GPIOB, FC_DSR_Pin));
+	case FC_CTS_DSR_Pin:
+		pifUart_SigTxFlowState(&g_uart_host, !HAL_GPIO_ReadPin(FC_CTS_DSR_GPIO_Port, FC_CTS_DSR_Pin));
 		break;
 	}
 }
@@ -381,18 +377,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : FC_DSR_Pin FC_CTS_Pin */
-  GPIO_InitStruct.Pin = FC_DSR_Pin|FC_CTS_Pin;
+  /*Configure GPIO pin : FC_CTS_DSR_Pin */
+  GPIO_InitStruct.Pin = FC_CTS_DSR_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(FC_CTS_DSR_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
 

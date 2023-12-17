@@ -21,7 +21,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size
     return Serial.write((char *)p_buffer, size);
 }
 
-static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t *p_rate)
+static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int data;
 	uint16_t i;
@@ -33,7 +33,6 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial.available() / SERIAL_BUFFER_SIZE;
 	return i;
 }
 
@@ -44,7 +43,7 @@ static uint16_t actDeviceSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t s
     return Serial1.write((char *)p_buffer, size);
 }
 
-static uint16_t actDeviceReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t *p_rate)
+static uint16_t actDeviceReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int data;
 	uint16_t i;
@@ -56,8 +55,12 @@ static uint16_t actDeviceReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t 
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial1.available() / SERIAL_BUFFER_SIZE;
 	return i;
+}
+
+static uint8_t actDeviceGetRxRate(PifUart* p_uart)
+{
+	return 100 * Serial1.available() / SERIAL_BUFFER_SIZE;
 }
 
 static void actUartRxFlowState(PifUart *p_uart, SWITCH state)
@@ -112,6 +115,7 @@ void setup()
     if (!pifUart_AttachTask(&g_uart_device, TM_PERIOD_MS, 1, "UartDevice")) { line = __LINE__; goto fail; }			// 1ms
     g_uart_device.act_receive_data = actDeviceReceiveData;
     g_uart_device.act_send_data = actDeviceSendData;
+    g_uart_device.act_get_rx_rate = actDeviceGetRxRate;
     g_uart_device.act_rx_flow_state = actUartRxFlowState;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }

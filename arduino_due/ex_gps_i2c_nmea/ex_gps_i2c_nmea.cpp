@@ -25,7 +25,7 @@ static uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t u
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int i, data;
 
@@ -36,7 +36,6 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial.available() / SERIAL_BUFFER_SIZE;
 	return i;
 }
 

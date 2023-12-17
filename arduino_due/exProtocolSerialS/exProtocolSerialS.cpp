@@ -49,7 +49,7 @@ static uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t 
 #endif
 }
 
-static uint16_t actSerialReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actSerialReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int i, data;
 
@@ -65,12 +65,6 @@ static uint16_t actSerialReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t 
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-#ifdef USE_SERIAL_USB
-		if (p_rate) *p_rate = 100 * SerialUSB.available() / SERIAL_BUFFER_SIZE;
-#endif
-#ifdef USE_SERIAL_3
-		if (p_rate) *p_rate = 100 * Serial3.available() / SERIAL_BUFFER_SIZE;
-#endif
 	return i;
 }
 

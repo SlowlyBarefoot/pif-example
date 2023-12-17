@@ -74,7 +74,7 @@ static uint16_t actSerial1SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t
     return Serial1.write((char *)pucBuffer, usSize);
 }
 
-static uint16_t actSerial1ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actSerial1ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int data;
 	uint16_t i;
@@ -86,7 +86,6 @@ static uint16_t actSerial1ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial1.available() / SERIAL_RX_BUFFER_SIZE;
 	return i;
 }
 
@@ -97,7 +96,7 @@ static uint16_t actSerial2SendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-static uint16_t actSerial2ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actSerial2ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int data;
 	uint16_t i;
@@ -109,7 +108,6 @@ static uint16_t actSerial2ReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial2.available() / SERIAL_RX_BUFFER_SIZE;
 	return i;
 }
 

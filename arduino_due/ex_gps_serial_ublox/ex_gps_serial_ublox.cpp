@@ -23,7 +23,7 @@ static uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t u
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static uint16_t actLogReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actLogReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t size)
 {
 	int i, data;
 
@@ -34,7 +34,6 @@ static uint16_t actLogReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t si
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial.available() / SERIAL_BUFFER_SIZE;
 	return i;
 }
 
@@ -53,7 +52,7 @@ static uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t u
     return Serial2.write((char *)pucBuffer, usSize);
 }
 
-static uint16_t actGpsReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actGpsReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t size)
 {
 	int i, data;
 
@@ -65,7 +64,6 @@ static uint16_t actGpsReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t si
 		p_data[i] = data;
 		if (g_print_data == 2) Serial.write(data);
 	}
-	if (p_rate) *p_rate = 100 * Serial2.available() / SERIAL_BUFFER_SIZE;
 	return i;
 }
 
