@@ -56,18 +56,16 @@ static void _evtLogControlChar(char ch)
 
 static uint16_t _taskSendMessage(PifTask *p_task)
 {
-	char message[35];
+	char message[20];
 	int length, pos = 0, len;
 	static int s_step = 1;
 
 	pifLog_Printf(LT_INFO, "%d", s_step);
-	sprintf(message, "%d: abcdefghijklmnopqrstuvwxyz\r\n", s_step);
+	sprintf(message, "%d:abcdefghijk\r\n", s_step);
 	length = strlen(message);
 	while (1) {
-		if (g_uart_host._fc_state) {
-			len = pifUart_SendTxData(&g_uart_host, (uint8_t *)message + pos, length - pos);
-			if (pos + len < length) pos += len; else break;
-		}
+		len = pifUart_SendTxData(&g_uart_host, (uint8_t *)message + pos, length - pos);
+		if (pos + len < length) pos += len; else break;
 		pifTaskManager_Yield();
 	}
 
@@ -102,7 +100,7 @@ BOOL appSetup()
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }			// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-	p_task = pifTaskManager_Add(TM_PERIOD_MS, 5, _taskSendMessage, NULL, FALSE);		// 5ms
+	p_task = pifTaskManager_Add(TM_PERIOD_MS, 2, _taskSendMessage, NULL, FALSE);		// 2ms
 	if (!p_task) { line = __LINE__; goto fail; }
 	return TRUE;
 

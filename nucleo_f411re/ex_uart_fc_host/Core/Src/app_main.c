@@ -64,10 +64,8 @@ static uint16_t _taskSendMessage(PifTask *p_task)
 	sprintf(message, "%d:abcdefghijk\r\n", s_step);
 	length = strlen(message);
 	while (1) {
-		if (g_uart_host._fc_state) {
-			len = pifUart_SendTxData(&g_uart_host, (uint8_t *)message + pos, length - pos);
-			if (pos + len < length) pos += len; else break;
-		}
+		len = pifUart_SendTxData(&g_uart_host, (uint8_t *)message + pos, length - pos);
+		if (pos + len < length) pos += len; else break;
 		pifTaskManager_Yield();
 	}
 

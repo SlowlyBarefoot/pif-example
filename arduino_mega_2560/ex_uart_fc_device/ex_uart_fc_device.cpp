@@ -69,7 +69,7 @@ static uint16_t actDeviceReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t 
 	return i;
 }
 
-static uint8_t actDeviceGetRxRate(PifUart* p_uart)
+static uint8_t actDeviceGetRxRate(PifUart *p_uart)
 {
 	return 100 * Serial1.available() / SERIAL_RX_BUFFER_SIZE;
 }
