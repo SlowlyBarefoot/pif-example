@@ -20,6 +20,10 @@
 #define TASK_SIZE				6
 #define TIMER_1MS_SIZE			7
 
+#define UART_LOG_BAUDRATE		115200
+#define UART_SERIAL_1_BAUDRATE	115200
+#define UART_SERIAL_2_BAUDRATE	115200
+
 
 static PifUart s_uart_log;
 
@@ -168,14 +172,14 @@ void setup()
 	MsTimer2::start();
 
 #ifdef USE_SERIAL
-	Serial.begin(115200);
-	Serial1.begin(115200);
-	Serial2.begin(115200);
+	Serial.begin(UART_LOG_BAUDRATE);
+	Serial1.begin(UART_SERIAL_1_BAUDRATE);
+	Serial2.begin(UART_SERIAL_2_BAUDRATE);
 #endif
 #ifdef USE_USART
-	USART_Init(0, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
-	USART_Init(1, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
-	USART_Init(2, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
+	USART_Init(0, UART_LOG_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
+	USART_Init(1, UART_SERIAL_1_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
+	USART_Init(2, UART_SERIAL_2_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
 
 	//Enable Global Interrupts
 	sei();
@@ -187,7 +191,7 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
 #ifdef USE_SERIAL
     s_uart_log.act_send_data = actLogSendData;
@@ -206,7 +210,7 @@ void setup()
 	    if (!pifSensorSwitch_Init(&g_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;
     }
 
-	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO, UART_SERIAL_1_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "UartSerial1")) return;			// 1ms
 #ifdef USE_SERIAL
     g_serial1.act_receive_data = actSerial1ReceiveData;
@@ -218,7 +222,7 @@ void setup()
 	g_serial1.act_start_transfer = actUart1StartTransfer;
 #endif
 
-	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO, UART_SERIAL_2_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return;			// 1ms
 #ifdef USE_SERIAL
     g_serial2.act_receive_data = actSerial2ReceiveData;

@@ -1,11 +1,11 @@
-// Do not remove the include below
-#include <MsTimer2.h>
-
 #include "exTerminal.h"
 #include "appMain.h"
 
-//#define USE_SERIAL
-#define USE_USART
+#define USE_SERIAL
+//#define USE_USART
+
+// Do not remove the include below
+#include <MsTimer2.h>
 
 #ifdef USE_USART
 #include "../usart.h"
@@ -16,6 +16,8 @@
 
 #define TASK_SIZE				3
 #define TIMER_1MS_SIZE			1
+
+#define UART_LOG_BAUDRATE		115200
 
 
 static PifUart s_uart_log;
@@ -96,10 +98,10 @@ void setup()
 	MsTimer2::start();
 
 #ifdef USE_SERIAL
-	Serial.begin(115200);
+	Serial.begin(UART_LOG_BAUDRATE);
 #endif
 #ifdef USE_USART
-	USART_Init(0, 115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
+	USART_Init(0, UART_LOG_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
 
 	// Enable Global Interrupts
 	sei();
@@ -111,7 +113,7 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
 #ifdef USE_SERIAL
     s_uart_log.act_receive_data = actLogReceiveData;

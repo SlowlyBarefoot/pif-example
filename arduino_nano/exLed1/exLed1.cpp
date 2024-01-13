@@ -20,6 +20,8 @@
 #define TASK_SIZE				3
 #define TIMER_1MS_SIZE			2
 
+#define UART_LOG_BAUDRATE		115200
+
 
 static PifUart s_uart_log;
 
@@ -86,10 +88,10 @@ void setup()
 	MsTimer2::start();
 
 #ifdef USE_SERIAL
-	Serial.begin(115200); //Doesn't matter speed
+	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
 #endif
 #ifdef USE_USART
-	USART_Init(115200, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
+	USART_Init(UART_LOG_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
 
 	// Enable Global Interrupts
 	sei();
@@ -101,7 +103,7 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
 #ifdef USE_SERIAL
     s_uart_log.act_send_data = actLogSendData;

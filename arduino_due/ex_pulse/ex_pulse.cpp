@@ -10,6 +10,8 @@
 #define TASK_SIZE				4
 #define TIMER_1MS_SIZE			1
 
+#define UART_LOG_BAUDRATE		115200
+
 
 static uint16_t _taskLedToggle(PifTask* p_task)
 {
@@ -53,7 +55,7 @@ void setup()
 
 	attachInterrupt(PIN_PULSE, _isrPulse, CHANGE);
 
-	Serial.begin(115200);
+	Serial.begin(UART_LOG_BAUDRATE);
 
 	pif_Init(micros);
 
@@ -61,7 +63,7 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;					// 1ms
 	s_uart_log.act_send_data = actLogSendData;
 

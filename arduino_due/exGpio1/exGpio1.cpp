@@ -12,6 +12,8 @@
 
 #define TASK_SIZE				2
 
+#define UART_LOG_BAUDRATE		115200
+
 
 static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
@@ -61,13 +63,13 @@ void setup()
 	pinMode(PIN_PUSH_SWITCH, INPUT_PULLUP);
 	pinMode(PIN_TILT_SWITCH, INPUT_PULLUP);
 
-	Serial.begin(115200); //Doesn't matter speed
+	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
 
     pif_Init(NULL);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;		// 1ms
 	s_uart_log.act_send_data = actLogSendData;
 

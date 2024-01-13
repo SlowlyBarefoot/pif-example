@@ -65,5 +65,6 @@ BOOL appSetup()
     pifLog_AttachEvent(_evtLogControlChar);
 
 	if (!pifLed_AttachSBlink(&g_led_l, nPeriod)) return FALSE;
+	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 	return TRUE;
 }

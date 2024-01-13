@@ -29,7 +29,7 @@
 
 // -------- pifLog -------------------------------
 
-#define PIF_NO_LOG
+//#define PIF_NO_LOG
 #define PIF_LOG_COMMAND
 
 //#define PIF_LOG_LINE_SIZE					80

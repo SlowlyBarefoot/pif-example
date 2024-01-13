@@ -12,6 +12,8 @@
 #define TASK_SIZE				4
 #define TIMER_1MS_SIZE			3
 
+#define UART_SERIAL_BAUDRATE	115200
+
 
 static void actLedLState(PifId usPifId, uint32_t unState)
 {
@@ -64,7 +66,7 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	Serial.begin(115200);
+	Serial.begin(UART_SERIAL_BAUDRATE);
 
     pif_Init(NULL);
 
@@ -76,7 +78,7 @@ void setup()
 
 	if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, 0, actPushSwitchAcquire)) return;
 
-	if (!pifUart_Init(&g_serial, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_serial, TM_PERIOD_MS, 1, "UartSerial")) return;				// 1ms
     g_serial.act_receive_data = actXmodemReceiveData;
     g_serial.act_send_data = actXmodemSendData;

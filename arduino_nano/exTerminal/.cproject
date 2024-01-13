@@ -84,6 +84,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerial/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1587138173" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -95,6 +96,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerial/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.852323802" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -103,6 +105,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerial/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.421068450" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

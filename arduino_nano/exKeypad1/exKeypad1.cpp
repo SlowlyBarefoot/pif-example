@@ -9,6 +9,8 @@
 
 #define TASK_SIZE				3
 
+#define UART_LOG_BAUDRATE		115200
+
 
 static uint8_t rowPins[ROWS] = { 6, 7, 8, 9 };   // R1, R2, R3, R4 단자가 연결된 아두이노 핀 번호
 static uint8_t colPins[COLS] = { 5, 4, 3, 2 };   // C1, C2, C3, C4 단자가 연결된 아두이노 핀 번호
@@ -73,13 +75,13 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	Serial.begin(115200);
+	Serial.begin(UART_LOG_BAUDRATE);
 
 	pif_Init(NULL);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;			// 1ms
 	s_uart_log.act_send_data = actLogSendData;
 

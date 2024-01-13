@@ -10,6 +10,10 @@
 #define TASK_SIZE				5
 #define TIMER_1MS_SIZE			1
 
+#define UART_LOG_BAUDRATE		115200
+#define UART_IBUS_BAUDRATE		115200
+#define UART_SBUS_BAUDRATE		100000
+
 
 static uint16_t actLogSendData(PifUart* p_owner, uint8_t* p_buffer, uint16_t size)
 {
@@ -63,9 +67,9 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	Serial.begin(115200);
-	Serial1.begin(115200);
-	Serial2.begin(100000, SERIAL_8E2);
+	Serial.begin(UART_LOG_BAUDRATE);
+	Serial1.begin(UART_IBUS_BAUDRATE);
+	Serial2.begin(UART_SBUS_BAUDRATE, SERIAL_8E2);
 
     pif_Init(NULL);
 
@@ -73,18 +77,18 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;			// 1ms
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-	if (!pifUart_Init(&g_uart_ibus, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&g_uart_ibus, PIF_ID_AUTO, UART_IBUS_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_uart_ibus, TM_PERIOD_MS, 1, "UartIbus")) return;			// 1ms
 	g_uart_ibus.act_receive_data = actSerial1ReceiveData;
 
-	if (!pifUart_Init(&g_uart_sbus, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&g_uart_sbus, PIF_ID_AUTO, UART_SBUS_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_uart_sbus, TM_PERIOD_MS, 1, "UartSbus")) return;			// 1ms
 	g_uart_sbus.act_send_data = actSerial2SendData;
 

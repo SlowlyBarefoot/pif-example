@@ -71,10 +71,9 @@ void USART_Send(PifUart *p_uart)
 
 void USART_Receive(PifUart *p_uart)
 {
+	uint8_t data = *s_stUsart.udr;
+
 	if (!(*s_stUsart.ucsra & (1 << UPE0))) {
-		pifUart_PutRxByte(p_uart, *s_stUsart.udr);
-	}
-	else {
-		*s_stUsart.udr;
+		pifUart_PutRxByte(p_uart, data);
 	}
 }

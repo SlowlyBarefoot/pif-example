@@ -11,6 +11,10 @@
 #define TASK_SIZE				6
 #define TIMER_1MS_SIZE			7
 
+#define UART_LOG_BAUDRATE		115200
+#define UART_SERIAL_1_BAUDRATE	115200
+#define UART_SERIAL_2_BAUDRATE	115200
+
 
 static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
@@ -94,9 +98,9 @@ void setup()
 	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
 	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
 
-	Serial.begin(115200);
-	Serial1.begin(115200);
-	Serial2.begin(115200);
+	Serial.begin(UART_LOG_BAUDRATE);
+	Serial1.begin(UART_SERIAL_1_BAUDRATE);
+	Serial2.begin(UART_SERIAL_2_BAUDRATE);
 
 	pif_Init(NULL);
 
@@ -104,7 +108,7 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
     s_uart_log.act_send_data = actLogSendData;
 
@@ -117,12 +121,12 @@ void setup()
 	    if (!pifSensorSwitch_Init(&g_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;
     }
 
-	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO, UART_SERIAL_1_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "UartSerial1")) return;			// 1ms
     g_serial1.act_receive_data = actSerial1ReceiveData;
     g_serial1.act_send_data = actSerial1SendData;
 
-	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO, UART_SERIAL_2_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return;			// 1ms
     g_serial2.act_receive_data = actSerial2ReceiveData;
     g_serial2.act_send_data = actSerial2SendData;

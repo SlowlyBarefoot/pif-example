@@ -286,7 +286,7 @@ int main(void)
 
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
-  if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return -1;
+  if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart3.Init.BaudRate)) return -1;
   if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return -1;					// 1ms
   if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return -1;
   s_uart_log.act_start_transfer = actLogStartTransfer;
@@ -302,7 +302,7 @@ int main(void)
     if (!pifSensorSwitch_Init(&g_stProtocolTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return FALSE;
   }
 
-  if (!pifUart_Init(&g_serial1, PIF_ID_AUTO)) return -1;
+  if (!pifUart_Init(&g_serial1, PIF_ID_AUTO, huart4.Init.BaudRate)) return -1;
   if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "UartSerial1")) return -1;				// 1ms
   if (!pifUart_AllocRxBuffer(&g_serial1, 64, 10)) return -1;									// 10%
   if (!pifUart_AllocTxBuffer(&g_serial1, 64)) return -1;
@@ -317,7 +317,7 @@ int main(void)
   HAL_UART_Receive_DMA(&huart4, s_ucSerial1Buffer, UART_FRAME_SIZE);
 #endif
 
-  if (!pifUart_Init(&g_serial2, PIF_ID_AUTO)) return -1;
+  if (!pifUart_Init(&g_serial2, PIF_ID_AUTO, huart5.Init.BaudRate)) return -1;
   if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return -1;				// 1ms
   if (!pifUart_AllocRxBuffer(&g_serial2, 64, 10)) return -1;									// 10%
   if (!pifUart_AllocTxBuffer(&g_serial2, 64)) return -1;

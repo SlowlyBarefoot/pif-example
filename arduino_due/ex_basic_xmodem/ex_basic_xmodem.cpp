@@ -8,6 +8,8 @@
 #define TASK_SIZE				10
 #define TIMER_1MS_SIZE			5
 
+#define UART_LOG_BAUDRATE		115200
+
 
 static void actLedLState(PifId pif_id, uint32_t state)
 {
@@ -53,7 +55,7 @@ void setup()
 
 	pinMode(PIN_LED_L, OUTPUT);
 
-	Serial.begin(115200);
+	Serial.begin(UART_LOG_BAUDRATE);
 
 	pif_Init(NULL);
 
@@ -61,7 +63,7 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-	if (!pifUart_Init(&g_uart, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&g_uart, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_uart, TM_PERIOD_MS, 1, "UartLog")) return;					// 1ms
 	g_uart.act_receive_data = actLogReceiveData;
 	g_uart.act_send_data = actLogSendData;

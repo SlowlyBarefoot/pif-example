@@ -147,7 +147,7 @@ int main(void)
 
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
-  if (!pifUart_Init(&g_uart, PIF_ID_AUTO)) return -1;
+  if (!pifUart_Init(&g_uart, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
   if (!pifUart_AttachTask(&g_uart, TM_PERIOD_MS, 1, "UartLog")) return -1;						// 1ms
   if (!pifUart_AllocRxBuffer(&g_uart, 64, 100)) return -1;										// 100%
   if (!pifUart_AllocTxBuffer(&g_uart, 128)) return -1;

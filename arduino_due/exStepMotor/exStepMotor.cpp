@@ -16,6 +16,8 @@
 #define TIMER_1MS_SIZE			1
 #define TIMER_200US_SIZE		1
 
+#define UART_LOG_BAUDRATE		115200
+
 #define STEP_MOTOR_RESOLUTION				200
 #define STEP_MOTOR_REDUCTION_GEAR_RATIO		1
 
@@ -83,7 +85,7 @@ void setup()
 
 	Timer3.attachInterrupt(_sigTimer200us).start(200);
 
-	Serial.begin(115200);
+	Serial.begin(UART_LOG_BAUDRATE);
 
 	pif_Init(micros);
 
@@ -93,7 +95,7 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_200us, PIF_ID_AUTO, 200, TIMER_200US_SIZE)) return;		// 200us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;		// 1ms
 	s_uart_log.act_receive_data = actLogReceiveData;
 	s_uart_log.act_send_data = actLogSendData;
