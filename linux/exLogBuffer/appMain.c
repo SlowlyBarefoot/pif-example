@@ -24,8 +24,10 @@ BOOL appInit()
 
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
 
-	pifLog_Printf(LT_INFO, "Start");
-
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***           exLogBuffer            ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d\n", pifTaskManager_Count());
 
     pifLog_Disable();

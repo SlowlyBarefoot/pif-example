@@ -93,6 +93,10 @@ BOOL appInit()
     pifXmodem_AttachUart(&s_xmodem, &s_serial);
     pifXmodem_AttachEvtTxReceive(&s_xmodem, _evtXmodemTxReceive);
 
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***         exXmodemSerialTx         ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
     return TRUE;
 }
