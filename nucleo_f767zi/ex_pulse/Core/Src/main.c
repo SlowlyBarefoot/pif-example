@@ -93,10 +93,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 
   if (huart->Instance == USART3) {
 		ucState = pifUart_EndGetTxData(&g_uart_log, s_usLogTx);
-		if (ucState & PIF_UART_SEND_DATA_STATE_EMPTY) {
-			pifUart_FinishTransfer(&g_uart_log);
-		}
-		else {
+		if (!(ucState & PIF_UART_SEND_DATA_STATE_EMPTY)) {
 			s_usLogTx = 0;
 			ucState = pifUart_StartGetTxData(&g_uart_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {

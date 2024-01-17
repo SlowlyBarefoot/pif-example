@@ -70,7 +70,6 @@ void USART_Send(int port, PifUart *p_uart)
 #endif
 	}
 	if (ucState & PIF_UART_SEND_DATA_STATE_EMPTY) {
-		pifUart_FinishTransfer(p_uart);
 		*p_stUsart->ucsrb &= ~(1 << UDRIE0); // Disables the Interrupt, uncomment for one time transmission of data
 	}
 }

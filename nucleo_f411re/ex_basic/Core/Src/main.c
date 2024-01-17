@@ -90,10 +90,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 
 	if (huart->Instance == USART2) {
 		state = pifUart_EndGetTxData(&s_uart_log, s_log_tx);
-		if (state & PIF_UART_SEND_DATA_STATE_EMPTY) {
-			pifUart_FinishTransfer(&s_uart_log);
-		}
-		else {
+		if (!(state & PIF_UART_SEND_DATA_STATE_EMPTY)) {
 			s_log_tx = 0;
 			state = pifUart_StartGetTxData(&s_uart_log, &p_data, &s_log_tx);
 			if (state & PIF_UART_SEND_DATA_STATE_DATA) {
