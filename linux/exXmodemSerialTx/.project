@@ -40,12 +40,22 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>pif/include/communication</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>pif/include/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>pif/include/protocol</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/source/communication</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -60,14 +70,14 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/include/core/pif.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
-		</link>
-		<link>
 			<name>pif/include/communication/pif_uart.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_uart.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/core/pif_list.h</name>
@@ -78,6 +88,11 @@
 			<name>pif/include/core/pif_log.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_log.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif_obj_array.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_obj_array.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/core/pif_ring_buffer.h</name>
@@ -100,14 +115,14 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/protocol/pif_xmodem.h</locationURI>
 		</link>
 		<link>
-			<name>pif/source/core/pif.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
-		</link>
-		<link>
 			<name>pif/source/communication/pif_uart.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_uart.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core/pif_list.c</name>
@@ -118,6 +133,11 @@
 			<name>pif/source/core/pif_log.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_log.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_obj_array.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_obj_array.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core/pif_ring_buffer.c</name>

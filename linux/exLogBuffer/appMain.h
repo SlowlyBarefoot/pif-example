@@ -6,7 +6,6 @@
 
 
 BOOL appInit();
-void appExit();
 
 
 #endif /* APPMAIN_H_ */

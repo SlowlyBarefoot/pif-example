@@ -7,9 +7,15 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "main.h"
 #include "appMain.h"
 #include "timer.h"
+
+
+#define TASK_SIZE				3
+#define TIMER_MS_SIZE			2
+
+#define UART_LOG_BAUDRATE		115200
+#define UART_SERIAL_BAUDRATE	115200
 
 
 static int s_fd;
@@ -27,16 +33,14 @@ uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
     return write(s_fd, pucBuffer, usSize);
 }
 
-BOOL actSerialReceiveData(PifUart *p_uart, uint8_t *pucData)
+uint16_t actSerialReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
-	uint8_t data;
+	int rtn;
 
-	if (read(s_fd, &data, 1)) {
-		*pucData = data;
-		if (data == 'C') printf("C");
-		return TRUE;
-	}
-	return FALSE;
+	rtn = read(s_fd, p_data, size);
+	if (rtn == -1) return FALSE;
+	if (p_data[0] == 'C') printf("C");
+	return size;
 }
 
 static void _TimerHandler()
@@ -51,6 +55,7 @@ int main(int argc, char **argv)
 	int i;
     struct termios newtio;
     char port[16];
+    static PifUart s_uart_log;
 
     if (start_timer(1, &_TimerHandler)) {     // 1ms
         printf("\nstart_timer error\n");
@@ -93,7 +98,31 @@ int main(int argc, char **argv)
     tcflush(s_fd, TCIFLUSH);
     tcsetattr(s_fd, TCSANOW, &newtio);
 
+    pif_Init(NULL);
+
+    if (!pifTaskManager_Init(TASK_SIZE)) return FALSE;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_MS_SIZE)) return FALSE;	// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return FALSE;		// 1ms
+	s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log)) return FALSE;
+
+	if (!pifUart_Init(&s_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, "UartSerial")) return FALSE;		// 1ms
+	s_serial.act_receive_data = actSerialReceiveData;
+	s_serial.act_send_data = actSerialSendData;
+
     if (!appInit()) goto fail;
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***         exXmodemSerialTx         ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Pulse=%d/%\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_MS_SIZE);
 
     while (1) {
     	pifTaskManager_Loop();
@@ -101,6 +130,11 @@ int main(int argc, char **argv)
 
 fail:
 	appExit();
+	pifTimerManager_Clear(&g_timer_1ms);
+	pifUart_Clear(&s_serial);
+	pifUart_Clear(&s_uart_log);
+    pifLog_Clear();
+    pif_Exit();
 
     stop_timer();
 

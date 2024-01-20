@@ -16,16 +16,15 @@
 
 static PifStorageVar s_storage;
 static uint8_t s_buffer[STORAGE_VOLUME];
-static uint8_t s_data[128];
+static uint8_t s_data[256];
 
-
-BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size)
+static BOOL actStorageRead(PifStorage* p_owner, uint8_t* dst, uint32_t src, size_t size)
 {
 	memcpy(dst, &s_buffer[src], size);
 	return TRUE;
 }
 
-BOOL actStorageWrite(PifStorage* p_owner, uint32_t dst, uint8_t* src, size_t size)
+static BOOL actStorageWrite(PifStorage* p_owner, uint32_t dst, uint8_t* src, size_t size)
 {
 	memcpy(&s_buffer[dst], src, size);
 	return TRUE;

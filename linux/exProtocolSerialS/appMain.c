@@ -1,16 +1,13 @@
 #include <string.h>
 
 #include "appMain.h"
-#include "main.h"
 
-#include "core/pif_log.h"
 #include "protocol/pif_protocol.h"
 
 
+PifUart s_serial;
 PifTimerManager g_timer_1ms;
 
-static PifUart s_uart_log;
-static PifUart s_serial;
 static PifProtocol s_protocol;
 
 static void _fnProtocolQuestion30(PifProtocolPacket *pstPacket);
@@ -127,25 +124,6 @@ static void _evtDelay(void *pvIssuer)
 
 BOOL appInit()
 {
-    pif_Init(NULL);
-
-    if (!pifTaskManager_Init(3)) return FALSE;
-
-    pifLog_Init();
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 4)) return FALSE;	// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) return FALSE;
-	s_uart_log.act_send_data = actLogSendData;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
-
-	if (!pifLog_AttachUart(&s_uart_log)) return FALSE;
-
-	if (!pifUart_Init(&s_serial, PIF_ID_AUTO)) return FALSE;
-	s_serial.act_receive_data = actSerialReceiveData;
-	s_serial.act_send_data = actSerialSendData;
-    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, TRUE)) return FALSE;		// 1ms
-
     if (!pifProtocol_Init(&s_protocol, PIF_ID_AUTO, &g_timer_1ms, PT_SMALL, stProtocolQuestions)) return FALSE;
     pifProtocol_AttachUart(&s_protocol, &s_serial);
     s_protocol.evt_error = _evtProtocolError;
@@ -155,21 +133,10 @@ BOOL appInit()
 		if (!s_stProtocolTest[i].pstDelay) return FALSE;
 		pifTimer_AttachEvtFinish(s_stProtocolTest[i].pstDelay, _evtDelay, (void *)&stProtocolRequestTable[i]);
     }
-
-	pifLog_Print(LT_NONE, "\n\n****************************************\n");
-	pifLog_Print(LT_NONE, "***         exProtocolSerialS        ***\n");
-	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
-	pifLog_Print(LT_NONE, "****************************************\n");
-	pifLog_Printf(LT_INFO, "Task=%d Pulse=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
     return TRUE;
 }
 
 void appExit()
 {
 	pifProtocol_Clear(&s_protocol);
-	pifTimerManager_Clear(&g_timer_1ms);
-	pifUart_Clear(&s_serial);
-	pifUart_Clear(&s_uart_log);
-    pifLog_Clear();
-    pif_Exit();
 }
