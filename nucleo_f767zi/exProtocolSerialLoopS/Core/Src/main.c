@@ -32,10 +32,10 @@
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
 #define TASK_SIZE				6
 #define TIMER_1MS_SIZE			7
 
-/* USER CODE BEGIN PD */
 #define USE_INTERRUPT
 //#define USE_DMA
 
@@ -54,6 +54,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
+TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart5;
@@ -81,17 +83,23 @@ static uint16_t s_usSerial2Tx;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART3_UART_Init(void);
 static void MX_DMA_Init(void);
+static void MX_USART3_UART_Init(void);
 static void MX_UART4_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_UART5_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static uint32_t micros()
+{
+    return htim2.Instance->CNT;
+}
+
 static BOOL actLogStartTransfer(PifUart* p_uart)
 {
 	uint8_t *pucData, ucState;
@@ -265,13 +273,16 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART3_UART_Init();
   MX_DMA_Init();
+  MX_USART3_UART_Init();
   MX_UART4_Init();
   MX_USB_OTG_FS_PCD_Init();
   MX_UART5_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  pif_Init(NULL);
+  HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
+
+  pif_Init(micros);
 
   if (!pifTaskManager_Init(TASK_SIZE)) return -1;
 
@@ -353,15 +364,16 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
   /** Configure LSE Drive Capability
   */
   HAL_PWR_EnableBkUpAccess();
+
   /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
@@ -378,12 +390,14 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Activate the Over-Drive mode
   */
   if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -397,16 +411,51 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_UART4
-                              |RCC_PERIPHCLK_UART5|RCC_PERIPHCLK_CLK48;
-  PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
-  PeriphClkInitStruct.Uart4ClockSelection = RCC_UART4CLKSOURCE_PCLK1;
-  PeriphClkInitStruct.Uart5ClockSelection = RCC_UART5CLKSOURCE_PCLK1;
-  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 96-1;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 4294967295;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {
     Error_Handler();
   }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
 }
 
 /**
@@ -699,5 +748,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

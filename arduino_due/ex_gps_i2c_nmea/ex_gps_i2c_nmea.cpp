@@ -110,7 +110,7 @@ void setup()
 	Wire1.begin();
 //	Wire1.setClock(400000);
 
-	pif_Init(NULL);
+	pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

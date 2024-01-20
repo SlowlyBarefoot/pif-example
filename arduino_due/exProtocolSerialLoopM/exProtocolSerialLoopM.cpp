@@ -102,7 +102,7 @@ void setup()
 	Serial1.begin(UART_SERIAL_1_BAUDRATE);
 	Serial2.begin(UART_SERIAL_2_BAUDRATE);
 
-	pif_Init(NULL);
+	pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

@@ -97,7 +97,7 @@ void setup()
 
 	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
 
-    pif_Init(NULL);
+    pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

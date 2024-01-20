@@ -71,7 +71,7 @@ void setup()
 	Serial1.begin(UART_IBUS_BAUDRATE);
 	Serial2.begin(UART_SPEKTRUM_BAUDRATE);
 
-    pif_Init(NULL);
+    pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

@@ -58,7 +58,7 @@ void setup()
 
 	Serial.begin(UART_SERIAL_BAUDRATE);
 
-    pif_Init(NULL);
+    pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

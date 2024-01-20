@@ -52,6 +52,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void   MX_ETH_Init(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -110,7 +111,7 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
-void   MX_ETH_Init(void);
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
@@ -120,5 +121,3 @@ void   MX_ETH_Init(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

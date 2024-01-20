@@ -59,6 +59,7 @@ void SysTick_Handler(void);
 void DMA1_Stream0_IRQHandler(void);
 void DMA1_Stream2_IRQHandler(void);
 void DMA1_Stream4_IRQHandler(void);
+void TIM2_IRQHandler(void);
 void USART3_IRQHandler(void);
 void DMA1_Stream7_IRQHandler(void);
 void UART4_IRQHandler(void);
@@ -72,5 +73,3 @@ void UART5_IRQHandler(void);
 #endif
 
 #endif /* __STM32F7xx_IT_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

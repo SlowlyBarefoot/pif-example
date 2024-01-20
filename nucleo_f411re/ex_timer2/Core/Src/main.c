@@ -63,6 +63,11 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static uint32_t micros()
+{
+    return htim2.Instance->CNT;
+}
+
 static void evtLedRedToggle(void *pvIssuer)
 {
 	static BOOL sw = OFF;
@@ -118,7 +123,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-  pif_Init(NULL);
+  pif_Init(micros);
 
   if (!pifTaskManager_Init(TASK_SIZE)) return -1;
 

@@ -94,7 +94,7 @@ void setup()
 	Serial3.begin(UART_SERIAL_BAUDRATE);
 #endif
 
-    pif_Init(NULL);
+    pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

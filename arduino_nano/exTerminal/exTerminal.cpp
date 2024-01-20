@@ -153,7 +153,7 @@ void setup()
 	sei();
 #endif
 
-	pif_Init(NULL);
+	pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

@@ -43,7 +43,7 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-	pif_Init(NULL);
+	pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

@@ -37,7 +37,7 @@ void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
 
-	pif_Init(NULL);
+	pif_Init(micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
