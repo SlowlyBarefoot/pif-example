@@ -23,8 +23,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1532412142" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>

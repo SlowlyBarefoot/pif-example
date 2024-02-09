@@ -28,6 +28,7 @@ static int _CmdRotation(int argc, char *argv[]);
 #endif
 #if LCD_TYPE != LCD_2_2_INCH_SPI
 	static int _CmdTouchCalibration(int argc, char *argv[]);
+	static int _CmdClear(int argc, char *argv[]);
 	static int _CmdDraw(int argc, char *argv[]);
 #endif
 
@@ -43,6 +44,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 #endif
 #if LCD_TYPE != LCD_2_2_INCH_SPI
 	{ "tc", _CmdTouchCalibration, "Touch Calibration", NULL },
+	{ "clear", _CmdClear, "Clear", NULL },
 	{ "draw", _CmdDraw, "Drawing", NULL },
 #endif
 
@@ -120,15 +122,15 @@ static int _CmdTouchCalibration(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
+static int _CmdClear(int argc, char *argv[])
+{
+	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, BLACK);
+	return PIF_LOG_CMD_NO_ERROR;
+}
+
 static int _CmdDraw(int argc, char *argv[])
 {
-	if (draw) {
-		draw = FALSE;
-	}
-	else {
-		pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, BLACK);
-		draw = TRUE;
-	}
+	draw ^= 1;
 	pifLog_Printf(LT_NONE, "  Draw=%u\n", draw);
 	return PIF_LOG_CMD_NO_ERROR;
 }
@@ -201,13 +203,13 @@ BOOL appSetup()
 
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }
 
-#if LCD_TYPE == LCD_2_4_INCH
 	if (!pifNoiseFilterManager_Init(&s_filter, 2)) { line = __LINE__; goto fail; }
 	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch x
 	if (!p_filter[0]) { line = __LINE__; goto fail; }
 	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch y
 	if (!p_filter[1]) { line = __LINE__; goto fail; }
 
+#if LCD_TYPE == LCD_2_4_INCH
     g_touch_screen.evt_touch_data = _evtTouchData;
     if (!pifTouchScreen_AttachFilter(&g_touch_screen, p_filter[0], p_filter[1])) { line = __LINE__; goto fail; }
     if (!pifTouchScreen_Start(&g_touch_screen, NULL)) { line = __LINE__; goto fail; }
@@ -223,7 +225,7 @@ BOOL appSetup()
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
 
-	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, WHITE);
+	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, BLACK);
     return TRUE;
 
 fail:

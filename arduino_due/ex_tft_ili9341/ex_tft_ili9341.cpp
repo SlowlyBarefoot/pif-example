@@ -46,6 +46,65 @@
 #define TASK_SIZE				10
 #define TIMER_1MS_SIZE			3
 
+#define UART_LOG_BAUDRATE		115200
+
+
+#if LCD_TYPE == LCD_2_2_INCH_SPI || LCD_TYPE == LCD_2_4_INCH
+	const uint8_t lcd_setup[] = {
+		ILI9341_CMD_POWER_CTRL_A, 			5, 0x39, 0x2C, 0x00, 0x34, 0x02,
+		ILI9341_CMD_POWER_CTRL_B, 			3, 0x00, 0xC1, 0x30,
+		ILI9341_CMD_DRIVER_TIM_CTRL_A1, 	3, 0x85, 0x00, 0x78,
+		ILI9341_CMD_DRIVER_TIM_CTRL_B, 		2, 0x00, 0x00,
+		ILI9341_CMD_POWER_SEQ_CTRL, 		4, 0x64, 0x03, 0x12, 0x81,
+		ILI9341_CMD_PUMP_RATIO_CTRL, 		1, 0x20,
+		ILI9341_CMD_POWER_CTRL1, 			1, 0x23,
+		ILI9341_CMD_POWER_CTRL2, 			1, 0x10,
+		ILI9341_CMD_VCOM_CTRL1, 			2, 0x3E, 0x28,
+		ILI9341_CMD_VCOM_CTRL2, 			1, 0x86,
+		ILI9341_CMD_MEM_ACCESS_CTRL, 		1, ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
+		ILI9341_CMD_PIXEL_FORMAT_SET, 		1, (ILI9341_PF_16BIT << 4) | ILI9341_PF_16BIT,
+		ILI9341_CMD_FRAME_RATE_CTRL_NORMAL,	2, 0x00, 0x18,
+		ILI9341_CMD_DISP_FUNC_CTRL, 		3, 0x08, 0x82, 0x27,
+		ILI9341_CMD_NOP
+	};
+	const uint8_t lcd_rotation[] = {
+		ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
+		ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR,
+		ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_BGR,
+		ILI9341_MADCTL_MX | ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR
+	};
+#elif LCD_TYPE == LCD_3_2_INCH
+	const uint8_t lcd_setup[] = {
+		ILI9341_CMD_POWER_CTRL_B, 			 3, 0x00, 0xD9, 0x30,
+		ILI9341_CMD_POWER_SEQ_CTRL, 		 4, 0x64, 0x03, 0x12, 0x81,
+		ILI9341_CMD_DRIVER_TIM_CTRL_A1, 	 3, 0x85, 0x10, 0x7A,
+		ILI9341_CMD_POWER_CTRL_A, 			 5, 0x39, 0x2C, 0x00, 0x34, 0x02,
+		ILI9341_CMD_PUMP_RATIO_CTRL, 		 1, 0x20,
+		ILI9341_CMD_DRIVER_TIM_CTRL_B, 		 2, 0x00, 0x00,
+		ILI9341_CMD_POWER_CTRL1, 			 1, 0x1B,
+		ILI9341_CMD_POWER_CTRL2, 			 1, 0x12,
+		ILI9341_CMD_VCOM_CTRL1, 			 2, 0x26, 0x26,
+		ILI9341_CMD_VCOM_CTRL2, 			 1, 0xB0,
+		ILI9341_CMD_MEM_ACCESS_CTRL, 		 1, ILI9341_MADCTL_BGR,
+		ILI9341_CMD_PIXEL_FORMAT_SET, 		 1, (ILI9341_PF_16BIT << 4) | ILI9341_PF_16BIT,
+		ILI9341_CMD_FRAME_RATE_CTRL_NORMAL,  2, 0x00, 0x1A,
+		ILI9341_CMD_DISP_FUNC_CTRL, 	 	 2, 0x0A, 0xA2,
+		ILI9341_CMD_ENABLE_3G, 			 	 1, 0x00,
+		ILI9341_CMD_GAMMA_SET, 			 	 1, 0x01,
+		ILI9341_CMD_POS_GAMMA_CORRECT, 		15, 0x1F, 0x24, 0x24, 0x0D, 0x12, 0x09, 0x52, 0xB7, 0x3F, 0x0C, 0x15, 0x06, 0x0E, 0x08, 0x00,
+		ILI9341_CMD_NEG_GAMMA_CORRECT, 		15, 0x00, 0x1B, 0x1B, 0x02, 0x0E, 0x06, 0x2E, 0x48, 0x3F, 0x03, 0x0A, 0x09, 0x31, 0x37, 0x1F,
+		ILI9341_CMD_PAGE_ADDR_SET, 			 4, 0x00, 0x00, 0x01, 0x3F,
+		ILI9341_CMD_COL_ADDR_SET, 			 4, 0x00, 0x00, 0x00, 0xEF,
+		ILI9341_CMD_NOP
+	};
+	const uint8_t lcd_rotation[] = {
+		ILI9341_MADCTL_BGR,
+		ILI9341_MADCTL_MV | ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
+		ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
+		ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR
+	};
+#endif
+
 
 static void actLedLState(PifId pif_id, uint32_t state)
 {
@@ -61,7 +120,7 @@ static uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size
     return Serial.write((char *)p_buffer, size);
 }
 
-static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size, uint8_t* p_rate)
+static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int data;
 	uint16_t i;
@@ -73,7 +132,6 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 		if (data < 0) break;
 		p_data[i] = data;
 	}
-	if (p_rate) *p_rate = 100 * Serial.available() / SERIAL_BUFFER_SIZE;
 	return i;
 }
 
@@ -261,7 +319,7 @@ static BOOL actTouchPressure(PifTouchScreen* p_owner)
 
 static BOOL actPen()
 {
-	return digitalRead(PIN_TS_PEN);
+	return !digitalRead(PIN_TS_PEN);
 }
 
 static void actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
@@ -303,62 +361,14 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-#if LCD_TYPE == LCD_2_2_INCH_SPI || LCD_TYPE == LCD_2_4_INCH
-	const uint8_t lcd_setup[] = {
-		ILI9341_CMD_POWER_CTRL_A, 			5, 0x39, 0x2C, 0x00, 0x34, 0x02,
-		ILI9341_CMD_POWER_CTRL_B, 			3, 0x00, 0xC1, 0x30,
-		ILI9341_CMD_DRIVER_TIM_CTRL_A1, 	3, 0x85, 0x00, 0x78,
-		ILI9341_CMD_DRIVER_TIM_CTRL_B, 		2, 0x00, 0x00,
-		ILI9341_CMD_POWER_SEQ_CTRL, 		4, 0x64, 0x03, 0x12, 0x81,
-		ILI9341_CMD_PUMP_RATIO_CTRL, 		1, 0x20,
-		ILI9341_CMD_POWER_CTRL1, 			1, 0x23,
-		ILI9341_CMD_POWER_CTRL2, 			1, 0x10,
-		ILI9341_CMD_VCOM_CTRL1, 			2, 0x3E, 0x28,
-		ILI9341_CMD_VCOM_CTRL2, 			1, 0x86,
-		ILI9341_CMD_MEM_ACCESS_CTRL, 		1, ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
-		ILI9341_CMD_PIXEL_FORMAT_SET, 		1, (ILI9341_PF_16BIT << 4) | ILI9341_PF_16BIT,
-		ILI9341_CMD_FRAME_RATE_CTRL_NORMAL,	2, 0x00, 0x18,
-		ILI9341_CMD_DISP_FUNC_CTRL, 		3, 0x08, 0x82, 0x27,
-		ILI9341_CMD_NOP
-	};
-	static const uint8_t lcd_rotation[] = {
-		ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
-		ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR,
-		ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_BGR,
-		ILI9341_MADCTL_MX | ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR
-	};
-#elif LCD_TYPE == LCD_3_2_INCH
-	const uint8_t lcd_setup[] = {
-		ILI9341_CMD_POWER_CTRL_B, 			 3, 0x00, 0xD9, 0x30,
-		ILI9341_CMD_POWER_SEQ_CTRL, 		 4, 0x64, 0x03, 0x12, 0x81,
-		ILI9341_CMD_DRIVER_TIM_CTRL_A1, 	 3, 0x85, 0x10, 0x7A,
-		ILI9341_CMD_POWER_CTRL_A, 			 5, 0x39, 0x2C, 0x00, 0x34, 0x02,
-		ILI9341_CMD_PUMP_RATIO_CTRL, 		 1, 0x20,
-		ILI9341_CMD_DRIVER_TIM_CTRL_B, 		 2, 0x00, 0x00,
-		ILI9341_CMD_POWER_CTRL1, 			 1, 0x1B,
-		ILI9341_CMD_POWER_CTRL2, 			 1, 0x12,
-		ILI9341_CMD_VCOM_CTRL1, 			 2, 0x26, 0x26,
-		ILI9341_CMD_VCOM_CTRL2, 			 1, 0xB0,
-		ILI9341_CMD_MEM_ACCESS_CTRL, 		 1, ILI9341_MADCTL_BGR,
-		ILI9341_CMD_PIXEL_FORMAT_SET, 		 1, (ILI9341_PF_16BIT << 4) | ILI9341_PF_16BIT,
-		ILI9341_CMD_FRAME_RATE_CTRL_NORMAL,  2, 0x00, 0x1A,
-		ILI9341_CMD_DISP_FUNC_CTRL, 	 	 2, 0x0A, 0xA2,
-		ILI9341_CMD_ENABLE_3G, 			 	 1, 0x00,
-		ILI9341_CMD_GAMMA_SET, 			 	 1, 0x01,
-		ILI9341_CMD_POS_GAMMA_CORRECT, 		15, 0x1F, 0x24, 0x24, 0x0D, 0x12, 0x09, 0x52, 0xB7, 0x3F, 0x0C, 0x15, 0x06, 0x0E, 0x08, 0x00,
-		ILI9341_CMD_NEG_GAMMA_CORRECT, 		15, 0x00, 0x1B, 0x1B, 0x02, 0x0E, 0x06, 0x2E, 0x48, 0x3F, 0x03, 0x0A, 0x09, 0x31, 0x37, 0x1F,
-		ILI9341_CMD_PAGE_ADDR_SET, 			 4, 0x00, 0x00, 0x01, 0x3F,
-		ILI9341_CMD_COL_ADDR_SET, 			 4, 0x00, 0x00, 0x00, 0xEF,
-		ILI9341_CMD_NOP
-	};
-	static const uint8_t lcd_rotation[] = {
-		ILI9341_MADCTL_BGR,
-		ILI9341_MADCTL_MV | ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
-		ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
-		ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR
-	};
-#endif
 	static PifUart s_uart_log;
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+	const char *lcd_name = "2.2 Inch LCD SPI";
+#elif LCD_TYPE == LCD_2_4_INCH
+  const char *lcd_name = "  2.4 Inch LCD  ";
+#elif LCD_TYPE == LCD_3_2_INCH
+  const char *lcd_name = "  3.2 Inch LCD  ";
+#endif
 	int line;
 
 	pinMode(PIN_LED_L, OUTPUT);
@@ -413,7 +423,7 @@ void setup()
 	digitalWrite(PIN_LCD_CS, HIGH);
 	digitalWrite(PIN_LCD_RST, HIGH);
 
-	Serial.begin(115200); //Doesn't matter speed
+	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
 
 	pif_Init((PifActTimer1us)micros);
 
@@ -421,8 +431,8 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) { line = __LINE__; goto fail; }					// 1ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
 	s_uart_log.act_send_data = actLogSendData;
     s_uart_log.act_receive_data = actLogReceiveData;
 
@@ -456,6 +466,11 @@ void setup()
 
 	if (!appSetup()) { line = __LINE__; goto fail; }
 
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***          ex_tft_ili9341          ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Printf(LT_NONE, "***         %s         ***\n", lcd_name);
+	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return;
 
