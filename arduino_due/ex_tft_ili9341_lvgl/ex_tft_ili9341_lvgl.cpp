@@ -1,5 +1,5 @@
 // Do not remove the include below
-#include "ex_tft_ssd1963.h"
+#include "ex_tft_ili9341_lvgl.h"
 #include "linker.h"
 
 #include <SPI.h>
@@ -13,11 +13,12 @@
 #define PIN_LCD_CS				A3 // Chip Select goes to Analog 3
 #define PIN_LCD_RS				A2 // Command/Data goes to Analog 2
 #define PIN_LCD_RST				A4 // Can alternately just connect to Arduino's reset pin
-#define PIN_LCD_WR				A1 // LCD Write goes to Analog 1
-#define PIN_LCD_RD				A0 // LCD Read goes to Analog 0
+
 #define PIN_LCD_BL				7
 
-#define PIN_TS_INT				2
+#define PIN_LCD_WR				A1 // LCD Write goes to Analog 1
+#define PIN_LCD_RD				A0 // LCD Read goes to Analog 0
+
 #define PIN_TS_CS				3
 #define PIN_TS_PEN				4
 
@@ -26,40 +27,36 @@
 
 #define UART_LOG_BAUDRATE		115200
 
-#define HDP						(480 - 1)
-#define VDP						(272 - 1)
-
-#define HT						531
-#define HPS						43
-#define HPW						10
-#define LPS						8
-
-#define VT						288
-#define VPS						12
-#define VPW						10
-#define FPS						4
-
 
 const uint8_t lcd_setup[] = {
-	SSD1963_CMD_SET_PLL_MN, 		3, 0x023, 0x02, 0x04,
-	SSD1963_CMD_SET_PLL,			1, 0x01,
-	TFT_SETUP_DELAY_MS,				10,
-	SSD1963_CMD_SET_PLL,	 		1, 0x03,
-	TFT_SETUP_DELAY_MS,				10,
-	SSD1963_CMD_SOFT_RESET, 		0,
-	TFT_SETUP_DELAY_MS,				100,
-	SSD1963_CMD_SET_LSHIFT_FREQ, 	3, 0x01, 0x33, 0x32,
-	SSD1963_CMD_SET_LCD_MODE,		7, 0x20, 0x00, (HDP >> 8) & 0xFF, HDP & 0xFF, (VDP >> 8) & 0xFF, VDP & 0xFF, 0x00,
-	SSD1963_CMD_SET_HORI_PERIOD,	8, (HT >> 8) & 0xFF, HT & 0xFF, (HPS >> 8) & 0xFF, HPS & 0xFF, HPW, (LPS >> 8) & 0xFF, LPS & 0xFF, 0x00,
-	SSD1963_CMD_SET_VERT_PERIOD, 	7, (VT >> 8) & 0xFF, VT & 0xFF, (VPS >> 8) & 0xFF, VPS & 0xFF, VPW, (FPS >> 8) & 0xFF, FPS & 0xFF,
-	SSD1963_CMD_SET_GPIO_VALUE,		1, 0x01,
-	SSD1963_CMD_SET_GPIO_CONF,		2, 0x01, 0x01,
-	SSD1963_CMD_SET_PIX_DATA_IF,	1, SSD1963_PF_16BIT_565,
-	SSD1963_CMD_ENTER_INVERT_MODE,	0,
-	SSD1963_CMD_SET_POST_PROC,		4, 0x80, 0x80, 0x80, 0x01,
-	SSD1963_CMD_NOP
+	ILI9341_CMD_POWER_CTRL_B, 			 3, 0x00, 0xD9, 0x30,
+	ILI9341_CMD_POWER_SEQ_CTRL, 		 4, 0x64, 0x03, 0x12, 0x81,
+	ILI9341_CMD_DRIVER_TIM_CTRL_A1, 	 3, 0x85, 0x10, 0x7A,
+	ILI9341_CMD_POWER_CTRL_A, 			 5, 0x39, 0x2C, 0x00, 0x34, 0x02,
+	ILI9341_CMD_PUMP_RATIO_CTRL, 		 1, 0x20,
+	ILI9341_CMD_DRIVER_TIM_CTRL_B, 		 2, 0x00, 0x00,
+	ILI9341_CMD_POWER_CTRL1, 			 1, 0x1B,
+	ILI9341_CMD_POWER_CTRL2, 			 1, 0x12,
+	ILI9341_CMD_VCOM_CTRL1, 			 2, 0x26, 0x26,
+	ILI9341_CMD_VCOM_CTRL2, 			 1, 0xB0,
+	ILI9341_CMD_MEM_ACCESS_CTRL, 		 1, ILI9341_MADCTL_BGR,
+	ILI9341_CMD_PIXEL_FORMAT_SET, 		 1, (ILI9341_PF_16BIT << 4) | ILI9341_PF_16BIT,
+	ILI9341_CMD_FRAME_RATE_CTRL_NORMAL,  2, 0x00, 0x1A,
+	ILI9341_CMD_DISP_FUNC_CTRL, 	 	 2, 0x0A, 0xA2,
+	ILI9341_CMD_ENABLE_3G, 			 	 1, 0x00,
+	ILI9341_CMD_GAMMA_SET, 			 	 1, 0x01,
+	ILI9341_CMD_POS_GAMMA_CORRECT, 		15, 0x1F, 0x24, 0x24, 0x0D, 0x12, 0x09, 0x52, 0xB7, 0x3F, 0x0C, 0x15, 0x06, 0x0E, 0x08, 0x00,
+	ILI9341_CMD_NEG_GAMMA_CORRECT, 		15, 0x00, 0x1B, 0x1B, 0x02, 0x0E, 0x06, 0x2E, 0x48, 0x3F, 0x03, 0x0A, 0x09, 0x31, 0x37, 0x1F,
+	ILI9341_CMD_PAGE_ADDR_SET, 			 4, 0x00, 0x00, 0x01, 0x3F,
+	ILI9341_CMD_COL_ADDR_SET, 			 4, 0x00, 0x00, 0x00, 0xEF,
+	ILI9341_CMD_NOP
 };
-
+const uint8_t lcd_rotation[] = {
+	ILI9341_MADCTL_BGR,
+	ILI9341_MADCTL_MV | ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
+	ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR,
+	ILI9341_MADCTL_MY | ILI9341_MADCTL_ML | ILI9341_MADCTL_MV | ILI9341_MADCTL_BGR
+};
 
 static void actLedLState(PifId pif_id, uint32_t state)
 {
@@ -117,8 +114,8 @@ static uint32_t _LcdReadBus()
 
 static void _LcdWritBus(uint32_t d)
 {
-	PIO_Set(PIOC, ((d & 0x00FF) << 2) | ((d & 0xFF00) << 4));
-	PIO_Clear(PIOC, ((~d & 0x00FF) << 2) | ((~d & 0xFF00) << 4));
+	PIO_Set(PIOC,    (((d) & 0x00FF) << 2) |  (((d) & 0xFF00) << 4));
+	PIO_Clear(PIOC, (((~d) & 0x00FF) << 2) | (((~d) & 0xFF00) << 4));
 	digitalWrite(PIN_LCD_WR, LOW);
 	digitalWrite(PIN_LCD_WR, HIGH);
 }
@@ -131,12 +128,12 @@ static void actLcdReadCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 	if (size) {
 		digitalWrite(PIN_LCD_RS, HIGH);
 		pmc_enable_periph_clk( ID_PIOC );
-		PIOC->PIO_PUDR |= 0x000FF3FC; PIOC->PIO_IFDR |= 0x000FF3FC;	PIOC->PIO_ODR |= 0x000FF3FC; PIOC->PIO_PER |= 0x000FF3FC;
+		PIOC->PIO_PUDR |=  0x000FF3FC; PIOC->PIO_IFDR |=  0x000FF3FC; PIOC->PIO_ODR |=  0x000FF3FC; PIOC->PIO_PER |=  0x000FF3FC;
 		delayMicroseconds(1);
 		for (uint32_t i = 0; i < size; i++) {
 			p_data[i] = _LcdReadBus();
 		}
-		PIOC->PIO_MDDR |= 0x000FF3FC; PIOC->PIO_OER |= 0x000FF3FC; PIOC->PIO_PER |=  0x000FF3FC;
+		PIOC->PIO_MDDR |=  0x000FF3FC; PIOC->PIO_OER |=  0x000FF3FC; PIOC->PIO_PER |=  0x000FF3FC;
 	}
 }
 
@@ -219,18 +216,18 @@ void setup()
 	pinMode(PIN_LCD_RS, OUTPUT);
 	pinMode(PIN_LCD_CS, OUTPUT);
 	pinMode(PIN_LCD_RST, OUTPUT);
+
 	pinMode(PIN_LCD_RD, OUTPUT);
 	pinMode(PIN_LCD_WR, OUTPUT);
 	for (int i = 0; i < 8; i++) {
 		pinMode(34 + i, OUTPUT);
 		pinMode(44 + i, OUTPUT);
 	}
-	pinMode(PIN_TS_INT, INPUT_PULLUP);
 	pinMode(PIN_TS_CS, OUTPUT);
 	pinMode(PIN_TS_PEN, INPUT_PULLUP);
 	pinMode(PIN_LCD_BL, OUTPUT);
 
-	analogWrite(PIN_LCD_BL, 0xFF);
+	analogWrite(PIN_LCD_BL, 0x7F);
 
 	SPI.begin();
 //	SPI.setClockDivider(SPI_CLOCK_DIV16);
@@ -242,7 +239,7 @@ void setup()
 	digitalWrite(PIN_LCD_CS, HIGH);
 	digitalWrite(PIN_LCD_RST, HIGH);
 
-	Serial.begin(UART_LOG_BAUDRATE);
+	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
 
 	pif_Init((PifActTimer1us)micros);
 
@@ -251,7 +248,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) { line = __LINE__; goto fail; }					// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
 	s_uart_log.act_send_data = actLogSendData;
     s_uart_log.act_receive_data = actLogReceiveData;
 
@@ -260,20 +257,20 @@ void setup()
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) { line = __LINE__; goto fail; }			// 2EA
 
-    if (!pifSsd1963_Init(&g_ssd1963, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
-    g_ssd1963.parent.act_backlight = actLcdBackLight;
+    if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) { line = __LINE__; goto fail; }
+    g_ili9341.parent.act_backlight = actLcdBackLight;
 
     if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) { line = __LINE__; goto fail; }
     g_spi_port.act_transfer = actTransfer;
 
-    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ssd1963.parent, 3761, 229, 3899, 420, &g_spi_port, actPen)) { line = __LINE__; goto fail; }
-    if (!pifSsd1963_AttachActParallel(&g_ssd1963, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
-    if (!pifSsd1963_Setup(&g_ssd1963, lcd_setup, NULL)) { line = __LINE__; goto fail; }
+    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, actPen)) { line = __LINE__; goto fail; }
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+    if (!pifIli9341_Setup(&g_ili9341, lcd_setup, lcd_rotation)) { line = __LINE__; goto fail; }
 
 	if (!appSetup()) { line = __LINE__; goto fail; }
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
-	pifLog_Print(LT_NONE, "***          ex_tft_ssd1963          ***\n");
+	pifLog_Print(LT_NONE, "***       ex_tft_ili9341_lvgl        ***\n");
 	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);

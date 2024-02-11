@@ -162,7 +162,7 @@ BOOL appSetup()
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
 
-	pifSsd1963_DrawFillRect(&g_ssd1963.parent, 0, 0, g_ssd1963.parent._width - 1, g_ssd1963.parent._height - 1, BLACK);
+	pifSsd1963_DrawFillRect(&g_ssd1963.parent, 0, 0, g_ssd1963.parent._width - 1, g_ssd1963.parent._height - 1, WHITE);
     return TRUE;
 
 fail:

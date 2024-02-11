@@ -6,8 +6,8 @@
 
 //#define PIF_DEBUG
 
-#define PIF_INLINE
-//#define PIF_INLINE                      	inline
+//#define PIF_INLINE
+#define PIF_INLINE                      	inline
 //#define PIF_INLINE                      	__inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
@@ -86,7 +86,7 @@
 // -------- pifTftLcd ----------------------------
 
 // Color depth: 16 (RGB565), 32 (XRGB8888)
-#define PIF_COLOR_DEPTH 					32
+#define PIF_COLOR_DEPTH 					16
 
 
 // -------- pifTimer -----------------------------
