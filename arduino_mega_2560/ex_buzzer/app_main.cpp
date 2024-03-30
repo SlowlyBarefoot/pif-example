@@ -5,22 +5,22 @@ PifBuzzer g_buzzer;
 PifTimerManager g_timer_1ms;
 
 static const uint8_t buzz_0[] = {
-    5, 5, 0xF2
+    5, 5, PIF_BUZZER_REPEAT(3)
 };
 static const uint8_t buzz_1[] = {
-    35, 150, 0xF1
+    35, 150, PIF_BUZZER_REPEAT(2)
 };
 static const uint8_t buzz_2[] = {
-    70, 200, 0xF0
+    70, 200, PIF_BUZZER_STOP
 };
 static const uint8_t buzz_3[] = {
-    10, 10, 10, 10, 10, 40, 40, 10, 40, 10, 40, 40, 10, 10, 10, 10, 10, 70, 0xF0
+    10, 10, 10, 10, 10, 40, 40, 10, 40, 10, 40, 40, 10, 10, 10, 10, 10, 70, PIF_BUZZER_STOP
 };
 static const uint8_t buzz_4[] = {
-    5, 5, 15, 5, 5, 5, 15, 30, 0xF0
+    5, 5, 15, 5, 5, 5, 15, 30, PIF_BUZZER_STOP
 };
 static const uint8_t buzz_5[] = {
-    4, 5, 4, 5, 8, 5, 15, 5, 8, 5, 4, 5, 4, 5, 0xF0
+    4, 5, 4, 5, 8, 5, 15, 5, 8, 5, 4, 5, 4, 5, PIF_BUZZER_STOP
 };
 static const uint8_t* buzz[] = {
 	buzz_0, buzz_1, buzz_2, buzz_3, buzz_4, buzz_5

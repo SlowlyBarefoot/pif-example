@@ -27,14 +27,14 @@ static void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	uint16_t i;
 
 	(void)iaddr;
 	(void)isize;
 
-	Wire.beginTransmission(addr);
+	Wire.beginTransmission(p_owner->addr);
     for (i = 0; i < size; i++) {
     	Wire.write(p_data[i]);
     }
@@ -80,7 +80,7 @@ void setup()
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
 
-    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 16)) return;
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 16, NULL)) return;
     g_i2c_port.act_write = actI2cWrite;
 
     if (!appSetup()) return;

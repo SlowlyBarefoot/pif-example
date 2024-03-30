@@ -49,10 +49,8 @@ ISR(USART0_UDRE_vect)
 
 #endif
 
-static void actBuzzerAction(PifId id, BOOL action)
+static void actBuzzerAction(BOOL action)
 {
-	(void)id;
-
 	digitalWrite(PIN_LED_L, action);
 }
 

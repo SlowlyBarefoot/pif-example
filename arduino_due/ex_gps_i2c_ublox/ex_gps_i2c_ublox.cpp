@@ -47,12 +47,12 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 	return i;
 }
 
-static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 #ifdef USE_I2C_WIRE
 	int i;
 
-	Wire1.beginTransmission(addr);
+	Wire1.beginTransmission(p_owner->addr);
 	if (isize > 0) {
 		for (i = isize - 1; i >= 0; i--) {
 			Wire1.write((iaddr >> (i * 8)) & 0xFF);
@@ -66,19 +66,19 @@ static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uin
 		return IR_ERROR;
 	}
 #else
-	if (!I2C_WriteAddr(I2C_PORT_1, addr, iaddr, isize, p_data, size)) return IR_ERROR;
+	if (!I2C_WriteAddr(I2C_PORT_1, p_owner->addr, iaddr, isize, p_data, size)) return IR_ERROR;
 #endif
     return IR_COMPLETE;
 }
 
-static PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cRead(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 #ifdef USE_I2C_WIRE
 	int i;
 	uint8_t count;
 
 	if (isize > 0) {
-		Wire1.beginTransmission(addr);
+		Wire1.beginTransmission(p_owner->addr);
 		for (i = isize - 1; i >= 0; i--) {
 			Wire1.write((iaddr >> (i * 8)) & 0xFF);
 		}
@@ -88,7 +88,7 @@ static PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint
 		}
 	}
 
-    count = Wire1.requestFrom(addr, (uint8_t)size);
+    count = Wire1.requestFrom(p_owner->addr, (uint8_t)size);
     if (count < size) {
 		pif_error = E_TRANSFER_FAILED;
 		return IR_ERROR;
@@ -98,7 +98,7 @@ static PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint
     	p_data[i] = Wire1.read();
     }
 #else
-	if (!I2C_ReadAddr(I2C_PORT_1, addr, iaddr, isize, p_data, size)) return IR_ERROR;
+	if (!I2C_ReadAddr(I2C_PORT_1, p_owner->addr, iaddr, isize, p_data, size)) return IR_ERROR;
 #endif
     return IR_COMPLETE;
 }
@@ -145,7 +145,7 @@ void setup()
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
 
-    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 30)) return;
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 30, NULL)) return;
     g_i2c_port.act_read = actI2cRead;
     g_i2c_port.act_write = actI2cWrite;
 

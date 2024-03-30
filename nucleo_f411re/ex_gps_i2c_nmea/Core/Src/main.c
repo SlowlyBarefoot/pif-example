@@ -126,23 +126,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
 }
 
-static PifI2cReturn actI2cRead(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cRead(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	if (isize) {
-		return (HAL_I2C_Mem_Read(&hi2c2, (addr << 1) | 1, iaddr, isize, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+		return (HAL_I2C_Mem_Read(&hi2c2, (p_owner->addr << 1) | 1, iaddr, isize, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
 	}
 	else {
-		return (HAL_I2C_Master_Receive(&hi2c2, (addr << 1) | 1, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+		return (HAL_I2C_Master_Receive(&hi2c2, (p_owner->addr << 1) | 1, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
 	}
 }
 
-static PifI2cReturn actI2cWrite(uint8_t addr, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
 {
 	if (isize) {
-		return (HAL_I2C_Mem_Write(&hi2c2, addr << 1, iaddr, isize, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+		return (HAL_I2C_Mem_Write(&hi2c2, p_owner->addr << 1, iaddr, isize, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
 	}
 	else {
-		return (HAL_I2C_Master_Transmit(&hi2c2, addr << 1, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
+		return (HAL_I2C_Master_Transmit(&hi2c2, p_owner->addr << 1, p_data, size, 1000) == HAL_OK) ? IR_COMPLETE : IR_ERROR;
 	}
 }
 
@@ -202,7 +202,7 @@ int main(void)
 
   if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return -1;
 
-  if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 30)) return -1;
+  if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 30, NULL)) return -1;
   g_i2c_port.act_read = actI2cRead;
   g_i2c_port.act_write = actI2cWrite;
 

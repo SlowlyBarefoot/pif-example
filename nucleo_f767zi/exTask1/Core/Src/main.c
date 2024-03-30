@@ -21,9 +21,10 @@
 #include "main.h"
 #include "string.h"
 
+#include "core/pif_task.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "appMain.h"
 
 /* USER CODE END Includes */
 
