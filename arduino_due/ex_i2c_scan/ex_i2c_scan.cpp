@@ -97,13 +97,13 @@ void setup()
     if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, 16, NULL)) return;
     g_i2c_port.act_write = actI2cWrite;
 
-    if (!appSetup()) return;
-
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***           ex_i2c_scan            ***\n");
 	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
+
+    if (!appSetup()) return;
 }
 
 // The loop function is called in an endless loop

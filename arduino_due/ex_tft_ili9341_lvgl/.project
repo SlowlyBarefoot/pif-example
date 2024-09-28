@@ -52,9 +52,14 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/libraries/SPI</locationURI>
 		</link>
 		<link>
+			<name>libraries/lv_arduino</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/lv_arduino/3.0.1</locationURI>
+		</link>
+		<link>
 			<name>libraries/lvgl</name>
 			<type>2</type>
-			<location>C:/Users/wonjh/Documents/Arduino/libraries/lvgl</location>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/lvgl/9.1.0</locationURI>
 		</link>
 		<link>
 			<name>pif/include</name>

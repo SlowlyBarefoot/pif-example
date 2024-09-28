@@ -104,24 +104,24 @@ static void _evtBaroRead(float pressure, float temperature)
 
 BOOL appSetup()
 {
-	PifGy86Param* p_param;
+	PifGy86Param param;
 
     pifImuSensor_Init(&s_imu_sensor);
 
-    p_param = pifGy86_InitParam();
-    p_param->mpu60x0_clksel = MPU60X0_CLKSEL_PLL_ZGYRO;
-    p_param->mpu60x0_dlpf_cfg = MPU60X0_DLPF_CFG_A10HZ_G10HZ;
-    p_param->mpu60x0_fs_sel = MPU60X0_FS_SEL_2000DPS;
-    p_param->mpu60x0_afs_sel = MPU60X0_AFS_SEL_8G;
-    p_param->mpu60x0_i2c_mst_clk = MPU60X0_I2C_MST_CLK_400KHZ;
-    p_param->hmc5883_gain = HMC5883_GAIN_1_3GA;
-    p_param->hmc5883_samples = HMC5883_SAMPLES_8;
-    p_param->hmc5883_data_rate = HMC5883_DATARATE_75HZ;
-    p_param->hmc5883_mode = HMC5883_MODE_CONTINOUS;
-    p_param->ms5611_osr = MS5611_OSR_4096;
-    p_param->ms5611_read_period = 2000;													// 2000ms
-    p_param->ms5611_evt_read = _evtBaroRead;
-    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, p_param, &s_imu_sensor)) return FALSE;
+    memset(&param, 0, sizeof(PifGy86Param));
+    param.mpu60x0_clksel = MPU60X0_CLKSEL_PLL_ZGYRO;
+    param.mpu60x0_dlpf_cfg = MPU60X0_DLPF_CFG_A10HZ_G10HZ;
+    param.mpu60x0_fs_sel = MPU60X0_FS_SEL_2000DPS;
+    param.mpu60x0_afs_sel = MPU60X0_AFS_SEL_8G;
+    param.mpu60x0_i2c_mst_clk = MPU60X0_I2C_MST_CLK_400KHZ;
+    param.hmc5883_gain = HMC5883_GAIN_1_3GA;
+    param.hmc5883_samples = HMC5883_SAMPLES_8;
+    param.hmc5883_data_rate = HMC5883_DATARATE_75HZ;
+    param.hmc5883_mode = HMC5883_MODE_CONTINOUS;
+    param.ms5611_osr = MS5611_OSR_4096;
+    param.ms5611_read_period = 2000;													// 2000ms
+    param.ms5611_evt_read = _evtBaroRead;
+    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, &param, &s_imu_sensor)) return FALSE;
     s_gy86._mpu6050.temp_scale = 100;
     s_gy86._ms5611._p_task->pause = FALSE;
 

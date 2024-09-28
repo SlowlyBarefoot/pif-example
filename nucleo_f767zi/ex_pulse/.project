@@ -46,7 +46,17 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/include/communication</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/include/core</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/communication</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
