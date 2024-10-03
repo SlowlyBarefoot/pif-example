@@ -8,7 +8,9 @@
 
 // -------- pif Configuration --------------------
 
-//#define PIF_DEBUG
+#ifdef DEBUG
+	#define PIF_DEBUG
+#endif
 
 //#define PIF_INLINE
 #define PIF_INLINE                      	inline

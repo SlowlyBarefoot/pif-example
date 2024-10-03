@@ -8,7 +8,9 @@
 
 // -------- pif Configuration --------------------
 
-//#define PIF_DEBUG
+#ifdef DEBUG
+	#define PIF_DEBUG
+#endif
 
 #define PIF_INLINE
 //#define PIF_INLINE                      	inline
@@ -29,7 +31,7 @@
 
 // -------- pifLog -------------------------------
 
-//#define PIF_NO_LOG
+#define PIF_NO_LOG
 //#define PIF_LOG_COMMAND
 
 //#define PIF_LOG_LINE_SIZE					80
