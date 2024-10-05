@@ -25,17 +25,11 @@ static uint16_t _taskQmc5883(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    PifQmc5883Control1 control_1;
-
     pifImuSensor_Init(&s_imu_sensor);
 
     if (!pifQmc5883_Init(&s_qmc5883, PIF_ID_AUTO, &g_i2c_port, &s_imu_sensor)) return false;
 
-    control_1.bit.mode = QMC5883_MODE_CONTIMUOUS;
-    control_1.bit.odr = QMC5883_ODR_200HZ;
-    control_1.bit.rng = QMC5883_RNG_8G;
-    control_1.bit.osr = QMC5883_OSR_512;
-    pifQmc5883_SetControl1(&s_qmc5883, control_1);
+    pifQmc5883_SetControl1(&s_qmc5883, QMC5883_MODE_CONTIMUOUS | QMC5883_ODR_200HZ | QMC5883_RNG_8G | QMC5883_OSR_512);
 
     if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskQmc5883, NULL, TRUE)) return FALSE;	// 500ms
 

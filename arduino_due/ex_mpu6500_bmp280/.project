@@ -117,6 +117,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_i2c.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/communication/pif_spi.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_spi.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/communication/pif_uart.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_uart.h</locationURI>
@@ -190,6 +195,11 @@
 			<name>pif/source/communication/pif_i2c.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_i2c.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/communication/pif_spi.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_spi.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_uart.c</name>

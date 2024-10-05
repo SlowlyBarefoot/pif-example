@@ -1,5 +1,6 @@
 Config.Debug.board.BOARD.ID=nano
-Config.Debug.board.BOARD.TXT=C:\Sloeber\arduinoPlugin\packages\arduino\hardware\avr\1.8.3\boards.txt
+Config.Debug.board.BOARD.MENU.cpu=getMenuItemIDFromMenuItemName did not find menu item with name "" for menu ID "cpu" and for boardID "nano"!
+Config.Debug.board.BOARD.TXT=C:\Sloeber\arduinoPlugin\packages\arduino\hardware\avr\1.8.6\boards.txt
 Config.Debug.board.PROGRAMMER.NAME=
 Config.Debug.board.UPLOAD.PORT=COM5
 Config.Debug.compile.sloeber.extra.all=

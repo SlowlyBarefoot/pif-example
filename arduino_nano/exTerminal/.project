@@ -67,6 +67,11 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.6/libraries/SoftwareSerial</locationURI>
 		</link>
 		<link>
+			<name>libraries/SoftwareSerialTX</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/SoftwareSerialTX/0.0.33</locationURI>
+		</link>
+		<link>
 			<name>pif/include</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>

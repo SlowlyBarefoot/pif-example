@@ -121,7 +121,7 @@ BOOL appSetup()
 
 	if (!pifBmp280I2c_Init(&s_bmp280, PIF_ID_AUTO, &g_i2c_port, BMP280_I2C_ADDR(0))) return FALSE;
 
-	pifBmp280_SetOverSamplingRate(&s_bmp280, BMP280_OSRS_X16, BMP280_OSRS_X2);
+	pifBmp280_SetOverSamplingRate(&s_bmp280, BMP280_OSRS_P_X16, BMP280_OSRS_T_X2);
 #ifdef USE_BARO_TASK
 	if (!pifBmp280_AddTaskForReading(&s_bmp280, 2000, &_evtBaroRead, TRUE)) return FALSE;		// 2sec
 #endif
