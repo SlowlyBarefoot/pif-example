@@ -6,20 +6,17 @@
 
 #define UART_LOG_BAUDRATE		115200
 
-typedef struct {
-	uint8_t data[8];
-} TData;
 
 static PifObjArray s_array;
 
 
-void print()
+void list_print(char *mode, int index)
 {
-	char str[10];
+	char str[20];
 	char *p_buffer = (char *)s_array._p_node;
 	PifObjArrayIterator it;
 
-	sprintf(str, "%2d:%2d ", s_array._p_free ? s_array._p_free->data[0] : -1, s_array._p_first ? s_array._p_first->data[0] : -1);
+	sprintf(str, "%s:%2d  %2d:%2d ", mode, index, s_array._p_free ? s_array._p_free->data[0] : -1, s_array._p_first ? s_array._p_first->data[0] : -1);
 	Serial.print(str);
 
 	for (int i = 0; i < s_array._max_count; i++) {
@@ -29,7 +26,8 @@ void print()
 		p_buffer += 2 * sizeof(PifObjArrayIterator) + s_array._size;
 	}
 
-	Serial.print(" U: ");
+	sprintf(str, "  C:%2d  U: ", s_array._count);
+	Serial.print(str);
 	it = s_array._p_first;
 	if (it) {
 		while (it) {
@@ -57,7 +55,7 @@ void print()
 	Serial.print("\n");
 }
 
-static TData *list_add()
+static char *list_add()
 {
 	char *p_buffer = (char *)s_array._p_node;
 	PifObjArrayIterator it, it_tmp;
@@ -74,19 +72,19 @@ static TData *list_add()
 		p_buffer += 2 * sizeof(PifObjArrayIterator) + s_array._size;
 	}
 
-	print();
-	return (TData *)it->data;
+	list_print("Add ", it_tmp->data[0]);
+	return (char *)it->data;
 }
 
 static void list_delete(int16_t index)
 {
 	PifObjArrayIterator it;
-	TData *p_data;
+	char *p_data;
 
 	it = s_array._p_first;
 	while (it) {
 		if (it->data[0] == index) {
-			p_data = (TData *)it->data;
+			p_data = it->data;
 			break;
 		}
 		it = it->p_next;
@@ -94,13 +92,24 @@ static void list_delete(int16_t index)
 
 	pifObjArray_Remove(&s_array, p_data);
 
-	print();
+	list_print("Del ", index);
+}
+
+int list_find(int index)
+{
+	int i;
+	PifObjArrayIterator it = s_array._p_first;
+	for (i = 0; i < index; i++) {
+		it = it->p_next;
+	}
+	return it->data[0];
 }
 
 //The setup function is called once at startup of the sketch
 void setup()
 {
 	char *p_buffer, str[45];
+	int i, k, mode = 0, num;
 	PifObjArrayIterator it;
 
 	Serial.begin(UART_LOG_BAUDRATE);
@@ -110,64 +119,33 @@ void setup()
 	sprintf(str, "***       %s %s       ***", __DATE__, __TIME__);
 	Serial.println(str);
 	Serial.println("****************************************\n");
-	Serial.println(" F: U   0     1     2     3     4     5     6     7     8     9");
+	Serial.println("         F: U   0     1     2     3     4     5     6     7     8     9");
 
-	if (!pifObjArray_Init(&s_array, sizeof(TData), 10, NULL)) return;
+	if (!pifObjArray_Init(&s_array, sizeof(char), 10, NULL)) return;
 	p_buffer = (char *)s_array._p_node;
 	for (int i = 0; i < s_array._max_count; i++) {
 		it = (PifObjArrayIterator)p_buffer;
 		it->data[0] = i;
 		p_buffer += 2 * sizeof(PifObjArrayIterator) + s_array._size;
 	}
-	print();
+	list_print("Init", 0);
 
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-
-	list_delete(0);
-	list_delete(4);
-	list_delete(2);
-
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-
-	list_delete(1);
-	list_delete(7);
-	list_delete(0);
-	list_delete(3);
-	list_delete(6);
-	list_delete(4);
-	list_delete(2);
-	list_delete(5);
-
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-	if (!list_add()) return;
-
-	list_delete(8);
-	list_delete(1);
-	list_delete(7);
-	list_delete(0);
-	list_delete(3);
-	list_delete(6);
-	list_delete(4);
-	list_delete(2);
-	list_delete(5);
-	list_delete(9);
+	for (i = 0; i < 1000; i++) {
+		if (mode) {
+			num = rand() % s_array._count;
+			for (k = 0; k < num; k++) {
+				list_delete(list_find(rand() % s_array._count));
+			}
+		}
+		else {
+			num = rand() % 6 + 1;
+			if (num > 10 - s_array._count) num = 10 - s_array._count;
+			for (k = 0; k < num; k++) {
+				list_add();
+			}
+		}
+		mode ^= 1;
+	}
 }
 
 // The loop function is called in an endless loop
