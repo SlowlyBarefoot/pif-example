@@ -175,11 +175,11 @@ static BOOL actPen()
 	return !digitalRead(PIN_TS_PEN);
 }
 
-static void actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
+static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read, uint16_t size)
 {
 	uint16_t i;
 
-	(void)id;
+	(void)p_owner;
 
 	digitalWrite(PIN_TS_CS, LOW);
 	digitalWrite(SS, LOW);

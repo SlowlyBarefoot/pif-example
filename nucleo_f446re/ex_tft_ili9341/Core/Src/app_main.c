@@ -12,18 +12,16 @@ PifTimerManager g_timer_1ms;
 #endif
 
 static PifTftLcdRotation rotation = TLR_0_DEGREE;
-#if LCD_TYPE != LCD_2_4_INCH
-	static uint8_t backlight = 50;
+static uint8_t backlight = 50;
+#if LCD_TYPE != LCD_2_2_INCH_SPI
+	static BOOL draw = FALSE;
 #endif
-static BOOL draw = FALSE;
 
 static PifTask* p_task = NULL;
 
 static int _CmdFillRect(int argc, char *argv[]);
 static int _CmdRotation(int argc, char *argv[]);
-#if LCD_TYPE != LCD_2_4_INCH
-	static int _CmdBackLight(int argc, char *argv[]);
-#endif
+static int _CmdBackLight(int argc, char *argv[]);
 #if LCD_TYPE != LCD_2_2_INCH_SPI
 	static int _CmdTouchCalibration(int argc, char *argv[]);
 	static int _CmdClear(int argc, char *argv[]);
@@ -37,9 +35,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
 	{ "fr", _CmdFillRect, "Fill Rect", NULL },
 	{ "rot", _CmdRotation, "Change Rotation", NULL },
-#if LCD_TYPE != LCD_2_4_INCH
 	{ "bl", _CmdBackLight, "Change Back Light", NULL },
-#endif
 #if LCD_TYPE != LCD_2_2_INCH_SPI
 	{ "tc", _CmdTouchCalibration, "Touch Calibration", NULL },
 	{ "clear", _CmdClear, "Clear", NULL },
@@ -76,8 +72,6 @@ static int _CmdRotation(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-#if LCD_TYPE != LCD_2_4_INCH
-
 static int _CmdBackLight(int argc, char *argv[])
 {
 	if (argc == 0) {
@@ -97,22 +91,18 @@ static int _CmdBackLight(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-#endif
-
 #if LCD_TYPE != LCD_2_2_INCH_SPI
 
 static int _CmdTouchCalibration(int argc, char *argv[])
 {
-#if LCD_TYPE == LCD_2_4_INCH
-	if (pifTouchScreen_Calibration(&g_touch_screen)) {
-#elif LCD_TYPE == LCD_3_2_INCH
+#if LCD_TYPE == LCD_3_2_INCH
 	if (pifTouchScreen_Calibration(&g_tsc2046.parent)) {
-#endif
 		pifLog_Printf(LT_INFO, "Touch calibration is success");
 	}
 	else {
 		pifLog_Printf(LT_INFO, "Touch calibration is failure");
 	}
+#endif
 	return PIF_LOG_CMD_NO_ERROR;
 }
 

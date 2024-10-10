@@ -53,7 +53,7 @@ TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-#if LCD_TYPE == LCD_2_2_INCH_SPI || LCD_TYPE == LCD_2_4_INCH
+#if LCD_TYPE == LCD_2_2_INCH_SPI
 	const uint8_t lcd_setup[] = {
 		ILI9341_CMD_POWER_CTRL_A, 			5, 0x39, 0x2C, 0x00, 0x34, 0x02,
 		ILI9341_CMD_POWER_CTRL_B, 			3, 0x00, 0xC1, 0x30,
@@ -353,9 +353,9 @@ static BOOL actPen()
 	return !HAL_GPIO_ReadPin(PEN_GPIO_Port, PEN_Pin);
 }
 
-static void actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
+static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read, uint16_t size)
 {
-	(void)id;
+	(void)p_owner;
 
 	HAL_GPIO_WritePin(T_CS_GPIO_Port, T_CS_Pin, OFF);
 	HAL_GPIO_WritePin(T_NSS_GPIO_Port, T_NSS_Pin, OFF);
@@ -378,8 +378,6 @@ int main(void)
   /* USER CODE BEGIN 1 */
 #if LCD_TYPE == LCD_2_2_INCH_SPI
   const char *lcd_name = "2.2 Inch LCD SPI";
-#elif LCD_TYPE == LCD_2_4_INCH
-  const char *lcd_name = "  2.4 Inch LCD  ";
 #elif LCD_TYPE == LCD_3_2_INCH
   const char *lcd_name = "  3.2 Inch LCD  ";
 #endif
@@ -441,9 +439,6 @@ int main(void)
   g_ili9341.parent.act_backlight = actLcdBackLight;
 
   if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, NULL, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
-#elif LCD_TYPE == LCD_2_4_INCH
-  if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }
-  if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
 #elif LCD_TYPE == LCD_3_2_INCH
   if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) { line = __LINE__; goto fail; }
   g_ili9341.parent.act_backlight = actLcdBackLight;
