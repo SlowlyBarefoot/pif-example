@@ -353,9 +353,9 @@ static BOOL actPen()
 	return !HAL_GPIO_ReadPin(PEN_GPIO_Port, PEN_Pin);
 }
 
-static void actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
+static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read, uint16_t size)
 {
-	(void)id;
+	(void)p_owner;
 
 	HAL_GPIO_WritePin(T_CS_GPIO_Port, T_CS_Pin, OFF);
 	HAL_GPIO_WritePin(T_NSS_GPIO_Port, T_NSS_Pin, OFF);
@@ -448,10 +448,10 @@ int main(void)
   if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) { line = __LINE__; goto fail; }
   g_ili9341.parent.act_backlight = actLcdBackLight;
 
-  if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) { line = __LINE__; goto fail; }
+  if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, NULL)) { line = __LINE__; goto fail; }
   g_spi_port.act_transfer = actTransfer;
 
-  if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, actPen)) { line = __LINE__; goto fail; }
+  if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, 16, actPen)) { line = __LINE__; goto fail; }
   if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
 #endif
   pifIli9341_Setup(&g_ili9341, lcd_setup, lcd_rotation);

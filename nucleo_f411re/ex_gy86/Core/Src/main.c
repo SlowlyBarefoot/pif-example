@@ -269,7 +269,7 @@ int main(void)
 
   if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return -1;
 
-  if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3, 16, NULL)) return -1;
+  if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3, NULL)) return -1;
   g_i2c_port.act_read = actI2cRead;
   g_i2c_port.act_write = actI2cWrite;
 

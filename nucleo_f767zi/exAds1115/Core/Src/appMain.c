@@ -34,7 +34,7 @@ BOOL appSetup()
 {
 	uint16_t stConfig;
 
-    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR(0))) return FALSE;
+    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR(0), 16)) return FALSE;
 
     stConfig = s_ads1x1x._config;
 #if 1

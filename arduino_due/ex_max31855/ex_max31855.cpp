@@ -91,7 +91,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) return;
+    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, NULL)) return;
     g_spi_port.act_transfer = actTransfer;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;

@@ -298,12 +298,12 @@ int main(void)
   if (!g_timer_led) return -1;
   pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
 
-  if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, EEPROM_PAGE_SIZE, NULL)) return -1;
+  if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, NULL)) return -1;
   g_i2c_port.act_read = actI2cRead;
   g_i2c_port.act_write = actI2cWrite;
 
   if (!pifStorageVar_Init(&g_storage, PIF_ID_AUTO)) return -1;
-  if (!pifStorageVar_AttachI2c(&g_storage, &g_i2c_port, ATMEL_I2C_ADDRESS, EEPROM_I_ADDR_SIZE, 10)) return -1;		// 10ms
+  if (!pifStorageVar_AttachI2c(&g_storage, &g_i2c_port, ATMEL_I2C_ADDRESS, EEPROM_PAGE_SIZE, EEPROM_I_ADDR_SIZE, 10)) return -1;		// 10ms
   if (!pifStorageVar_SetMedia(&g_storage, EEPROM_SECTOR_SIZE, EEPROM_VOLUME, MIN_DATA_INFO_COUNT)) return -1;
 
   if (!appSetup()) return -1;

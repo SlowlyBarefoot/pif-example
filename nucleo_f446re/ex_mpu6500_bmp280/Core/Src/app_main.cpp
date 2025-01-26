@@ -117,9 +117,9 @@ BOOL appSetup()
 
 	if (!pifBmp280I2c_Detect(&g_i2c_port, BMP280_I2C_ADDR(0))) return FALSE;
 
-	if (!pifMpu6500I2c_Init(&s_mpu6500, PIF_ID_AUTO, &g_i2c_port, MPU6500_I2C_ADDR(0), &s_imu_sensor)) return FALSE;
+	if (!pifMpu6500I2c_Init(&s_mpu6500, PIF_ID_AUTO, &g_i2c_port, MPU6500_I2C_ADDR(0), 32, &s_imu_sensor)) return FALSE;
 
-	if (!pifBmp280I2c_Init(&s_bmp280, PIF_ID_AUTO, &g_i2c_port, BMP280_I2C_ADDR(0))) return FALSE;
+	if (!pifBmp280I2c_Init(&s_bmp280, PIF_ID_AUTO, &g_i2c_port, BMP280_I2C_ADDR(0), 32)) return FALSE;
 
 	pifBmp280_SetOverSamplingRate(&s_bmp280, BMP280_OSRS_P_X16, BMP280_OSRS_T_X2);
 #ifdef USE_BARO_TASK

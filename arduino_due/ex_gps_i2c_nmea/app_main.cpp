@@ -118,11 +118,11 @@ BOOL appSetup()
 {
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return FALSE;
-	if (!pifGpsNmea_AttachI2c(&s_gps_nmea, &g_i2c_port, 0x42, 250, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
+	if (!pifGpsNmea_AttachI2c(&s_gps_nmea, &g_i2c_port, 0x42, 30, 250, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	if (!pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText)) return FALSE;

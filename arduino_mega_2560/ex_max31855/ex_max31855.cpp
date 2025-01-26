@@ -28,11 +28,11 @@ static void actLedLState(PifId id, uint32_t state)
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-static void actTransfer(PifId id, uint8_t* p_write, uint8_t* p_read, uint16_t size)
+static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read, uint16_t size)
 {
 	uint16_t i;
 
-	(void)id;
+	(void)p_owner;
 
 	digitalWrite(SS, LOW);
 	if (p_write) {
@@ -92,7 +92,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) return;
+    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, NULL)) return;
     g_spi_port.act_transfer = actTransfer;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
