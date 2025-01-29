@@ -2,8 +2,6 @@
 #include "ex_gy86.h"
 #include "app_main.h"
 
-#define USE_I2C_WIRE
-
 #include <MsTimer2.h>
 #ifdef USE_I2C_WIRE
 	#include <Wire.h>

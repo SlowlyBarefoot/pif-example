@@ -8,6 +8,9 @@
 #include "display/pif_led.h"
 
 
+//#define USE_I2C_WIRE
+
+
 extern PifI2cPort g_i2c_port;
 extern PifLed g_led_l;
 extern PifTimerManager g_timer_1ms;

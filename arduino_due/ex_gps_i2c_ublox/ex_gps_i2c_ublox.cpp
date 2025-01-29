@@ -2,8 +2,6 @@
 #include "ex_gps_i2c_ublox.h"
 #include "linker.h"
 
-//#define USE_I2C_WIRE
-
 #ifdef USE_I2C_WIRE
 	#include <Wire.h>
 #else

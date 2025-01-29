@@ -2,8 +2,6 @@
 #include "ex_qmc5883.h"
 #include "app_main.h"
 
-#define USE_I2C_WIRE
-
 #ifdef USE_I2C_WIRE
 	#include <Wire.h>
 #else

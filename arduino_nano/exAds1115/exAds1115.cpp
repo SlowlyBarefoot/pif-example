@@ -4,8 +4,6 @@
 
 #include <MsTimer2.h>
 
-//#define USE_I2C_WIRE
-
 #ifdef USE_I2C_WIRE
 	#include <Wire.h>
 #else

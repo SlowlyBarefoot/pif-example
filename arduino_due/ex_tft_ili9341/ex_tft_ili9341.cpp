@@ -459,7 +459,7 @@ void setup()
     if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, NULL)) { line = __LINE__; goto fail; }
     g_spi_port.act_transfer = actTransfer;
 
-    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, 16, actPen)) { line = __LINE__; goto fail; }
+    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, actPen)) { line = __LINE__; goto fail; }
     if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
 #endif
     pifIli9341_Setup(&g_ili9341, lcd_setup, lcd_rotation);

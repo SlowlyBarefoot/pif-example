@@ -27,7 +27,10 @@ BOOL appSetup()
 {
     pifImuSensor_Init(&s_imu_sensor);
 
-    if (!pifQmc5883_Init(&s_qmc5883, PIF_ID_AUTO, &g_i2c_port, 16, &s_imu_sensor)) return false;
+    if (!pifQmc5883_Init(&s_qmc5883, PIF_ID_AUTO, &g_i2c_port, &s_imu_sensor)) return false;
+#ifdef USE_I2C_WIRE
+    s_qmc5883._p_i2c->max_transfer_size = 32;
+#endif
 
     pifQmc5883_SetControl1(&s_qmc5883, QMC5883_MODE_CONTIMUOUS | QMC5883_ODR_200HZ | QMC5883_RNG_8G | QMC5883_OSR_512);
 

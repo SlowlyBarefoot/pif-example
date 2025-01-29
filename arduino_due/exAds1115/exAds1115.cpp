@@ -2,8 +2,6 @@
 #include "exAds1115.h"
 #include "appMain.h"
 
-//#define USE_I2C_WIRE
-
 #ifdef USE_I2C_WIRE
 	#include <Wire.h>
 #else

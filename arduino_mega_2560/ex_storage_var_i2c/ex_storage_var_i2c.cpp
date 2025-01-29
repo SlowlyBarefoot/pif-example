@@ -178,7 +178,10 @@ void setup()
     g_i2c_port.act_write = actI2cWrite;
 
 	if (!pifStorageVar_Init(&g_storage, PIF_ID_AUTO)) return;
-	if (!pifStorageVar_AttachI2c(&g_storage, &g_i2c_port, ATMEL_I2C_ADDRESS, EEPROM_PAGE_SIZE, EEPROM_I_ADDR_SIZE, 10)) return;	// 10ms
+	if (!pifStorageVar_AttachI2c(&g_storage, &g_i2c_port, ATMEL_I2C_ADDRESS, EEPROM_I_ADDR_SIZE, 10)) return;	// 10ms
+#ifdef USE_I2C_WIRE
+	g_storage.parent._p_i2c->max_transfer_size = 32;
+#endif
 	if (!pifStorageVar_SetMedia(&g_storage, EEPROM_SECTOR_SIZE, EEPROM_VOLUME, MIN_DATA_INFO_COUNT)) return;
 
 	if (!appSetup()) return;

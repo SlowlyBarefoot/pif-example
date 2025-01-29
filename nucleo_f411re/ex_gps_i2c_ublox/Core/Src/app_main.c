@@ -338,7 +338,7 @@ BOOL appSetup()
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
-	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &g_i2c_port, 0x42, 30, 500, TRUE, NULL)) return FALSE;		// 0x42 : Ublox I2c addrress, 500ms
+	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &g_i2c_port, 0x42, 500, TRUE, NULL)) return FALSE;		// 0x42 : Ublox I2c addrress, 500ms
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;

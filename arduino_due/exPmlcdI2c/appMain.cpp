@@ -60,7 +60,8 @@ static uint16_t _taskPmlcdI2c(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27, 16)) return FALSE;
+    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27)) return FALSE;
+    s_pmlcd_i2c._p_i2c->max_transfer_size = 32;
 #if 0
     pifI2cPort_ScanAddress(&g_i2c_port);
 #else

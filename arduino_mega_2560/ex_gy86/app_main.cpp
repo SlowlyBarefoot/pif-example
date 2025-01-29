@@ -121,7 +121,12 @@ BOOL appSetup()
     param.ms5611_osr = MS5611_OSR_4096;
     param.ms5611_read_period = 2000;													// 2000ms
     param.ms5611_evt_read = _evtBaroRead;
-    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, 16, &param, &s_imu_sensor)) return FALSE;
+    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, &param, &s_imu_sensor)) return FALSE;
+#ifdef USE_I2C_WIRE
+    s_gy86._mpu6050._p_i2c->max_transfer_size = 32;
+    s_gy86._hmc5883._p_i2c->max_transfer_size = 32;
+    s_gy86._ms5611._p_i2c->max_transfer_size = 32;
+#endif
     s_gy86._mpu6050.temp_scale = 100;
     s_gy86._ms5611._p_task->pause = FALSE;
 
