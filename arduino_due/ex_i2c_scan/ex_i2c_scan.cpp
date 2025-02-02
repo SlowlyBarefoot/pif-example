@@ -94,7 +94,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, NULL)) return;
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1)) return;
     g_i2c_port.act_write = actI2cWrite;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

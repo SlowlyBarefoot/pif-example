@@ -117,12 +117,12 @@ BOOL appSetup()
 
 	if (!pifBmp280I2c_Detect(&g_i2c_port, BMP280_I2C_ADDR(0))) return FALSE;
 
-	if (!pifMpu6500I2c_Init(&s_mpu6500, PIF_ID_AUTO, &g_i2c_port, MPU6500_I2C_ADDR(0), &s_imu_sensor)) return FALSE;
+	if (!pifMpu6500I2c_Init(&s_mpu6500, PIF_ID_AUTO, &g_i2c_port, MPU6500_I2C_ADDR(0), NULL, &s_imu_sensor)) return FALSE;
 #ifdef USE_I2C_WIRE
 	s_mpu6500._p_i2c->max_transfer_size = 32;
 #endif
 
-	if (!pifBmp280I2c_Init(&s_bmp280, PIF_ID_AUTO, &g_i2c_port, BMP280_I2C_ADDR(0))) return FALSE;
+	if (!pifBmp280I2c_Init(&s_bmp280, PIF_ID_AUTO, &g_i2c_port, BMP280_I2C_ADDR(0), NULL)) return FALSE;
 #ifdef USE_I2C_WIRE
 	s_bmp280._p_i2c->max_transfer_size = 32;
 #endif

@@ -171,7 +171,7 @@ void setup()
     if (!g_timer_led) return;
     pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
 
-    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1, NULL)) return;
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1)) return;
     g_i2c_port.act_read = actI2cRead;
     g_i2c_port.act_write = actI2cWrite;
 

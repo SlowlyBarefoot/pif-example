@@ -62,7 +62,7 @@ uint16_t _taskPmlcdI2c(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27)) return FALSE;
+    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27, NULL)) return FALSE;
 #if 0
     pifI2c_ScanAddress(&s_pmlcd_i2c._i2c);
 #else

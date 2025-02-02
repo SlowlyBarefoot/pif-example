@@ -97,7 +97,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
-    if (!pifBuzzer_Init(&g_buzzer, PIF_ID_AUTO, actBuzzerAction)) return;
+    if (!pifBuzzer_Init(&g_buzzer, PIF_ID_AUTO, 10, actBuzzerAction)) return;				// 10ms
 
     if (!appSetup()) return;
 

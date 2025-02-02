@@ -27,7 +27,7 @@ BOOL appSetup()
 {
     pifImuSensor_Init(&s_imu_sensor);
 
-    if (!pifQmc5883_Init(&s_qmc5883, PIF_ID_AUTO, &g_i2c_port, &s_imu_sensor)) return false;
+    if (!pifQmc5883_Init(&s_qmc5883, PIF_ID_AUTO, &g_i2c_port, NULL, &s_imu_sensor)) return false;
 #ifdef USE_I2C_WIRE
     s_qmc5883._p_i2c->max_transfer_size = 32;
 #endif

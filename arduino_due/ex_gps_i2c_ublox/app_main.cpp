@@ -334,11 +334,11 @@ BOOL appSetup()
 {
     if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
     if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
-	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &g_i2c_port, 0x42, 500, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
+	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &g_i2c_port, 0x42, NULL, 500, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
 #ifdef USE_I2C_WIRE
 	s_gps_ublox._p_i2c_device->max_transfer_size = 32;
 #endif
@@ -350,7 +350,7 @@ BOOL appSetup()
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskUbloxSetup, NULL, TRUE)) return FALSE;		// 100ms
+	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskUbloxSetup, NULL, TRUE)) return FALSE;				// 100ms
 #endif
 	return TRUE;
 }

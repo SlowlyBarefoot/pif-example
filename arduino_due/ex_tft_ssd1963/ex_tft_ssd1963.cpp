@@ -263,10 +263,10 @@ void setup()
     if (!pifSsd1963_Init(&g_ssd1963, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
     g_ssd1963.parent.act_backlight = actLcdBackLight;
 
-    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, NULL)) { line = __LINE__; goto fail; }
+    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1)) { line = __LINE__; goto fail; }
     g_spi_port.act_transfer = actTransfer;
 
-    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ssd1963.parent, 3761, 229, 3899, 420, &g_spi_port, actPen)) { line = __LINE__; goto fail; }
+    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ssd1963.parent, 3761, 229, 3899, 420, &g_spi_port, NULL, actPen)) { line = __LINE__; goto fail; }
     if (!pifSsd1963_AttachActParallel(&g_ssd1963, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
     if (!pifSsd1963_Setup(&g_ssd1963, lcd_setup, NULL)) { line = __LINE__; goto fail; }
 
