@@ -27,7 +27,7 @@ static void actLedLState(PifId usPifId, uint32_t unState)
 	digitalWrite(PIN_LED_L, unState & 1);
 }
 
-static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, size_t size)
 {
 	uint16_t i;
 

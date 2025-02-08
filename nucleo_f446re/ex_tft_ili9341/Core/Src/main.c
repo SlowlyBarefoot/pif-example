@@ -353,7 +353,7 @@ static BOOL actPen()
 	return !HAL_GPIO_ReadPin(PEN_GPIO_Port, PEN_Pin);
 }
 
-static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read, uint16_t size)
+static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read, size_t size)
 {
 	(void)p_owner;
 

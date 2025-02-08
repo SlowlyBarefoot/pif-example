@@ -45,7 +45,7 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 	return i;
 }
 
-static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, size_t size)
 {
 #ifdef USE_I2C_WIRE
 	int i;
@@ -69,7 +69,7 @@ static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t i
     return IR_COMPLETE;
 }
 
-static PifI2cReturn actI2cRead(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, uint16_t size)
+static PifI2cReturn actI2cRead(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, size_t size)
 {
 #ifdef USE_I2C_WIRE
 	int i;

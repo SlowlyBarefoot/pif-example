@@ -28,7 +28,7 @@ static void actLedLState(PifId id, uint32_t state)
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read, uint16_t size)
+static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read, size_t size)
 {
 	uint16_t i;
 
