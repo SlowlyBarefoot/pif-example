@@ -63,6 +63,6 @@ BOOL appSetup()
 {
     g_buzzer.evt_finish = _evtBuzzerFinish;
 
-	if (!pifTaskManager_Add(TM_CHANGE_MS, 10, _taskBuzzer, NULL, TRUE)) return FALSE;		// 10ms
+	if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskBuzzer, NULL, TRUE)) return FALSE;		// 10ms
 	return TRUE;
 }

@@ -205,7 +205,7 @@ int main(void)
 	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
 	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, huart4.Init.BaudRate)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_modbus, TM_CHANGE_US, 500, "UartModbus")) { line = __LINE__; goto fail; }		// 500us
+    if (!pifUart_AttachTask(&g_uart_modbus, TM_PERIOD_US, 500, "UartModbus")) { line = __LINE__; goto fail; }		// 500us
     if (!pifUart_AllocRxBuffer(&g_uart_modbus, 256, 10)) { line = __LINE__; goto fail; }							// 256bytes, 10%
     if (!pifUart_AllocTxBuffer(&g_uart_modbus, 256)) { line = __LINE__; goto fail; }								// 256bytes
     g_uart_modbus.act_start_transfer = actModbusStartTransfer;

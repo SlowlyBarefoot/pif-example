@@ -113,7 +113,7 @@ void setup()
 	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
 	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_modbus, TM_CHANGE_US, 1000, "UartModbus")) { line = __LINE__; goto fail; }		// 1ms
+    if (!pifUart_AttachTask(&g_uart_modbus, TM_PERIOD_US, 1000, "UartModbus")) { line = __LINE__; goto fail; }		// 1ms
     g_uart_modbus.act_receive_data = actMasterReceiveData;
     g_uart_modbus.act_send_data = actMasterSendData;
     g_uart_modbus.act_get_tx_rate = actMasterGetTxRate;

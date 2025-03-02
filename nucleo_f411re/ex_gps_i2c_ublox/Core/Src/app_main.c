@@ -347,7 +347,7 @@ BOOL appSetup()
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_CHANGE_MS, 100, _taskUbloxSetup, NULL, TRUE)) return FALSE;				// 100ms
+	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskUbloxSetup, NULL, TRUE)) return FALSE;				// 100ms
 #endif
 	return TRUE;
 }
