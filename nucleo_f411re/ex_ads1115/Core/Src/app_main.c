@@ -15,7 +15,7 @@ static PifAds1x1x s_ads1x1x;
 static int channel = ADS1X1X_MUX_SINGLE_0;
 
 
-uint16_t _taskAds1115(PifTask *p_task)
+uint32_t _taskAds1115(PifTask *p_task)
 {
 	(void)p_task;
 
@@ -60,7 +60,7 @@ BOOL appSetup()
     pifAds1x1x_SetLoThreshVoltage(&s_ads1x1x, 1.0);
     pifAds1x1x_SetHiThreshVoltage(&s_ads1x1x, 2.0);
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskAds1115, NULL, TRUE)) return FALSE;		// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskAds1115, NULL, TRUE)) return FALSE;		// 500ms
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);

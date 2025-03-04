@@ -174,7 +174,7 @@ static void _evtXmodemRxReceive(uint8_t code, PifXmodemPacket* p_packet)
 	}
 }
 
-static uint16_t _taskChangeUart(PifTask* p_task)
+static uint32_t _taskChangeUart(PifTask* p_task)
 {
 	(void)p_task;
 

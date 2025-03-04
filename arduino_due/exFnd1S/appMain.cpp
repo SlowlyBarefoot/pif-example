@@ -15,7 +15,7 @@ const uint8_t c_ucUserChar[] = {
 };
 
 
-static uint16_t _taskFndTest(PifTask *pstTask)
+static uint32_t _taskFndTest(PifTask *pstTask)
 {
 	static int i = 0;
 	static BOOL swBlink = FALSE;
@@ -48,7 +48,7 @@ BOOL appSetup()
 {
     pifFnd_SetUserChar(c_ucUserChar, 26);
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return FALSE;	// 1000ms
+    if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskFndTest, NULL, TRUE)) return FALSE;	// 1000ms
 
     pifFnd_Start(&g_fnd);
     return TRUE;

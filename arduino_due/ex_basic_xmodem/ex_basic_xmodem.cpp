@@ -64,7 +64,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&g_uart, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart, TM_PERIOD_MS, 1, "UartLog")) return;					// 1ms
+    if (!pifUart_AttachTask(&g_uart, TM_PERIOD, 1000, "UartLog")) return;					// 1ms
 	g_uart.act_receive_data = actLogReceiveData;
 	g_uart.act_send_data = actLogSendData;
 

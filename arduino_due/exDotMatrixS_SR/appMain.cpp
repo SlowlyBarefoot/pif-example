@@ -104,7 +104,7 @@ const uint8_t font8x8_basic[96][8] = {
 };
 
 
-static uint16_t _taskDotMatrixTest(PifTask* p_task)
+static uint32_t _taskDotMatrixTest(PifTask* p_task)
 {
 	static int blink = 0;
 	static int index = 0;
@@ -136,7 +136,7 @@ BOOL appSetup()
     	if (!pifDotMatrix_AddPattern(&g_dot_matrix, 8, 8, (uint8_t *)font8x8_basic[i])) return FALSE;
     }
 
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
+	if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
 
 	pifDotMatrix_Start(&g_dot_matrix);
 	return TRUE;

@@ -82,7 +82,7 @@ static BOOL _evtGpsUbxReceive(PifGpsUblox* p_owner, PifGpsUbxPacket* p_packet)
 	return FALSE;
 }
 
-static uint16_t _taskUbloxSetup(PifTask *p_task)
+static uint32_t _taskUbloxSetup(PifTask *p_task)
 {
     const uint8_t kCfgMsgNmea[][3] = {
 			{ GUCI_NMEA_STD, GUMI_NMEA_VTG, 0x00 }, // Course over ground and Ground speed
@@ -213,7 +213,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 		}
 		break;
 	}
-    return delay;
+    return delay * 1000;
 }
 
 #endif
@@ -347,7 +347,7 @@ BOOL appSetup()
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskUbloxSetup, NULL, TRUE)) return FALSE;				// 100ms
+	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;				// 100ms
 #endif
 	return TRUE;
 }

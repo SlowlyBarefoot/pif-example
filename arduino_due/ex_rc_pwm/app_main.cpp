@@ -24,7 +24,7 @@ static void _evtRcPwmReceive(PifRc* p_owner, uint16_t* p_channel, PifIssuerP p_i
 	pifTask_SetTrigger(p_task);
 }
 
-static uint16_t _taskPrint(PifTask* p_task)
+static uint32_t _taskPrint(PifTask* p_task)
 {
 	(void)p_task;
 

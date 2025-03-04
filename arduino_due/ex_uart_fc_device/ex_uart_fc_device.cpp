@@ -107,7 +107,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
@@ -115,7 +115,7 @@ void setup()
 	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
 	if (!pifUart_Init(&g_uart_device, PIF_ID_AUTO, UART_DEVICE_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_device, TM_PERIOD_MS, 1, "UartDevice")) { line = __LINE__; goto fail; }			// 1ms
+    if (!pifUart_AttachTask(&g_uart_device, TM_PERIOD, 1000, "UartDevice")) { line = __LINE__; goto fail; }			// 1ms
     g_uart_device.act_receive_data = actDeviceReceiveData;
     g_uart_device.act_send_data = actDeviceSendData;
     g_uart_device.act_get_rx_rate = actDeviceGetRxRate;

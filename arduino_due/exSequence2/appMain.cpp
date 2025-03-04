@@ -94,7 +94,7 @@ BOOL appSetup()
 	int i;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stSequenceTest[i].stPushSwitch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stSequenceTest[i].stPushSwitch, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
 		g_stSequenceTest[i].stPushSwitch.parent.evt_change = _evtPushSwitchChange;
 		g_stSequenceTest[i].stPushSwitch.parent.p_issuer = &g_stSequenceTest[i];
 

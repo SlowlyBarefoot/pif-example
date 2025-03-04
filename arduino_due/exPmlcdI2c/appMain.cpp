@@ -11,7 +11,7 @@ PifTimerManager g_timer_1ms;
 static PifPmlcdI2c s_pmlcd_i2c;
 
 
-static uint16_t _taskPmlcdI2c(PifTask *pstTask)
+static uint32_t _taskPmlcdI2c(PifTask *pstTask)
 {
 	static int nStep = 0;
 	static int nNumber = 0;
@@ -68,7 +68,7 @@ BOOL appSetup()
     if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) return FALSE;
     if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) return FALSE;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskPmlcdI2c, NULL, TRUE)) return FALSE;	// 1000ms
+    if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskPmlcdI2c, NULL, TRUE)) return FALSE;	// 1000ms
 #endif
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms

@@ -109,7 +109,7 @@ static void _evtDotMatrixShiftFinish(PifId pif_id)
 	pifLog_Printf(LT_INFO, "_DotMatrixEventShiftFinish(%d)", pif_id);
 }
 
-static uint16_t _taskDotMatrixTest(PifTask* p_task)
+static uint32_t _taskDotMatrixTest(PifTask* p_task)
 {
 	static int shift = 0;
 
@@ -163,7 +163,7 @@ BOOL appSetup()
     if (!pifDotMatrix_SetPatternSize(&g_dot_matrix, 1)) return FALSE;
    	if (!pifDotMatrix_AddPattern(&g_dot_matrix, 8, 9 * 8, ucPattern)) return FALSE;
 
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
+	if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
 
 	pifDotMatrix_Start(&g_dot_matrix);
 	return TRUE;

@@ -9,7 +9,7 @@ PifTimer *g_pstPwm = NULL;
 static BOOL s_bStart = FALSE;
 
 
-static uint16_t _taskServoMotor(PifTask *pstTask)
+static uint32_t _taskServoMotor(PifTask *pstTask)
 {
 	static uint16_t duty = 75;						// 75 = 1.5ms / 20ms * 1000
 	static BOOL dir = FALSE;
@@ -42,7 +42,7 @@ static uint16_t _taskServoMotor(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 700, _taskServoMotor, NULL, TRUE)) return FALSE;	// 1000ms
+    if (!pifTaskManager_Add(TM_PERIOD, 700000, _taskServoMotor, NULL, TRUE)) return FALSE;	// 1000ms
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);

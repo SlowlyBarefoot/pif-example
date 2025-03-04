@@ -86,7 +86,7 @@ static int _CmdDraw(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static uint16_t _taskFillScreen(PifTask *pstTask)
+static uint32_t _taskFillScreen(PifTask *pstTask)
 {
 	static int step = 0;
 
@@ -158,7 +158,7 @@ BOOL appSetup()
 	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, p_filter[0], p_filter[1])) { line = __LINE__; goto fail; }
 	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) { line = __LINE__; goto fail; }
 
-	p_task = pifTaskManager_Add(TM_PERIOD_MS, 2000, _taskFillScreen, NULL, FALSE);		// 2000ms
+	p_task = pifTaskManager_Add(TM_PERIOD, 2000000, _taskFillScreen, NULL, FALSE);		// 2000ms
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
 

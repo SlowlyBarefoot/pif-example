@@ -91,7 +91,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return;				// 1ms
 	s_uart_log.act_receive_data = actLogReceiveData;
 	s_uart_log.act_send_data = actLogSendData;
 
@@ -101,7 +101,7 @@ void setup()
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
 
 	if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO, UART_GPS_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD_MS, 1, "UartGPS")) return;				// 1ms
+    if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD, 1000, "UartGPS")) return;				// 1ms
     g_uart_gps.act_receive_data = actGpsReceiveData;
     g_uart_gps.act_send_data = actGpsSendData;
 

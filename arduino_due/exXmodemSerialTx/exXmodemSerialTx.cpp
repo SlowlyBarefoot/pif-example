@@ -74,7 +74,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;				// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return;				// 1ms
 	s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
@@ -83,7 +83,7 @@ void setup()
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
 
 	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_serial, TM_PERIOD_MS, 1, "UartSerial")) return;				// 1ms
+    if (!pifUart_AttachTask(&g_serial, TM_PERIOD, 1000, "UartSerial")) return;				// 1ms
     g_serial.act_receive_data = actXmodemReceiveData;
     g_serial.act_send_data = actXmodemSendData;
 

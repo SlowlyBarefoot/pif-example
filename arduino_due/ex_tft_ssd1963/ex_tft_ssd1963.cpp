@@ -251,7 +251,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) { line = __LINE__; goto fail; }					// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) { line = __LINE__; goto fail; }					// 1ms
 	s_uart_log.act_send_data = actLogSendData;
     s_uart_log.act_receive_data = actLogReceiveData;
 

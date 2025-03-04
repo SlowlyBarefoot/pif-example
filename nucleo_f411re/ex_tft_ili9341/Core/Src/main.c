@@ -424,7 +424,7 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) { line = __LINE__; goto fail; }
-  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) { line = __LINE__; goto fail; }					// 1ms
+  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }					// 1ms
   if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) { line = __LINE__; goto fail; }									// 100%
   if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) { line = __LINE__; goto fail; }
   s_uart_log.act_start_transfer = actLogStartTransfer;

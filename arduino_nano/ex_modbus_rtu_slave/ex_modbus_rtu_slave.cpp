@@ -83,7 +83,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart_modbus, TM_PERIOD_US, 500, "UartModbus")) return;		// 500us
+    if (!pifUart_AttachTask(&g_uart_modbus, TM_PERIOD, 500, "UartModbus")) return;			// 500us
     g_uart_modbus.act_receive_data = actSlaveReceiveData;
     g_uart_modbus.act_send_data = actSlaveSendData;
     g_uart_modbus.act_get_tx_rate = actSlaveGetTxRate;

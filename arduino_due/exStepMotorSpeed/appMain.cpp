@@ -138,7 +138,7 @@ static void _evtError(PifStepMotor *pstOwner)
 	pifLog_Printf(LT_INFO, "EventError(%d) : S=%u P=%u", pstOwner->_id, pstChild->_stage_index, pstOwner->_current_pulse);
 }
 
-static uint16_t _taskInitPos(PifTask *pstTask)
+static uint32_t _taskInitPos(PifTask *pstTask)
 {
 	static uint32_t unTime;
 
@@ -205,10 +205,10 @@ BOOL appSetup()
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
 		g_switch[i].parent.p_issuer = &g_motor;
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], TM_PERIOD_MS, 1, TRUE)) return FALSE;	// 1ms
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], TM_PERIOD, 1000, TRUE)) return FALSE;	// 1ms
     }
 
-    p_task = pifTaskManager_Add(TM_PERIOD_MS, 10, _taskInitPos, NULL, TRUE);						// 10ms
+    p_task = pifTaskManager_Add(TM_PERIOD, 10000, _taskInitPos, NULL, TRUE);						// 10ms
     if (!p_task) return FALSE;
     p_task->name = "InitPos";
 

@@ -22,7 +22,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static uint16_t _taskLedToggle(PifTask *pstTask)
+static uint32_t _taskLedToggle(PifTask *pstTask)
 {
 	static int count = 0;
 	static BOOL sw = LOW;
@@ -38,7 +38,7 @@ static uint16_t _taskLedToggle(PifTask *pstTask)
 	else {
 		switch (s_state) {
 		case 0:
-			pifTask_ChangeMode(s_task, TM_PERIOD_MS, 1);
+			pifTask_ChangeMode(s_task, TM_PERIOD, 1000);
 			s_state++;
 			break;
 
@@ -78,7 +78,7 @@ void setup()
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return;		// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return;		// 1ms
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();

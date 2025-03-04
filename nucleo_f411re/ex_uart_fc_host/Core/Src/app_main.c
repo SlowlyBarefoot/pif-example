@@ -54,7 +54,7 @@ static void _evtLogControlChar(char ch)
 	pifLog_Printf(LT_INFO, "Contorl Char = %x", ch);
 }
 
-static uint16_t _taskSendMessage(PifTask *p_task)
+static uint32_t _taskSendMessage(PifTask *p_task)
 {
 	char message[20];
 	int length, pos = 0, len;
@@ -100,7 +100,7 @@ BOOL appSetup()
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }			// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-	p_task = pifTaskManager_Add(TM_PERIOD_MS, 2, _taskSendMessage, NULL, FALSE);		// 2ms
+	p_task = pifTaskManager_Add(TM_PERIOD, 2000, _taskSendMessage, NULL, FALSE);		// 2ms
 	if (!p_task) { line = __LINE__; goto fail; }
 	return TRUE;
 

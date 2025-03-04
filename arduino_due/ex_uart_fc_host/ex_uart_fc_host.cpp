@@ -109,7 +109,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
@@ -117,7 +117,7 @@ void setup()
 	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
 	if (!pifUart_Init(&g_uart_host, PIF_ID_AUTO, UART_HOST_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_host, TM_PERIOD_MS, 1, "UartHost")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AttachTask(&g_uart_host, TM_PERIOD, 1000, "UartHost")) { line = __LINE__; goto fail; }				// 1ms
     g_uart_host.act_receive_data = actHostReceiveData;
     g_uart_host.act_send_data = actHostSendData;
 

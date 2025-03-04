@@ -77,7 +77,7 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 
 BOOL appSetup()
 {
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10m
+    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10m
 	g_push_switch.parent.evt_change = _evtPushSwitchChange;
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return FALSE;

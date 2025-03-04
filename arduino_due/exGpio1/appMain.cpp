@@ -6,7 +6,7 @@ PifGpio g_gpio_rg;
 PifGpio g_gpio_switch;
 
 
-static uint16_t _taskGpioTest(PifTask *pstTask)
+static uint32_t _taskGpioTest(PifTask *pstTask)
 {
 	static SWITCH swLedL = OFF;
 	static uint8_t ucLedRG = 0;
@@ -25,6 +25,6 @@ static uint16_t _taskGpioTest(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskGpioTest, NULL, TRUE)) return FALSE;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskGpioTest, NULL, TRUE)) return FALSE;	// 500ms
     return TRUE;
 }

@@ -114,7 +114,7 @@ static int _CmdExample(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static uint16_t _taskLvglTimerHandler(PifTask *p_task)
+static uint32_t _taskLvglTimerHandler(PifTask *p_task)
 {
 	(void)p_task;
 
@@ -210,7 +210,7 @@ BOOL appSetup()
     lv_obj_set_style_text_color(label, (lv_color_t)LV_COLOR_MAKE(0, 0, 0), 0);
     lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 
-    p_task = pifTaskManager_Add(TM_PERIOD_MS, 5, _taskLvglTimerHandler, NULL, TRUE);	// 5ms
+    p_task = pifTaskManager_Add(TM_PERIOD, 5000, _taskLvglTimerHandler, NULL, TRUE);	// 5ms
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "LVGL";
     return TRUE;

@@ -112,7 +112,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	pifHcSr04_sigReceiveEcho(&g_hcsr04, s_echo_state);
 }
 
-static uint16_t taskLedToggle(PifTask* p_task)
+static uint32_t taskLedToggle(PifTask* p_task)
 {
 	static BOOL swLed = OFF;
 
@@ -165,7 +165,7 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, NULL)) return -1;						// 1ms
+  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return -1;						// 1ms
   if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return -1;
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
@@ -175,7 +175,7 @@ int main(void)
   if (!pifHcSr04_Init(&g_hcsr04, PIF_ID_AUTO)) return -1;
   g_hcsr04.act_trigger = actHcSr04Trigger;
 
-  if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return -1;				// 500ms
+  if (!pifTaskManager_Add(TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return -1;				// 500ms
 
   if (!appSetup()) return -1;
 

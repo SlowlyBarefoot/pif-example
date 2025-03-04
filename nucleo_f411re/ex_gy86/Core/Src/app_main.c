@@ -24,7 +24,7 @@ static double getAltitude(double pressure, double seaLevelPressure)
     return (44330.0f * (1.0f - pow((double)pressure / (double)seaLevelPressure, 0.1902949f)));
 }
 
-static uint16_t _taskMpu60x0(PifTask *pstTask)
+static uint32_t _taskMpu60x0(PifTask *pstTask)
 {
 	static uint8_t step = 0;
 	float gyro[3], accel[3], mag[3];
@@ -129,7 +129,7 @@ BOOL appSetup()
     s_gy86._mpu6050.temp_scale = 100;
     s_gy86._ms5611._p_task->pause = FALSE;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskMpu60x0, NULL, TRUE)) { line = __LINE__; goto fail; }	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskMpu60x0, NULL, TRUE)) { line = __LINE__; goto fail; }	// 500ms
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }								// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);

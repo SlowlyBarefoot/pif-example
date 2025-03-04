@@ -70,7 +70,7 @@ static void _evtUartParsing(void *p_client, PifActUartReceiveData act_receive_da
 	}
 }
 
-static uint16_t _taskSlowProcess(PifTask *p_task)
+static uint32_t _taskSlowProcess(PifTask *p_task)
 {
 	(void)p_task;
 
@@ -100,7 +100,7 @@ BOOL appSetup()
 
 	pifUart_AttachClient(&g_uart_device, NULL, _evtUartParsing, NULL);
 
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 5, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
+	if (!pifTaskManager_Add(TM_PERIOD, 5000, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
 	return TRUE;
 
 fail:

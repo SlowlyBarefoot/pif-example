@@ -5,7 +5,7 @@ PifPulse g_pulse;
 PifTimerManager g_timer_1ms;
 
 
-static uint16_t _taskPulse(PifTask* p_task)
+static uint32_t _taskPulse(PifTask* p_task)
 {
 	uint16_t period, low_width, high_width;
 
@@ -28,6 +28,6 @@ BOOL appSetup()
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return FALSE;
     pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_COUNT | PIF_PMM_LOW_WIDTH | PIF_PMM_HIGH_WIDTH);
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 20, _taskPulse, NULL, TRUE)) return FALSE;		// 20ms
+    if (!pifTaskManager_Add(TM_PERIOD, 20000, _taskPulse, NULL, TRUE)) return FALSE;		// 20ms
     return TRUE;
 }

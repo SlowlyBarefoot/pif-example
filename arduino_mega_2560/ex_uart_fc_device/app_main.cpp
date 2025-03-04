@@ -100,7 +100,7 @@ BOOL appSetup()
 
 	pifUart_AttachClient(&g_uart_device, NULL, _evtUartParsing, NULL);
 
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 5, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
+	if (!pifTaskManager_Add(TM_PERIOD, 5000, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
 	return TRUE;
 
 fail:

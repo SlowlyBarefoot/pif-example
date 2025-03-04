@@ -79,7 +79,7 @@ void setup()
 	if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, 0, actPushSwitchAcquire)) return;
 
 	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_serial, TM_PERIOD_MS, 1, "UartSerial")) return;				// 1ms
+    if (!pifUart_AttachTask(&g_serial, TM_PERIOD, 1000, "UartSerial")) return;				// 1ms
     g_serial.act_receive_data = actXmodemReceiveData;
     g_serial.act_send_data = actXmodemSendData;
 

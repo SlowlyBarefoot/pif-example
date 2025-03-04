@@ -67,7 +67,7 @@ void setup()
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
 
 	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_serial, TM_PERIOD_MS, 1, NULL)) return;						// 1ms
+    if (!pifUart_AttachTask(&g_serial, TM_PERIOD, 1000, NULL)) return;						// 1ms
     g_serial.act_receive_data = actSerialReceiveData;
     g_serial.act_send_data = actSerialSendData;
 

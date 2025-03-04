@@ -7,7 +7,7 @@ PifTimerManager g_timer_1ms;
 const uint8_t c_ucUserChar[] = { 0x01, 0x08 };
 
 
-static uint16_t _taskFndTest(PifTask *pstTask)
+static uint32_t _taskFndTest(PifTask *pstTask)
 {
 	static int nBlink = 0;
 	static BOOL swBlink = FALSE;
@@ -74,6 +74,6 @@ BOOL appSetup()
     pifFnd_SetUserChar(c_ucUserChar, 2);
     pifFnd_SetPeriodPerDigit(&g_fnd, 20);													// 20ms
 
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 1000, _taskFndTest, NULL, TRUE)) return FALSE;	// 1000ms
+	if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskFndTest, NULL, TRUE)) return FALSE;	// 1000ms
 	return TRUE;
 }

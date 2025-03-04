@@ -14,7 +14,7 @@ static void _evtPulseEdge(PifPulseState state, PifIssuerP p_issuer)
 	pifTask_SetTrigger(p_task);
 }
 
-static uint16_t _taskPulse(PifTask* p_task)
+static uint32_t _taskPulse(PifTask* p_task)
 {
 	uint16_t period, low_width, high_width;
 

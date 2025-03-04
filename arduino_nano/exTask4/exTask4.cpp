@@ -13,7 +13,7 @@
 #define TASK_SIZE				3
 
 
-static uint16_t taskLedToggle(PifTask *pstTask)
+static uint32_t taskLedToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -24,7 +24,7 @@ static uint16_t taskLedToggle(PifTask *pstTask)
 	return 0;
 }
 
-static uint16_t taskLedRedToggle(PifTask *pstTask)
+static uint32_t taskLedRedToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -35,7 +35,7 @@ static uint16_t taskLedRedToggle(PifTask *pstTask)
 	return 0;
 }
 
-static uint16_t taskLedYellowToggle(PifTask *pstTask)
+static uint32_t taskLedYellowToggle(PifTask *pstTask)
 {
 	static BOOL sw = LOW;
 
@@ -65,9 +65,9 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, taskLedToggle, NULL, TRUE)) return;			// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return;			// 500ms
     if (!pifTaskManager_Add(TM_ALWAYS, 100, taskLedRedToggle, NULL, TRUE)) return;			// 100%
-    if (!pifTaskManager_Add(TM_PERIOD_US, 200, taskLedYellowToggle, NULL, TRUE)) return;	// 200us
+    if (!pifTaskManager_Add(TM_PERIOD, 200, taskLedYellowToggle, NULL, TRUE)) return;		// 200us
 }
 
 // The loop function is called in an endless loop

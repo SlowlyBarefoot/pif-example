@@ -31,7 +31,7 @@ static double getAltitude(double pressure, double seaLevelPressure)
     return (44330.0f * (1.0f - pow((double)pressure / (double)seaLevelPressure, 0.1902949f)));
 }
 
-static uint16_t _taskMpu6500(PifTask *pstTask)
+static uint32_t _taskMpu6500(PifTask *pstTask)
 {
 	static uint8_t step = 0;
 	float gyro[3], accel[3];
@@ -126,7 +126,7 @@ BOOL appSetup()
 	if (!pifBmp280_AddTaskForReading(&s_bmp280, 2000, &_evtBaroRead, TRUE)) return FALSE;		// 2sec
 #endif
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskMpu6500, NULL, TRUE)) return FALSE;			// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskMpu6500, NULL, TRUE)) return FALSE;			// 500ms
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);

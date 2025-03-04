@@ -78,18 +78,18 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;			// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return;					// 1ms
+    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return;					// 1ms
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;
 
 	if (!pifUart_Init(&g_uart_ibus, PIF_ID_AUTO, UART_IBUS_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart_ibus, TM_PERIOD_MS, 1, "UartIbus")) return;					// 1ms
+    if (!pifUart_AttachTask(&g_uart_ibus, TM_PERIOD, 1000, "UartIbus")) return;					// 1ms
 	g_uart_ibus.act_receive_data = actSerial1ReceiveData;
 
 	if (!pifUart_Init(&g_uart_spektrum, PIF_ID_AUTO, UART_SPEKTRUM_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart_spektrum, TM_PERIOD_MS, 1, "UartSpektrum")) return;			// 1ms
+    if (!pifUart_AttachTask(&g_uart_spektrum, TM_PERIOD, 1000, "UartSpektrum")) return;			// 1ms
     g_uart_spektrum.act_send_data = actSerial2SendData;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;

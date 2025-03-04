@@ -66,7 +66,7 @@ static uint32_t micros()
     return htim2.Instance->CNT;
 }
 
-static uint16_t _taskLedToggle(PifTask *pstTask)
+static uint32_t _taskLedToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = OFF;

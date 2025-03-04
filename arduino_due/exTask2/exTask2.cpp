@@ -17,7 +17,7 @@
 #define TASK_SIZE				3
 
 
-static uint16_t _taskLedRedToggle(PifTask *pstTask)
+static uint32_t _taskLedRedToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -34,7 +34,7 @@ static uint16_t _taskLedRedToggle(PifTask *pstTask)
     return 0;
 }
 
-static uint16_t _taskLedYellowToggle(PifTask *pstTask)
+static uint32_t _taskLedYellowToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;
@@ -51,7 +51,7 @@ static uint16_t _taskLedYellowToggle(PifTask *pstTask)
     return 0;
 }
 
-static uint16_t _taskLedGreenToggle(PifTask *pstTask)
+static uint32_t _taskLedGreenToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
 	static BOOL sw = LOW;

@@ -108,7 +108,7 @@ static void _evtSequenceError(PifSequence *pstOwner)
 	pifLog_Printf(LT_ERROR, "Sequence Error: %d", pif_error);
 }
 
-static uint16_t _taskSequence(PifTask *pstTask)
+static uint32_t _taskSequence(PifTask *pstTask)
 {
 	(void)pstTask;
 
@@ -152,7 +152,7 @@ BOOL appSetup()
     		s_astSequencePhaseList, NULL)) return FALSE;									// 10ms
     s_sequence.evt_error = _evtSequenceError;
 
-    if (!pifTaskManager_Add(TM_PERIOD_MS, 500, _taskSequence, NULL, TRUE)) return FALSE;	// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskSequence, NULL, TRUE)) return FALSE;	// 500ms
 
     pifSequence_Start(&s_sequence);
     return TRUE;

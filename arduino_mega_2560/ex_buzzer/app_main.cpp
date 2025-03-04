@@ -34,7 +34,7 @@ static void _evtBuzzerFinish(PifId id)
 	pifLog_Printf(LT_INFO, "Buzzer Stop\n");
 }
 
-static uint16_t _taskBuzzer(PifTask *pstTask)
+static uint32_t _taskBuzzer(PifTask *pstTask)
 {
 	static int order = 0, state = 0;
 	uint16_t delay = 10;
@@ -56,13 +56,13 @@ static uint16_t _taskBuzzer(PifTask *pstTask)
 		}
 		break;
 	}
-	return delay;
+	return delay * 1000;
 }
 
 BOOL appSetup()
 {
     g_buzzer.evt_finish = _evtBuzzerFinish;
 
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 10, _taskBuzzer, NULL, TRUE)) return FALSE;		// 10ms
+	if (!pifTaskManager_Add(TM_PERIOD, 10000, _taskBuzzer, NULL, TRUE)) return FALSE;		// 10ms
 	return TRUE;
 }

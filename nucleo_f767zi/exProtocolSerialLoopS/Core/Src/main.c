@@ -289,7 +289,7 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart3.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return -1;					// 1ms
+  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return -1;					// 1ms
   if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return -1;
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
@@ -305,7 +305,7 @@ int main(void)
   }
 
   if (!pifUart_Init(&g_serial1, PIF_ID_AUTO, huart4.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&g_serial1, TM_PERIOD_MS, 1, "UartSerial1")) return -1;				// 1ms
+  if (!pifUart_AttachTask(&g_serial1, TM_PERIOD, 1000, "UartSerial1")) return -1;				// 1ms
   if (!pifUart_AllocRxBuffer(&g_serial1, 64, 10)) return -1;									// 10%
   if (!pifUart_AllocTxBuffer(&g_serial1, 64)) return -1;
   g_serial1.act_start_transfer = actUart1StartTransfer;
@@ -320,7 +320,7 @@ int main(void)
 #endif
 
   if (!pifUart_Init(&g_serial2, PIF_ID_AUTO, huart5.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&g_serial2, TM_PERIOD_MS, 1, "UartSerial2")) return -1;				// 1ms
+  if (!pifUart_AttachTask(&g_serial2, TM_PERIOD, 1000, "UartSerial2")) return -1;				// 1ms
   if (!pifUart_AllocRxBuffer(&g_serial2, 64, 10)) return -1;									// 10%
   if (!pifUart_AllocTxBuffer(&g_serial2, 64)) return -1;
   g_serial2.act_start_transfer = actUart2StartTransfer;

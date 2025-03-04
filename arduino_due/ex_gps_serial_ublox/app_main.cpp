@@ -140,7 +140,7 @@ static BOOL _evtGpsUbxReceive(PifGpsUblox* p_owner, PifGpsUbxPacket* p_packet)
 	return FALSE;
 }
 
-static uint16_t _taskUbloxSetup(PifTask *p_task)
+static uint32_t _taskUbloxSetup(PifTask *p_task)
 {
 	uint32_t baudrates[] = { 115200, 57600, 38400, 19200, 9600 };
     const uint8_t kCfgMsgNmea[][3] = {
@@ -313,7 +313,7 @@ static uint16_t _taskUbloxSetup(PifTask *p_task)
 		}
 		break;
 	}
-    return delay;
+    return delay * 1000;
 }
 
 #endif
@@ -449,7 +449,7 @@ BOOL appSetup(uint32_t baurdate)
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_PERIOD_MS, 100, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
+	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
 #endif
 	return TRUE;
 }

@@ -24,7 +24,7 @@ BOOL appSetup()
 {
 	static PifXmodem s_xmodem;
 
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD_MS, 10, TRUE)) return FALSE;	// 10ms
+    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
 	g_push_switch.parent.evt_change = _evtPushSwitchChange;
 	g_push_switch.parent.p_issuer = &s_xmodem;
 

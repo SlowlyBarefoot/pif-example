@@ -137,7 +137,7 @@ static int _CmdDraw(int argc, char *argv[])
 
 #endif
 
-static uint16_t _taskFillScreen(PifTask *pstTask)
+static uint32_t _taskFillScreen(PifTask *pstTask)
 {
 	static int step = 0;
 
@@ -221,7 +221,7 @@ BOOL appSetup()
 
 	pifIli9341_SetRotation(&g_ili9341.parent, TLR_0_DEGREE);
 
-    p_task = pifTaskManager_Add(TM_PERIOD_MS, 2000, _taskFillScreen, NULL, FALSE);		// 2000ms
+    p_task = pifTaskManager_Add(TM_PERIOD, 2000000, _taskFillScreen, NULL, FALSE);		// 2000ms
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
 

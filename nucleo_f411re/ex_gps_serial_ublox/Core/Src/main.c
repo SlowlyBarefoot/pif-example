@@ -208,7 +208,7 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return -1;					// 1ms
+  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return -1;					// 1ms
   if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) return -1;									// 64bytes, 100%
   if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 128bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
@@ -221,7 +221,7 @@ int main(void)
   if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return -1;
 
   if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO, huart6.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD_MS, 1, "UartGPS")) return -1;					// 1ms
+  if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD, 1000, "UartGPS")) return -1;					// 1ms
   if (!pifUart_AllocRxBuffer(&g_uart_gps, 64, 100)) return -1;									// 256bytes, 100%
   if (!pifUart_AllocTxBuffer(&g_uart_gps, 32)) return -1;										// 32bytes
   g_uart_gps.act_start_transfer = actGpsStartTransfer;
