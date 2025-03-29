@@ -3,16 +3,11 @@
 
 //#define USE_SERIAL
 #define USE_SW_SERIAL
-//#define USE_USART
 
 // Do not remove the include below
 #include <MsTimer2.h>
 #ifdef USE_SW_SERIAL
 #include <SoftwareSerial.h>
-#endif
-
-#ifdef USE_USART
-#include "../usart.h"
 #endif
 
 
@@ -28,9 +23,6 @@
 #endif
 #ifdef USE_SW_SERIAL
 	#define UART_LOG_BAUDRATE	9600
-#endif
-#ifdef USE_USART
-	#define UART_LOG_BAUDRATE	115200
 #endif
 
 
@@ -92,27 +84,6 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 
 #endif
 
-#ifdef USE_USART
-
-static BOOL actLogStartTransfer(PifUart* p_uart)
-{
-	(void)p_uart;
-
-	return USART_StartTransfer();
-}
-
-ISR(USART_UDRE_vect)
-{
-	USART_Send(&s_uart_log);
-}
-
-ISR(USART_RX_vect)
-{
-	USART_Receive(&s_uart_log);
-}
-
-#endif
-
 static void actLedLState(PifId usPifId, uint32_t unState)
 {
 	static uint32_t state;
@@ -146,14 +117,8 @@ void setup()
 #ifdef USE_SW_SERIAL
 	sw_serial.begin(UART_LOG_BAUDRATE);
 #endif
-#ifdef USE_USART
-	USART_Init(UART_LOG_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
 
-	// Enable Global Interrupts
-	sei();
-#endif
-
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
@@ -161,15 +126,8 @@ void setup()
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return;					// 1ms
-#if defined(USE_SERIAL) || defined(USE_SW_SERIAL)
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
-#endif
-#ifdef USE_USART
-	if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) return;								// 100%
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return;
-	s_uart_log.act_start_transfer = actLogStartTransfer;
-#endif
 
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;

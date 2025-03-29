@@ -4,13 +4,6 @@
 #include "exLed1.h"
 #include "appMain.h"
 
-//#define USE_SERIAL
-#define USE_USART
-
-#ifdef USE_USART
-#include "../usart.h"
-#endif
-
 
 #define PIN_LED_L				13
 #define PIN_LED_RED				2
@@ -26,32 +19,12 @@
 static PifUart s_uart_log;
 
 
-#ifdef USE_SERIAL
-
 static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
 {
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
 }
-
-#endif
-
-#ifdef USE_USART
-
-static BOOL actLogStartTransfer(PifUart* p_uart)
-{
-	(void)p_uart;
-
-	return USART_StartTransfer();
-}
-
-ISR(USART_UDRE_vect)
-{
-	USART_Send(&s_uart_log);
-}
-
-#endif
 
 static void actLedLState(PifId usPifId, uint32_t unState)
 {
@@ -87,17 +60,9 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-#ifdef USE_SERIAL
 	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
-#endif
-#ifdef USE_USART
-	USART_Init(UART_LOG_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, FALSE);
 
-	// Enable Global Interrupts
-	sei();
-#endif
-
-    pif_Init(micros);
+    pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
@@ -105,13 +70,7 @@ void setup()
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return;					// 1ms
-#ifdef USE_SERIAL
     s_uart_log.act_send_data = actLogSendData;
-#endif
-#ifdef USE_USART
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return;
-	s_uart_log.act_start_transfer = actLogStartTransfer;
-#endif
 
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) return;

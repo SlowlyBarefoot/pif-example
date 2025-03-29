@@ -37,11 +37,11 @@ void setup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-	if (!pifTaskManager_Add(TM_RATIO, 50, _taskLedToggle, NULL, TRUE)) return;	// 50%
+	if (!pifTaskManager_Add(TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) return;	// 50us
 }
 
 // The loop function is called in an endless loop

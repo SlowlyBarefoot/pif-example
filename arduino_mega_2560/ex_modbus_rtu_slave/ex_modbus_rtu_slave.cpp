@@ -158,7 +158,7 @@ void setup()
 	USART_Init(1, UART_MODBUS_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
 #endif
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 

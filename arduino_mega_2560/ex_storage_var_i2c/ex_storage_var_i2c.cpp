@@ -155,7 +155,7 @@ void setup()
 	I2C_Init(I2C_CLOCK_100KHz);
 #endif
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

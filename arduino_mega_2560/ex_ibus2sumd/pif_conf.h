@@ -8,7 +8,7 @@
 
 // -------- pif Configuration --------------------
 
-//#define PIF_DEBUG
+#define PIF_DEBUG
 
 //#define PIF_INLINE
 #define PIF_INLINE                      	inline
@@ -56,7 +56,7 @@
 
 // -------- pifTask ------------------------------
 
-//#define PIF_TASK_TABLE_SIZE				32
+//#define PIF_USE_TASK_STATISTICS
 
 // -------- pifTimer -----------------------------
 

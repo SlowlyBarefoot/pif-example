@@ -71,7 +71,7 @@ void setup()
 
     attachInterrupt(0, _isrUltrasonicEcho, CHANGE);		// 0 : PIN_ECHO
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

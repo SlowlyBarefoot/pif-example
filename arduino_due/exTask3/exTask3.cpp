@@ -36,7 +36,7 @@ static uint32_t _taskLedRedToggle(PifTask *pstTask)
 			s_pstTask[1]->pause = FALSE;
 		}
 
-		nCount = 9999;
+		nCount = 99;
     }
     else nCount--;
     return 0;
@@ -58,7 +58,7 @@ static uint32_t _taskLedYellowToggle(PifTask *pstTask)
 			s_pstTask[2]->pause = FALSE;
 		}
 
-		nCount = 9999;
+		nCount = 99;
     }
     else nCount--;
     return 0;
@@ -80,7 +80,7 @@ static uint32_t _taskLedGreenToggle(PifTask *pstTask)
 			s_pstTask[0]->pause = FALSE;
 		}
 
-		nCount = 9999;
+		nCount = 99;
     }
     else nCount--;
     return 0;
@@ -93,17 +93,17 @@ void setup()
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_LED_GREEN, OUTPUT);
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    s_pstTask[0] = pifTaskManager_Add(TM_RATIO, 30, _taskLedRedToggle, NULL, TRUE);		// 30%
+    s_pstTask[0] = pifTaskManager_Add(TM_PERIOD, 200, _taskLedRedToggle, NULL, TRUE);		// 200us
     if (!s_pstTask[0]) return;
 
-    s_pstTask[1] = pifTaskManager_Add(TM_RATIO, 60, _taskLedYellowToggle, NULL, FALSE);	// 60%
+    s_pstTask[1] = pifTaskManager_Add(TM_PERIOD, 1000, _taskLedYellowToggle, NULL, FALSE);	// 1ms
     if (!s_pstTask[1]) return;
 
-    s_pstTask[2] = pifTaskManager_Add(TM_ALWAYS, 100, _taskLedGreenToggle, NULL, FALSE);	// 100%
+    s_pstTask[2] = pifTaskManager_Add(TM_ALWAYS, 0, _taskLedGreenToggle, NULL, FALSE);
     if (!s_pstTask[2]) return;
 }
 

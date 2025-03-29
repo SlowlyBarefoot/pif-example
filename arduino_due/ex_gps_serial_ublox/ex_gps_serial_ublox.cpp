@@ -9,7 +9,7 @@
 #define TIMER_1MS_SIZE			2
 
 #define UART_LOG_BAUDRATE		115200
-#define UART_GPS_BAUDRATE			9600
+#define UART_GPS_BAUDRATE		9600
 
 
 static void actLedLState(PifId usPifId, uint32_t unState)
@@ -89,7 +89,7 @@ void setup()
 	Serial.begin(UART_LOG_BAUDRATE);
 	Serial2.begin(UART_GPS_BAUDRATE);
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

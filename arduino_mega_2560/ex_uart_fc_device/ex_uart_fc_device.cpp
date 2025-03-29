@@ -5,14 +5,6 @@
 #include <MsTimer2.h>
 
 
-//#define USE_SERIAL
-#define USE_USART
-
-#ifdef USE_USART
-#include "../usart.h"
-#endif
-
-
 #define PIN_LED_L				13
 #define PIN_UART_RTS			24
 #define PIN_UART_DTR			25
@@ -26,8 +18,6 @@
 
 static PifUart s_uart_log;
 
-
-#ifdef USE_SERIAL
 
 static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
 {
@@ -78,46 +68,6 @@ static uint8_t actDeviceGetRxRate(PifUart *p_uart)
 	return 100 * Serial1.available() / SERIAL_RX_BUFFER_SIZE;
 }
 
-#endif
-
-#ifdef USE_USART
-
-static BOOL actLogStartTransfer(PifUart *p_uart)
-{
-	(void)p_uart;
-
-	return USART_StartTransfer(0);
-}
-
-ISR(USART0_UDRE_vect)
-{
-	USART_Send(0, &s_uart_log);
-}
-
-ISR(USART0_RX_vect)
-{
-	USART_Receive(0, &s_uart_log);
-}
-
-static BOOL actDeviceStartTransfer(PifUart *p_uart)
-{
-	(void)p_uart;
-
-	return USART_StartTransfer(1);
-}
-
-ISR(USART1_UDRE_vect)
-{
-	USART_Send(1, &g_uart_device);
-}
-
-ISR(USART1_RX_vect)
-{
-	USART_Receive(1, &g_uart_device);
-}
-
-#endif
-
 static void actUartRxFlowState(PifUart *p_uart, SWITCH state)
 {
 	digitalWrite(PIN_UART_RTS, state ? 0 : 1);
@@ -149,16 +99,10 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-#ifdef USE_SERIAL
 	Serial.begin(UART_LOG_BAUDRATE);
 	Serial1.begin(UART_DEVICE_BAUDRATE);
-#endif
-#ifdef USE_USART
-	USART_Init(0, UART_LOG_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
-	USART_Init(1, UART_DEVICE_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
-#endif
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 
@@ -166,31 +110,17 @@ void setup()
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
-#ifdef USE_SERIAL
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
-#endif
-#ifdef USE_USART
-	if (!pifUart_AllocRxBuffer(&s_uart_log, 32, 50)) { line = __LINE__; goto fail; }								// 50%
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) { line = __LINE__; goto fail; }
-	s_uart_log.act_start_transfer = actLogStartTransfer;
-#endif
 
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
 
 	if (!pifUart_Init(&g_uart_device, PIF_ID_AUTO, UART_DEVICE_BAUDRATE)) { line = __LINE__; goto fail; }
     if (!pifUart_AttachTask(&g_uart_device, TM_PERIOD, 1000, "UartDevice")) { line = __LINE__; goto fail; }			// 1ms
-#ifdef USE_SERIAL
     g_uart_device.act_receive_data = actDeviceReceiveData;
     g_uart_device.act_send_data = actDeviceSendData;
     g_uart_device.act_get_rx_rate = actDeviceGetRxRate;
-#endif
-#ifdef USE_USART
-	if (!pifUart_AllocRxBuffer(&g_uart_device, 64, 50)) { line = __LINE__; goto fail; }								// 50%
-	if (!pifUart_AllocTxBuffer(&g_uart_device, 16)) { line = __LINE__; goto fail; }
-	g_uart_device.act_start_transfer = actDeviceStartTransfer;
-#endif
     g_uart_device.act_rx_flow_state = actUartRxFlowState;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }

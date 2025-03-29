@@ -73,7 +73,7 @@ void setup()
 
 	Timer3.attachInterrupt(timer_100us).start(100);
 
-    pif_Init(micros);
+    pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 

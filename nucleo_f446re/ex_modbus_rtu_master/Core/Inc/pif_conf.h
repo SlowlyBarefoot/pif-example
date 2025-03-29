@@ -82,7 +82,7 @@
 
 // -------- pifTask ------------------------------
 
-//#define PIF_TASK_TABLE_SIZE				32
+//#define PIF_USE_TASK_STATISTICS
 
 
 // -------- pifTimer -----------------------------

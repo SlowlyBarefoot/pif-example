@@ -148,7 +148,7 @@ int main(void)
 
   if (!pifTaskManager_Init(TASK_SIZE)) return -1;
 
-  if (!pifTaskManager_Add(TM_RATIO, 50, _taskLedToggle, NULL, TRUE)) return -1;		// 50%
+  if (!pifTaskManager_Add(TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) return -1;		// 50us
 
   /* USER CODE END 2 */
 

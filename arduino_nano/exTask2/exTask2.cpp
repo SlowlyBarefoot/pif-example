@@ -14,7 +14,7 @@
 #define PIN_LED_YELLOW			3
 #define PIN_LED_GREEN			4
 
-#define TASK_SIZE				3
+#define TASK_SIZE				4
 
 
 static uint32_t _taskLedRedToggle(PifTask *pstTask)
@@ -28,7 +28,7 @@ static uint32_t _taskLedRedToggle(PifTask *pstTask)
     	digitalWrite(PIN_LED_RED, sw);
 		sw ^= 1;
 
-		nCount = 9999;
+		nCount = 99;
     }
     else nCount--;
     return 0;
@@ -45,7 +45,7 @@ static uint32_t _taskLedYellowToggle(PifTask *pstTask)
     	digitalWrite(PIN_LED_YELLOW, sw);
 		sw ^= 1;
 
-		nCount = 9999;
+		nCount = 99;
     }
     else nCount--;
     return 0;
@@ -62,7 +62,7 @@ static uint32_t _taskLedGreenToggle(PifTask *pstTask)
     	digitalWrite(PIN_LED_GREEN, sw);
 		sw ^= 1;
 
-		nCount = 9999;
+		nCount = 99;
     }
     else nCount--;
     return 0;
@@ -75,13 +75,13 @@ void setup()
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_LED_GREEN, OUTPUT);
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTaskManager_Add(TM_RATIO, 30, _taskLedRedToggle, NULL, TRUE)) return;		// 30%
-    if (!pifTaskManager_Add(TM_RATIO, 60, _taskLedYellowToggle, NULL, TRUE)) return;	// 60%
-    if (!pifTaskManager_Add(TM_ALWAYS, 100, _taskLedGreenToggle, NULL, TRUE)) return;	// 100%
+    if (!pifTaskManager_Add(TM_PERIOD, 500, _taskLedRedToggle, NULL, TRUE)) return;		// 500us
+    if (!pifTaskManager_Add(TM_PERIOD, 2000, _taskLedYellowToggle, NULL, TRUE)) return;	// 2ms
+    if (!pifTaskManager_Add(TM_ALWAYS, 0, _taskLedGreenToggle, NULL, TRUE)) return;
 }
 
 // The loop function is called in an endless loop

@@ -100,7 +100,7 @@ void setup()
 	Serial.begin(UART_LOG_BAUDRATE);
 	Serial1.begin(UART_DEVICE_BAUDRATE);
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
     if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 
