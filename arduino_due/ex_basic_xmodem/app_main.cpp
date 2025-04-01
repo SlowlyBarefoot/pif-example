@@ -71,7 +71,7 @@ static int _basicProcess2(int count, int* p_params)
 static int _cmdBasicDownload(int argc, char* argv[])
 {
 	s_change_uart = CHANGE_UART_LOG_TO_XMODEM;
-	pifTask_SetTrigger(s_task);
+	pifTask_SetTrigger(s_task, 0);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
@@ -169,7 +169,7 @@ static void _evtXmodemRxReceive(uint8_t code, PifXmodemPacket* p_packet)
 		}
 
 		s_change_uart = CHANGE_UART_XMODEM_TO_LOG;
-		pifTask_SetTrigger(s_task);
+		pifTask_SetTrigger(s_task, 0);
 	}
 }
 

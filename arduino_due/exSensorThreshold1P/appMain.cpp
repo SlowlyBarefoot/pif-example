@@ -31,6 +31,6 @@ BOOL appSetup()
     g_sensor.p_filter = pifNoiseFilterInt16_AddAverage(&s_filter, 7);
 	if (!g_sensor.p_filter) return FALSE;
 #endif
-    g_sensor.parent.evt_change = _evtSensorThreshold;
+    pifSensor_AttachEvtChange(&g_sensor.parent, _evtSensorThreshold, NULL);
     return TRUE;
 }

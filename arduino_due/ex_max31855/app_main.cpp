@@ -20,9 +20,9 @@ BOOL appSetup()
 	static PifMax31855 s_max31855;
 
     if (!pifMax31855_Init(&s_max31855, PIF_ID_AUTO, &g_spi_port, NULL)) return FALSE;
-    if (!pifMax31855_StartMeasurement(&s_max31855, 500, _evtMax31855Measure)) return FALSE;	// 500ms
+    if (!pifMax31855_StartMeasurement(&s_max31855, 500, _evtMax31855Measure, NULL)) return FALSE;	// 500ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

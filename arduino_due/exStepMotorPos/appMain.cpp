@@ -288,7 +288,6 @@ BOOL appSetup()
     pifStepMotorPos_AddStages(&g_motor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-	    g_switch[i].parent.p_issuer = &g_motor;
 	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], TM_PERIOD, 1000, TRUE)) return FALSE;	// 1ms
     }
 

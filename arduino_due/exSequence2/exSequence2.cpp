@@ -10,9 +10,6 @@
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
 
-#define TASK_SIZE				6
-#define TIMER_1MS_SIZE			4
-
 #define UART_LOG_BAUDRATE		115200
 
 
@@ -96,12 +93,6 @@ void setup()
     }
 
 	if (!appSetup()) return;
-
-	pifLog_Print(LT_NONE, "\n\n****************************************\n");
-	pifLog_Print(LT_NONE, "***            exSequence2           ***\n");
-	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
-	pifLog_Print(LT_NONE, "****************************************\n");
-	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

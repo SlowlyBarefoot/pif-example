@@ -27,9 +27,9 @@ static void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValue
 BOOL appSetup()
 {
     if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD, 1000, TRUE)) return FALSE;	// 1ms
-    g_push_switch.parent.evt_change = evtPushSwitchChange;
+    pifSensor_AttachEvtChange(&g_push_switch.parent, evtPushSwitchChange, NULL);
 
 	if (!pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, TM_PERIOD, 1000, TRUE)) return FALSE;	// 1ms
-	g_tilt_switch.parent.evt_change = evtTiltSwitchChange;
+	pifSensor_AttachEvtChange(&g_tilt_switch.parent, evtTiltSwitchChange, NULL);
 	return TRUE;
 }

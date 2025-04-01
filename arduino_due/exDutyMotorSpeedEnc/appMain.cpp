@@ -200,7 +200,6 @@ BOOL appSetup()
     pifPidControl_Init(pifDutyMotorSpeedEnc_GetPidControl(&g_motor), 0.1, 0, 0, 100);
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-    	g_switch[i].parent.p_issuer = &g_motor;
 	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], TM_PERIOD, 1000, TRUE)) return FALSE;		// 1ms
     }
 

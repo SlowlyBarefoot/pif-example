@@ -5,9 +5,6 @@
 
 #define PIN_LED_L				13
 
-#define TASK_SIZE				5
-#define TIMER_1MS_SIZE			1
-
 #define UART_LOG_BAUDRATE		115200
 
 
@@ -63,12 +60,6 @@ void setup()
 	if (!pifTaskManager_Add(TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return;			// 500ms
 
 	if (!appSetup()) return;
-
-	pifLog_Print(LT_NONE, "\n\n****************************************\n");
-	pifLog_Print(LT_NONE, "***            exSequence1           ***\n");
-	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
-	pifLog_Print(LT_NONE, "****************************************\n");
-	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 }
 
 // The loop function is called in an endless loop

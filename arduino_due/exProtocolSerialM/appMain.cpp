@@ -132,7 +132,7 @@ BOOL appSetup()
     if (!pifNoiseFilterManager_Init(&stPushSwitchFilter, SWITCH_COUNT)) return FALSE;
     for (i = 0; i < SWITCH_COUNT; i++) {
 	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stProtocolTest[i].stPushSwitch, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
-		g_stProtocolTest[i].stPushSwitch.parent.evt_change = _evtPushSwitchChange;
+		pifSensor_AttachEvtChange(&g_stProtocolTest[i].stPushSwitch.parent, _evtPushSwitchChange, NULL);
 		g_stProtocolTest[i].stPushSwitch.p_filter = pifNoiseFilterBit_AddCount(&stPushSwitchFilter, 7);
 	    if (!g_stProtocolTest[i].stPushSwitch.p_filter) return FALSE;
     	g_stProtocolTest[i].ucDataCount = 0;

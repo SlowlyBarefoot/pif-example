@@ -32,11 +32,11 @@ BOOL appSetup()
 {
     if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
     if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD, 1000, TRUE)) return FALSE;	// 1ms
-    g_push_switch.parent.evt_change = evtPushSwitchChange;
+    pifSensor_AttachEvtChange(&g_push_switch.parent, evtPushSwitchChange, NULL);
 
 	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
 	if (!pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, TM_PERIOD, 1000, TRUE)) return FALSE;	// 1ms
-	g_tilt_switch.parent.evt_change = evtTiltSwitchChange;
+	pifSensor_AttachEvtChange(&g_tilt_switch.parent, evtTiltSwitchChange, NULL);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);

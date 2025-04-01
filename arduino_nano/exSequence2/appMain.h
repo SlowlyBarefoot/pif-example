@@ -8,6 +8,9 @@
 #include "sensor/pif_sensor_switch.h"
 
 
+#define TASK_SIZE				7
+#define TIMER_1MS_SIZE			2
+
 #define SEQUENCE_COUNT          2
 
 #define PIF_ID_LED				0x100
@@ -18,7 +21,6 @@
 typedef struct {
 	PifSensorSwitch stPushSwitch;
 	PifSequence stSequence;
-	BOOL bSequenceParam;
 } SequenceTest;
 
 

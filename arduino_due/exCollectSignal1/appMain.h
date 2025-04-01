@@ -21,7 +21,6 @@
 typedef struct {
 	PifSensorSwitch stPushSwitch;
 	PifSequence stSequence;
-	BOOL bSequenceParam;
 } TestStruct;
 
 

@@ -6,6 +6,10 @@
 #include "core/pif_timer.h"
 
 
+#define TASK_SIZE				6
+#define TIMER_1MS_SIZE			1
+
+
 extern PifTimerManager g_timer_1ms;
 
 
