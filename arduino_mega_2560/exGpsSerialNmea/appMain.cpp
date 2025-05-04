@@ -76,7 +76,7 @@ static BOOL _evtGpsNmeaReceive(PifGps *pstOwner, PifGpsNmeaMsgId msg_id)
 {
 	(void)pstOwner;
 
-	return msg_id == PIF_GPS_NMEA_MSG_ID_GGA;
+	return msg_id == PIF_GPS_NMEA_MSG_ID_GLL;
 }
 
 static void _evtGpsReceive(PifGps *pstOwner)
@@ -115,7 +115,7 @@ static void _evtGpsReceive(PifGps *pstOwner)
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;	// 32bytes
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return FALSE;
 	pifGpsNmea_AttachUart(&s_gps_nmea, &g_uart_gps);
@@ -123,7 +123,7 @@ BOOL appSetup()
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;				// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;					// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

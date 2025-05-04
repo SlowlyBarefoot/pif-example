@@ -83,11 +83,11 @@ void setup()
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return;			// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) return;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return;								// 256bytes
 
 	s_task_period = pifTaskManager_Add(TM_PERIOD, 500000, _taskPeriod, NULL, TRUE);	// 500ms
 	if (!s_task_period) return;

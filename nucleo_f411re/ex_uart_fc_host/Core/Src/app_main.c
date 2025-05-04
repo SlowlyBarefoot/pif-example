@@ -60,12 +60,14 @@ static uint32_t _taskSendMessage(PifTask *p_task)
 	int length, pos = 0, len;
 	static int s_step = 1;
 
-	pifLog_Printf(LT_INFO, "%d", s_step);
+	pifLog_Printf(LT_INFO, "L:%d", s_step);
 	sprintf(message, "%d:abcdefghijk\r\n", s_step);
 	length = strlen(message);
 	while (1) {
-		len = pifUart_SendTxData(&g_uart_host, (uint8_t *)message + pos, length - pos);
-		if (pos + len < length) pos += len; else break;
+		if (g_uart_host._fc_state) {
+			len = pifUart_SendTxData(&g_uart_host, (uint8_t *)message + pos, length - pos);
+			if (pos + len < length) pos += len; else break;
+		}
 		pifTaskManager_Yield();
 	}
 
@@ -92,15 +94,15 @@ BOOL appSetup()
 {
 	int line;
 
-	if (!pifLog_UseCommand(c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }
+	if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
 	pifLog_AttachEvent(_evtLogControlChar);
 
-	g_uart_host._p_task->pause = FALSE;
+	g_uart_host._p_rx_task->pause = FALSE;
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }			// 500ms
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-	p_task = pifTaskManager_Add(TM_PERIOD, 2000, _taskSendMessage, NULL, FALSE);		// 2ms
+	p_task = pifTaskManager_Add(TM_PERIOD, 10000, _taskSendMessage, NULL, FALSE);			// 3ms
 	if (!p_task) { line = __LINE__; goto fail; }
 	return TRUE;
 

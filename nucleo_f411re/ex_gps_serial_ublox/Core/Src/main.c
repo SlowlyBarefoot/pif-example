@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				5
+#define TASK_SIZE				8
 #define TIMER_1MS_SIZE			2
 
 /* USER CODE END PD */
@@ -208,22 +208,24 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return -1;					// 1ms
-  if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) return -1;									// 64bytes, 100%
+  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) return -1;
+  if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return -1;			// 200ms
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return -1;										// 64bytes
   if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 128bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&s_uart_log)) return -1;
+  if (!pifLog_AttachUart(&s_uart_log, 128)) return -1;											// 128bytes
 
   if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return -1;
 
   if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO, huart6.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD, 1000, "UartGPS")) return -1;					// 1ms
-  if (!pifUart_AllocRxBuffer(&g_uart_gps, 64, 100)) return -1;									// 256bytes, 100%
-  if (!pifUart_AllocTxBuffer(&g_uart_gps, 32)) return -1;										// 32bytes
+  if (!pifUart_AttachTxTask(&g_uart_gps, TM_EXTERNAL_ORDER, 0, "UartTxGPS")) return -1;
+  if (!pifUart_AttachRxTask(&g_uart_gps, TM_PERIOD, 100000, "UartRxGPS")) return -1;			// 100ms
+  if (!pifUart_AllocRxBuffer(&g_uart_gps, 128)) return -1;										// 128bytes
+  if (!pifUart_AllocTxBuffer(&g_uart_gps, 64)) return -1;										// 64bytes
   g_uart_gps.act_start_transfer = actGpsStartTransfer;
   g_uart_gps.act_set_baudrate = actGpsSetBaudrate;
 
@@ -416,6 +418,8 @@ static void MX_USART6_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -439,6 +443,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

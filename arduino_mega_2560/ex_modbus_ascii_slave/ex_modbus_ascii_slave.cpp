@@ -8,7 +8,7 @@
 #define PIN_DIRECTION			10
 #define PIN_LED_L				13
 
-#define TASK_SIZE				5
+#define TASK_SIZE				7
 #define TIMER_1MS_SIZE			3
 
 #define UART_LOG_BAUDRATE		115200
@@ -109,15 +109,17 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }			// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
+	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
 
 	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_modbus, TM_PERIOD, 500, "UartModbus")) { line = __LINE__; goto fail; }			// 500us
+    if (!pifUart_AttachTxTask(&g_uart_modbus, TM_EXTERNAL_ORDER, 0, "UartTxModbus")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&g_uart_modbus, TM_PERIOD, 5000, "UartRxModbus")) { line = __LINE__; goto fail; }		// 5ms
     g_uart_modbus.act_receive_data = actSlaveReceiveData;
     g_uart_modbus.act_send_data = actSlaveSendData;
     g_uart_modbus.act_get_tx_rate = actSlaveGetTxRate;

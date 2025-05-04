@@ -45,16 +45,16 @@ static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t i
 {
 	int i;
 
-	Wire1.beginTransmission(p_owner->addr);
+	Wire.beginTransmission(p_owner->addr);
 	if (isize > 0) {
 		for (i = isize - 1; i >= 0; i--) {
-			Wire1.write((iaddr >> (i * 8)) & 0xFF);
+			Wire.write((iaddr >> (i * 8)) & 0xFF);
 		}
 	}
     for (i = 0; i < (int)size; i++) {
-    	Wire1.write(p_data[i]);
+    	Wire.write(p_data[i]);
     }
-    if (Wire1.endTransmission() != 0) {
+    if (Wire.endTransmission() != 0) {
 		pif_error = E_TRANSFER_FAILED;
 		return IR_ERROR;
 	}
@@ -67,24 +67,24 @@ static PifI2cReturn actI2cRead(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t is
 	uint8_t count;
 
 	if (isize > 0) {
-		Wire1.beginTransmission(p_owner->addr);
+		Wire.beginTransmission(p_owner->addr);
 		for (i = isize - 1; i >= 0; i--) {
-			Wire1.write((iaddr >> (i * 8)) & 0xFF);
+			Wire.write((iaddr >> (i * 8)) & 0xFF);
 		}
-	    if (Wire1.endTransmission() != 0) {
+	    if (Wire.endTransmission() != 0) {
 			pif_error = E_TRANSFER_FAILED;
 			return IR_ERROR;
 		}
 	}
 
-    count = Wire1.requestFrom(p_owner->addr, (uint8_t)size);
+    count = Wire.requestFrom(p_owner->addr, (uint8_t)size);
     if (count < size) {
 		pif_error = E_TRANSFER_FAILED;
 		return IR_ERROR;
 	}
 
     for (i = 0; i < (int)size; i++) {
-    	p_data[i] = Wire1.read();
+    	p_data[i] = Wire.read();
     }
     return IR_COMPLETE;
 }
@@ -107,8 +107,8 @@ void setup()
 
 	Serial.begin(UART_LOG_BAUDRATE);
 
-	Wire1.begin();
-//	Wire1.setClock(400000);
+	Wire.begin();
+//	Wire.setClock(400000);
 
 	pif_Init((PifActTimer1us)micros);
 
@@ -117,12 +117,13 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return;				// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) return;
+    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return;			// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return;										// 256bytes
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
 

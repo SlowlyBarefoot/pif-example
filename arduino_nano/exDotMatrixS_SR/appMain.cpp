@@ -18,7 +18,7 @@ const uint8_t font8x8_basic[10][8] = {
 };
 
 
-static uint16_t _taskDotMatrixTest(PifTask* p_task)
+static uint32_t _taskDotMatrixTest(PifTask* p_task)
 {
 	static int blink = 0;
 	static int index = 0;

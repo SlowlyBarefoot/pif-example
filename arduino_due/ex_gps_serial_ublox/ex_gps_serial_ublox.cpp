@@ -5,7 +5,7 @@
 
 #define PIN_LED_L				13
 
-#define TASK_SIZE				5
+#define TASK_SIZE				8
 #define TIMER_1MS_SIZE			2
 
 #define UART_LOG_BAUDRATE		115200
@@ -42,9 +42,9 @@ static uint16_t actLogReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t si
 
 static BOOL actGpsSetBaudrate(PifUart *p_owner, uint32_t baudrate)
 {
-	Serial2.end();
+	Serial1.end();
 	pifUart_AbortRx(p_owner);
-	Serial2.begin(baudrate);
+	Serial1.begin(baudrate);
 	return TRUE;
 }
 
@@ -52,7 +52,7 @@ static uint16_t actGpsSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t u
 {
 	(void)pstOwner;
 
-    return Serial2.write((char *)pucBuffer, usSize);
+    return Serial1.write((char *)pucBuffer, usSize);
 }
 
 static uint16_t actGpsReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t size)
@@ -62,7 +62,7 @@ static uint16_t actGpsReceiveData(PifUart *p_owner, uint8_t *p_data, uint16_t si
 	(void)p_owner;
 
 	for (i = 0; i < size; i++) {
-		data = Serial2.read();
+		data = Serial1.read();
 		if (data < 0) break;
 		p_data[i] = data;
 		if (g_print_data == 2) Serial.write(data);
@@ -87,7 +87,7 @@ void setup()
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(UART_LOG_BAUDRATE);
-	Serial2.begin(UART_GPS_BAUDRATE);
+	Serial1.begin(UART_GPS_BAUDRATE);
 
 	pif_Init((PifActTimer1us)micros);
 
@@ -96,22 +96,23 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 10000, "UartLog")) return;			// 10ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) return;
+    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return;		// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return;									// 256bytes
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
 
 	if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO, UART_GPS_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD, 10000, "UartGPS")) return;			// 10ms
+    if (!pifUart_AttachTxTask(&g_uart_gps, TM_EXTERNAL_ORDER, 0, "UartTxGPS")) return;
+    if (!pifUart_AttachRxTask(&g_uart_gps, TM_PERIOD, 10000, "UartRxGPS")) return;		// 10ms
     g_uart_gps.act_receive_data = actGpsReceiveData;
     g_uart_gps.act_send_data = actGpsSendData;
     g_uart_gps.act_set_baudrate = actGpsSetBaudrate;
 
-//    if (!appSetup(9600)) return;
     if (!appSetup(57600)) return;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

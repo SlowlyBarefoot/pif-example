@@ -12,19 +12,36 @@ PifUart g_uart_spektrum;
 static PifRcIbus s_ibus;
 static PifRcSpektrum s_spektrum;
 
+static uint16_t s_channel[PIF_SPEKTRUM_CHANNEL_COUNT];
+
 
 static void _evtIbusReceive(PifRc* p_parent, uint16_t* p_channel, PifIssuerP p_issuer)
 {
 	int i;
-	uint16_t channel[PIF_SPEKTRUM_CHANNEL_COUNT];
+	static int step = 0;
 
 	(void)p_parent;
 	(void)p_issuer;
 
 	for (i = 0; i < PIF_SPEKTRUM_CHANNEL_COUNT; i++) {
-		channel[i] = (p_channel[i] - 988) * s_spektrum._pos_factor;
+		s_channel[i] = (p_channel[i] - 988) * s_spektrum._pos_factor;
 	}
-	pifRcSpektrum_SendFrame(&s_spektrum, channel, PIF_SPEKTRUM_CHANNEL_COUNT);
+	if (step) step--;
+	else {
+		for (i = 0; i < PIF_SPEKTRUM_CHANNEL_COUNT; i++) {
+			pifLog_Printf(LT_NONE, "%4d:%4d ", p_channel[i], s_channel[i]);
+		}
+		pifLog_Printf(LT_NONE, "\n");
+		step = 60;
+	}
+}
+
+static uint32_t _taskSpektrum(PifTask *p_task)
+{
+	PifRcSpektrum *p_spektrum = (PifRcSpektrum *)p_task->_p_client;
+
+	pifRcSpektrum_SendFrame(p_spektrum, s_channel, PIF_SPEKTRUM_CHANNEL_COUNT);
+	return 0;
 }
 
 BOOL appSetup()
@@ -37,7 +54,9 @@ BOOL appSetup()
 	if (!pifRcSpektrum_Init(&s_spektrum, PIF_ID_AUTO, PIF_SPEKTRUM_PROTOCOL_ID_22MS_1024_DSM2)) return FALSE;
 	pifRcSpektrum_AttachUart(&s_spektrum, &g_uart_spektrum);
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;				// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD, 7500, _taskSpektrum, &s_spektrum, TRUE)) return FALSE;	// 7.5ms
+
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

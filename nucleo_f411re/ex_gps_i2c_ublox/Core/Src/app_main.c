@@ -332,13 +332,13 @@ static int _cmdPollRequest(int argc, char *argv[])
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;								// 32bytes
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
-	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &g_i2c_port, 0x42, NULL, 500, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
+	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &g_i2c_port, 0x42, NULL, 50, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 50ms
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;

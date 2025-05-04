@@ -93,7 +93,7 @@ BOOL appSetup()
 {
 	if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return FALSE;
     pifXmodem_AttachUart(&s_xmodem, &g_serial);
-    pifXmodem_AttachEvtTxReceive(&s_xmodem, _evtXmodemTxReceive);
+    pifXmodem_AttachEvtTx(&s_xmodem, _evtXmodemTxReceive, NULL);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;						// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);

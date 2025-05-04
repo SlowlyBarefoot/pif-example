@@ -208,7 +208,7 @@ static int _CmdDump(int argc, char *argv[])
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;		// 32bytes
 
     pifTimer_Start(g_timer_led, 500);											// 500ms
 

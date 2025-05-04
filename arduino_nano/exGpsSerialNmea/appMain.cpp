@@ -21,7 +21,7 @@ static BOOL _evtGpsNmeaReceive(PifGps *pstOwner, PifGpsNmeaMsgId msg_id)
 {
 	(void)pstOwner;
 
-	return msg_id == PIF_GPS_NMEA_MSG_ID_GGA;
+	return msg_id == PIF_GPS_NMEA_MSG_ID_GLL;
 }
 
 static void _evtGpsReceive(PifGps *pstOwner)

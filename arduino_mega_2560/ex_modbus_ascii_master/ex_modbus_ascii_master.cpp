@@ -41,14 +41,14 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 	return i;
 }
 
-static uint16_t actMasterSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
+static uint16_t actModbusSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
 {
 	(void)p_uart;
 
     return Serial1.write((char *)p_buffer, size);
 }
 
-static uint16_t actMasterReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
+static uint16_t actModbusReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
 {
 	int data;
 	uint16_t i;
@@ -63,12 +63,12 @@ static uint16_t actMasterReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t 
 	return i;
 }
 
-static uint8_t actMasterGetTxRate(PifUart *p_uart)
+static uint8_t actModbusGetTxRate(PifUart *p_uart)
 {
 	return 100 * Serial1.availableForWrite() / (SERIAL_TX_BUFFER_SIZE - 1);
 }
 
-static void actMasterDirection(PifUartDirection direction)
+static void actModbusDirection(PifUartDirection direction)
 {
 	digitalWrite(PIN_DIRECTION, direction);
 }
@@ -107,19 +107,21 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }			// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
+	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
 
 	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_modbus, TM_PERIOD, 500, "UartModbus")) { line = __LINE__; goto fail; }			// 500us
-    g_uart_modbus.act_receive_data = actMasterReceiveData;
-    g_uart_modbus.act_send_data = actMasterSendData;
-    g_uart_modbus.act_get_tx_rate = actMasterGetTxRate;
-    pifUart_AttachActDirection(&g_uart_modbus, actMasterDirection, UD_TX);
+    if (!pifUart_AttachTxTask(&g_uart_modbus, TM_EXTERNAL_ORDER, 0, "UartTxModbus")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&g_uart_modbus, TM_PERIOD, 5000, "UartRxModbus")) { line = __LINE__; goto fail; }		// 5ms
+    g_uart_modbus.act_receive_data = actModbusReceiveData;
+    g_uart_modbus.act_send_data = actModbusSendData;
+    g_uart_modbus.act_get_tx_rate = actModbusGetTxRate;
+    pifUart_AttachActDirection(&g_uart_modbus, actModbusDirection, UD_TX);
 
 	if (!pifModbusAsciiMaster_Init(&g_modbus_master, PIF_ID_AUTO, &g_timer_1ms)) { line = __LINE__; goto fail; }
 

@@ -4,10 +4,9 @@
 
 
 #define PIN_LED_L				13
-#define PIN_UART_CTS			4
-#define PIN_UART_DSR			5
+#define PIN_UART_CTS_DSR		24
 
-#define TASK_SIZE				6
+#define TASK_SIZE				8
 #define TIMER_1MS_SIZE			2
 
 #define UART_LOG_BAUDRATE		115200
@@ -68,14 +67,9 @@ static void actLedLState(PifId pif_id, uint32_t state)
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-static void _isrUartCts()
+static void _isrUartCtsDsr()
 {
-	pifUart_SigTxFlowState(&g_uart_host, !digitalRead(PIN_UART_CTS));
-}
-
-static void _isrUartDsr()
-{
-	pifUart_SigTxFlowState(&g_uart_host, !digitalRead(PIN_UART_DSR));
+	pifUart_SigTxFlowState(&g_uart_host, !digitalRead(PIN_UART_CTS_DSR));
 }
 
 extern "C" {
@@ -93,11 +87,9 @@ void setup()
 	int line;
 
 	pinMode(PIN_LED_L, OUTPUT);
-	pinMode(PIN_UART_CTS, INPUT_PULLUP);
-	pinMode(PIN_UART_DSR, INPUT_PULLUP);
+	pinMode(PIN_UART_CTS_DSR, INPUT_PULLUP);
 
-	attachInterrupt(PIN_UART_CTS, _isrUartCts, CHANGE);
-	attachInterrupt(PIN_UART_DSR, _isrUartDsr, CHANGE);
+	attachInterrupt(PIN_UART_CTS_DSR, _isrUartCtsDsr, CHANGE);
 
 	Serial.begin(UART_LOG_BAUDRATE);
 	Serial1.begin(UART_HOST_BAUDRATE);
@@ -109,15 +101,17 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }			// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
+	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
 
 	if (!pifUart_Init(&g_uart_host, PIF_ID_AUTO, UART_HOST_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_host, TM_PERIOD, 1000, "UartHost")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AttachTxTask(&g_uart_host, TM_EXTERNAL_ORDER, 0, "UartTxHost")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&g_uart_host, TM_PERIOD, 1000, "UartRxHost")) { line = __LINE__; goto fail; }			// 1ms
     g_uart_host.act_receive_data = actHostReceiveData;
     g_uart_host.act_send_data = actHostSendData;
 

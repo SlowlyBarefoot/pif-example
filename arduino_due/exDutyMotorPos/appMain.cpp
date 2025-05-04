@@ -198,7 +198,7 @@ BOOL appSetup()
 {
 	PifTask* p_task;
 
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;							// 32bytes
 
     pifDutyMotorPos_AddStages(&g_motor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
     g_motor.parent.evt_stable = _evtStable;

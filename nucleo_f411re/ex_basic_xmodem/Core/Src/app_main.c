@@ -40,7 +40,6 @@ static char s_basic[1024];
 static int s_basic_length;
 static int s_change_uart = CHANGE_UART_NONE;
 
-
 static int _basicProcess1(int count, int* p_params);
 static int _basicProcess2(int count, int* p_params);
 
@@ -168,10 +167,13 @@ static void _evtXmodemRxReceive(uint8_t code, PifXmodemPacket* p_packet)
 			p_basic[i] = 0;
 			s_basic_length--;
 		}
-
-		s_change_uart = CHANGE_UART_XMODEM_TO_LOG;
-		pifTask_SetTrigger(s_task, 0);
 	}
+}
+
+static void _evtXmodemFinish(uint16_t delay)
+{
+	s_change_uart = CHANGE_UART_XMODEM_TO_LOG;
+	pifTask_SetTrigger(s_task, delay);
 }
 
 static uint32_t _taskChangeUart(PifTask* p_task)
@@ -190,7 +192,7 @@ static uint32_t _taskChangeUart(PifTask* p_task)
 
 	case CHANGE_UART_XMODEM_TO_LOG:
 		pifXmodem_DetachUart(&s_xmodem);
-	    pifLog_AttachUart(&g_uart);
+	    pifLog_AttachUart(&g_uart, 256);		// 256bytes
 
 		s_change_uart = CHANGE_UART_NONE;
 		break;
@@ -213,13 +215,13 @@ static void _evtComplete(PifBasic* p_owner)
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;	// 32bytes
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;		// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;					// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
     if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return FALSE;
-    pifXmodem_AttachEvtRxReceive(&s_xmodem, _evtXmodemRxReceive);
+    pifXmodem_AttachEvtRx(&s_xmodem, _evtXmodemRxReceive, _evtXmodemFinish);
 
 	pifBasic_Init(p_process, _evtComplete);
 

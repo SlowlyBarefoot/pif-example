@@ -9,7 +9,7 @@
 
 #define PIN_PUSH_SWITCH			2
 
-#define TASK_SIZE				4
+#define TASK_SIZE				5
 #define TIMER_1MS_SIZE			3
 
 #define UART_SERIAL_BAUDRATE	115200
@@ -79,7 +79,8 @@ void setup()
 	if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, 0, actPushSwitchAcquire)) return;
 
 	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_serial, TM_PERIOD, 1000, "UartSerial")) return;				// 1ms
+    if (!pifUart_AttachTxTask(&g_serial, TM_EXTERNAL_ORDER, 0, NULL)) return;
+    if (!pifUart_AttachRxTask(&g_serial, TM_PERIOD, 50000, NULL)) return;					// 50ms
     g_serial.act_receive_data = actXmodemReceiveData;
     g_serial.act_send_data = actXmodemSendData;
 

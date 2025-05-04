@@ -182,15 +182,15 @@ BOOL appSetup()
     PifNoiseFilter* p_filter[2];
     int line;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }			// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
 
 	if (!pifNoiseFilterManager_Init(&s_filter, 2)) { line = __LINE__; goto fail; }
-	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch x
+	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);								// touch x
 	if (!p_filter[0]) { line = __LINE__; goto fail; }
-	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch y
+	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);								// touch y
 	if (!p_filter[1]) { line = __LINE__; goto fail; }
 
 #if LCD_TYPE == LCD_3_2_INCH
@@ -201,7 +201,7 @@ BOOL appSetup()
 
 	pifIli9341_SetRotation(&g_ili9341.parent, TLR_0_DEGREE);
 
-    p_task = pifTaskManager_Add(TM_PERIOD, 2000000, _taskFillScreen, NULL, FALSE);		// 2000ms
+    p_task = pifTaskManager_Add(TM_PERIOD, 2000000, _taskFillScreen, NULL, FALSE);			// 2000ms
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
 

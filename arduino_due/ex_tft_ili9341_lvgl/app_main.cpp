@@ -163,15 +163,15 @@ BOOL appSetup()
     char LVGL_Arduino[30];
     int line;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }			// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
 
 	if (!pifNoiseFilterManager_Init(&s_filter, 2)) { line = __LINE__; goto fail; }
-	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch x
+	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);								// touch x
 	if (!p_filter[0]) { line = __LINE__; goto fail; }
-	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);							// touch y
+	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);								// touch y
 	if (!p_filter[1]) { line = __LINE__; goto fail; }
 
 	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, p_filter[0], p_filter[1])) { line = __LINE__; goto fail; }
@@ -210,7 +210,7 @@ BOOL appSetup()
     lv_obj_set_style_text_color(label, (lv_color_t)LV_COLOR_MAKE(0, 0, 0), 0);
     lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 
-    p_task = pifTaskManager_Add(TM_PERIOD, 5000, _taskLvglTimerHandler, NULL, TRUE);	// 5ms
+    p_task = pifTaskManager_Add(TM_PERIOD, 5000, _taskLvglTimerHandler, NULL, TRUE);		// 5ms
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "LVGL";
     return TRUE;

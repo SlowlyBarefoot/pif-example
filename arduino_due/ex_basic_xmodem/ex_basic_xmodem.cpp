@@ -51,8 +51,6 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	static PifUart g_uart;
-
 	pinMode(PIN_LED_L, OUTPUT);
 
 	Serial.begin(UART_LOG_BAUDRATE);
@@ -64,12 +62,13 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&g_uart, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart, TM_PERIOD, 1000, "UartLog")) return;					// 1ms
+    if (!pifUart_AttachTxTask(&g_uart, TM_EXTERNAL_ORDER, 0, "UartTxLog")) return;
+    if (!pifUart_AttachRxTask(&g_uart, TM_PERIOD, 200000, "UartRxLog")) return;				// 200ms
 	g_uart.act_receive_data = actLogReceiveData;
 	g_uart.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&g_uart)) return;
+	if (!pifLog_AttachUart(&g_uart, 256)) return;											// 256bytes
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
 

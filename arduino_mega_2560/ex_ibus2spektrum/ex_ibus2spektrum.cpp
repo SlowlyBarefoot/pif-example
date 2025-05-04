@@ -6,6 +6,9 @@
 
 
 #define PIN_LED_L				13
+#define PIN_LOG_TX				2
+#define PIN_IBUS_RX				3
+#define PIN_SPEKTRUM_TX			4
 
 #define TASK_SIZE				5
 #define TIMER_1MS_SIZE			1
@@ -51,6 +54,33 @@ static uint16_t actSerial2SendData(PifUart* p_owner, uint8_t* p_buffer, uint16_t
 	return Serial2.write((char *)p_buffer, size);
 }
 
+static void _actGpioWrite(uint16_t port, SWITCH state)
+{
+	static BOOL sw[3];
+
+	if (state) {
+		switch (port) {
+		case PIF_ID_USER(0):
+			digitalWrite(PIN_LOG_TX, sw[0]);
+			sw[0] ^= 1;
+			break;
+
+		case PIF_ID_USER(2):
+			digitalWrite(PIN_SPEKTRUM_TX, sw[2]);
+			sw[2] ^= 1;
+			break;
+		}
+	}
+	else {
+		switch (port) {
+		case PIF_ID_USER(1):
+			digitalWrite(PIN_IBUS_RX, sw[1]);
+			sw[1] ^= 1;
+			break;
+		}
+	}
+}
+
 static void sysTickHook()
 {
 	pif_sigTimer1ms();
@@ -63,6 +93,9 @@ void setup()
 	static PifUart s_uart_log;
 
 	pinMode(PIN_LED_L, OUTPUT);
+	pinMode(PIN_LOG_TX, OUTPUT);
+	pinMode(PIN_IBUS_RX, OUTPUT);
+	pinMode(PIN_SPEKTRUM_TX, OUTPUT);
 
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
@@ -77,19 +110,21 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;			// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return;					// 1ms
+    pif_act_gpio_write = _actGpioWrite;
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), UART_LOG_BAUDRATE)) return;
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartLog")) return;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return;											// 256bytes
 
-	if (!pifUart_Init(&g_uart_ibus, PIF_ID_AUTO, UART_IBUS_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart_ibus, TM_PERIOD, 1000, "UartIbus")) return;					// 1ms
+	if (!pifUart_Init(&g_uart_ibus, PIF_ID_USER(1), UART_IBUS_BAUDRATE)) return;
+    if (!pifUart_AttachRxTask(&g_uart_ibus, TM_PERIOD, 3000, "UartIbus")) return;				// 3ms
 	g_uart_ibus.act_receive_data = actSerial1ReceiveData;
 
-	if (!pifUart_Init(&g_uart_spektrum, PIF_ID_AUTO, UART_SPEKTRUM_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&g_uart_spektrum, TM_PERIOD, 1000, "UartSpektrum")) return;			// 1ms
+	if (!pifUart_Init(&g_uart_spektrum, PIF_ID_USER(2), UART_SPEKTRUM_BAUDRATE)) return;
+    if (!pifUart_AttachTxTask(&g_uart_spektrum, TM_EXTERNAL_ORDER, 0, "UartSpektrum")) return;
     g_uart_spektrum.act_send_data = actSerial2SendData;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;

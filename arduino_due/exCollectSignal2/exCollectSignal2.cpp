@@ -68,20 +68,6 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
-{
-	int i, data;
-
-	(void)p_uart;
-
-	for (i = 0; i < size; i++) {
-		data = Serial.read();
-		if (data < 0) break;
-		p_data[i] = data;
-	}
-	return i;
-}
-
 extern "C" {
 	int sysTickHook()
 	{
@@ -113,12 +99,11 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;			// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return;						// 1ms
-    s_uart_log.act_receive_data = actLogReceiveData;
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) return;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return;											// 256bytes
 
 	if (!pifCollectSignal_InitHeap("example", 0x1000)) return;
 

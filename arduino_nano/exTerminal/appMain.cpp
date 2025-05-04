@@ -61,7 +61,7 @@ static void _evtLogControlChar(char ch)
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
+    if (!pifLog_UseCommand(16, c_psCmdTable, "\nDebug> ")) return FALSE;		// 16bytes
     pifLog_AttachEvent(_evtLogControlChar);
 
 	if (!pifLed_AttachSBlink(&g_led_l, nPeriod)) return FALSE;

@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				3
+#define TASK_SIZE				4
 #define TIMER_1MS_SIZE			1
 
 #define ADDR_FLASH_SECTOR_0     ((uint32_t)0x08000000) /* Base @ of Sector 0, 16 Kbytes */
@@ -286,15 +286,16 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return -1;						// 1ms
-  if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) return -1;									// 100%
-  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;
+  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) return -1;
+  if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, NULL)) return -1;					// 200ms
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return -1;										// 64bytes
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 128bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&s_uart_log)) return -1;
+  if (!pifLog_AttachUart(&s_uart_log, 256)) return -1;											// 256bytes
 
   g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
   if (!g_timer_led) return -1;

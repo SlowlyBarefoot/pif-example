@@ -2,6 +2,7 @@
 
 #include "gps/pif_gps_ublox.h"
 
+#include <string.h>
 
 //#define NMEA
 #define UBX
@@ -53,7 +54,7 @@ static BOOL _evtGpsNmeaReceive(PifGps *p_owner, PifGpsNmeaMsgId msg_id)
 	return msg_id == PIF_GPS_NMEA_MSG_ID_GGA;
 }
 
-static uint16_t _taskNmeaSetup(PifTask *p_task)
+static uint32_t _taskNmeaSetup(PifTask *p_task)
 {
 	uint32_t baudrates[] = { 115200, 57600, 38400, 19200, 9600 };
 	uint8_t n;
@@ -70,7 +71,7 @@ static uint16_t _taskNmeaSetup(PifTask *p_task)
 		break;
 
 	case 0x20:
-		if (pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x07, 0x03, s_baudrate, TRUE, 0)) {
+		if (pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x07, 0x03, s_baudrate, TRUE, 100)) {
 			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d Retry=%d", GUCI_CFG, GUMI_CFG_PRT, retry);
 			retry--;
 			if (!retry) {
@@ -107,7 +108,7 @@ static uint16_t _taskNmeaSetup(PifTask *p_task)
 		}
 		break;
 	}
-    return delay;
+    return delay * 1000;
 }
 
 #endif
@@ -433,9 +434,9 @@ BOOL appSetup(uint32_t baurdate)
 {
 	s_baudrate = baurdate;
 
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;					// 32bytes
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
@@ -444,11 +445,11 @@ BOOL appSetup(uint32_t baurdate)
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) return FALSE;
-	if (!pifTaskManager_Add(TM_CHANGE, 100000, _taskNmeaSetup, NULL, TRUE)) return FALSE;		// 100ms
+	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskNmeaSetup, NULL, TRUE)) return FALSE;	// 100ms
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;		// 100ms
+	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
 #endif
 	return TRUE;
 }

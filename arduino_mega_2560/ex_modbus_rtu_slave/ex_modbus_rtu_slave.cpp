@@ -5,18 +5,10 @@
 #include <MsTimer2.h>
 
 
-#define USE_SERIAL
-//#define USE_USART
-
-#ifdef USE_USART
-#include "../usart.h"
-#endif
-
-
 #define PIN_DIRECTION			10
 #define PIN_LED_L				13
 
-#define TASK_SIZE				5
+#define TASK_SIZE				7
 #define TIMER_1MS_SIZE			3
 
 #define UART_LOG_BAUDRATE		115200
@@ -28,8 +20,6 @@
 
 static PifUart s_uart_log;
 
-
-#ifdef USE_SERIAL
 
 static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
 {
@@ -80,46 +70,6 @@ static uint8_t actSlaveGetTxRate(PifUart *p_uart)
 	return 100 * Serial1.availableForWrite() / (SERIAL_TX_BUFFER_SIZE - 1);
 }
 
-#endif
-
-#ifdef USE_USART
-
-static BOOL actLogStartTransfer(PifUart *p_uart)
-{
-	(void)p_uart;
-
-	return USART_StartTransfer(0);
-}
-
-ISR(USART0_UDRE_vect)
-{
-	USART_Send(0, &s_uart_log);
-}
-
-ISR(USART0_RX_vect)
-{
-	USART_Receive(0, &s_uart_log);
-}
-
-static BOOL actSlaveStartTransfer(PifUart *p_uart)
-{
-	(void)p_uart;
-
-	return USART_StartTransfer(1);
-}
-
-ISR(USART1_UDRE_vect)
-{
-	USART_Send(1, &g_uart_modbus);
-}
-
-ISR(USART1_RX_vect)
-{
-	USART_Receive(1, &g_uart_modbus);
-}
-
-#endif
-
 static void actSlaveDirection(PifUartDirection direction)
 {
 	digitalWrite(PIN_DIRECTION, direction);
@@ -149,14 +99,8 @@ void setup()
 	MsTimer2::set(1, sysTickHook);
 	MsTimer2::start();
 
-#ifdef USE_SERIAL
 	Serial.begin(UART_LOG_BAUDRATE);
 	Serial1.begin(UART_MODBUS_BAUDRATE);
-#endif
-#ifdef USE_USART
-	USART_Init(0, UART_LOG_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
-	USART_Init(1, UART_MODBUS_BAUDRATE, DATA_BIT_DEFAULT | PARITY_DEFAULT | STOP_BIT_DEFAULT, TRUE);
-#endif
 
 	pif_Init((PifActTimer1us)micros);
 
@@ -165,32 +109,20 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
-#ifdef USE_SERIAL
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartLog")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartLog")) { line = __LINE__; goto fail; }			// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
-#endif
-#ifdef USE_USART
-	if (!pifUart_AllocRxBuffer(&s_uart_log, 32, 50)) { line = __LINE__; goto fail; }								// 50%
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) { line = __LINE__; goto fail; }
-	s_uart_log.act_start_transfer = actLogStartTransfer;
-#endif
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
+	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
 
 	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_modbus, TM_PERIOD, 500, "UartModbus")) { line = __LINE__; goto fail; }			// 500us
-#ifdef USE_SERIAL
+    if (!pifUart_AttachTxTask(&g_uart_modbus, TM_EXTERNAL_ORDER, 0, "UartTxModbus")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&g_uart_modbus, TM_PERIOD, 5000, "UartRxModbus")) { line = __LINE__; goto fail; }		// 5ms
     g_uart_modbus.act_receive_data = actSlaveReceiveData;
     g_uart_modbus.act_send_data = actSlaveSendData;
     g_uart_modbus.act_get_tx_rate = actSlaveGetTxRate;
-#endif
-#ifdef USE_USART
-	if (!pifUart_AllocRxBuffer(&g_uart_modbus, 64, 50)) { line = __LINE__; goto fail; }								// 50%
-	if (!pifUart_AllocTxBuffer(&g_uart_modbus, 64)) { line = __LINE__; goto fail; }
-	g_uart_modbus.act_start_transfer = actSlaveStartTransfer;
-#endif
     pifUart_AttachActDirection(&g_uart_modbus, actSlaveDirection, UD_RX);
 
 	if (!pifModbusRtuSlave_Init(&g_modbus_slave, PIF_ID_AUTO, &g_timer_1ms, RTU_SERVER_ADDRESS)) { line = __LINE__; goto fail; }

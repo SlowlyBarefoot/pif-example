@@ -69,11 +69,11 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_100us, PIF_ID_AUTO, 100, TIMER_100US_SIZE)) return;	// 100us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return;					// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) return;
 	s_uart_log.act_send_data = actLogSendData;
 
 	pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return;										// 256bytes
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
 
@@ -87,7 +87,7 @@ void setup()
 	pifLog_Print(LT_NONE, "***           exServoMotor           ***\n");
 	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
 	pifLog_Print(LT_NONE, "****************************************\n");
-	pifLog_Printf(LT_INFO, "Task=%d/%d Timer1ms=%d/%d Timer100us=%d\n", pifTaskManager_Count(), TASK_SIZE,
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer1ms=%d/%d Timer100us=%d/%d\n", pifTaskManager_Count(), TASK_SIZE,
 			pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE, pifTimerManager_Count(&g_timer_100us), TIMER_100US_SIZE);
 }
 

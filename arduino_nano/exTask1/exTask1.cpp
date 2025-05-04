@@ -26,7 +26,7 @@ static uint32_t _taskLedToggle(PifTask *pstTask)
     	digitalWrite(PIN_LED_L, sw);
 		sw ^= 1;
 
-		nCount = 9999;
+		nCount = 999;
     }
     else nCount--;
     return 0;

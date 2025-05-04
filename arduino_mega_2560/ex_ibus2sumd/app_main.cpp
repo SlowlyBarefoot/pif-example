@@ -12,18 +12,36 @@ PifUart g_uart_sumd;
 static PifRcIbus s_ibus;
 static PifRcSumd s_sumd;
 
+static uint16_t s_channel[10];
 
-static void _evtIbusReceive(PifRc* p_owner, uint16_t* channel, PifIssuerP p_issuer)
+
+static void _evtIbusReceive(PifRc* p_owner, uint16_t* p_channel, PifIssuerP p_issuer)
 {
 	int i;
+	static int step = 0;
 
 	(void)p_owner;
 	(void)p_issuer;
 
 	for (i = 0; i < 10; i++) {
-		channel[i] = channel[i] * 8;
+		s_channel[i] = p_channel[i] * 8;
 	}
-	pifRcSumd_SendFrame(&s_sumd, channel, 10);   // 10 channels
+	if (step) step--;
+	else {
+		for (i = 0; i < 10; i++) {
+			pifLog_Printf(LT_NONE, "%4d:%4d ", p_channel[i], s_channel[i]);
+		}
+		pifLog_Printf(LT_NONE, "\n");
+		step = 60;
+	}
+}
+
+static uint32_t _taskSumd(PifTask *p_task)
+{
+	PifRcSumd *p_sumd = (PifRcSumd *)p_task->_p_client;
+
+	pifRcSumd_SendFrame(p_sumd, s_channel, 10);   // 10 channels
+	return 0;
 }
 
 BOOL appSetup()
@@ -35,7 +53,9 @@ BOOL appSetup()
     if (!pifRcSumd_Init(&s_sumd, PIF_ID_AUTO)) return FALSE;
     pifRcSumd_AttachUart(&s_sumd, &g_uart_sumd);
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;			// 500ms
+    if (!pifTaskManager_Add(TM_PERIOD, 7500, _taskSumd, &s_sumd, TRUE)) return FALSE;	// 7.5ms
+
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;								// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

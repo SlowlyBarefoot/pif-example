@@ -120,7 +120,7 @@ static void _evtStop(PifStepMotor *pstOwner)
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(c_psCmdTable, "\nDebug> ")) return FALSE;
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;	// 32bytes
 
 	g_motor.evt_stop = _evtStop;
 	pifStepMotor_SetPps(&g_motor, 200);

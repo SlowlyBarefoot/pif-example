@@ -12,7 +12,7 @@
 #define PIN_PUSH_SWITCH			5
 #define PIN_TILT_SWITCH			6
 
-#define TASK_SIZE				4
+#define TASK_SIZE				5
 
 #define UART_LOG_BAUDRATE		115200
 
@@ -83,11 +83,11 @@ void setup()
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return;			   	// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) return;
 	s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log, 80)) return;									// 80bytes
 
     if (!pifGpio_Init(&g_gpio, PIF_ID_AUTO, 1)) return;
     pifGpio_AttachActOut(&g_gpio, actGpioLed);

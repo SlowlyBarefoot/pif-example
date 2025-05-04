@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE		5
+#define TASK_SIZE		6
 #define TIMER_1MS_SIZE	2
 
 /* USER CODE END PD */
@@ -55,7 +55,6 @@ static uint8_t s_ucLogRx;
 static uint16_t s_usLogTx;
 
 static uint8_t s_gps_rx;
-static uint16_t s_gps_tx;
 
 /* USER CODE END PV */
 
@@ -88,18 +87,6 @@ static BOOL actLogStartTransfer(PifUart* p_uart)
 	return FALSE;
 }
 
-static BOOL actGpsStartTransfer(PifUart* p_uart)
-{
-	uint8_t *p_data, state;
-
-	state = pifUart_StartGetTxData(p_uart, &p_data, &s_gps_tx);
-	if (state & PIF_UART_SEND_DATA_STATE_DATA) {
-		HAL_UART_Transmit_IT(&huart6, p_data, s_gps_tx);
-		return TRUE;
-	}
-	return FALSE;
-}
-
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 	uint8_t *pucData, ucState;
@@ -111,16 +98,6 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 			ucState = pifUart_StartGetTxData(&s_uart_log, &pucData, &s_usLogTx);
 			if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {
 				HAL_UART_Transmit_IT(huart, pucData, s_usLogTx);
-			}
-		}
-	}
-	else if (huart->Instance == USART6) {
-		ucState = pifUart_EndGetTxData(&g_uart_gps, s_gps_tx);
-		if (!(ucState & PIF_UART_SEND_DATA_STATE_EMPTY)) {
-			s_gps_tx = 0;
-			ucState = pifUart_StartGetTxData(&g_uart_gps, &pucData, &s_gps_tx);
-			if (ucState & PIF_UART_SEND_DATA_STATE_DATA) {
-				HAL_UART_Transmit_IT(huart, pucData, s_gps_tx);
 			}
 		}
 	}
@@ -145,9 +122,33 @@ static void actLedLState(PifId usPifId, uint32_t unState)
 	(void)usPifId;
 
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, unState & 1);
-	if (unState != state) {
-		pifLog_Printf(LT_INFO, "LED State=%u", unState);
-		state = unState;
+	if (unState != state) state = unState;
+}
+
+static void _actGpioWrite(uint16_t port, SWITCH state)
+{
+	static BOOL sw[3];
+
+	if (state) {
+		switch (port) {
+		case PIF_ID_USER(0):
+			HAL_GPIO_WritePin(LOG_TX_GPIO_Port, LOG_TX_Pin, sw[1]);
+			sw[1] ^= 1;
+			break;
+		}
+	}
+	else {
+		switch (port) {
+		case PIF_ID_USER(0):
+			HAL_GPIO_WritePin(LOG_TX_GPIO_Port, LOG_RX_Pin, sw[0]);
+			sw[0] ^= 1;
+			break;
+
+		case PIF_ID_USER(1):
+			HAL_GPIO_WritePin(GPS_RX_GPIO_Port, GPS_RX_Pin, sw[2]);
+			sw[2] ^= 1;
+			break;
+		}
 	}
 }
 
@@ -159,6 +160,7 @@ static void actLedLState(PifId usPifId, uint32_t unState)
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -193,22 +195,23 @@ int main(void)
 
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
-  if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return -1;					// 1ms
-  if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) return -1;									// 64bytes, 100%
-  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 128bytes
+  pif_act_gpio_write = _actGpioWrite;
+
+  if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) return -1;
+  if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return -1;			// 200ms
+  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) return -1;
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return -1;										// 64 bytes
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 256 bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&s_uart_log)) return -1;
+  if (!pifLog_AttachUart(&s_uart_log, 512)) return -1;											// 512bytes
 
-  if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO, huart6.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&g_uart_gps, TM_PERIOD, 1000, "UartGPS")) return -1;					// 1ms
-  if (!pifUart_AllocRxBuffer(&g_uart_gps, 256, 100)) return -1;									// 256bytes, 100%
-  if (!pifUart_AllocTxBuffer(&g_uart_gps, 32)) return -1;										// 32bytes
-  g_uart_gps.act_start_transfer = actGpsStartTransfer;
+  if (!pifUart_Init(&g_uart_gps, PIF_ID_USER(1), huart6.Init.BaudRate)) return -1;
+  if (!pifUart_AttachRxTask(&g_uart_gps, TM_PERIOD, 200000, "UartRxGPS")) return -1;			// 200ms
+  if (!pifUart_AllocRxBuffer(&g_uart_gps, 128)) return -1;										// 256 bytes
 
   HAL_UART_Receive_IT(&huart6, &s_gps_rx, 1);
 
@@ -216,10 +219,10 @@ int main(void)
 
   if (!appSetup()) return -1;
 
-	pifLog_Print(LT_NONE, "\n\n****************************************\n");
-	pifLog_Print(LT_NONE, "***        ex_gps_serial_nmea        ***\n");
-	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
-	pifLog_Print(LT_NONE, "****************************************\n");
+  pifLog_Print(LT_NONE, "\n\n****************************************\n");
+  pifLog_Print(LT_NONE, "***        ex_gps_serial_nmea        ***\n");
+  pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+  pifLog_Print(LT_NONE, "****************************************\n");
   pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 
   /* USER CODE END 2 */
@@ -401,6 +404,8 @@ static void MX_USART6_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -409,7 +414,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPS_RX_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LOG_TX_Pin|LOG_RX_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -417,13 +425,22 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
+  /*Configure GPIO pins : LD2_Pin GPS_RX_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin|GPS_RX_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : LOG_TX_Pin LOG_RX_Pin */
+  GPIO_InitStruct.Pin = LOG_TX_Pin|LOG_RX_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

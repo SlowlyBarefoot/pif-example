@@ -3,6 +3,7 @@
 #include "appMain.h"
 
 
+#define PIN_12					12
 #define PIN_LED_L				13
 
 #define PIN_CDS					A0
@@ -33,8 +34,12 @@ static uint32_t taskLedToggle(PifTask *pstTask)
 
 static uint16_t actSensorAcquisition(PifSensor* p_owner)
 {
+	static BOOL sw = LOW;
+
 	(void)p_owner;
 
+	digitalWrite(PIN_12, sw);
+	sw ^= 1;
 	return analogRead(PIN_CDS);
 }
 
@@ -52,6 +57,7 @@ void setup()
 {
 	static PifUart s_uart_log;
 
+	pinMode(PIN_12, OUTPUT);
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_CDS, INPUT);
 
@@ -64,11 +70,11 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return;					// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) return;
 	s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return;
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return;										// 256bytes
 
     if (!pifSensorDigital_Init(&g_sensor, PIF_ID_AUTO, actSensorAcquisition)) return;
 

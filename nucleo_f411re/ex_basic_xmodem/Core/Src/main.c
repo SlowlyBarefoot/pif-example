@@ -155,15 +155,16 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   if (!pifUart_Init(&g_uart, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&g_uart, TM_PERIOD, 1000, "UartLog")) return -1;						// 1ms
-  if (!pifUart_AllocRxBuffer(&g_uart, 64, 100)) return -1;										// 100%
-  if (!pifUart_AllocTxBuffer(&g_uart, 128)) return -1;
+  if (!pifUart_AttachTxTask(&g_uart, TM_EXTERNAL_ORDER, 0, "UartTxLog")) return -1;
+  if (!pifUart_AttachRxTask(&g_uart, TM_PERIOD, 200000, "UartRxLog")) return -1;				// 200ms
+  if (!pifUart_AllocRxBuffer(&g_uart, 64)) return -1;											// 64bytes
+  if (!pifUart_AllocTxBuffer(&g_uart, 128)) return -1;											// 128bytes
   g_uart.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_log_rx, 1);
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&g_uart)) return -1;
+  if (!pifLog_AttachUart(&g_uart, 256)) return -1;												// 256bytes
 
   if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return -1;
 

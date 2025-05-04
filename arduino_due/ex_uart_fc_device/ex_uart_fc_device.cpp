@@ -4,10 +4,9 @@
 
 
 #define PIN_LED_L				13
-#define PIN_UART_RTS			24
-#define PIN_UART_DTR			25
+#define PIN_UART_RTS_DTR		24
 
-#define TASK_SIZE				6
+#define TASK_SIZE				8
 #define TIMER_1MS_SIZE			2
 
 #define UART_LOG_BAUDRATE		115200
@@ -66,10 +65,9 @@ static uint8_t actDeviceGetRxRate(PifUart* p_uart)
 	return 100 * Serial1.available() / SERIAL_BUFFER_SIZE;
 }
 
-static void actUartRxFlowState(PifUart *p_uart, SWITCH state)
+static void actUartDeviceFlowState(PifUart *p_uart, SWITCH state)
 {
-	digitalWrite(PIN_UART_RTS, state ? 0 : 1);
-	digitalWrite(PIN_UART_DTR, state ? 0 : 1);
+	digitalWrite(PIN_UART_RTS_DTR, state ? 0 : 1);
 }
 
 static void actLedLState(PifId pif_id, uint32_t state)
@@ -94,8 +92,7 @@ void setup()
 	int line;
 
 	pinMode(PIN_LED_L, OUTPUT);
-	pinMode(PIN_UART_RTS, OUTPUT);
-	pinMode(PIN_UART_DTR, OUTPUT);
+	pinMode(PIN_UART_RTS_DTR, OUTPUT);
 
 	Serial.begin(UART_LOG_BAUDRATE);
 	Serial1.begin(UART_DEVICE_BAUDRATE);
@@ -107,19 +104,21 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) { line = __LINE__; goto fail; }				// 1ms
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }			// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) { line = __LINE__; goto fail; }
+	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
 
 	if (!pifUart_Init(&g_uart_device, PIF_ID_AUTO, UART_DEVICE_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTask(&g_uart_device, TM_PERIOD, 1000, "UartDevice")) { line = __LINE__; goto fail; }			// 1ms
+    if (!pifUart_AttachTxTask(&g_uart_device, TM_EXTERNAL_ORDER, 0, "UartTxDevice")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&g_uart_device, TM_PERIOD, 50000, "UartRxDevice")) { line = __LINE__; goto fail; }	// 50ms
     g_uart_device.act_receive_data = actDeviceReceiveData;
     g_uart_device.act_send_data = actDeviceSendData;
     g_uart_device.act_get_rx_rate = actDeviceGetRxRate;
-    g_uart_device.act_rx_flow_state = actUartRxFlowState;
+    g_uart_device.act_device_flow_state = actUartDeviceFlowState;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }
 

@@ -56,21 +56,23 @@ static void _evtLogControlChar(char ch)
 	pifLog_Printf(LT_INFO, "Contorl Char = %x\n", ch);
 }
 
-static void _evtUartParsing(void *p_client, PifActUartReceiveData act_receive_data)
+static BOOL _evtUartParsing(void *p_client, PifActUartReceiveData act_receive_data)
 {
 	uint8_t data[2] = { 0, 0 };
 
 	(void)p_client;
 
-	if (!s_count_down) return;
+	if (!s_count_down) return TRUE;
 	s_count_down = 0;
 
 	if ((*act_receive_data)(&g_uart_device, data, 1)) {
 		pifLog_Print(LT_NONE, (char *)data);
+		return TRUE;
 	}
+	return FALSE;
 }
 
-static uint16_t _taskSlowProcess(PifTask *p_task)
+static uint32_t _taskSlowProcess(PifTask *p_task)
 {
 	(void)p_task;
 
@@ -92,7 +94,7 @@ BOOL appSetup()
 {
     int line;
 
-    if (!pifLog_UseCommand(c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }
+    if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }					// 32bytes
     pifLog_AttachEvent(_evtLogControlChar);
 
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }								// 500ms

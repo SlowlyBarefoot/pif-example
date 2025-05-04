@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				3
+#define TASK_SIZE				4
 #define TIMER_1MS_SIZE			1
 
 /* USER CODE END PD */
@@ -166,15 +166,16 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, NULL)) return -1;						// 1ms
-  if (!pifUart_AllocRxBuffer(&s_uart_log, 64, 100)) return -1;									// 100%
-  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;
+  if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, NULL)) return -1;					// 200ms
+  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) return -1;
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 256)) return -1;										// 256 bytes
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 128 bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&s_uart_log)) return -1;
+  if (!pifLog_AttachUart(&s_uart_log, 256)) return -1;											// 256bytes
 
   if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return -1;
 
@@ -184,7 +185,7 @@ int main(void)
 	pifLog_Print(LT_NONE, "***           ex_terminal            ***\n");
 	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
 	pifLog_Print(LT_NONE, "****************************************\n");
-  pifLog_Printf(LT_INFO, "Task=%d Timer=%d\n", pifTaskManager_Count(), pifTimerManager_Count(&g_timer_1ms));
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 
   /* USER CODE END 2 */
 
