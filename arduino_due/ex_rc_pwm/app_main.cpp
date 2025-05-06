@@ -37,7 +37,7 @@ BOOL appSetup()
 {
 	PifTask* p_task;
 
-	p_task = pifTaskManager_Add(TM_EXTERNAL_ORDER, 0, _taskPrint, NULL, FALSE);
+	p_task = pifTaskManager_Add(TM_EXTERNAL, 0, _taskPrint, NULL, FALSE);
     if (!p_task) return FALSE;
 
     if (!pifRcPwm_Init(&g_rc_pwm, PIF_ID_AUTO, MAX_CHANNEL)) return FALSE;

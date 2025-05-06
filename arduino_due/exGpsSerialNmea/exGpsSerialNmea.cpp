@@ -117,7 +117,7 @@ void setup()
     pif_act_gpio_write = _actGpioWrite;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) return;
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartTxLog")) return;
     if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return;			// 200ms
 	s_uart_log.act_receive_data = actLogReceiveData;
 	s_uart_log.act_send_data = actLogSendData;

@@ -209,7 +209,7 @@ int main(void)
   pif_act_gpio_write = _actGpioWrite;
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartLog")) return -1;
+  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartLog")) return -1;
   if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;									// 128bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
@@ -223,7 +223,7 @@ int main(void)
   HAL_UART_Receive_IT(&huart6, &s_ibus_rx, 1);
 
   if (!pifUart_Init(&g_uart_sbus, PIF_ID_USER(2), huart1.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTxTask(&g_uart_sbus, TM_EXTERNAL_ORDER, 0, "UartSbus")) return -1;
+  if (!pifUart_AttachTxTask(&g_uart_sbus, TM_EXTERNAL, 0, "UartSbus")) return -1;
   if (!pifUart_AllocTxBuffer(&g_uart_sbus, 64)) return -1;									// 64bytes
   g_uart_sbus.act_start_transfer = actSbusStartTransfer;
 

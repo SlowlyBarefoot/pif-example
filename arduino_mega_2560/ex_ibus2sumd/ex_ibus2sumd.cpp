@@ -113,7 +113,7 @@ void setup()
     pif_act_gpio_write = _actGpioWrite;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartLog")) return;
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartLog")) return;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
@@ -124,7 +124,7 @@ void setup()
 	g_uart_ibus.act_receive_data = actSerial1ReceiveData;
 
 	if (!pifUart_Init(&g_uart_sumd, PIF_ID_USER(2), UART_SUMD_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&g_uart_sumd, TM_EXTERNAL_ORDER, 0, "UartSumd")) return;
+    if (!pifUart_AttachTxTask(&g_uart_sumd, TM_EXTERNAL, 0, "UartSumd")) return;
     g_uart_sumd.act_send_data = actSerial2SendData;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;

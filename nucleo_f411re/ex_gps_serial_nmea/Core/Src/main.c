@@ -199,7 +199,7 @@ int main(void)
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) return -1;
   if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return -1;			// 200ms
-  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartTxLog")) return -1;
+  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartTxLog")) return -1;
   if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return -1;										// 64 bytes
   if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 256 bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;

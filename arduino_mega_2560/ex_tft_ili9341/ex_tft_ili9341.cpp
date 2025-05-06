@@ -463,7 +463,7 @@ void setup()
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
     if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, NULL)) { line = __LINE__; goto fail; }				// 200ms
-    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, NULL)) { line = __LINE__; goto fail; }
 	s_uart_log.act_send_data = actLogSendData;
     s_uart_log.act_receive_data = actLogReceiveData;
 

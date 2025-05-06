@@ -162,7 +162,7 @@ int main(void)
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   if (!pifUart_Init(&g_uart_log, PIF_ID_AUTO, huart3.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTxTask(&g_uart_log, TM_EXTERNAL_ORDER, 0, NULL)) return -1;
+  if (!pifUart_AttachTxTask(&g_uart_log, TM_EXTERNAL, 0, NULL)) return -1;
   if (!pifUart_AllocTxBuffer(&g_uart_log, 64)) return -1;										// 64bytes
   g_uart_log.act_start_transfer = actLogStartTransfer;
 

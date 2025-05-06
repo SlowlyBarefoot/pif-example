@@ -86,7 +86,7 @@ void setup()
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL_ORDER, 0, "UartLog")) return;
+    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartLog")) return;
 	s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
@@ -97,7 +97,7 @@ void setup()
 	if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, 0, actPushSwitchAcquire)) return;
 
 	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&g_serial, TM_EXTERNAL_ORDER, 0, "UartTxSerial")) return;
+    if (!pifUart_AttachTxTask(&g_serial, TM_EXTERNAL, 0, "UartTxSerial")) return;
     if (!pifUart_AttachRxTask(&g_serial, TM_PERIOD, 50000, "UartRxSerial")) return;			// 50ms
     g_serial.act_receive_data = actXmodemReceiveData;
     g_serial.act_send_data = actXmodemSendData;
