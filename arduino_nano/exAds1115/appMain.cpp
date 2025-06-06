@@ -63,9 +63,9 @@ BOOL appSetup()
     pifAds1x1x_SetLoThreshVoltage(&s_ads1x1x, 1.0);
     pifAds1x1x_SetHiThreshVoltage(&s_ads1x1x, 2.0);
 
-    if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskAds1115, NULL, TRUE)) return FALSE;	// 1000ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskAds1115, NULL, TRUE)) return FALSE;	// 1000ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

@@ -54,9 +54,9 @@ BOOL appSetup()
 	if (!pifRcSpektrum_Init(&s_spektrum, PIF_ID_AUTO, PIF_SPEKTRUM_PROTOCOL_ID_22MS_1024_DSM2)) return FALSE;
 	pifRcSpektrum_AttachUart(&s_spektrum, &g_uart_spektrum);
 
-    if (!pifTaskManager_Add(TM_PERIOD, 7500, _taskSpektrum, &s_spektrum, TRUE)) return FALSE;	// 7.5ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSpektrum, &s_spektrum, TRUE)) return FALSE;	// 7.5ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;													// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

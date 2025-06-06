@@ -41,11 +41,11 @@ BOOL appSetup()
 #endif
 
     if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
-	if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, TM_PERIOD, 100000, TRUE)) return FALSE;	// 100ms
+	if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 100000, TRUE)) return FALSE;	// 100ms
 	pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, NULL);
 
     if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF, NULL)) return FALSE;
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, TM_PERIOD, 100000, TRUE)) return FALSE;	// 100ms
+    if (!pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, PIF_ID_AUTO, TM_PERIOD, 100000, TRUE)) return FALSE;	// 100ms
     pifSensor_AttachEvtChange(&g_tilt_switch.parent, _evtTiltSwitchChange, NULL);
 
 #if USE_FILTER
@@ -55,9 +55,9 @@ BOOL appSetup()
     if (!g_tilt_switch.p_filter) return FALSE;
 #endif
 
-    if (!pifLed_AttachSBlink(&g_led, 500)) return FALSE;											// 500ms
+    if (!pifLed_AttachSBlink(&g_led, 500)) return FALSE;														// 500ms
     pifLed_SBlinkOn(&g_led, 1 << 0);
 
-	if (!pifTimer_Start(g_timer_switch, 20)) return FALSE;											// 20ms
+	if (!pifTimer_Start(g_timer_switch, 20)) return FALSE;														// 20ms
 	return TRUE;
 }

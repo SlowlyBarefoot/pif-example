@@ -193,25 +193,25 @@ int main(void)
 
   if (!pifTaskManager_Init(TASK_SIZE)) return -1;
 
-  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;			// 1000us
 
   pif_act_gpio_write = _actGpioWrite;
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return -1;			// 200ms
-  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartTxLog")) return -1;
-  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return -1;										// 64 bytes
-  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 256 bytes
+  if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) return -1;	// 200ms
+  if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return -1;
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return -1;											// 64 bytes
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;											// 256 bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&s_uart_log, 512)) return -1;											// 512bytes
+  if (!pifLog_AttachUart(&s_uart_log, 512)) return -1;												// 512bytes
 
   if (!pifUart_Init(&g_uart_gps, PIF_ID_USER(1), huart6.Init.BaudRate)) return -1;
-  if (!pifUart_AttachRxTask(&g_uart_gps, TM_PERIOD, 200000, "UartRxGPS")) return -1;			// 200ms
-  if (!pifUart_AllocRxBuffer(&g_uart_gps, 128)) return -1;										// 256 bytes
+  if (!pifUart_AttachRxTask(&g_uart_gps, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxGPS")) return -1;	// 200ms
+  if (!pifUart_AllocRxBuffer(&g_uart_gps, 128)) return -1;											// 256 bytes
 
   HAL_UART_Receive_IT(&huart6, &s_gps_rx, 1);
 

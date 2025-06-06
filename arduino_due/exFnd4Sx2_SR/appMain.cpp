@@ -55,7 +55,7 @@ BOOL appSetup()
 {
     pifFnd_SetUserChar(c_ucUserChar, 2);
 
-    if (!pifTaskManager_Add(TM_PERIOD, 3000000, _taskFndTest, NULL, TRUE)) return FALSE;	// 3000ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 3000000, _taskFndTest, NULL, TRUE)) return FALSE;	// 3000ms
 
     pifFnd_Start(&g_fnd);
     return TRUE;

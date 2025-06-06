@@ -434,9 +434,9 @@ BOOL appSetup(uint32_t baurdate)
 {
 	s_baudrate = baurdate;
 
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;					// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;								// 32bytes
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
@@ -445,11 +445,11 @@ BOOL appSetup(uint32_t baurdate)
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) return FALSE;
-	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskNmeaSetup, NULL, TRUE)) return FALSE;	// 100ms
+	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskNmeaSetup, NULL, TRUE)) return FALSE;				// 100ms
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
 #endif
 	return TRUE;
 }

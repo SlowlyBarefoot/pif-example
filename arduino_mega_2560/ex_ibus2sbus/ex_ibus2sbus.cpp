@@ -108,23 +108,23 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;			// 1000us
 
     pif_act_gpio_write = _actGpioWrite;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartLog")) return;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartLog")) return;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) return;									// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return;											// 256bytes
 
 	if (!pifUart_Init(&g_uart_ibus, PIF_ID_USER(1), UART_IBUS_BAUDRATE)) return;
-    if (!pifUart_AttachRxTask(&g_uart_ibus, TM_PERIOD, 3000, "UartIbus")) return;		// 3ms
+    if (!pifUart_AttachRxTask(&g_uart_ibus, PIF_ID_AUTO, TM_PERIOD, 3000, "UartIbus")) return;	// 3ms
 	g_uart_ibus.act_receive_data = actSerial1ReceiveData;
 
 	if (!pifUart_Init(&g_uart_sbus, PIF_ID_USER(2), UART_SBUS_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&g_uart_sbus, TM_EXTERNAL, 0, "UartSbus")) return;
+    if (!pifUart_AttachTxTask(&g_uart_sbus, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartSbus")) return;
 	g_uart_sbus.act_send_data = actSerial2SendData;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;

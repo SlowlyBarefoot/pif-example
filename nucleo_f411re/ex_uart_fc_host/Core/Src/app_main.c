@@ -94,15 +94,15 @@ BOOL appSetup()
 {
 	int line;
 
-	if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
+	if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }		// 32bytes
 	pifLog_AttachEvent(_evtLogControlChar);
 
 	g_uart_host._p_rx_task->pause = FALSE;
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }					// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-	p_task = pifTaskManager_Add(TM_PERIOD, 10000, _taskSendMessage, NULL, FALSE);			// 3ms
+	p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskSendMessage, NULL, FALSE);	// 3ms
 	if (!p_task) { line = __LINE__; goto fail; }
 	return TRUE;
 

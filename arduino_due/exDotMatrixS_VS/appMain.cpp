@@ -163,7 +163,7 @@ BOOL appSetup()
     if (!pifDotMatrix_SetPatternSize(&g_dot_matrix, 1)) return FALSE;
    	if (!pifDotMatrix_AddPattern(&g_dot_matrix, 8, 9 * 8, ucPattern)) return FALSE;
 
-	if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
 
 	pifDotMatrix_Start(&g_dot_matrix);
 	return TRUE;

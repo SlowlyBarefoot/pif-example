@@ -28,7 +28,7 @@ BOOL appSetup()
 	if (!pifNoiseFilterManager_Init(&s_filter, 1)) return FALSE;
 #endif
 
-    if (!pifSensorDigital_AttachTaskAcquire(&g_sensor, TM_PERIOD, 50000, TRUE)) return FALSE;		// 50ms
+    if (!pifSensorDigital_AttachTaskAcquire(&g_sensor, PIF_ID_AUTO, TM_PERIOD, 50000, TRUE)) return FALSE;	// 50ms
 #if USE_FILTER_AVERAGE
     g_sensor.p_filter = pifNoiseFilterInt16_AddAverage(&s_filter, 7);
 	if (!g_sensor.p_filter) return FALSE;
@@ -37,6 +37,6 @@ BOOL appSetup()
 	p_timer = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!p_timer) return FALSE;
     pifTimer_AttachEvtFinish(p_timer, _evtTimerPeriodFinish, &g_sensor);
-	if (!pifTimer_Start(p_timer, 500)) return FALSE;												// 500ms
+	if (!pifTimer_Start(p_timer, 500)) return FALSE;														// 500ms
 	return TRUE;
 }

@@ -121,7 +121,7 @@ BOOL appSetup()
     param.hmc5883_mode = HMC5883_MODE_CONTINOUS;
 
     param.ms5611_osr = MS5611_OSR_4096;
-    param.ms5611_read_period = 2000;																		// 2000ms
+    param.ms5611_read_period = 2000;																					// 2000ms
     param.ms5611_evt_read = _evtBaroRead;
     param.disallow_yield_id = 1;
     if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, &param, &s_imu_sensor)) { line = __LINE__; goto fail; }
@@ -129,9 +129,9 @@ BOOL appSetup()
     s_gy86._mpu6050.temp_scale = 100;
     s_gy86._ms5611._p_task->pause = FALSE;
 
-    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskMpu60x0, NULL, TRUE)) { line = __LINE__; goto fail; }	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskMpu60x0, NULL, TRUE)) { line = __LINE__; goto fail; }	// 500ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }								// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }											// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 	return TRUE;;
 

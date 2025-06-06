@@ -7,6 +7,10 @@
 //#define NMEA
 #define UBX
 
+//#define WAITING	100
+#define WAITING		0
+
+#define BLOCKING	FALSE
 
 PifLed g_led_l;
 PifTimerManager g_timer_1ms;
@@ -32,6 +36,24 @@ const PifLogCmdEntry c_psCmdTable[] = {
 	{ NULL, NULL, NULL, NULL }
 };
 
+static struct {
+    PifDateTime _utc;
+    double _coord_deg[2];			// latitude, longitude	- unit: degree
+	double _altitude;       		// altitude      		- unit: meter
+	double _ground_speed;      		// ground speed         - unit: cm/s
+	double _ground_course;			//                   	- unit: degree
+	uint8_t _num_sat;
+	BOOL _fix;
+    BOOL __next_fix;
+	uint32_t _horizontal_acc;       // Horizontal accuracy estimate (mm)
+	uint32_t _vertical_acc;         // Vertical accuracy estimate (mm)
+	uint8_t _sv_num_ch;
+	uint8_t _sv_chn[PIF_GPS_SV_MAXSATS];     // Channel number
+	uint8_t _sv_svid[PIF_GPS_SV_MAXSATS];    // Satellite ID
+	uint8_t _sv_quality[PIF_GPS_SV_MAXSATS]; // Bitfield Qualtity
+	uint8_t _sv_cno[PIF_GPS_SV_MAXSATS];     // Carrier to Noise Ratio (Signal Strength)
+} s_gps_data;
+
 
 #ifdef NMEA
 
@@ -40,18 +62,31 @@ static void _evtGpsNmeaFrame(char* p_frame)
 	pifLog_Print(LT_NONE, p_frame);
 }
 
-static void _evtGpsNmeaText(PifGpsNmeaTxt *p_txt)
+static BOOL _evtGpsNmeaReceive(PifGps *p_owner, PifGpsNmeaMsgId msg_id)
 {
 	const char *acType[4] = { "Error", "Warning", "Notice", "User" };
 
-	pifLog_Printf(LT_NONE, "%s] %s\n", acType[p_txt->type], p_txt->text);
-}
+	switch (msg_id) {
+	case PIF_GPS_NMEA_MSG_ID_GGA:
+		s_gps_data._utc = p_owner->_gga.utc;
+		s_gps_data._coord_deg[PIF_GPS_LAT] = p_owner->_gga.lat;
+		s_gps_data._coord_deg[PIF_GPS_LON] = p_owner->_gga.lon;
+		s_gps_data._fix = p_owner->_gga.quality;
+		s_gps_data._num_sat = p_owner->_gga.num_sv;
+		s_gps_data._altitude = p_owner->_gga.alt;
+		return TRUE;
 
-static BOOL _evtGpsNmeaReceive(PifGps *p_owner, PifGpsNmeaMsgId msg_id)
-{
-	(void)p_owner;
+	case PIF_GPS_NMEA_MSG_ID_RMC:
+		s_gps_data._utc = p_owner->_rmc.utc;
+		s_gps_data._ground_speed = p_owner->_rmc.spd;
+		s_gps_data._ground_course = p_owner->_rmc.cog;
+		break;
 
-	return msg_id == PIF_GPS_NMEA_MSG_ID_GGA;
+	case PIF_GPS_NMEA_MSG_ID_TXT:
+		pifLog_Printf(LT_NONE, "%s] %s\n", acType[p_owner->_txt.msg_type], p_owner->_txt.text);
+		break;
+	}
+	return FALSE;
 }
 
 static uint32_t _taskNmeaSetup(PifTask *p_task)
@@ -71,7 +106,7 @@ static uint32_t _taskNmeaSetup(PifTask *p_task)
 		break;
 
 	case 0x20:
-		if (pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x07, 0x03, s_baudrate, TRUE, 100)) {
+		if (pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x03, 0x03, s_baudrate, TRUE, 100)) {
 			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d Retry=%d", GUCI_CFG, GUMI_CFG_PRT, retry);
 			retry--;
 			if (!retry) {
@@ -117,23 +152,76 @@ static uint32_t _taskNmeaSetup(PifTask *p_task)
 
 static BOOL _evtGpsUbxReceive(PifGpsUblox* p_owner, PifGpsUbxPacket* p_packet)
 {
+	int i;
+
     switch (p_packet->class_id) {
     case GUCI_ACK:
-    	pifLog_Printf(LT_INFO, "Ubx: cid=%u mid=%u, cid=%u mid=%u", p_packet->class_id, p_packet->msg_id, p_packet->payload.bytes[0], p_packet->payload.bytes[1]);
+    	pifLog_Printf(LT_INFO, "Ack: mid=%u, cid=%u mid=%u", p_packet->msg_id, p_packet->ack.cls_id, p_packet->ack.msg_id);
     	break;
 
     case GUCI_NAV:
     	switch (p_packet->msg_id) {
+        case GUMI_NAV_POSLLH:
+        	s_gps_data._coord_deg[PIF_GPS_LON] = p_packet->posllh.lon / 10000000.0;
+        	s_gps_data._coord_deg[PIF_GPS_LAT] = p_packet->posllh.lat / 10000000.0;
+        	s_gps_data._altitude = p_packet->posllh.h_msl / 1000.0;
+        	s_gps_data._horizontal_acc = p_packet->posllh.h_acc;
+        	s_gps_data._vertical_acc = p_packet->posllh.v_acc;
+            s_gps_data._fix = s_gps_data.__next_fix;
+		    return TRUE;
+
+        case GUMI_NAV_PVT:
+           	s_gps_data._utc.year = 20 + p_packet->pvt.year - 2000;
+        	s_gps_data._utc.month = p_packet->pvt.month;
+        	s_gps_data._utc.day = p_packet->pvt.day;
+        	s_gps_data._utc.hour = p_packet->pvt.hour;
+        	s_gps_data._utc.minute = p_packet->pvt.min;
+        	s_gps_data._utc.second = p_packet->pvt.sec;
+        	s_gps_data._utc.millisecond = p_packet->pvt.nano / 1000000UL;
+            s_gps_data._num_sat = p_packet->pvt.num_sv;
+            break;
+
+        case GUMI_NAV_SOL:
+        	s_gps_data.__next_fix = (p_packet->sol.flags & NAV_STATUS_FIX_VALID) && (p_packet->sol.gps_fix == FIX_3D);
+            if (!s_gps_data.__next_fix)
+               	s_gps_data._fix = FALSE;
+            s_gps_data._num_sat = p_packet->sol.num_sv;
+            break;
+
+        case GUMI_NAV_STATUS:
+        	s_gps_data.__next_fix = (p_packet->status.flags & NAV_STATUS_FIX_VALID) && (p_packet->status.gps_fix == FIX_3D);
+            if (!s_gps_data.__next_fix)
+              	s_gps_data._fix = FALSE;
+            break;
+
     	case GUMI_NAV_SVINFO:
-    		if (g_print_data) {
-				pifLog_Printf(LT_INFO, "SvInfo: ch=%u rate=%lu:%lu", s_gps_ublox._num_ch, s_gps_ublox._svinfo_rate[0], s_gps_ublox._svinfo_rate[1]);
-				for (int i = 0; i < s_gps_ublox._num_ch; i++) {
-					pifLog_Printf(LT_INFO, "   ch=%u rate=%lu:%lu", s_gps_ublox._svinfo_chn[i], s_gps_ublox._svinfo_svid[i], s_gps_ublox._svinfo_quality[i], s_gps_ublox._svinfo_cno[i]);
-				}
+			s_gps_data._sv_num_ch = p_packet->sv_info.num_ch;
+			if (s_gps_data._sv_num_ch > PIF_GPS_SV_MAXSATS)
+				s_gps_data._sv_num_ch = PIF_GPS_SV_MAXSATS;
+			for (i = 0; i < s_gps_data._sv_num_ch; i++) {
+				s_gps_data._sv_chn[i] = p_packet->sv_info.channel[i].chn;
+				s_gps_data._sv_svid[i] = p_packet->sv_info.channel[i].svid;
+				s_gps_data._sv_quality[i] = p_packet->sv_info.channel[i].quality;
+				s_gps_data._sv_cno[i] = p_packet->sv_info.channel[i].cno;
+			}
+			break;
+        case GUMI_NAV_TIMEUTC:
+           	if (p_packet->time_utc.valid & 4) {
+           		s_gps_data._utc.year = p_packet->time_utc.year - 2000;
+           		s_gps_data._utc.month = p_packet->time_utc.month;
+           		s_gps_data._utc.day = p_packet->time_utc.day;
+           		s_gps_data._utc.hour = p_packet->time_utc.hour;
+           		s_gps_data._utc.minute = p_packet->time_utc.min;
+           		s_gps_data._utc.second = p_packet->time_utc.sec;
+           		s_gps_data._utc.millisecond = p_packet->time_utc.nano / 1000000UL;
     		}
 			break;
-    	case GUMI_NAV_POSLLH:
-		    return TRUE;
+
+        case GUMI_NAV_VELNED:
+        	s_gps_data._ground_speed = p_packet->velned.speed;
+        	s_gps_data._ground_course = p_packet->velned.heading / 100000.0;
+            break;
+
 		}
 		break;
     }
@@ -198,7 +286,7 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 	uint16_t delay = 100;
 	static uint8_t step = 0, retry;
 
-	pifLog_Printf(LT_INFO, "UBX: Step=%x", step);
+	pifLog_Printf(LT_INFO, "UBX: Step=%x RS=%d", step, s_gps_ublox._request_state);
 
 	switch (step & 0xF0) {
 	case 0x10:
@@ -209,8 +297,8 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 		break;
 
 	case 0x20:
-		if (pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x07, 0x03, s_baudrate, TRUE, 0)) {
 			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Retry=%d", GUCI_CFG, GUMI_CFG_PRT, retry);
+		if (pifGpsUblox_SetPubxConfig(&s_gps_ublox, 1, 0x03, 0x01, s_baudrate, BLOCKING, 0)) {
 			retry--;
 			if (!retry) {
 				n = step - 0x20;
@@ -227,32 +315,83 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 		break;
 
 	case 0x40:
-		n = step - 0x40;
-		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNmea[n]), (uint8_t*)kCfgMsgNmea[n], TRUE, 400);
+		n = (step - 0x40) >> 1;
+#if WAITING > 0
 		pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
+		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNmea[n]), (uint8_t*)kCfgMsgNmea[n], BLOCKING, WAITING);
 		if (s_gps_ublox._request_state == GURS_ACK) {
 			n++;
-			if (n < sizeof(kCfgMsgNmea) / sizeof(kCfgMsgNmea[0])) step++; else step = 0x50;
-			delay = 400;
+			if (n < sizeof(kCfgMsgNmea) / sizeof(kCfgMsgNmea[0])) step += 2; else step = 0x50;
+			delay = 100;
 		}
 		else {
 			step = 0x10;
 			delay = 500;
 		}
+#else
+		if (step & 1) {
+			switch (s_gps_ublox._request_state) {
+			case GURS_SEND:
+				break;
+
+			case GURS_ACK:
+				n++;
+				if (n < sizeof(kCfgMsgNmea) / sizeof(kCfgMsgNmea[0])) step++; else step = 0x50;
+				delay = 100;
+				break;
+
+			default:
+				step = 0x10;
+				delay = 500;
+				break;
+			}
+		}
+		else {
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNmea[n]), (uint8_t*)kCfgMsgNmea[n], BLOCKING, WAITING);
+			step++;
+		}
+#endif
 		break;
 
 	case 0x50:
-		n = step - 0x50;
-		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], TRUE, 100);
+		n = (step - 0x50) >> 1;
+#if WAITING > 0
 		pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
+		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], BLOCKING, WAITING);
 		if (s_gps_ublox._request_state == GURS_ACK) {
 			n++;
-			if (n < sizeof(kCfgMsgNav) / sizeof(kCfgMsgNav[0])) step++; else step = 0x60;
+			if (n < sizeof(kCfgMsgNav) / sizeof(kCfgMsgNav[0])) step += 2; else step = 0x60;
+			delay = 100;
 		}
 		else {
 			step = 0x10;
 			delay = 500;
 		}
+#else
+		if (step & 1) {
+			switch (s_gps_ublox._request_state) {
+			case GURS_SEND:
+				break;
+
+			case GURS_ACK:
+				n++;
+				if (n < sizeof(kCfgMsgNav) / sizeof(kCfgMsgNav[0])) step++; else step = 0x60;
+				delay = 100;
+				break;
+
+			default:
+				step = 0x10;
+				delay = 500;
+				break;
+			}
+		}
+		else {
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], BLOCKING, WAITING);
+			step++;
+		}
+#endif
 		break;
 
 	default:
@@ -271,42 +410,114 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 		case 0x60:
 			p_rate = (uint16_t*)kCfgRate;
 			*p_rate = 1000;	// 1000 = 1Hz
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE, 100);
+#if WAITING > 0
 			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_RATE, s_gps_ublox._request_state);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, BLOCKING, WAITING);
 			if (s_gps_ublox._request_state == GURS_ACK) {
-				step++;
+				step += 2;
+				delay = 100;
 			}
 			else {
 				step = 0x10;
 				delay = 500;
 			}
+#else
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_RATE, s_gps_ublox._request_state);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, BLOCKING, WAITING);
+			step++;
+#endif
 			break;
 
 		case 0x61:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE, 100);
-			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, s_gps_ublox._request_state);
-			if (s_gps_ublox._request_state == GURS_ACK) {
+			switch (s_gps_ublox._request_state) {
+			case GURS_SEND:
+				break;
+
+			case GURS_ACK:
 				step++;
-			}
-			else {
+				delay = 100;
+				break;
+
+			default:
 				step = 0x10;
 				delay = 500;
+				break;
 			}
 			break;
 
 		case 0x62:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE, 100);
-			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, s_gps_ublox._request_state);
+#if WAITING > 0
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, s_gps_ublox._request_state);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, BLOCKING, WAITING);
 			if (s_gps_ublox._request_state == GURS_ACK) {
-				step++;
+				step += 2;
+				delay = 100;
 			}
 			else {
 				step = 0x10;
 				delay = 500;
 			}
+#else
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, s_gps_ublox._request_state);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, BLOCKING, WAITING);
+			step++;
+#endif
 			break;
 
 		case 0x63:
+			switch (s_gps_ublox._request_state) {
+			case GURS_SEND:
+				break;
+
+			case GURS_ACK:
+				step++;
+				delay = 100;
+				break;
+
+			default:
+				step = 0x10;
+				delay = 500;
+				break;
+			}
+			break;
+
+		case 0x64:
+#if WAITING > 0
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, s_gps_ublox._request_state);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], BLOCKING, WAITING);
+			if (s_gps_ublox._request_state == GURS_ACK) {
+				step += 2;
+				delay = 100;
+			}
+			else {
+				step = 0x10;
+				delay = 500;
+			}
+#else
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, s_gps_ublox._request_state);
+			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], BLOCKING, WAITING);
+			step++;
+#endif
+			break;
+
+		case 0x65:
+			switch (s_gps_ublox._request_state) {
+			case GURS_SEND:
+				break;
+
+			case GURS_ACK:
+				step++;
+				delay = 100;
+				break;
+
+			default:
+				step = 0x10;
+				delay = 500;
+				break;
+			}
+			break;
+
+		case 0x66:
 			p_task->pause = TRUE;
 			s_booting = TRUE;
 			break;
@@ -327,32 +538,31 @@ static void _evtGpsReceive(PifGps *p_owner)
 
 	if (!s_booting) return;
 
-	pifGps_ConvertLatitude2DegMin(p_owner, &lat_deg_min);
-	pifGps_ConvertLongitude2DegMin(p_owner, &lon_deg_min);
+	pifGps_ConvertDegree2DegMin(s_gps_data._coord_deg[PIF_GPS_LAT], &lat_deg_min);
+	pifGps_ConvertDegree2DegMin(s_gps_data._coord_deg[PIF_GPS_LON], &lon_deg_min);
 
-	pifGps_ConvertLatitude2DegMinSec(p_owner, &lat_deg_min_sec);
-	pifGps_ConvertLongitude2DegMinSec(p_owner, &lon_deg_min_sec);
+	pifGps_ConvertDegree2DegMinSec(s_gps_data._coord_deg[PIF_GPS_LAT], &lat_deg_min_sec);
+	pifGps_ConvertDegree2DegMinSec(s_gps_data._coord_deg[PIF_GPS_LON], &lon_deg_min_sec);
 
 	pifLog_Printf(LT_INFO, "UTC Date Time: %4u/%2u/%2u %2u:%2u:%2u.%3u",
-			2000 + p_owner->_utc.year, p_owner->_utc.month, p_owner->_utc.day,
-			p_owner->_utc.hour, p_owner->_utc.minute, p_owner->_utc.second, p_owner->_utc.millisecond);
+			2000 + s_gps_data._utc.year, s_gps_data._utc.month, s_gps_data._utc.day,
+			s_gps_data._utc.hour, s_gps_data._utc.minute, s_gps_data._utc.second, s_gps_data._utc.millisecond);
 	pifLog_Printf(LT_INFO, "Longitude: %f` - %u`%f' - %u`%u'%f\"",
-			p_owner->_coord_deg[PIF_GPS_LON], lon_deg_min.degree, lon_deg_min.minute,
+			s_gps_data._coord_deg[PIF_GPS_LON], lon_deg_min.degree, lon_deg_min.minute,
 			lon_deg_min_sec.degree, lon_deg_min_sec.minute, lon_deg_min_sec.second);
 	pifLog_Printf(LT_INFO, "Latitude: %f` - %u`%f' - %u`%u'%f\"",
-			p_owner->_coord_deg[PIF_GPS_LAT], lat_deg_min.degree, lat_deg_min.minute,
+			s_gps_data._coord_deg[PIF_GPS_LAT], lat_deg_min.degree, lat_deg_min.minute,
 			lat_deg_min_sec.degree, lat_deg_min_sec.minute, lat_deg_min_sec.second);
-	pifLog_Printf(LT_INFO, "NumSat: %u", p_owner->_num_sat);
-	pifLog_Printf(LT_INFO, "Altitude: %f m", p_owner->_altitude);
-	pifLog_Printf(LT_INFO, "Speed: %f cm/s", p_owner->_ground_speed);
-	pifLog_Printf(LT_INFO, "Ground Course: %f deg", p_owner->_ground_course);
-	pifLog_Printf(LT_INFO, "Fix: %u", p_owner->_fix);
-	pifLog_Printf(LT_INFO, "Acc: Hor %lu mm Ver %lu mm", p_owner->_horizontal_acc, p_owner->_vertical_acc);
-	pifLog_Printf(LT_INFO, "Update: %lu ms", p_owner->_update_rate[1] - p_owner->_update_rate[0]);
-/*		pifLog_Printf(LT_INFO, "SvInfo: ch=%u rate=%lu:%lu", s_gps_ublox._num_ch, s_gps_ublox._svinfo_rate[0], s_gps_ublox._svinfo_rate[1]);
-	for (int i = 0; i < s_gps_ublox._num_ch; i++) {
-		pifLog_Printf(LT_INFO, "   ch=%u rate=%lu:%lu", s_gps_ublox._svinfo_chn[i], s_gps_ublox._svinfo_svid[i], s_gps_ublox._svinfo_quality[i], s_gps_ublox._svinfo_cno[i]);
-	} */
+	pifLog_Printf(LT_INFO, "NumSat: %u", s_gps_data._num_sat);
+	pifLog_Printf(LT_INFO, "Altitude: %f m", s_gps_data._altitude);
+	pifLog_Printf(LT_INFO, "Speed: %f cm/s", s_gps_data._ground_speed);
+	pifLog_Printf(LT_INFO, "Ground Course: %f deg", s_gps_data._ground_course);
+	pifLog_Printf(LT_INFO, "Fix: %u", s_gps_data._fix);
+	pifLog_Printf(LT_INFO, "Acc: Hor %lu mm Ver %lu mm", s_gps_data._horizontal_acc, s_gps_data._vertical_acc);
+	pifLog_Printf(LT_INFO, "SvInfo: ch=%u", s_gps_data._sv_num_ch);
+	for (int i = 0; i < s_gps_data._sv_num_ch; i++) {
+		pifLog_Printf(LT_INFO, "   ch=%u svid=%u quality=%u cno=%u", s_gps_data._sv_chn[i], s_gps_data._sv_svid[i], s_gps_data._sv_quality[i], s_gps_data._sv_cno[i]);
+	}
 	pifLog_Printf(LT_NONE, "\n");
 }
 
@@ -434,22 +644,23 @@ BOOL appSetup(uint32_t baurdate)
 {
 	s_baudrate = baurdate;
 
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;					// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;								// 32bytes
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
+
+    memset(&s_gps_data, 0, sizeof(s_gps_data));
 
 	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
 	pifGpsUblox_AttachUart(&s_gps_ublox, &g_uart_gps);
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;
-	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) return FALSE;
-	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskNmeaSetup, NULL, TRUE)) return FALSE;	// 100ms
+	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskNmeaSetup, NULL, TRUE)) return FALSE;				// 100ms
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
 #endif
 	return TRUE;
 }

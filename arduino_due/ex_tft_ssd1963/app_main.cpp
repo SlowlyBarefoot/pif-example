@@ -143,22 +143,22 @@ BOOL appSetup()
     PifNoiseFilter* p_filter[2];
     int line;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }					// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }		// 32bytes
 
 	if (!pifNoiseFilterManager_Init(&s_filter, 2)) { line = __LINE__; goto fail; }
-	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);								// touch x
+	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);									// touch x
 	if (!p_filter[0]) { line = __LINE__; goto fail; }
-	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);								// touch y
+	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);									// touch y
 	if (!p_filter[1]) { line = __LINE__; goto fail; }
 
 	g_tsc2046.parent.evt_touch_data = _evtTouchData;
 	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, p_filter[0], p_filter[1])) { line = __LINE__; goto fail; }
 	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) { line = __LINE__; goto fail; }
 
-	p_task = pifTaskManager_Add(TM_PERIOD, 2000000, _taskFillScreen, NULL, FALSE);			// 2000ms
+	p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 2000000, _taskFillScreen, NULL, FALSE);	// 2000ms
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
 

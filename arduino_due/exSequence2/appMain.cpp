@@ -54,14 +54,14 @@ BOOL appSetup()
 	int i;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stSequenceTest[i].stPushSwitch, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stSequenceTest[i].stPushSwitch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
 		pifSensor_AttachEvtChange(&g_stSequenceTest[i].stPushSwitch.parent, _evtPushSwitchChange, &g_stSequenceTest[i]);
 
 	    if (!pifSequence_Init(&g_stSequenceTest[i].stSequence, PIF_ID_SEQUENCE + i, &g_timer_1ms, &g_stSequenceTest[i])) return FALSE;
 	    g_stSequenceTest[i].stSequence.evt_error = _evtSequenceError;
     }
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																	// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																				// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

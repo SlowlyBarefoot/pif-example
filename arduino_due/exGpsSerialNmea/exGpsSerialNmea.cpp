@@ -112,23 +112,23 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;				// 1000us
 
     pif_act_gpio_write = _actGpioWrite;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartTxLog")) return;
-    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return;			// 200ms
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return;
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) return;	// 200ms
 	s_uart_log.act_receive_data = actLogReceiveData;
 	s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 512)) return;										// 512bytes
+	if (!pifLog_AttachUart(&s_uart_log, 512)) return;												// 512bytes
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
 
 	if (!pifUart_Init(&g_uart_gps, PIF_ID_USER(1), UART_GPS_BAUDRATE)) return;
-    if (!pifUart_AttachRxTask(&g_uart_gps, TM_PERIOD, 200000, "UartRxGPS")) return;			// 200ms
+    if (!pifUart_AttachRxTask(&g_uart_gps, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxGPS")) return;	// 200ms
     g_uart_gps.act_receive_data = actGpsReceiveData;
 
     if (!appSetup()) return;

@@ -75,7 +75,7 @@ BOOL appSetup()
     pifGpioColSig_SetFlag(GP_CSF_ALL_BIT);
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_test[i].stPushSwitch, TM_PERIOD, 5000, TRUE)) return FALSE;	// 5ms
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_test[i].stPushSwitch, PIF_ID_AUTO, TM_PERIOD, 5000, TRUE)) return FALSE;	// 5ms
 	    pifSensorSwitch_SetCsFlag(&g_test[i].stPushSwitch, SS_CSF_RAW_BIT);
 	    pifSensor_AttachEvtChange(&g_test[i].stPushSwitch.parent, _evtPushSwitchChange, &g_test[i]);
 
@@ -83,10 +83,10 @@ BOOL appSetup()
     }
     pifSequenceColSig_SetFlag(SQ_CSF_ALL_BIT);
 
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch_collect, TM_PERIOD, 5000, TRUE)) return FALSE;		// 5ms
+    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch_collect, PIF_ID_AUTO, TM_PERIOD, 5000, TRUE)) return FALSE;		// 5ms
     pifSensor_AttachEvtChange(&g_push_switch_collect.parent, _evtPushSwitchCollectChange, NULL);
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;														// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																	// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 	return TRUE;
 }

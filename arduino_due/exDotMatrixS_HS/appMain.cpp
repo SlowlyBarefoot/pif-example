@@ -151,7 +151,7 @@ BOOL appSetup()
 	static uint8_t ucPattern[5 * 8];
 	int n;
 
-	if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
 
 	n = 0;
 	for (int k = 0; k < 8; k++) {

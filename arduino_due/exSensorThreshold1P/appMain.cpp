@@ -26,7 +26,7 @@ BOOL appSetup()
 #endif
 
     pifSensorDigital_SetThreshold(&g_sensor, 550, 550);
-    if (!pifSensorDigital_AttachTaskAcquire(&g_sensor, TM_PERIOD, 50000, TRUE)) return FALSE;	// 50ms
+    if (!pifSensorDigital_AttachTaskAcquire(&g_sensor, PIF_ID_AUTO, TM_PERIOD, 50000, TRUE)) return FALSE;	// 50ms
 #if USE_FILTER_AVERAGE
     g_sensor.p_filter = pifNoiseFilterInt16_AddAverage(&s_filter, 7);
 	if (!g_sensor.p_filter) return FALSE;

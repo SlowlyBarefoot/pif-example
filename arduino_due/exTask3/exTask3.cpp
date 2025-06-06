@@ -97,13 +97,13 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    s_pstTask[0] = pifTaskManager_Add(TM_PERIOD, 200, _taskLedRedToggle, NULL, TRUE);		// 200us
+    s_pstTask[0] = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 200, _taskLedRedToggle, NULL, TRUE);		// 200us
     if (!s_pstTask[0]) return;
 
-    s_pstTask[1] = pifTaskManager_Add(TM_PERIOD, 1000, _taskLedYellowToggle, NULL, FALSE);	// 1ms
+    s_pstTask[1] = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskLedYellowToggle, NULL, FALSE);	// 1ms
     if (!s_pstTask[1]) return;
 
-    s_pstTask[2] = pifTaskManager_Add(TM_ALWAYS, 0, _taskLedGreenToggle, NULL, FALSE);
+    s_pstTask[2] = pifTaskManager_Add(PIF_ID_AUTO, TM_ALWAYS, 0, _taskLedGreenToggle, NULL, FALSE);
     if (!s_pstTask[2]) return;
 }
 

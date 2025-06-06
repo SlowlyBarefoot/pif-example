@@ -69,10 +69,10 @@ BOOL appSetup()
     if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) return FALSE;
     if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) return FALSE;
 
-    if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskPmlcdI2c, NULL, TRUE)) return FALSE;	// 1000ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskPmlcdI2c, NULL, TRUE)) return FALSE;	// 1000ms
 #endif
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

@@ -69,7 +69,7 @@ BOOL appSetup()
     if (!pifSequence_Init(&s_sequence, PIF_ID_AUTO, &g_timer_1ms, &s_step)) return FALSE;
     s_sequence.evt_error = _evtSequenceError;
 
-    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskSequence, &s_sequence, TRUE)) return FALSE;	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskSequence, &s_sequence, TRUE)) return FALSE;	// 500ms
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***            exSequence1           ***\n");

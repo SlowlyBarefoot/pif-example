@@ -191,7 +191,7 @@ BOOL appSetup()
 {
 	PifTask* p_task;
 
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;								// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;											// 32bytes
 
     pifDutyMotorSpeedEnc_AddStages(&g_motor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
     g_motor.parent.evt_stable = _evtStable;
@@ -200,14 +200,14 @@ BOOL appSetup()
     pifPidControl_Init(pifDutyMotorSpeedEnc_GetPidControl(&g_motor), 0.1, 0, 0, 100);
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], TM_PERIOD, 1000, TRUE)) return FALSE;		// 1ms
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], PIF_ID_AUTO, TM_PERIOD, 1000, TRUE)) return FALSE;		// 1ms
     }
 
-    p_task = pifTaskManager_Add(TM_PERIOD, 10000, _taskInitPos, NULL, TRUE);							// 10ms
+    p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskInitPos, NULL, TRUE);							// 10ms
     if (!p_task) return FALSE;
     p_task->name = "InitPos";
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;															// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

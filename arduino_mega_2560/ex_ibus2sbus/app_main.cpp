@@ -53,9 +53,9 @@ BOOL appSetup()
     if (!pifRcSbus_Init(&s_sbus, PIF_ID_AUTO)) return FALSE;
     pifRcSbus_AttachUart(&s_sbus, &g_uart_sbus);
 
-    if (!pifTaskManager_Add(TM_PERIOD, 7500, _taskSbus, &s_sbus, TRUE)) return FALSE;	// 7.5ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSbus, &s_sbus, TRUE)) return FALSE;	// 7.5ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;								// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

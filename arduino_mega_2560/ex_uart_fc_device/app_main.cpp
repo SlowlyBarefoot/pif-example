@@ -94,15 +94,15 @@ BOOL appSetup()
 {
     int line;
 
-    if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }					// 32bytes
+    if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }									// 32bytes
     pifLog_AttachEvent(_evtLogControlChar);
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }								// 500ms
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }												// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifUart_AttachClient(&g_uart_device, NULL, _evtUartParsing, NULL);
 
-	if (!pifTaskManager_Add(TM_PERIOD, 5000, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 5000, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
 	return TRUE;
 
 fail:

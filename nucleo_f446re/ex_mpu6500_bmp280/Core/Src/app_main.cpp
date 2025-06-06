@@ -123,12 +123,12 @@ BOOL appSetup()
 
 	pifBmp280_SetOverSamplingRate(&s_bmp280, BMP280_OSRS_P_X16, BMP280_OSRS_T_X2);
 #ifdef USE_BARO_TASK
-	if (!pifBmp280_AddTaskForReading(&s_bmp280, 2000, &_evtBaroRead, TRUE)) return FALSE;		// 2sec
+	if (!pifBmp280_AttachTaskForReading(&s_bmp280, PIF_ID_AUTO, 2000, &_evtBaroRead, TRUE)) return FALSE;	// 2sec
 #endif
 
-    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskMpu6500, NULL, TRUE)) return FALSE;			// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskMpu6500, NULL, TRUE)) return FALSE;		// 500ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;										// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;													// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

@@ -155,6 +155,6 @@ BOOL appSetup()
     	if (!pifDotMatrix_AddPattern(&g_dot_matrix, 8, 8, (uint8_t *)font8x8_basic[i])) return FALSE;
     }
 
-	if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;		// 1000ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;		// 1000ms
 	return TRUE;
 }

@@ -154,17 +154,17 @@ int main(void)
 
   if (!pifTaskManager_Init(TASK_SIZE)) return -1;
 
-  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;			// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, NULL)) return -1;
-  if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return -1;										// 64bytes
+  if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return -1;
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return -1;											// 64bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&s_uart_log, 256)) return -1;											// 256bytes
+  if (!pifLog_AttachUart(&s_uart_log, 256)) return -1;												// 256bytes
 
-  if (!pifTaskManager_Add(TM_PERIOD, 100000, _taskLedToggle, NULL, TRUE)) return -1;			// 100ms
+  if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskLedToggle, NULL, TRUE)) return -1;	// 100ms
 
   if (!appSetup()) return -1;
 

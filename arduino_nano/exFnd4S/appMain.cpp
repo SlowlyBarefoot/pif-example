@@ -72,8 +72,8 @@ static uint32_t _taskFndTest(PifTask *pstTask)
 BOOL appSetup()
 {
     pifFnd_SetUserChar(c_ucUserChar, 2);
-    pifFnd_SetPeriodPerDigit(&g_fnd, 20);													// 20ms
+    pifFnd_SetPeriodPerDigit(&g_fnd, 20);																// 20ms
 
-	if (!pifTaskManager_Add(TM_PERIOD, 1000000, _taskFndTest, NULL, TRUE)) return FALSE;	// 1000ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskFndTest, NULL, TRUE)) return FALSE;	// 1000ms
 	return TRUE;
 }

@@ -204,27 +204,27 @@ int main(void)
 
   if (!pifTaskManager_Init(TASK_SIZE)) return -1;
 
-  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;	// 1000us
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
 
   pif_act_gpio_write = _actGpioWrite;
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartLog")) return -1;
-  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;									// 128bytes
+  if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartLog")) return -1;
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 128bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&s_uart_log, 256)) return -1;										// 256bytes
+  if (!pifLog_AttachUart(&s_uart_log, 256)) return -1;											// 256bytes
 
   if (!pifUart_Init(&g_uart_ibus, PIF_ID_USER(1), huart6.Init.BaudRate)) return -1;
-  if (!pifUart_AttachRxTask(&g_uart_ibus, TM_PERIOD, 3000, "UartIbus")) return -1;			// 3ms
-  if (!pifUart_AllocRxBuffer(&g_uart_ibus, 64)) return -1;									// 64bytes
+  if (!pifUart_AttachRxTask(&g_uart_ibus, PIF_ID_AUTO, TM_PERIOD, 3000, "UartIbus")) return -1;	// 3ms
+  if (!pifUart_AllocRxBuffer(&g_uart_ibus, 64)) return -1;										// 64bytes
 
   HAL_UART_Receive_IT(&huart6, &s_ibus_rx, 1);
 
   if (!pifUart_Init(&g_uart_sbus, PIF_ID_USER(2), huart1.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTxTask(&g_uart_sbus, TM_EXTERNAL, 0, "UartSbus")) return -1;
-  if (!pifUart_AllocTxBuffer(&g_uart_sbus, 64)) return -1;									// 64bytes
+  if (!pifUart_AttachTxTask(&g_uart_sbus, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartSbus")) return -1;
+  if (!pifUart_AllocTxBuffer(&g_uart_sbus, 64)) return -1;										// 64bytes
   g_uart_sbus.act_start_transfer = actSbusStartTransfer;
 
   if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return -1;

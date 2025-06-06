@@ -103,20 +103,20 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }					// 1000us
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartTxLog")) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }			// 200ms
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }		// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }													// 256bytes
 
 	if (!pifUart_Init(&g_uart_device, PIF_ID_AUTO, UART_DEVICE_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTxTask(&g_uart_device, TM_EXTERNAL, 0, "UartTxDevice")) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachRxTask(&g_uart_device, TM_PERIOD, 50000, "UartRxDevice")) { line = __LINE__; goto fail; }	// 50ms
+    if (!pifUart_AttachTxTask(&g_uart_device, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxDevice")) { line = __LINE__; goto fail; }
+    if (!pifUart_AttachRxTask(&g_uart_device, PIF_ID_AUTO, TM_PERIOD, 50000, "UartRxDevice")) { line = __LINE__; goto fail; }	// 50ms
     g_uart_device.act_receive_data = actDeviceReceiveData;
     g_uart_device.act_send_data = actDeviceSendData;
     g_uart_device.act_get_rx_rate = actDeviceGetRxRate;

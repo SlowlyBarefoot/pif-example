@@ -205,13 +205,13 @@ int main(void)
 
   if (!pifTaskManager_Init(TASK_SIZE)) return -1;
 
-  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;			// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartTxLog")) return -1;
-  if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) return -1;			// 200ms
-  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return -1;										// 64bytes
-  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;										// 128bytes
+  if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return -1;
+  if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) return -1;	// 200ms
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return -1;											// 64bytes
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return -1;											// 128bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
@@ -222,10 +222,10 @@ int main(void)
   if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return -1;
 
   if (!pifUart_Init(&g_uart_gps, PIF_ID_AUTO, huart6.Init.BaudRate)) return -1;
-  if (!pifUart_AttachTxTask(&g_uart_gps, TM_EXTERNAL, 0, "UartTxGPS")) return -1;
-  if (!pifUart_AttachRxTask(&g_uart_gps, TM_PERIOD, 100000, "UartRxGPS")) return -1;			// 100ms
-  if (!pifUart_AllocRxBuffer(&g_uart_gps, 128)) return -1;										// 128bytes
-  if (!pifUart_AllocTxBuffer(&g_uart_gps, 64)) return -1;										// 64bytes
+  if (!pifUart_AttachTxTask(&g_uart_gps, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxGPS")) return -1;
+  if (!pifUart_AttachRxTask(&g_uart_gps, PIF_ID_AUTO, TM_PERIOD, 100000, "UartRxGPS")) return -1;	// 100ms
+  if (!pifUart_AllocRxBuffer(&g_uart_gps, 128)) return -1;											// 128bytes
+  if (!pifUart_AllocTxBuffer(&g_uart_gps, 64)) return -1;											// 64bytes
   g_uart_gps.act_start_transfer = actGpsStartTransfer;
   g_uart_gps.act_set_baudrate = actGpsSetBaudrate;
 

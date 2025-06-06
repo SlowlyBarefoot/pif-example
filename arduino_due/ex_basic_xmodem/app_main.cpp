@@ -225,7 +225,7 @@ BOOL appSetup()
 
 	pifBasic_Init(p_process, _evtComplete);
 
-	s_task = pifTaskManager_Add(TM_EXTERNAL, 0, _taskChangeUart, NULL, TRUE);
+	s_task = pifTaskManager_Add(PIF_ID_AUTO, TM_EXTERNAL, 0, _taskChangeUart, NULL, TRUE);
 	if (!s_task) return FALSE;
 	return TRUE;
 }

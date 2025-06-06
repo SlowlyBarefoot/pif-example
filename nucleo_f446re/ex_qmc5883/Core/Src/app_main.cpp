@@ -31,9 +31,9 @@ BOOL appSetup()
 
     pifQmc5883_SetControl1(&s_qmc5883, QMC5883_MODE_CONTIMUOUS | QMC5883_ODR_200HZ | QMC5883_RNG_8G | QMC5883_OSR_512);
 
-    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskQmc5883, NULL, TRUE)) return FALSE;	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskQmc5883, NULL, TRUE)) return FALSE;	// 500ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;								// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

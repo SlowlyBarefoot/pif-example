@@ -28,6 +28,6 @@ BOOL appSetup()
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return FALSE;
     pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_COUNT | PIF_PMM_LOW_WIDTH | PIF_PMM_HIGH_WIDTH);
 
-    if (!pifTaskManager_Add(TM_PERIOD, 20000, _taskPulse, NULL, TRUE)) return FALSE;		// 20ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 20000, _taskPulse, NULL, TRUE)) return FALSE;		// 20ms
     return TRUE;
 }

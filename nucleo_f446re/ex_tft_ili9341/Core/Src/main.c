@@ -419,21 +419,21 @@ int main(void)
 
   if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
 
-  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
+  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }			// 1000us
 
   if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) { line = __LINE__; goto fail; }
-  if (!pifUart_AttachTxTask(&s_uart_log, TM_EXTERNAL, 0, "UartTxLog")) { line = __LINE__; goto fail; }
-  if (!pifUart_AttachRxTask(&s_uart_log, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }			// 200ms
-  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) { line = __LINE__; goto fail; }										// 64bytes
-  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) { line = __LINE__; goto fail; }										// 128bytes
+  if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) { line = __LINE__; goto fail; }
+  if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }	// 200ms
+  if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) { line = __LINE__; goto fail; }											// 64bytes
+  if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) { line = __LINE__; goto fail; }											// 128bytes
   s_uart_log.act_start_transfer = actLogStartTransfer;
 
   HAL_UART_Receive_IT(&huart2, &s_log_rx, 1);
 
   pifLog_Init();
-  if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }											// 256bytes
+  if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }												// 256bytes
 
-  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) { line = __LINE__; goto fail; }			// 2EA
+  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) { line = __LINE__; goto fail; }				// 2EA
 
 #if LCD_TYPE == LCD_2_2_INCH_SPI
   if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }

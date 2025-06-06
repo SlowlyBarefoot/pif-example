@@ -42,9 +42,9 @@ static uint32_t _taskServoMotor(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifTaskManager_Add(TM_PERIOD, 700000, _taskServoMotor, NULL, TRUE)) return FALSE;	// 1000ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 700000, _taskServoMotor, NULL, TRUE)) return FALSE;	// 1000ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;									// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

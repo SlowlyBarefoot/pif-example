@@ -119,7 +119,7 @@ BOOL appSetup()
     param.hmc5883_data_rate = HMC5883_DATARATE_75HZ;
     param.hmc5883_mode = HMC5883_MODE_CONTINOUS;
     param.ms5611_osr = MS5611_OSR_4096;
-    param.ms5611_read_period = 2000;													// 2000ms
+    param.ms5611_read_period = 2000;																	// 2000ms
     param.ms5611_evt_read = _evtBaroRead;
     if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, &param, &s_imu_sensor)) return FALSE;
 #ifdef USE_I2C_WIRE
@@ -130,9 +130,9 @@ BOOL appSetup()
     s_gy86._mpu6050.temp_scale = 100;
     s_gy86._ms5611._p_task->pause = FALSE;
 
-    if (!pifTaskManager_Add(TM_PERIOD, 500000, _taskMpu60x0, NULL, TRUE)) return FALSE;	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskMpu60x0, NULL, TRUE)) return FALSE;	// 500ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;								// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 }

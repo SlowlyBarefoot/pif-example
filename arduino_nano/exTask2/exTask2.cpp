@@ -79,9 +79,9 @@ void setup()
 
     if (!pifTaskManager_Init(TASK_SIZE)) return;
 
-    if (!pifTaskManager_Add(TM_PERIOD, 500, _taskLedRedToggle, NULL, TRUE)) return;		// 500us
-    if (!pifTaskManager_Add(TM_PERIOD, 2000, _taskLedYellowToggle, NULL, TRUE)) return;	// 2ms
-    if (!pifTaskManager_Add(TM_ALWAYS, 0, _taskLedGreenToggle, NULL, TRUE)) return;
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500, _taskLedRedToggle, NULL, TRUE)) return;		// 500us
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 2000, _taskLedYellowToggle, NULL, TRUE)) return;	// 2ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_ALWAYS, 0, _taskLedGreenToggle, NULL, TRUE)) return;
 }
 
 // The loop function is called in an endless loop
