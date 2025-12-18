@@ -59,7 +59,7 @@
 		<link>
 			<name>libraries/lvgl</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/lvgl/9.1.0</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/lvgl/9.4.0</locationURI>
 		</link>
 		<link>
 			<name>pif/include</name>
@@ -162,9 +162,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/core/pif_task_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task_manager.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/core/pif_timer.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif_timer_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/display/pif_ili9341.h</name>
@@ -247,9 +257,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
 		</link>
 		<link>
+			<name>pif/source/core/pif_task_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task_manager.c</locationURI>
+		</link>
+		<link>
 			<name>pif/source/core/pif_timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_timer_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/display/pif_ili9341.c</name>

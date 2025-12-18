@@ -64,7 +64,7 @@
 		<link>
 			<name>libraries/Wire</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.3/libraries/Wire</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.6/libraries/Wire</locationURI>
 		</link>
 		<link>
 			<name>pif/include</name>
@@ -152,9 +152,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/core/pif_task_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task_manager.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/core/pif_timer.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif_timer_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/display/pif_led.h</name>
@@ -222,9 +232,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
 		</link>
 		<link>
+			<name>pif/source/core/pif_task_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task_manager.c</locationURI>
+		</link>
+		<link>
 			<name>pif/source/core/pif_timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_timer_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/display/pif_led.c</name>

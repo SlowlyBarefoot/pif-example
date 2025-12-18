@@ -4,7 +4,7 @@
 
 #include "communication/pif_i2c.h"
 #include "core/pif_log.h"
-#include "core/pif_timer.h"
+#include "core/pif_timer_manager.h"
 
 
 extern PifI2cPort g_i2c_port;

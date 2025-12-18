@@ -137,6 +137,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_obj_array.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/core/pif_pid_control.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_pid_control.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/core/pif_pulse.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_pulse.h</locationURI>
@@ -152,9 +157,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/core/pif_task_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task_manager.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/core/pif_timer.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif_timer_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/display/pif_led.h</name>
@@ -217,6 +232,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_obj_array.c</locationURI>
 		</link>
 		<link>
+			<name>pif/source/core/pif_pid_control.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_pid_control.c</locationURI>
+		</link>
+		<link>
 			<name>pif/source/core/pif_pulse.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_pulse.c</locationURI>
@@ -232,9 +252,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
 		</link>
 		<link>
+			<name>pif/source/core/pif_task_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task_manager.c</locationURI>
+		</link>
+		<link>
 			<name>pif/source/core/pif_timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_timer_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/display/pif_led.c</name>

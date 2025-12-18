@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "core/pif_task.h"
+#include "core/pif_task_manager.h"
 
 /* USER CODE END Includes */
 

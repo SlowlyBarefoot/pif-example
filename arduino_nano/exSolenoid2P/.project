@@ -132,9 +132,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/core/pif_task_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task_manager.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/core/pif_timer.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif_timer_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
 			<name>pif/source/actulator/pif_solenoid.c</name>
@@ -177,9 +187,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
 		</link>
 		<link>
+			<name>pif/source/core/pif_task_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task_manager.c</locationURI>
+		</link>
+		<link>
 			<name>pif/source/core/pif_timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_timer_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

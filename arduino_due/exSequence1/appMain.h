@@ -3,7 +3,7 @@
 
 
 #include "core/pif_log.h"
-#include "core/pif_timer.h"
+#include "core/pif_timer_manager.h"
 
 
 #define TASK_SIZE				6

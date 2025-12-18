@@ -3,6 +3,7 @@
 
 
 #include "core/pif_log.h"
+#include "core/pif_timer_manager.h"
 #include "sensor/pif_sensor_digital.h"
 
 

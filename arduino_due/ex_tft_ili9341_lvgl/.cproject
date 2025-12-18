@@ -23,9 +23,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/SPI/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lvgl/examples}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lvgl/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lvgl/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lv_arduino/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1091450629" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -35,9 +35,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/SPI/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lvgl/examples}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lvgl/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lvgl/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lv_arduino/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.69914237" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -47,6 +47,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lvgl/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ex_tft_ili9341_lvgl/libraries/lv_arduino/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1408180956" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -87,7 +88,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="libraries/lv_examples/scripts|libraries/lv_examples/docs|libraries/lvgl/scripts|libraries/lvgl/env_support|libraries/lvgl/docs|libraries/lvgl/demos|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="libraries/lvgl/zephyr|libraries/lvgl/xmls|libraries/lvgl/libs|libraries/lvgl/configs|libraries/lv_examples/scripts|libraries/lv_examples/docs|libraries/lvgl/scripts|libraries/lvgl/env_support|libraries/lvgl/docs|libraries/lvgl/demos|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
