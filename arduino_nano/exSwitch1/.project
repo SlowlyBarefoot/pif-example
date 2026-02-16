@@ -112,6 +112,16 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/core/pif_collect_signal.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_collect_signal.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif_dlist.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_dlist.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/core/pif_gpio.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_gpio.h</locationURI>
@@ -180,6 +190,16 @@
 			<name>pif/source/core/pif.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_collect_signal.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_collect_signal.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_dlist.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_dlist.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core/pif_gpio.c</name>
