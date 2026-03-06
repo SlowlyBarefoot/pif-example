@@ -40,7 +40,7 @@ static uint32_t _taskFndTest(PifTask *pstTask)
 			pifFnd_SetString(&g_fnd, (char *)"AAAA");
 		}
 		else if (nValue < 10000) {
-			pifFnd_SetInterger(&g_fnd, nValue);
+			pifFnd_SetInteger(&g_fnd, nValue);
 		}
 		else {
 			pifFnd_SetString(&g_fnd, (char *)"BBBB");

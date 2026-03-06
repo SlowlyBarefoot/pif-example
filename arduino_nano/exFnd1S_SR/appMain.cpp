@@ -23,7 +23,7 @@ static uint32_t _taskFndTest(PifTask *pstTask)
 
 	(void)pstTask;
 
-	if (i < 10) pifFnd_SetInterger(&g_fnd, i);
+	if (i < 10) pifFnd_SetInteger(&g_fnd, i);
 	else {
 		buf[0] = 'A' + i - 10;
 		buf[1] = 0;
