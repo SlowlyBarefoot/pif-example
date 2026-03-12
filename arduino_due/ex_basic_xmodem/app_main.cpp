@@ -206,7 +206,7 @@ static void _evtComplete(PifBasic* p_owner)
 
 	pifLog_Print(LT_INFO, "Complete:");
 	pifLog_Printf(LT_NONE, "\n\tProgram Size = %d %s %d", p_owner->_program_size, sym[p_owner->_program_size > PIF_BASIC_PROGRAM], PIF_BASIC_PROGRAM);
-	pifLog_Printf(LT_NONE, "\n\tVariable Count = %d %s %d", p_owner->_varable_count, sym[p_owner->_varable_count > PIF_BASIC_VARIABLE], PIF_BASIC_VARIABLE);
+	pifLog_Printf(LT_NONE, "\n\tVariable Count = %d %s %d", p_owner->_variable_count, sym[p_owner->_variable_count > PIF_BASIC_VARIABLE], PIF_BASIC_VARIABLE);
 	pifLog_Printf(LT_NONE, "\n\tString Count = %d %s %d", p_owner->_string_count, sym[p_owner->_string_count > PIF_BASIC_STRING], PIF_BASIC_STRING);
 	pifLog_Printf(LT_NONE, "\n\tStack Count = %d %s %d", p_owner->_stack_count, sym[p_owner->_stack_count > PIF_BASIC_STACK], PIF_BASIC_STACK);
 	pifLog_Printf(LT_NONE, "\n\tParsing Time = %ldms", p_owner->_parsing_time);
