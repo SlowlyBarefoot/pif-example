@@ -419,7 +419,7 @@ int main(void)
 
   pif_Init(micros);
 
-  if (!pifTaskManager_Init(TASK_SIZE)) { line = __LINE__; goto fail; }
+  if (!pifTaskManager_Init(TASK_SIZE, 1)) { line = __LINE__; goto fail; }
 
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }			// 1000us
 

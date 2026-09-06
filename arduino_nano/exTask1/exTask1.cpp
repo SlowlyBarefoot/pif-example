@@ -39,7 +39,7 @@ void setup()
 
 	pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return;
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return;
 
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) return;	// 50us
 }

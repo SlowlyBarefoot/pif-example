@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 
     pif_Init(NULL);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return FALSE;
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_MS_SIZE)) return FALSE;	// 1000us
 

@@ -130,7 +130,7 @@ void setup()
 
     pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return;
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return;
 
 #ifdef PIF_DEBUG
 	pif_act_task_yield = actTaskYield;

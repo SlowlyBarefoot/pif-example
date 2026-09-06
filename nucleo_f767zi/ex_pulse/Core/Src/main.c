@@ -157,7 +157,7 @@ int main(void)
 
   pif_Init(micros);
 
-  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+  if (!pifTaskManager_Init(TASK_SIZE, 1)) return -1;
 
   if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;			// 1000us
 

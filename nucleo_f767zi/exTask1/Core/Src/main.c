@@ -146,7 +146,7 @@ int main(void)
 
   pif_Init(micros);
 
-  if (!pifTaskManager_Init(TASK_SIZE)) return -1;
+  if (!pifTaskManager_Init(TASK_SIZE, 0)) return -1;
 
   if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) return -1;		// 50us
 

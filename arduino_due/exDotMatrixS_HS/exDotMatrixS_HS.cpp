@@ -88,7 +88,7 @@ void setup()
 
     pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(5)) return;
+    if (!pifTaskManager_Init(5, 1)) return;
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, 2)) return;						// 1000us
 

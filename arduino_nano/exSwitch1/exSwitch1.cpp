@@ -80,7 +80,7 @@ void setup()
 
     pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) return;
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
     if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return;

@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 
     pif_Init(micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE)) goto fail;
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
 
 	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
     if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) goto fail;	// 1ms
