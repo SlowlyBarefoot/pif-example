@@ -92,6 +92,7 @@ static uint32_t _taskMpu6500(PifTask *pstTask)
 		else {
 			pifLog_Printf(LT_NONE, "\nBaro:\tError");
 		}
+		pifBmp280_StartMeasurement(&s_bmp280);		// Read on the next pass, so nothing waits for the conversion
 #endif
 		step = 0;
 		break;

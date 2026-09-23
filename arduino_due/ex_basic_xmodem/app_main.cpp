@@ -97,7 +97,7 @@ static int _cmdBasicPrint(int argc, char* argv[])
 				p_basic += 64;
 				len -= 64;
 			}
-			pifTaskManager_YieldMs(10);
+			pif_Delay1ms(10);
 		}
 		pifLog_Print(LT_NONE, "\n-----------------------------------------------------");
 	}
@@ -133,7 +133,7 @@ static int _cmdBasicHex(int argc, char* argv[])
 				ptr += 16;
 				len -= 16;
 			}
-			pifTaskManager_YieldMs(10);
+			pif_Delay1ms(10);
 		}
 		pifLog_Print(LT_NONE, "\n-----------------------------------------------------");
 	}

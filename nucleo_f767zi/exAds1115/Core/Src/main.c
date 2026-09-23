@@ -34,7 +34,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define TASK_SIZE				3
-#define TIMER_1MS_SIZE			1
+#define TIMER_1MS_SIZE			2
 
 //#define USE_POLLING
 #define USE_INTERRUPT

@@ -5,7 +5,7 @@
 
 #define PIN_LED_L				13
 
-#define TASK_SIZE				2
+#define TASK_SIZE				3
 #define TIMER_1MS_SIZE			1
 
 #define UART_LOG_BAUDRATE		115200
@@ -14,6 +14,7 @@
 
 
 static uint8_t s_aucLog[LOG_BUFFER_SIZE];
+static PifTask* s_task_print_buffer;
 
 
 static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
@@ -21,6 +22,13 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
 	(void)p_uart;
 
     return Serial.write((char *)pucBuffer, usSize);
+}
+
+static uint32_t _taskPrintBuffer(PifTask *p_task)
+{
+	// The UART takes only part of the retained buffer at a time, so come back until it is empty.
+	if (!pifLog_PrintInBuffer()) p_task->pause = TRUE;
+	return 0;
 }
 
 static void _evtLedToggle(void *pvIssuer)
@@ -37,7 +45,7 @@ static void _evtLedToggle(void *pvIssuer)
 
 	if (count) count--;
 	else {
-	    pifLog_PrintInBuffer();
+	    s_task_print_buffer->pause = FALSE;
 	    count = 19;
 	}
 }
@@ -72,6 +80,9 @@ void setup()
 
     if (!pifLog_InitStatic(LOG_BUFFER_SIZE, s_aucLog)) return;
 	if (!pifLog_AttachUart(&s_uart_log, 256)) return;										// 256bytes
+
+    s_task_print_buffer = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskPrintBuffer, NULL, FALSE);	// 1ms
+    if (!s_task_print_buffer) return;
 
 	g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!g_timer_led) return;

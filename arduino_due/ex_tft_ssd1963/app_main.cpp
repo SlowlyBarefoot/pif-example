@@ -62,12 +62,22 @@ static int _CmdBackLight(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdTouchCalibration(int argc, char *argv[])
+static void _evtTouchCalibration(PifTouchScreen* p_owner, BOOL result)
 {
-	if (pifTouchScreen_Calibration(&g_tsc2046.parent)) {
+	(void)p_owner;
+
+	if (result) {
 		pifLog_Printf(LT_INFO, "Touch calibration is success");
 	}
 	else {
+		pifLog_Printf(LT_INFO, "Touch calibration is failure");
+	}
+}
+
+static int _CmdTouchCalibration(int argc, char *argv[])
+{
+	// The touch task carries the calibration on from here and reports it through the callback.
+	if (!pifTouchScreen_StartCalibration(&g_tsc2046.parent, _evtTouchCalibration)) {
 		pifLog_Printf(LT_INFO, "Touch calibration is failure");
 	}
 	return PIF_LOG_CMD_NO_ERROR;

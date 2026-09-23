@@ -56,21 +56,24 @@ static void _evtLogControlChar(char ch)
 
 static uint32_t _taskSendMessage(PifTask *p_task)
 {
-	char message[20];
-	int length, pos = 0, len;
+	static char s_message[20];
+	static int s_length = 0, s_pos = 0;
 	static int s_step = 1;
+	int len;
 
-	pifLog_Printf(LT_INFO, "L:%d", s_step);
-	sprintf(message, "%d:abcdefghijk\r\n", s_step);
-	length = strlen(message);
-	while (1) {
-		if (g_uart_host._fc_state) {
-			len = pifUart_SendTxData(&g_uart_host, (uint8_t *)message + pos, length - pos);
-			if (pos + len < length) pos += len; else break;
-		}
-		pifTaskManager_Yield();
+	if (!s_length) {
+		pifLog_Printf(LT_INFO, "L:%d", s_step);
+		sprintf(s_message, "%d:abcdefghijk\r\n", s_step);
+		s_length = strlen(s_message);
+		s_pos = 0;
 	}
+	if (g_uart_host._fc_state) {
+		len = pifUart_SendTxData(&g_uart_host, (uint8_t *)s_message + s_pos, s_length - s_pos);
+		s_pos += len;
+	}
+	if (s_pos < s_length) return 1000;		// Not all queued yet: try again in 1ms
 
+	s_length = 0;
 	s_step++;
 	if (s_step == 100) {
 		p_task->pause = TRUE;

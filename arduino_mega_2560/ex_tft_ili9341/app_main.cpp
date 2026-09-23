@@ -107,16 +107,26 @@ static int _CmdBackLight(int argc, char *argv[])
 
 #if LCD_TYPE != LCD_2_2_INCH_SPI
 
-static int _CmdTouchCalibration(int argc, char *argv[])
+static void _evtTouchCalibration(PifTouchScreen* p_owner, BOOL result)
 {
-#if LCD_TYPE == LCD_2_4_INCH
-	if (pifTouchScreen_Calibration(&g_touch_screen)) {
-#elif LCD_TYPE == LCD_3_2_INCH
-	if (pifTouchScreen_Calibration(&g_tsc2046.parent)) {
-#endif
+	(void)p_owner;
+
+	if (result) {
 		pifLog_Printf(LT_INFO, "Touch calibration is success");
 	}
 	else {
+		pifLog_Printf(LT_INFO, "Touch calibration is failure");
+	}
+}
+
+static int _CmdTouchCalibration(int argc, char *argv[])
+{
+	// The touch task carries the calibration on from here and reports it through the callback.
+#if LCD_TYPE == LCD_2_4_INCH
+	if (!pifTouchScreen_StartCalibration(&g_touch_screen, _evtTouchCalibration)) {
+#elif LCD_TYPE == LCD_3_2_INCH
+	if (!pifTouchScreen_StartCalibration(&g_tsc2046.parent, _evtTouchCalibration)) {
+#endif
 		pifLog_Printf(LT_INFO, "Touch calibration is failure");
 	}
 	return PIF_LOG_CMD_NO_ERROR;
@@ -225,7 +235,7 @@ BOOL appSetup()
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
 
-	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, WHITE);
+	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, BLACK);
     return TRUE;
 
 fail:

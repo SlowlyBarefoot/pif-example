@@ -16,6 +16,7 @@ int g_print_data = 0;
 static PifGpsUblox s_gps_ublox;
 
 static BOOL s_booting = FALSE;
+static BOOL s_requesting = FALSE;
 
 static int _cmdPrintData(int argc, char *argv[]);
 static int _cmdPollRequest(int argc, char *argv[]);
@@ -82,6 +83,21 @@ static BOOL _evtGpsUbxReceive(PifGpsUblox* p_owner, PifGpsUbxPacket* p_packet)
 	return FALSE;
 }
 
+// Queues the message on the first call and reports how it is going on the calls after that,
+// so the setup task returns in between instead of waiting for the answer.
+static PifGpsUbxRequestState _requestUbxMsg(uint8_t class_id, uint8_t msg_id, uint16_t length, uint8_t* payload, uint16_t waiting)
+{
+	PifGpsUbxRequestState state;
+
+	if (!s_requesting) {
+		if (!pifGpsUblox_SendUbxMsg(&s_gps_ublox, class_id, msg_id, length, payload, waiting)) return GURS_FAILURE;
+		s_requesting = TRUE;
+	}
+	state = pifGpsUblox_CheckRequest(&s_gps_ublox);
+	if (state != GURS_SEND) s_requesting = FALSE;
+	return state;
+}
+
 static uint32_t _taskUbloxSetup(PifTask *p_task)
 {
     const uint8_t kCfgMsgNmea[][3] = {
@@ -137,16 +153,18 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 	uint8_t sbas = 0;		// 0 = Auto
 	uint8_t n;
 	uint16_t delay = 100;
+	PifGpsUbxRequestState state;
 	static uint8_t step = 0;
 
-	pifLog_Printf(LT_INFO, "UBX: Step=%x", step);
+	if (!s_requesting) pifLog_Printf(LT_INFO, "UBX: Step=%x", step);
 
 	switch (step & 0xF0) {
 	case 0x10:
 		n = step - 0x10;
-		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNmea[n]), (uint8_t*)kCfgMsgNmea[n], TRUE, 400);
-		if (s_gps_ublox._request_state == GURS_ACK) {
-			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
+		state = _requestUbxMsg(GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNmea[n]), (uint8_t*)kCfgMsgNmea[n], 400);
+		if (state == GURS_SEND) return 10000;	// 10ms: the answer is not in yet
+		if (state == GURS_ACK) {
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, state);
 			n++;
 			if (n < sizeof(kCfgMsgNmea) / sizeof(kCfgMsgNmea[0])) step++;
 			else {
@@ -160,9 +178,10 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 
 	case 0x20:
 		n = step - 0x20;
-		pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], TRUE, 100);
-		if (s_gps_ublox._request_state == GURS_ACK) {
-			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, s_gps_ublox._request_state);
+		state = _requestUbxMsg(GUCI_CFG, GUMI_CFG_MSG, sizeof(kCfgMsgNav[n]), (uint8_t*)kCfgMsgNav[n], 100);
+		if (state == GURS_SEND) return 10000;	// 10ms: the answer is not in yet
+		if (state == GURS_ACK) {
+			pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d-%d: Result=%d", GUCI_CFG, GUMI_CFG_MSG, n, state);
 			n++;
 			if (n < sizeof(kCfgMsgNav) / sizeof(kCfgMsgNav[0])) step++; else step = 0x30;
 		}
@@ -179,27 +198,30 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 		case 0x30:
 			p_rate = (uint16_t*)kCfgRate;
 			*p_rate = 1000;	// 1000 = 1Hz
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, TRUE, 100);
-			if (s_gps_ublox._request_state == GURS_ACK) {
-				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_RATE, s_gps_ublox._request_state);
+			state = _requestUbxMsg(GUCI_CFG, GUMI_CFG_RATE, sizeof(kCfgRate), (uint8_t*)kCfgRate, 100);
+			if (state == GURS_SEND) return 10000;	// 10ms: the answer is not in yet
+			if (state == GURS_ACK) {
+				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_RATE, state);
 				step++;
 			}
 			else delay = 500;
 			break;
 
 		case 0x31:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, TRUE, 100);
-			if (s_gps_ublox._request_state == GURS_ACK) {
-				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, s_gps_ublox._request_state);
+			state = _requestUbxMsg(GUCI_CFG, GUMI_CFG_NAV5, sizeof(kCfgNav5), (uint8_t*)kCfgNav5, 100);
+			if (state == GURS_SEND) return 10000;	// 10ms: the answer is not in yet
+			if (state == GURS_ACK) {
+				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_NAV5, state);
 				step++;
 			}
 			else delay = 500;
 			break;
 
 		case 0x32:
-			pifGpsUblox_SendUbxMsg(&s_gps_ublox, GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], TRUE, 100);
-			if (s_gps_ublox._request_state == GURS_ACK) {
-				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, s_gps_ublox._request_state);
+			state = _requestUbxMsg(GUCI_CFG, GUMI_CFG_SBAS, sizeof(kCfgSbas[sbas]), (uint8_t*)kCfgSbas[sbas], 100);
+			if (state == GURS_SEND) return 10000;	// 10ms: the answer is not in yet
+			if (state == GURS_ACK) {
+				pifLog_Printf(LT_INFO, "ClassId=%d MsgId=%d: Result=%d", GUCI_CFG, GUMI_CFG_SBAS, state);
 				step++;
 			}
 			else delay = 500;
@@ -302,23 +324,25 @@ static int _cmdPrintData(int argc, char *argv[])
 static int _cmdPollRequest(int argc, char *argv[])
 {
 	if (argc > 1) {
+		pifGpsUblox_CheckRequest(&s_gps_ublox);		// Settles a previous request that is already over
+
 		if (strcmp(argv[0], "GBQ") == 0) {
-			if (!pifGpsUblox_PollRequestGBQ(&s_gps_ublox, argv[1], FALSE, 0)) {
+			if (!pifGpsUblox_PollRequestGBQ(&s_gps_ublox, argv[1], 100)) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 		}
 		else if (strcmp(argv[0], "GLQ") == 0) {
-			if (!pifGpsUblox_PollRequestGLQ(&s_gps_ublox, argv[1], FALSE, 0)) {
+			if (!pifGpsUblox_PollRequestGLQ(&s_gps_ublox, argv[1], 100)) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 		}
 		else if (strcmp(argv[0], "GNQ") == 0) {
-			if (!pifGpsUblox_PollRequestGNQ(&s_gps_ublox, argv[1], FALSE, 0)) {
+			if (!pifGpsUblox_PollRequestGNQ(&s_gps_ublox, argv[1], 100)) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 		}
 		else if (strcmp(argv[0], "GPQ") == 0) {
-			if (!pifGpsUblox_PollRequestGPQ(&s_gps_ublox, argv[1], FALSE, 0)) {
+			if (!pifGpsUblox_PollRequestGPQ(&s_gps_ublox, argv[1], 100)) {
 				pifLog_Printf(LT_ERROR, "Error: %u", pif_error);
 			}
 		}

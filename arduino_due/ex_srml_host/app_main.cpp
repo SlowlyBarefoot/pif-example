@@ -164,9 +164,9 @@ static void _line_print(char *message, int length)
 	while (1) {
 		len = pifUart_SendTxData(&g_uart_printer, (uint8_t *)message + pos, length - pos);
 		if (pos + len < length) pos += len; else break;
-		pifTaskManager_YieldMs(1);
+		pif_Delay1ms(1);
 	}
-	pifTaskManager_YieldMs(5);
+	pif_Delay1ms(5);
 }
 
 static void _calculate_data()

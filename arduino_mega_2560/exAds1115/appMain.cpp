@@ -15,14 +15,31 @@ static PifAds1x1x s_ads1x1x;
 static int channel = ADS1X1X_MUX_SINGLE_0;
 
 
+#ifdef SINGLE_SHOT
+
+static void _printSample(int16_t value)
+{
+	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, (uint16_t)value, (uint16_t)value * s_ads1x1x.convert_voltage);
+	if (channel == ADS1X1X_MUX_SINGLE_3) channel = ADS1X1X_MUX_SINGLE_0; else channel++;
+}
+
+static void _evtAds1x1xRead(PifAds1x1x* p_owner, BOOL result, int16_t value)
+{
+	(void)p_owner;
+
+	if (result) _printSample(value);
+}
+
+#endif
+
 static uint32_t _taskAds1115(PifTask *pstTask)
 {
 	(void)pstTask;
 
 #ifdef SINGLE_SHOT
-	uint16_t usData = pifAds1x1x_ReadMux(&s_ads1x1x, (PifAds1x1xMux)channel);
-	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, usData, usData * s_ads1x1x.convert_voltage);
-	if (channel == ADS1X1X_MUX_SINGLE_3) channel = ADS1X1X_MUX_SINGLE_0; else channel++;
+	if (pifAds1x1x_StartMux(&s_ads1x1x, (PifAds1x1xMux)channel) == ADS1X1X_START_DONE) {
+		_printSample(s_ads1x1x._value);
+	}
 #else
 	uint16_t usData = pifAds1x1x_Read(&s_ads1x1x);
 	pifLog_Printf(LT_INFO, "ADC: %u, Vol: %f", usData, usData * s_ads1x1x.convert_voltage);
@@ -37,6 +54,9 @@ BOOL appSetup()
     if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR(0), NULL)) return FALSE;
 #ifdef USE_I2C_WIRE
     s_ads1x1x._p_i2c->max_transfer_size = 32;
+#endif
+#ifdef SINGLE_SHOT
+    if (!pifAds1x1x_AttachTimer(&s_ads1x1x, &g_timer_1ms, _evtAds1x1xRead)) return FALSE;
 #endif
 
     stConfig = s_ads1x1x._config;

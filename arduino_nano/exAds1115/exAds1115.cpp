@@ -14,7 +14,7 @@
 #define PIN_LED_L				13
 
 #define TASK_SIZE				3
-#define TIMER_1MS_SIZE			1
+#define TIMER_1MS_SIZE			2
 
 #define UART_LOG_BAUDRATE		115200
 
