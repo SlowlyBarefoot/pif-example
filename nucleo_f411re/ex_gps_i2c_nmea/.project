@@ -36,12 +36,27 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/gpl</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/include</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/source</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/include</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/source</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -61,11 +76,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/include/gps</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>Core/pif/source/communication</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -81,7 +91,12 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/gps</name>
+			<name>Core/pif/gpl/include/gps</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/source/gps</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -141,16 +156,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/include/gps/pif_gps.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/gps/pif_gps.h</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/include/gps/pif_gps_nmea.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/gps/pif_gps_nmea.h</locationURI>
-		</link>
-		<link>
 			<name>Core/pif/source/communication/pif_i2c.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_i2c.c</locationURI>
@@ -206,14 +211,24 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/gps/pif_gps.c</name>
+			<name>Core/pif/gpl/include/gps/pif_gps.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/gps/pif_gps.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/gps/pif_gps.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/gps/pif_gps_nmea.c</name>
+			<name>Core/pif/gpl/include/gps/pif_gps_nmea.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/gps/pif_gps_nmea.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/gps/pif_gps_nmea.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/source/gps/pif_gps.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/gps/pif_gps.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/source/gps/pif_gps_nmea.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/gps/pif_gps_nmea.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

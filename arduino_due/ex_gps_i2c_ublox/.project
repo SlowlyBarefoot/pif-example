@@ -62,12 +62,27 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/libraries/Wire</locationURI>
 		</link>
 		<link>
+			<name>pif/gpl</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>pif/include</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>pif/source</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/gpl/include</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/gpl/source</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -87,11 +102,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/include/gps</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>pif/source/communication</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -107,7 +117,12 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/source/gps</name>
+			<name>pif/gpl/include/gps</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/gpl/source/gps</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -167,16 +182,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/gps/pif_gps.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/gps/pif_gps.h</locationURI>
-		</link>
-		<link>
-			<name>pif/include/gps/pif_gps_ublox.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/gps/pif_gps_ublox.h</locationURI>
-		</link>
-		<link>
 			<name>pif/source/communication/pif_i2c.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_i2c.c</locationURI>
@@ -232,14 +237,24 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/gps/pif_gps.c</name>
+			<name>pif/gpl/include/gps/pif_gps.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/gps/pif_gps.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/gps/pif_gps.h</locationURI>
 		</link>
 		<link>
-			<name>pif/source/gps/pif_gps_ublox.c</name>
+			<name>pif/gpl/include/gps/pif_gps_ublox.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/gps/pif_gps_ublox.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/gps/pif_gps_ublox.h</locationURI>
+		</link>
+		<link>
+			<name>pif/gpl/source/gps/pif_gps.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/gps/pif_gps.c</locationURI>
+		</link>
+		<link>
+			<name>pif/gpl/source/gps/pif_gps_ublox.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/gps/pif_gps_ublox.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
