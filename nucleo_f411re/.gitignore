@@ -1,0 +1,6 @@
+/.metadata/
+makefile
+*.d
+*.list
+*.mk
+*.o

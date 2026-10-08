@@ -1,0 +1,23 @@
+#ifndef APP_MAIN_H
+#define APP_MAIN_H
+
+
+#include "core/pif_log.h"
+#include "display/pif_led.h"
+#include "protocol/pif_link.h"
+
+#include "ex_serial1.h"
+#include "ex_serial2.h"
+
+
+//#define PRINT_PACKET_DATA
+
+
+extern PifLed g_led_l;
+extern PifTimerManager g_timer_1ms;
+
+
+BOOL appSetup();
+
+
+#endif	// APP_MAIN_H
