@@ -27,26 +27,19 @@ static void _fnSequenceStart(PifSequence *p_owner)
 {
 	uint8_t index;
 
-	index = p_owner->_id - PIF_ID_SEQUENCE;
+	index = (SequenceTest *)p_owner->p_param - g_stSequenceTest;
 	pifLed_PartOn(&g_led_rgb, 1 << index);
-	pifSequence_NextDelay(p_owner, _fnSequenceStop, 1000);		// 1000ms
-	pifLog_Printf(LT_INFO, "Sequence(%x): Start", p_owner->_id);
+	pifSequence_Delay(p_owner, _fnSequenceStop, 1000);		// 1000ms
+	pifLog_Printf(LT_INFO, "Sequence(%x): Start", p_owner->_p_task->_id);
 }
 
 static void _fnSequenceStop(PifSequence *p_owner)
 {
 	uint8_t index;
 
-	index = p_owner->_id - PIF_ID_SEQUENCE;
+	index = (SequenceTest *)p_owner->p_param - g_stSequenceTest;
 	pifLed_PartOff(&g_led_rgb, 1 << index);
-	pifLog_Printf(LT_INFO, "Sequence(%x): Stop", p_owner->_id);
-}
-
-static void _evtSequenceError(PifSequence *p_owner)
-{
-	(void)p_owner;
-
-	pifLog_Printf(LT_ERROR, "Sequence Error: %d", pif_error);
+	pifLog_Printf(LT_INFO, "Sequence(%x): Stop", p_owner->_p_task->_id);
 }
 
 BOOL appSetup()
@@ -57,8 +50,7 @@ BOOL appSetup()
 	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stSequenceTest[i].stPushSwitch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
 		pifSensor_AttachEvtChange(&g_stSequenceTest[i].stPushSwitch.parent, _evtPushSwitchChange, &g_stSequenceTest[i]);
 
-	    if (!pifSequence_Init(&g_stSequenceTest[i].stSequence, PIF_ID_SEQUENCE + i, &g_timer_1ms, &g_stSequenceTest[i])) return FALSE;
-	    g_stSequenceTest[i].stSequence.evt_error = _evtSequenceError;
+	    if (!pifSequence_Init(&g_stSequenceTest[i].stSequence, PIF_ID_SEQUENCE + i, &g_stSequenceTest[i])) return FALSE;
     }
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																				// 500ms
