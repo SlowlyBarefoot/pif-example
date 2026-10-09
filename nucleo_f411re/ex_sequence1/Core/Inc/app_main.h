@@ -3,14 +3,10 @@
 
 
 #include "core/pif_log.h"
-#include "core/pif_timer_manager.h"
+#include "core/pif_task_manager.h"
 
 
 #define TASK_SIZE				6
-#define TIMER_1MS_SIZE			1
-
-
-extern PifTimerManager g_timer_1ms;
 
 
 BOOL appSetup();
