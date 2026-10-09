@@ -9,81 +9,86 @@ PifTimerManager g_timer_1ms;
 
 TestStruct g_test[SEQUENCE_COUNT];
 
-static void _fnSequenceStart(PifSequence* p_owner);
-static void _fnSequenceStop(PifSequence* p_owner);
-
-static BOOL bCollect = FALSE;
+static void _fnSequenceStart(PifSequence *p_owner);
+static void _fnSequenceStop(PifSequence *p_owner);
 
 
-static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
+static void _evtPushSwitchChange(PifSensor *p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
-	TestStruct* p_test = (TestStruct*)p_issuer;
+	TestStruct *p_test = (TestStruct*)p_issuer;
 
 	(void)p_owner;
 	(void)p_value;
 
 	if (state) {
-		if (pifSequence_IsRunning(&p_test->stSequence)) {
-			pifSequence_Start(&p_test->stSequence, _fnSequenceStart);
-		}
+		pifSequence_Start(&p_test->sequence, _fnSequenceStart);
 	}
 }
 
-static void _evtPushSwitchCollectChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
+static void _evtPushSwitchCollectChange(PifSensor *p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
 	(void)p_owner;
 	(void)p_value;
 	(void)p_issuer;
 
 	if (state) {
-		if (!bCollect) {
-			pifLed_AllOn(&g_led_collect);
-		    pifCollectSignal_Start();
-			bCollect = TRUE;
+		if (!pifCollectSignal_IsCollecting()) {
+			// Fails while the last capture is still printing. pifLog is held back then, so it is not logged.
+			if (pifCollectSignal_Start()) {
+				pifLed_AllOn(&g_led_collect);
+				pifLog_Print(LT_INFO, "CollectSignal: Start");
+			}
 		}
 		else {
 			pifLed_AllOff(&g_led_collect);
 		    pifCollectSignal_Stop();
+		    // Before PrintLog(), which holds pifLog back until the dump is out.
+		    pifLog_Printf(LT_INFO, "CollectSignal: Stop, Drop=%lu\n\n", (unsigned long)pifCollectSignal_GetDropCount());
 		    pifCollectSignal_PrintLog();
-			bCollect = FALSE;
 		}
 	}
 }
 
-static void _fnSequenceStart(PifSequence* p_owner)
+static void _fnSequenceStart(PifSequence *p_owner)
 {
-	uint8_t index;
+	TestStruct *p_test = (TestStruct*)p_owner->p_param;
 
-	index = p_owner->_id - PIF_ID_SEQUENCE;
-	pifGpio_WriteCell(&g_gpio_rgb, index, ON);
-	pifSequence_NextDelay(p_owner, _fnSequenceStop, 100);	// 100ms
+	pifCollectSignal_Put(&p_test->cs_step, 1);
+	pifGpio_WriteCell(&g_gpio_rgb, p_test - g_test, ON);
+	pifSequence_Delay(p_owner, _fnSequenceStop, 100);	// 100ms
 }
 
-static void _fnSequenceStop(PifSequence* p_owner)
+static void _fnSequenceStop(PifSequence *p_owner)
 {
-	uint8_t index;
+	TestStruct *p_test = (TestStruct*)p_owner->p_param;
 
-	index = p_owner->_id - PIF_ID_SEQUENCE;
-	pifGpio_WriteCell(&g_gpio_rgb, index, OFF);
+	pifCollectSignal_Put(&p_test->cs_step, 2);
+	pifGpio_WriteCell(&g_gpio_rgb, p_test - g_test, OFF);
 }
 
 BOOL appSetup()
 {
+	static PifNoiseFilterManager s_switch_filter;
 	int i;
 
-    pifGpioColSig_SetFlag(GP_CSF_ALL_BIT);
+    if (!pifNoiseFilterManager_Init(&s_switch_filter, SEQUENCE_COUNT + 1)) return FALSE;
+
+    if (!pifGpio_SetCsFlag(&g_gpio_rgb, GP_CSF_ALL_BIT)) return FALSE;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_test[i].stPushSwitch, PIF_ID_AUTO, TM_PERIOD, 5000, TRUE)) return FALSE;	// 5ms
-	    pifSensorSwitch_SetCsFlag(&g_test[i].stPushSwitch, SS_CSF_FILTER_BIT);
-	    pifSensor_AttachEvtChange(&g_test[i].stPushSwitch.parent, _evtPushSwitchChange, &g_test[i]);
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_test[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 5000, TRUE)) return FALSE;	// 5ms
+	    g_test[i].push_switch.p_filter = pifNoiseFilterBit_AddCount(&s_switch_filter, 7);								// 35ms
+	    if (!g_test[i].push_switch.p_filter) return FALSE;
+	    if (!pifSensorSwitch_SetCsFlag(&g_test[i].push_switch, SS_CSF_FILTER_BIT)) return FALSE;
+	    pifSensor_AttachEvtChange(&g_test[i].push_switch.parent, _evtPushSwitchChange, &g_test[i]);
 
-	    if (!pifSequence_Init(&g_test[i].stSequence, PIF_ID_SEQUENCE + i, &g_timer_1ms, &g_test[i])) return FALSE;
+	    if (!pifSequence_Init(&g_test[i].sequence, PIF_ID_SEQUENCE + i, &g_test[i])) return FALSE;
+	    if (!pifCollectSignal_AddChannel(&g_test[i].cs_step, "SQ", PIF_ID_SEQUENCE + i, CSVT_REG, 2, 0)) return FALSE;
     }
 
-    pifSequenceColSig_SetFlag(SQ_CSF_ALL_BIT);
-
     if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch_collect, PIF_ID_AUTO, TM_PERIOD, 5000, TRUE)) return FALSE;		// 5ms
+    g_push_switch_collect.p_filter = pifNoiseFilterBit_AddCount(&s_switch_filter, 7);									// 35ms
+    if (!g_push_switch_collect.p_filter) return FALSE;
     pifSensor_AttachEvtChange(&g_push_switch_collect.parent, _evtPushSwitchCollectChange, NULL);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																	// 500ms

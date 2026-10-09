@@ -10,11 +10,11 @@
 #define UART_LOG_BAUDRATE		115200
 
 
-static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
 {
 	(void)p_uart;
 
-    return Serial.write((char *)pucBuffer, usSize);
+    return Serial.write((char *)p_buffer, size);
 }
 
 static uint32_t taskLedToggle(PifTask *pstTask)

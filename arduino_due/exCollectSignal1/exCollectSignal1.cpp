@@ -19,53 +19,53 @@
 
 
 static struct {
-	uint8_t ucPinSwitch;
-	uint8_t ucPinLed;
-} s_stSequenceTest[SEQUENCE_COUNT] = {
+	uint8_t pin_switch;
+	uint8_t pin_led;
+} s_sequence_test[SEQUENCE_COUNT] = {
 		{ PIN_PUSH_SWITCH_1, PIN_LED_RED },
 		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW }
 };
 
 
-static void actLedLState(PifId usPifId, uint32_t unState)
+static void actLedLState(PifId pif_id, uint32_t state)
 {
-	(void)usPifId;
+	(void)pif_id;
 
-	digitalWrite(PIN_LED_L, unState & 1);
+	digitalWrite(PIN_LED_L, state & 1);
 }
 
-static void actGpioRGBState(PifId usPifId, uint8_t unState)
+static void actGpioRGBState(PifId pif_id, uint8_t state)
 {
-	(void)usPifId;
+	(void)pif_id;
 
-	digitalWrite(PIN_LED_RED, unState & 1);
-	digitalWrite(PIN_LED_YELLOW, (unState >> 1) & 1);
+	digitalWrite(PIN_LED_RED, state & 1);
+	digitalWrite(PIN_LED_YELLOW, (state >> 1) & 1);
 }
 
-static void actLedCollectState(PifId usPifId, uint32_t unState)
+static void actLedCollectState(PifId pif_id, uint32_t state)
 {
-	(void)usPifId;
+	(void)pif_id;
 
-	digitalWrite(PIN_LED_BLUE, unState & 1);
+	digitalWrite(PIN_LED_BLUE, state & 1);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor* p_owner)
+static uint16_t actPushSwitchAcquire(PifSensor *p_owner)
 {
-	return !digitalRead(s_stSequenceTest[p_owner->_id - PIF_ID_SWITCH].ucPinSwitch);
+	return !digitalRead(s_sequence_test[p_owner->_id - PIF_ID_SWITCH].pin_switch);
 }
 
-static uint16_t actPushSwitchCollectAcquire(PifSensor* p_owner)
+static uint16_t actPushSwitchCollectAcquire(PifSensor *p_owner)
 {
 	(void)p_owner;
 
 	return !digitalRead(PIN_PUSH_SWITCH_3);
 }
 
-static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
 {
 	(void)p_uart;
 
-    return Serial.write((char *)pucBuffer, usSize);
+    return Serial.write((char *)p_buffer, size);
 }
 
 extern "C" {
@@ -80,7 +80,7 @@ extern "C" {
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	PifUart s_uart_log;
+	static PifUart s_uart_log;
 
 	pinMode(PIN_LED_L, OUTPUT);
 	pinMode(PIN_LED_RED, OUTPUT);
@@ -103,7 +103,7 @@ void setup()
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) return;										// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 1024)) return;										// 1024bytes
 
     pifCollectSignal_Init("example");
     if (!pifCollectSignal_ChangeScale(CSS_1MS)) return;
@@ -116,7 +116,7 @@ void setup()
     if (!pifLed_Init(&g_led_collect, PIF_ID_AUTO, &g_timer_1ms, 1, actLedCollectState)) return;
 
     for (int i = 0; i < SEQUENCE_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&g_test[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;
+		if (!pifSensorSwitch_Init(&g_test[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;
     }
 
     if (!pifSensorSwitch_Init(&g_push_switch_collect, PIF_ID_AUTO, 0, actPushSwitchCollectAcquire)) return;

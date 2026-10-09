@@ -16,19 +16,19 @@
 
 
 static struct {
-	uint8_t ucPinSwitch;
-	uint8_t ucPinLed;
-} s_stSequenceTest[SEQUENCE_COUNT] = {
+	uint8_t pin_switch;
+	uint8_t pin_led;
+} s_sequence_test[SEQUENCE_COUNT] = {
 		{ PIN_PUSH_SWITCH_1, PIN_LED_RED },
 		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW }
 };
 
 
-static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
 {
 	(void)p_uart;
 
-    return Serial.write((char *)pucBuffer, usSize);
+    return Serial.write((char *)p_buffer, size);
 }
 
 static void actLedLState(PifId usPifId, uint32_t unState)
@@ -42,13 +42,13 @@ static void actLedRGBState(PifId usPifId, uint32_t unState)
 {
 	(void)usPifId;
 
-	digitalWrite(s_stSequenceTest[0].ucPinLed, unState & 1);
-	digitalWrite(s_stSequenceTest[1].ucPinLed, (unState >> 1) & 1);
+	digitalWrite(s_sequence_test[0].pin_led, unState & 1);
+	digitalWrite(s_sequence_test[1].pin_led, (unState >> 1) & 1);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor* p_owner)
+static uint16_t actPushSwitchAcquire(PifSensor *p_owner)
 {
-	return !digitalRead(s_stSequenceTest[p_owner->_id - PIF_ID_SWITCH].ucPinSwitch);
+	return !digitalRead(s_sequence_test[p_owner->_id - PIF_ID_SWITCH].pin_switch);
 }
 
 static void sysTickHook()
@@ -91,7 +91,7 @@ void setup()
     if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, &g_timer_1ms, SEQUENCE_COUNT, actLedRGBState)) return;
 
     for (int i = 0; i < SEQUENCE_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&g_stSequenceTest[i].stPushSwitch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;
+		if (!pifSensorSwitch_Init(&g_sequenceTest[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;
     }
 
 	if (!appSetup()) return;

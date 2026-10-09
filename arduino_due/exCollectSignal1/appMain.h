@@ -8,6 +8,7 @@
 #include "core/pif_log.h"
 #include "core/pif_sequence.h"
 #include "display/pif_led.h"
+#include "filter/pif_noise_filter_bit.h"
 #include "sensor/pif_sensor_switch.h"
 
 
@@ -19,8 +20,9 @@
 
 
 typedef struct {
-	PifSensorSwitch stPushSwitch;
-	PifSequence stSequence;
+	PifSensorSwitch push_switch;
+	PifSequence sequence;
+	PifCollectSignalChannel cs_step;		// Step of sequence: 1 = Start, 2 = Stop
 } TestStruct;
 
 

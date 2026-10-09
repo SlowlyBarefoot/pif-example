@@ -19,8 +19,8 @@
 
 
 typedef struct {
-	PifSensorSwitch stPushSwitch;
-	PifSequence stSequence;
+	PifSensorSwitch push_switch;
+	PifSequence sequence;
 } SequenceTest;
 
 
@@ -28,7 +28,7 @@ extern PifLed g_led_l;
 extern PifLed g_led_rgb;
 extern PifTimerManager g_timer_1ms;
 
-extern SequenceTest g_stSequenceTest[SEQUENCE_COUNT];
+extern SequenceTest g_sequenceTest[SEQUENCE_COUNT];
 
 
 BOOL appSetup();

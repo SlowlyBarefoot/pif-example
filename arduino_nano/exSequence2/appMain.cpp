@@ -5,20 +5,20 @@ PifLed g_led_l;
 PifLed g_led_rgb;
 PifTimerManager g_timer_1ms;
 
-SequenceTest g_stSequenceTest[SEQUENCE_COUNT];
+SequenceTest g_sequenceTest[SEQUENCE_COUNT];
 
 static void _fnSequenceStart(PifSequence *p_owner);
 static void _fnSequenceStop(PifSequence *p_owner);
 
 
-static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
+static void _evtPushSwitchChange(PifSensor *p_owner, SWITCH state, PifSensorValueP p_value, PifIssuerP p_issuer)
 {
-	SequenceTest* p_test = (SequenceTest*)p_issuer;
+	SequenceTest *p_test = (SequenceTest*)p_issuer;
 
 	(void)p_value;
 
 	if (state) {
-		pifSequence_Start(&p_test->stSequence, _fnSequenceStart);
+		pifSequence_Start(&p_test->sequence, _fnSequenceStart);
 	}
 	pifLog_Printf(LT_INFO, "Switch(%d): %d", p_owner->_id, state);
 }
@@ -54,11 +54,11 @@ BOOL appSetup()
 	int i;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_stSequenceTest[i].stPushSwitch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
-		pifSensor_AttachEvtChange(&g_stSequenceTest[i].stPushSwitch.parent, _evtPushSwitchChange, &g_stSequenceTest[i]);
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_sequenceTest[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
+		pifSensor_AttachEvtChange(&g_sequenceTest[i].push_switch.parent, _evtPushSwitchChange, &g_sequenceTest[i]);
 
-	    if (!pifSequence_Init(&g_stSequenceTest[i].stSequence, PIF_ID_SEQUENCE + i, &g_timer_1ms, &g_stSequenceTest[i])) return FALSE;
-	    g_stSequenceTest[i].stSequence.evt_error = _evtSequenceError;
+	    if (!pifSequence_Init(&g_sequenceTest[i].sequence, PIF_ID_SEQUENCE + i, &g_timer_1ms, &g_sequenceTest[i])) return FALSE;
+	    g_sequenceTest[i].sequence.evt_error = _evtSequenceError;
     }
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																				// 500ms

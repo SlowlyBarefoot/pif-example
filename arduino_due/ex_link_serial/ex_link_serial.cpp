@@ -18,7 +18,7 @@
 //#define USE_SERIAL_3			// Other Anduino
 
 
-static uint8_t s_ucPinSwitch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
+static uint8_t s_pin_switch[SWITCH_COUNT] = { PIN_PUSH_SWITCH_1, PIN_PUSH_SWITCH_2 };
 
 
 static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
@@ -35,9 +35,9 @@ static void actLedLState(PifId pid_id, uint32_t state)
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor* p_owner)
+static uint16_t actPushSwitchAcquire(PifSensor *p_owner)
 {
-	return !digitalRead(s_ucPinSwitch[p_owner->_id - PIF_ID_SWITCH]);
+	return !digitalRead(s_pin_switch[p_owner->_id - PIF_ID_SWITCH]);
 }
 
 static uint16_t actSerialSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
