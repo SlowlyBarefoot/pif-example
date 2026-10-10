@@ -40,7 +40,7 @@ BOOL appSetup()
     if (!p_task) return FALSE;
 
     if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return FALSE;
-    pifPulse_SetMeasureMode(&g_pulse, PIF_PMM_PERIOD | PIF_PMM_COUNT | PIF_PMM_LOW_WIDTH | PIF_PMM_HIGH_WIDTH);
+    pifPulse_SetMeasureMode(&g_pulse, PULSE_PMM_PERIOD | PULSE_PMM_COUNT | PULSE_PMM_LOW_WIDTH | PULSE_PMM_HIGH_WIDTH);
     pifPulse_AttachEvtEdge(&g_pulse, _evtPulseEdge, p_task);
 	return TRUE;
 }

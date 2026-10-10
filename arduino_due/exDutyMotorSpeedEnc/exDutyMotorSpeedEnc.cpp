@@ -2,7 +2,7 @@
 #include "exDutyMotorSpeedEnc.h"
 #include "appMain.h"
 
-#include "core/pif_pulse.h"
+#include "sensor/pif_pulse.h"
 
 
 #define PIN_LED_L				13
