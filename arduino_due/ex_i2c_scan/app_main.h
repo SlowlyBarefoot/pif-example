@@ -4,6 +4,7 @@
 
 #include "communication/pif_i2c.h"
 #include "core/pif_log.h"
+#include "core/pif_task_manager.h"
 #include "core/pif_timer_manager.h"
 
 
