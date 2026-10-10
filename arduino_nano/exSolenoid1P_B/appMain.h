@@ -2,8 +2,9 @@
 #define APP_MAIN_H
 
 
-#include "actulator/pif_solenoid.h"
+#include "actuator/pif_solenoid.h"
 #include "core/pif_log.h"
+#include "core/pif_timer_manager.h"
 
 
 extern PifSolenoid g_solenoid;

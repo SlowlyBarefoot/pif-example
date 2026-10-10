@@ -57,7 +57,7 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/include/actulator</name>
+			<name>pif/include/actuator</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -72,7 +72,7 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/source/actulator</name>
+			<name>pif/source/actuator</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -87,9 +87,9 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/include/actulator/pif_solenoid.h</name>
+			<name>pif/include/actuator/pif_solenoid.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/actulator/pif_solenoid.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/actuator/pif_solenoid.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/communication/pif_uart.h</name>
@@ -152,9 +152,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
-			<name>pif/source/actulator/pif_solenoid.c</name>
+			<name>pif/source/actuator/pif_solenoid.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/actulator/pif_solenoid.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/actuator/pif_solenoid.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_uart.c</name>

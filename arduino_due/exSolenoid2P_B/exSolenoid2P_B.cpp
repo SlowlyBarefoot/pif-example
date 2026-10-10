@@ -9,8 +9,8 @@
 #define PIN_L298N_IN3			44
 #define PIN_L298N_IN4			46
 
-#define TASK_SIZE				3
-#define TIMER_1MS_SIZE			3
+#define TASK_SIZE				4
+#define TIMER_1MS_SIZE			1
 
 #define UART_LOG_BAUDRATE		115200
 
@@ -22,8 +22,10 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static void actSolenoidOrder(SWITCH swOrder, PifSolenoidDir enDir)
+static void actSolenoidOrder(uint8_t index, SWITCH swOrder, PifSolenoidDir enDir)
 {
+	(void)index;
+
 	if (swOrder) {
 		switch (enDir) {
 		case SD_LEFT:
@@ -93,7 +95,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) return;											// 256bytes
 
-    if (!pifSolenoid_Init(&g_solenoid, PIF_ID_AUTO, &g_timer_1ms,
+    if (!pifSolenoid_Init(&g_solenoid, PIF_ID_AUTO, 1,
     		ST_2POINT, 30, actSolenoidOrder)) return;											// 30ms
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return;	// 500ms

@@ -18,7 +18,7 @@ static void _evtSolenoidFinish(void *pvParam)
 {
 	ST_SolenoidTest *pstParam = (ST_SolenoidTest *)pvParam;
 
-    pifSolenoid_ActionOnDir(pstParam->pstSolenoid, 0, pstParam->enDir);
+    pifSolenoid_ActionOnDir(pstParam->pstSolenoid, 0, 0, pstParam->enDir);
 
 	pifTimer_Start(pstParam->pstTimerItem, 1000);	// 1000 * 1ms = 1sec
 

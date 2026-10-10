@@ -17,7 +17,7 @@ static void _evtSolenoidFinish(void *pvParam)
 {
 	ST_SolenoidTest *pstParam = (ST_SolenoidTest *)pvParam;
 
-	pifSolenoid_ActionOn(pstParam->pstSolenoid, 2500);	// 2500 * 1ms = 2.5sec
+	pifSolenoid_ActionOn(pstParam->pstSolenoid, 0, 2500);	// 2500 * 1ms = 2.5sec
 
 	pifTimer_Start(pstParam->pstTimerItem, 1000);	    // 1000 * 1ms = 1sec
 
@@ -26,7 +26,7 @@ static void _evtSolenoidFinish(void *pvParam)
 
 BOOL appSetup()
 {
-    if (!pifSolenoid_SetBuffer(s_stSolenoidTest.pstSolenoid, 4)) return FALSE;
+    if (!pifSolenoid_SetBuffer(s_stSolenoidTest.pstSolenoid, 0, 4)) return FALSE;
 
     s_stSolenoidTest.pstTimerItem = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
     if (!s_stSolenoidTest.pstTimerItem) return FALSE;
