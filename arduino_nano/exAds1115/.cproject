@@ -23,7 +23,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
@@ -35,7 +34,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
 								</option>
@@ -46,7 +44,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exAds1115/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.889166281" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

@@ -1,6 +1,6 @@
 Config.Release.board.BOARD.ID=mega
-Config.Release.board.BOARD.MENU.cpu=atmega2560
-Config.Release.board.BOARD.TXT=C:\Sloeber\arduinoPlugin\packages\arduino\hardware\avr\1.8.6\boards.txt
+Config.Release.board.BOARD.MENU.cpu=getMenuItemIDFromMenuItemName did not find menu item with name "" for menu ID "cpu" and for boardID "mega"!
+Config.Release.board.BOARD.TXT=C:\Sloeber\arduinoPlugin\packages\arduino\hardware\avr\1.8.8\boards.txt
 Config.Release.board.PROGRAMMER.NAME=
 Config.Release.board.UPLOAD.PORT=COM7
 Config.Release.compile.sloeber.extra.all=

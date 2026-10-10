@@ -25,8 +25,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerialTX/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerial/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1995941110" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -38,8 +36,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../pif/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/..&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerialTX/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerial/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.179044080" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -48,8 +44,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/MsTimer2}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerialTX/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/exTerminal/libraries/SoftwareSerial/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1561228545" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
