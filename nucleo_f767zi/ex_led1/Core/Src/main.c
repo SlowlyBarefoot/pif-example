@@ -33,8 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				3
-#define TIMER_1MS_SIZE			2
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			1
 
 /* USER CODE END PD */
 
@@ -171,9 +171,9 @@ int main(void)
   pifLog_Init();
   if (!pifLog_AttachUart(&s_uart_log, 256)) return -1;										// 256bytes
 
-  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer1ms, 1, actLedLState)) return -1;
+  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return -1;
 
-  if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, &g_timer1ms, 3, actLedRGBState)) return -1;
+  if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, 3, actLedRGBState)) return -1;
 
   if (!appSetup()) return -1;
 

@@ -12,7 +12,7 @@
 #define PIN_STEP_MOTOR_3		34
 #define PIN_STEP_MOTOR_4		36
 
-#define TASK_SIZE				5
+#define TASK_SIZE				6
 #define TIMER_1MS_SIZE			1
 #define TIMER_200US_SIZE		1
 
@@ -104,7 +104,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) return;										// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
     if (!pifStepMotor_Init(&g_motor, PIF_ID_AUTO, &g_timer_200us, STEP_MOTOR_RESOLUTION, SMO_2P_4W_2S)) return;
     pifStepMotor_SetReductionGearRatio(&g_motor, STEP_MOTOR_REDUCTION_GEAR_RATIO);

@@ -12,8 +12,8 @@
 #define PIN_PUSH_SWITCH_2		31
 #define PIN_PUSH_SWITCH_3		33
 
-#define TASK_SIZE				7
-#define TIMER_1MS_SIZE			4
+#define TASK_SIZE				8
+#define TIMER_1MS_SIZE			3
 
 #define UART_LOG_BAUDRATE		115200
 
@@ -108,12 +108,12 @@ void setup()
     pifCollectSignal_Init("example");
     if (!pifCollectSignal_ChangeScale(CSS_1MS)) return;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
     if (!pifGpio_Init(&g_gpio_rgb, PIF_ID_AUTO, SEQUENCE_COUNT)) return;
     pifGpio_AttachActOut(&g_gpio_rgb, actGpioRGBState);
 
-    if (!pifLed_Init(&g_led_collect, PIF_ID_AUTO, &g_timer_1ms, 1, actLedCollectState)) return;
+    if (!pifLed_Init(&g_led_collect, PIF_ID_AUTO, 1, actLedCollectState)) return;
 
     for (int i = 0; i < SEQUENCE_COUNT; i++) {
 		if (!pifSensorSwitch_Init(&g_test[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;

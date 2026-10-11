@@ -8,8 +8,8 @@
 #define PIN_PUSH_SWITCH_1		29
 #define PIN_PUSH_SWITCH_2		31
 
-#define TASK_SIZE				8
-#define TIMER_1MS_SIZE			7
+#define TASK_SIZE				9
+#define TIMER_1MS_SIZE			6
 
 #define UART_LOG_BAUDRATE		115200
 #define UART_SERIAL_1_BAUDRATE	115200
@@ -137,7 +137,7 @@ void setup()
 		goto fail;
 	}
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) {
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) {
 		line = __LINE__;
 		goto fail;
 	}

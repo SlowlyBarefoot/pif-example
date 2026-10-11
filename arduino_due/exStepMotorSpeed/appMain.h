@@ -3,6 +3,7 @@
 
 
 #include "core/pif_log.h"
+#include "core/pif_timer_manager.h"
 #include "display/pif_led.h"
 #include "motor/pif_step_motor_speed.h"
 #include "sensor/pif_sensor_switch.h"

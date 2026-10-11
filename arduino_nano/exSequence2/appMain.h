@@ -4,12 +4,13 @@
 
 #include "core/pif_log.h"
 #include "core/pif_sequence.h"
+#include "core/pif_timer_manager.h"
 #include "display/pif_led.h"
 #include "sensor/pif_sensor_switch.h"
 
 
-#define TASK_SIZE				7
-#define TIMER_1MS_SIZE			2
+#define TASK_SIZE				8
+#define TIMER_1MS_SIZE			1
 
 #define SEQUENCE_COUNT          2
 

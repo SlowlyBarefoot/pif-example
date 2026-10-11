@@ -12,8 +12,8 @@
 #define PIN_PUSH_SWITCH			5
 #define PIN_TILT_SWITCH			6
 
-#define TASK_SIZE				4
-#define TIMER_1MS_SIZE			2
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			1
 
 #define UART_LOG_BAUDRATE		115200
 
@@ -83,9 +83,9 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 80)) return;										// 80bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
-    if (!pifLed_Init(&g_led_ry, PIF_ID_AUTO, &g_timer_1ms, 2, actLedRYState)) return;
+    if (!pifLed_Init(&g_led_ry, PIF_ID_AUTO, 2, actLedRYState)) return;
 
     g_timer_switch = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!g_timer_switch) return;

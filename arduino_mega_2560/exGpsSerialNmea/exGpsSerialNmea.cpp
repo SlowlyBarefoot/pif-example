@@ -10,7 +10,7 @@
 #define PIN_LOG_TX				3
 #define PIN_GPS_RX				4
 
-#define TASK_SIZE				5
+#define TASK_SIZE				6
 #define TIMER_1MS_SIZE			1
 
 #define UART_LOG_BAUDRATE		115200
@@ -127,7 +127,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 512)) return;												// 512bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return;
 
 	if (!pifUart_Init(&g_uart_gps, PIF_ID_USER(1), UART_GPS_BAUDRATE)) return;
     if (!pifUart_AttachRxTask(&g_uart_gps, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxGPS")) return;	// 200ms

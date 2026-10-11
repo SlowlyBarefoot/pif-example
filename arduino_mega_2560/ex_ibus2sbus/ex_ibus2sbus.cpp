@@ -10,7 +10,7 @@
 #define PIN_IBUS_RX				3
 #define PIN_SBUS_TX				4
 
-#define TASK_SIZE				5
+#define TASK_SIZE				6
 #define TIMER_1MS_SIZE			1
 
 #define UART_LOG_BAUDRATE		115200
@@ -127,7 +127,7 @@ void setup()
     if (!pifUart_AttachTxTask(&g_uart_sbus, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartSbus")) return;
 	g_uart_sbus.act_send_data = actSerial2SendData;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
     if (!appSetup()) return;
 

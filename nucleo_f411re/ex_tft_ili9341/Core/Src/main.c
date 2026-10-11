@@ -34,8 +34,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				10
-#define TIMER_1MS_SIZE			3
+#define TASK_SIZE				11
+#define TIMER_1MS_SIZE			2
 
 /* USER CODE END PD */
 
@@ -435,7 +435,7 @@ int main(void)
   pifLog_Init();
   if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }												// 256bytes
 
-  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) { line = __LINE__; goto fail; }				// 2EA
+  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) { line = __LINE__; goto fail; }				// 2EA
 
 #if LCD_TYPE == LCD_2_2_INCH_SPI
   if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }

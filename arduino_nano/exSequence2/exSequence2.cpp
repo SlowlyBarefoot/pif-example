@@ -86,9 +86,9 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 80)) return;										// 80bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
-    if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, &g_timer_1ms, SEQUENCE_COUNT, actLedRGBState)) return;
+    if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, SEQUENCE_COUNT, actLedRGBState)) return;
 
     for (int i = 0; i < SEQUENCE_COUNT; i++) {
 		if (!pifSensorSwitch_Init(&g_sequenceTest[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;

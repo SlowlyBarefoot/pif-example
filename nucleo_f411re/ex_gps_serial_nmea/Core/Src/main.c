@@ -32,8 +32,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE		6
-#define TIMER_1MS_SIZE	2
+#define TASK_SIZE		7
+#define TIMER_1MS_SIZE	1
 
 /* USER CODE END PD */
 
@@ -215,7 +215,7 @@ int main(void)
 
   HAL_UART_Receive_IT(&huart6, &s_gps_rx, 1);
 
-  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) return -1;
+  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return -1;
 
   if (!appSetup()) return -1;
 

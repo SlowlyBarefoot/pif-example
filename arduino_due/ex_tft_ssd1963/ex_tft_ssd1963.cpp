@@ -21,8 +21,8 @@
 #define PIN_TS_CS				3
 #define PIN_TS_PEN				4
 
-#define TASK_SIZE				10
-#define TIMER_1MS_SIZE			3
+#define TASK_SIZE				11
+#define TIMER_1MS_SIZE			2
 
 #define UART_LOG_BAUDRATE		115200
 
@@ -259,7 +259,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 2, actLedLState)) { line = __LINE__; goto fail; }			// 2EA
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) { line = __LINE__; goto fail; }			// 2EA
 
     if (!pifSsd1963_Init(&g_ssd1963, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
     g_ssd1963.parent.act_backlight = actLcdBackLight;

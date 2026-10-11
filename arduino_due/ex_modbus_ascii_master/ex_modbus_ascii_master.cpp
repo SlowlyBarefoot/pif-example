@@ -6,8 +6,8 @@
 #define PIN_DIRECTION			10
 #define PIN_LED_L				13
 
-#define TASK_SIZE				10
-#define TIMER_1MS_SIZE			5
+#define TASK_SIZE				11
+#define TIMER_1MS_SIZE			4
 
 #define UART_LOG_BAUDRATE		115200
 //#define UART_MODBUS_BAUDRATE	9600
@@ -129,7 +129,7 @@ void setup()
 
 	if (!pifModbusAsciiMaster_Init(&g_modbus_master, PIF_ID_AUTO, &g_timer_1ms)) { line = __LINE__; goto fail; }
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) { line = __LINE__; goto fail; }
 
 	if (!appSetup()) { line = __LINE__; goto fail; }
 

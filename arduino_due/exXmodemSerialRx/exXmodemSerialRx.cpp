@@ -7,8 +7,8 @@
 
 #define PIN_PUSH_SWITCH			29
 
-#define TASK_SIZE				5
-#define TIMER_1MS_SIZE			3
+#define TASK_SIZE				6
+#define TIMER_1MS_SIZE			2
 
 #define UART_LOG_BAUDRATE		115200
 #define UART_SERIAL_BAUDRATE	115200
@@ -107,7 +107,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) return;												// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
 	if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, 0, actPushSwitchAcquire)) return;
 

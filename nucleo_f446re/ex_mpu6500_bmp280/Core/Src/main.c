@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				5
+#define TASK_SIZE				6
 #define TIMER_1MS_SIZE			1
 
 //#define USE_POLLING
@@ -272,7 +272,7 @@ int main(void)
   pifLog_Init();
   if (!pifLog_AttachUart(&s_uart_log, 256)) return -1;										// 256bytes
 
-  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return -1;
+  if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return -1;
 
   if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3)) return -1;
   g_i2c_port.act_read = actI2cRead;

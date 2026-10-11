@@ -15,7 +15,7 @@
 #define PIN_SW_SERIAL_TX		5
 #define PIN_LED_L				13
 
-#define TASK_SIZE				4
+#define TASK_SIZE				5
 #define TIMER_1MS_SIZE			1
 
 #ifdef USE_SERIAL
@@ -133,7 +133,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 80)) return;										// 80bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
 	if (!appSetup()) return;
 

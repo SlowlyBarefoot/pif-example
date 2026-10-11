@@ -9,8 +9,8 @@
 #define PIN_L298N_IN1			30
 #define PIN_L298N_IN2			32
 
-#define TASK_SIZE				4
-#define TIMER_1MS_SIZE			3
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			2
 
 #define UART_LOG_BAUDRATE		115200
 
@@ -111,7 +111,7 @@ void setup()
 	pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) return;										// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
     if (!pifDutyMotor_Init(&g_motor, PIF_ID_AUTO, &g_timer_1ms, 255)) return;
     g_motor.act_set_duty = actSetDuty;

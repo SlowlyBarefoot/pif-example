@@ -3,6 +3,7 @@
 
 
 #include "core/pif_log.h"
+#include "core/pif_timer_manager.h"
 #include "display/pif_led.h"
 #include "display/pif_ssd1963.h"
 #include "input/pif_tsc2046.h"

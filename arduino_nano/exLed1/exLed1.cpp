@@ -10,8 +10,8 @@
 #define PIN_LED_YELLOW			3
 #define PIN_LED_GREEN			4
 
-#define TASK_SIZE				3
-#define TIMER_1MS_SIZE			2
+#define TASK_SIZE				5
+#define TIMER_1MS_SIZE			1
 
 #define UART_LOG_BAUDRATE		115200
 
@@ -75,9 +75,9 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 80)) return;										// 80bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
-    if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, &g_timer_1ms, 3, actLedRGBState)) return;
+    if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, 3, actLedRGBState)) return;
 
     if (!appSetup()) return;
 

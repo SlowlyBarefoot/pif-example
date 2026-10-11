@@ -7,8 +7,8 @@
 
 #define PIN_LED_L				13
 
-#define TASK_SIZE				6
-#define TIMER_1MS_SIZE			3
+#define TASK_SIZE				7
+#define TIMER_1MS_SIZE			2
 
 #define UART_SERIAL_BAUDRATE	115200
 
@@ -64,7 +64,7 @@ void setup()
 
     if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) return;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
 	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return;
     if (!pifUart_AttachTask(&g_serial, TM_PERIOD, 1000, NULL)) return;						// 1ms

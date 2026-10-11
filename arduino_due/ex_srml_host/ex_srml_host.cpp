@@ -6,8 +6,8 @@
 #define PIN_LED_L				13
 #define PIN_UART_CTS_DSR		14
 
-#define TASK_SIZE				6
-#define TIMER_1MS_SIZE			2
+#define TASK_SIZE				7
+#define TIMER_1MS_SIZE			1
 
 #define UART_LOG_BAUDRATE		115200
 #define UART_PRINTER_BAUDRATE	115200
@@ -114,7 +114,7 @@ void setup()
     g_uart_printer.act_receive_data = actPrinterReceiveData;
     g_uart_printer.act_send_data = actPrinterSendData;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, &g_timer_1ms, 1, actLedLState)) { line = __LINE__; goto fail; }
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) { line = __LINE__; goto fail; }
 
 	if (!appSetup()) { line = __LINE__; goto fail; }
 

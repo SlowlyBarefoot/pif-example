@@ -3,6 +3,7 @@
 
 
 #include "core/pif_log.h"
+#include "core/pif_timer_manager.h"
 #include "display/pif_led.h"
 #include "protocol/pif_modbus_rtu_slave.h"
 
