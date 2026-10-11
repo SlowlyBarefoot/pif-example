@@ -76,7 +76,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) return;											// 256bytes
 
-    if (!pifDotMatrix_Init(&g_dot_matrix, PIF_ID_AUTO, &g_timer_1ms, 8, 8, actDotMatrixDisplay)) return;
+    if (!pifDotMatrix_Init(&g_dot_matrix, PIF_ID_AUTO, 8, 8, actDotMatrixDisplay)) return;
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return;	// 500ms
 

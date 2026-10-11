@@ -3,6 +3,7 @@
 
 
 #include "core/pif_log.h"
+#include "core/pif_timer_manager.h"
 #include "core/pif_timer.h"
 #include "display/pif_dot_matrix.h"
 

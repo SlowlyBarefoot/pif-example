@@ -92,7 +92,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 80)) return;											// 80bytes
 
-    if (!pifFnd_Init(&g_fnd, PIF_ID_AUTO, &g_timer_1ms, 4, actFndDisplay)) return;
+    if (!pifFnd_Init(&g_fnd, PIF_ID_AUTO, 4, actFndDisplay)) return;
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return;	// 500ms
 

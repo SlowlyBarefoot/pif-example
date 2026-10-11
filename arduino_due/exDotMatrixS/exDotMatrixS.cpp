@@ -101,7 +101,7 @@ void setup()
 
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return;				// 500ms
 
-    if (!pifDotMatrix_Init(&g_dot_matrix, PIF_ID_AUTO, &g_timer_1ms, 8, 8, actDotMatrixDisplay)) return;	// 8 x 8 size
+    if (!pifDotMatrix_Init(&g_dot_matrix, PIF_ID_AUTO, 8, 8, actDotMatrixDisplay)) return;	// 8 x 8 size
 
     if (!appSetup()) return;
 
