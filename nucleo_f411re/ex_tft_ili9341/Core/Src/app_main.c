@@ -128,7 +128,7 @@ static int _CmdTouchCalibration(int argc, char *argv[])
 
 static int _CmdClear(int argc, char *argv[])
 {
-	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, BLACK);
+	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, PIF_COLOR_BLACK);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
@@ -149,27 +149,27 @@ static uint32_t _taskFillScreen(PifTask *pstTask)
 
 	switch (step) {
 	case 0:
-		pifIli9341_DrawFillRect(&g_ili9341.parent, 5, 10, g_ili9341.parent._width - 14, g_ili9341.parent._height - 19, RED);
+		pifIli9341_DrawFillRect(&g_ili9341.parent, 5, 10, g_ili9341.parent._width - 14, g_ili9341.parent._height - 19, PIF_COLOR_RED);
 		step++;
 		break;
 
 	case 1:
-		pifIli9341_DrawFillRect(&g_ili9341.parent, 10, 20, g_ili9341.parent._width - 29, g_ili9341.parent._height - 39, GREEN);
+		pifIli9341_DrawFillRect(&g_ili9341.parent, 10, 20, g_ili9341.parent._width - 29, g_ili9341.parent._height - 39, PIF_COLOR_GREEN);
 		step++;
 		break;
 
 	case 2:
-		pifIli9341_DrawFillRect(&g_ili9341.parent, 15, 30, g_ili9341.parent._width - 44, g_ili9341.parent._height - 59, BLUE);
+		pifIli9341_DrawFillRect(&g_ili9341.parent, 15, 30, g_ili9341.parent._width - 44, g_ili9341.parent._height - 59, PIF_COLOR_BLUE);
 		step++;
 		break;
 
 	case 3:
-		pifIli9341_DrawFillRect(&g_ili9341.parent, 20, 40, g_ili9341.parent._width - 59, g_ili9341.parent._height - 79, WHITE);
+		pifIli9341_DrawFillRect(&g_ili9341.parent, 20, 40, g_ili9341.parent._width - 59, g_ili9341.parent._height - 79, PIF_COLOR_WHITE);
 		step++;
 		break;
 
 	case 4:
-		pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, BLACK);
+		pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, PIF_COLOR_BLACK);
 		step = 0;
 		break;
 	}
@@ -184,7 +184,7 @@ static void _evtTouchData(int16_t x, int16_t y)
     static int time = 0;
 
     if (draw) {
-		pifIli9341_DrawPixel(&g_ili9341.parent, x, y, WHITE);
+		pifIli9341_DrawPixel(&g_ili9341.parent, x, y, PIF_COLOR_WHITE);
 	}
 
     if (time) time--;
@@ -225,7 +225,7 @@ BOOL appSetup()
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "FillRect";
 
-	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, BLACK);
+	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, PIF_COLOR_BLACK);
     return TRUE;
 
 fail:
