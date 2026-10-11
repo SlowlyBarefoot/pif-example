@@ -348,7 +348,7 @@ static void actLcdBackLight(uint8_t level)
 
 #if LCD_TYPE == LCD_3_2_INCH
 
-static BOOL actPen()
+static BOOL actPen(void)
 {
 	return !HAL_GPIO_ReadPin(PEN_GPIO_Port, PEN_Pin);
 }
@@ -359,8 +359,7 @@ static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read
 
 	HAL_GPIO_WritePin(T_CS_GPIO_Port, T_CS_Pin, OFF);
 	HAL_GPIO_WritePin(T_NSS_GPIO_Port, T_NSS_Pin, OFF);
-	HAL_SPI_Transmit(&hspi2, p_write, 1, 10);
-	HAL_SPI_Receive(&hspi2, p_read, size, 10);
+	HAL_SPI_TransmitReceive(&hspi2, p_write, p_read, size, 10);
 	HAL_GPIO_WritePin(T_NSS_GPIO_Port, T_NSS_Pin, ON);
 	HAL_GPIO_WritePin(T_CS_GPIO_Port, T_CS_Pin, ON);
 }

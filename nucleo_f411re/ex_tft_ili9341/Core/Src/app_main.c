@@ -67,7 +67,11 @@ static int _CmdRotation(int argc, char *argv[])
 		int rot = atoi(argv[0]);
 		if (rot >= TLR_0_DEGREE && rot <= TLR_270_DEGREE) {
 			rotation = (PifTftLcdRotation)rot;
+#if LCD_TYPE == LCD_3_2_INCH
+			if (!pifTouchScreen_SetRotation(&g_tsc2046.parent, rotation)) return PIF_LOG_CMD_INVALID_ARG;
+#else
 			pifIli9341_SetRotation(&g_ili9341.parent, rotation);
+#endif
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		return PIF_LOG_CMD_INVALID_ARG;

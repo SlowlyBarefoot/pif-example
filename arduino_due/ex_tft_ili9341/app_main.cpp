@@ -70,7 +70,9 @@ static int _CmdRotation(int argc, char *argv[])
 		if (rot >= TLR_0_DEGREE && rot <= TLR_270_DEGREE) {
 			rotation = (PifTftLcdRotation)rot;
 #if LCD_TYPE == LCD_2_4_INCH
-			pifTouchScreen_SetRotation(&g_touch_screen, rotation);
+			if (!pifTouchScreen_SetRotation(&g_touch_screen, rotation)) return PIF_LOG_CMD_INVALID_ARG;
+#elif LCD_TYPE == LCD_3_2_INCH
+			if (!pifTouchScreen_SetRotation(&g_tsc2046.parent, rotation)) return PIF_LOG_CMD_INVALID_ARG;
 #else
 			pifIli9341_SetRotation(&g_ili9341.parent, rotation);
 #endif

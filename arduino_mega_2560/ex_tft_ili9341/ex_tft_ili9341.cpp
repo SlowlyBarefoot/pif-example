@@ -360,9 +360,8 @@ static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read
 
 	digitalWrite(PIN_TS_CS, LOW);
 	digitalWrite(SS, LOW);
-	SPI.transfer(p_write[0]);
 	for (i = 0; i < size; i++) {
-		p_read[i] = SPI.transfer(0);
+		p_read[i] = SPI.transfer(p_write[i]);
 	}
 	digitalWrite(SS, HIGH);
 	digitalWrite(PIN_TS_CS, HIGH);
