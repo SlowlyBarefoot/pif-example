@@ -207,7 +207,7 @@ int main(void)
     HAL_UART_Receive_IT(&huart2, &s_log_rx, 1);
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }													// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 512)) { line = __LINE__; goto fail; }													// 512bytes
 
 	if (!pifUart_Init(&g_uart_printer, PIF_ID_AUTO, huart6.Init.BaudRate)) { line = __LINE__; goto fail; }
     if (!pifUart_AttachTxTask(&g_uart_printer, PIF_ID_AUTO, TM_PERIOD, 200000, "UartTxHost")) { line = __LINE__; goto fail; }	// 200ms

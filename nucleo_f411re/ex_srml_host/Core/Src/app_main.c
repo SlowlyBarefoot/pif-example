@@ -1,6 +1,6 @@
 /**
  * @file app_main.cpp
- * @brief Arduino DUE examples for Simple Receipt Markup Langeage
+ * @brief Arduino DUE examples for Simple Receipt Markup Language
  * @details I used the ex_uart_fc_device example to test this example. I don't have a receipt printer so I haven't tested it.
  *
  *  Conversion
@@ -111,7 +111,7 @@ Cash %27.2h\n\
 ?a%=32c\n";
 
 
-static PifSrmlType _process_data(PifSrml *p_owner, char command, void **p_data, int loop_idx)
+static PifSrmlType _process_data(PifSrml *p_owner, char command, void **p_data)
 {
 	switch (command) {
 	case 'c': *p_data = s_param.company; return SRMLT_STRING;
@@ -120,10 +120,10 @@ static PifSrmlType _process_data(PifSrml *p_owner, char command, void **p_data, 
 	case 'd': *p_data = s_param.date; return SRMLT_STRING;
 	case 'm': *p_data = s_param.terminal; return SRMLT_STRING;
 	case 'n': *p_data = s_param.partner; return SRMLT_STRING;
-	case 'i': *p_data = s_param.product_item[loop_idx]; return SRMLT_STRING;
-	case 'r': *p_data = &s_param.product_price[loop_idx]; return SRMLT_REAL;
-	case 'q': *p_data = &s_param.product_qty[loop_idx]; return SRMLT_INT;
-	case 'u': *p_data = &s_param.product_amount[loop_idx]; return SRMLT_REAL;
+	case 'i': *p_data = s_param.product_item[p_owner->loop_idx]; return SRMLT_STRING;
+	case 'r': *p_data = &s_param.product_price[p_owner->loop_idx]; return SRMLT_REAL;
+	case 'q': *p_data = &s_param.product_qty[p_owner->loop_idx]; return SRMLT_INT;
+	case 'u': *p_data = &s_param.product_amount[p_owner->loop_idx]; return SRMLT_REAL;
 	case 's': *p_data = &s_param.subtotal; return SRMLT_REAL;
 	case 'x': *p_data = &s_param.tax; return SRMLT_REAL;
 	case 't': *p_data = &s_param.total; return SRMLT_REAL;
@@ -137,7 +137,7 @@ static BOOL _process_loop(PifSrml *p_owner, char command)
 {
     switch (command) {
     case 'p':
-        while (!s_param.product_qty[p_owner->loop_idx]) p_owner->loop_idx++;
+        while (p_owner->loop_idx < s_param.product_count && !s_param.product_qty[p_owner->loop_idx]) p_owner->loop_idx++;
         break;
 
     case 'P':

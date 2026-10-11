@@ -107,7 +107,7 @@ void setup()
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }													// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 512)) { line = __LINE__; goto fail; }													// 512bytes
 
 	if (!pifUart_Init(&g_uart_printer, PIF_ID_AUTO, UART_PRINTER_BAUDRATE)) { line = __LINE__; goto fail; }
     if (!pifUart_AttachTxTask(&g_uart_printer, PIF_ID_AUTO, TM_PERIOD, 10000, "UartTxPrinter")) { line = __LINE__; goto fail; }	// 10ms
