@@ -80,7 +80,7 @@ void setup()
 
 	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return;
     if (!pifUart_AttachTxTask(&g_serial, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return;
-    if (!pifUart_AttachRxTask(&g_serial, PIF_ID_AUTO, TM_PERIOD, 50000, NULL)) return;		// 50ms
+    if (!pifUart_AttachRxTask(&g_serial, PIF_ID_AUTO, TM_PERIOD, 1000, NULL)) return;		// 1ms
     g_serial.act_receive_data = actXmodemReceiveData;
     g_serial.act_send_data = actXmodemSendData;
 

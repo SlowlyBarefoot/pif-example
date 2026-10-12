@@ -220,7 +220,7 @@ BOOL appSetup()
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;							// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, &g_timer_1ms, XT_CRC)) return FALSE;
+    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) return FALSE;
     pifXmodem_AttachEvtRx(&s_xmodem, _evtXmodemRxReceive, _evtXmodemFinish);
 
 	pifBasic_Init(p_process, _evtComplete);
