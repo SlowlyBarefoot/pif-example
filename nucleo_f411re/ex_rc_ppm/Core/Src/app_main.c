@@ -11,6 +11,7 @@ PifRcPpm g_rc_ppm;
 PifTimerManager g_timer_1ms;
 
 static uint16_t s_value[MAX_CHANNEL];
+static BOOL s_failsafe = FALSE;
 
 
 static void _evtRcPpmReceive(PifRc* p_owner, uint16_t* p_channel, PifIssuerP p_issuer)
@@ -33,6 +34,19 @@ static uint32_t _taskPrint(PifTask* p_task)
     return 0;
 }
 
+static uint32_t _taskFailsafe(PifTask* p_task)
+{
+	BOOL failsafe = pifRc_CheckFailSafe(&g_rc_ppm.parent);
+
+	(void)p_task;
+
+	if (failsafe != s_failsafe) {
+		s_failsafe = failsafe;
+		pifLog_Printf(LT_INFO, "Failsafe:%d Loss:%d%%", failsafe, pifRc_GetFrameLoss(&g_rc_ppm.parent));
+	}
+    return 0;
+}
+
 BOOL appSetup()
 {
 	PifTask* p_task;
@@ -43,5 +57,7 @@ BOOL appSetup()
     if (!pifRcPpm_Init(&g_rc_ppm, PIF_ID_AUTO, MAX_CHANNEL, 2700)) return FALSE;
     pifRcPpm_SetValidRange(&g_rc_ppm, PULSE_MIN, PULSE_MAX);
     pifRc_AttachEvtReceive(&g_rc_ppm.parent, _evtRcPpmReceive, p_task);
+
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskFailsafe, NULL, TRUE)) return FALSE;	// 100ms
     return TRUE;
 }
