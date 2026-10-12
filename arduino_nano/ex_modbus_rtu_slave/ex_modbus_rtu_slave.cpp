@@ -90,7 +90,7 @@ void setup()
     g_uart_modbus.act_get_tx_rate = actSlaveGetTxRate;
     pifUart_AttachActDirection(&g_uart_modbus, actSlaveDirection, UD_RX);
 
-	if (!pifModbusRtuSlave_Init(&g_modbus_slave, PIF_ID_AUTO, &g_timer_1ms, RTU_SERVER_ADDRESS)) return;
+	if (!pifModbusRtuSlave_Init(&g_modbus_slave, PIF_ID_AUTO, RTU_SERVER_ADDRESS)) return;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 

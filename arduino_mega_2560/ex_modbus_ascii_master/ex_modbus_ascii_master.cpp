@@ -123,7 +123,7 @@ void setup()
     g_uart_modbus.act_get_tx_rate = actModbusGetTxRate;
     pifUart_AttachActDirection(&g_uart_modbus, actModbusDirection, UD_TX);
 
-	if (!pifModbusAsciiMaster_Init(&g_modbus_master, PIF_ID_AUTO, &g_timer_1ms)) { line = __LINE__; goto fail; }
+	if (!pifModbusAsciiMaster_Init(&g_modbus_master, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) { line = __LINE__; goto fail; }
 
