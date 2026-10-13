@@ -136,7 +136,7 @@ BOOL exSerial1_Setup()
     }
 
     if (!pifLink_Init(&s_link, PIF_ID_AUTO, &g_timer_1ms, LINK_T_SINGLE, 0, c_link_question1)) return FALSE;
-    pifLink_AttachUart(&s_link, &g_serial1);
+    pifLink_AttachTransport(&s_link, &g_serial1.parent);
     s_link.evt_error = _evtLinkError;
 
     return TRUE;

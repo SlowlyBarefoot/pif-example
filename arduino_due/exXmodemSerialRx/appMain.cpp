@@ -96,7 +96,7 @@ BOOL appSetup()
 	pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, &s_xmodem);
 
     if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) return FALSE;
-    pifXmodem_AttachUart(&s_xmodem, &g_serial);
+    pifXmodem_AttachTransport(&s_xmodem, &g_serial.parent);
     pifXmodem_AttachEvtRx(&s_xmodem, _evtXmodemRxReceive, NULL);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;														// 500ms

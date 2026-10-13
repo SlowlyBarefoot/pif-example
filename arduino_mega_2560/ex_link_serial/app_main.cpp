@@ -137,7 +137,7 @@ BOOL appSetup()
     }
 
     if (!pifLink_Init(&s_link, PIF_ID_AUTO, &g_timer_1ms, LINK_T_SINGLE, 0, c_link_question)) return FALSE;
-    pifLink_AttachUart(&s_link, &g_serial);
+    pifLink_AttachTransport(&s_link, &g_serial.parent);
     s_link.evt_error = _evtLinkError;
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																	// 500ms

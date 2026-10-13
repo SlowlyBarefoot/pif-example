@@ -87,6 +87,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>pif/include/communication/pif_transport.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_transport.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/communication/pif_uart.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_uart.h</locationURI>
@@ -135,6 +140,11 @@
 			<name>pif/include/display/pif_fnd.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_fnd.h</locationURI>
+		</link>
+		<link>
+			<name>pif/source/communication/pif_transport.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_transport.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_uart.c</name>

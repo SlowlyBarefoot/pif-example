@@ -183,7 +183,7 @@ static uint32_t _taskChangeUart(PifTask* p_task)
 	switch (s_change_uart) {
 	case CHANGE_UART_LOG_TO_XMODEM:
 		pifLog_DetachUart();
-	    pifXmodem_AttachUart(&s_xmodem, &g_uart);
+	    pifXmodem_AttachTransport(&s_xmodem, &g_uart.parent);
 
 	    pifXmodem_ReadyReceive(&s_xmodem);
 		s_basic_length = 0;
@@ -191,7 +191,7 @@ static uint32_t _taskChangeUart(PifTask* p_task)
 		break;
 
 	case CHANGE_UART_XMODEM_TO_LOG:
-		pifXmodem_DetachUart(&s_xmodem);
+		pifXmodem_DetachTransport(&s_xmodem);
 	    pifLog_AttachUart(&g_uart, 256);		// 256bytes
 
 		s_change_uart = CHANGE_UART_NONE;

@@ -68,7 +68,7 @@ static void _evtXmodemTxReceive(uint8_t ucCode, uint8_t ucPacketNo)
 BOOL appInit()
 {
     if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) return FALSE;
-    pifXmodem_AttachUart(&s_xmodem, &s_serial);
+    pifXmodem_AttachTransport(&s_xmodem, &s_serial.parent);
     pifXmodem_AttachEvtTx(&s_xmodem, _evtXmodemTxReceive, NULL);
     return TRUE;
 }

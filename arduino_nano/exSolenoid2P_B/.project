@@ -97,6 +97,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/actuator/pif_solenoid.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/communication/pif_transport.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_transport.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/communication/pif_uart.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_uart.h</locationURI>
@@ -160,6 +165,11 @@
 			<name>pif/source/actuator/pif_solenoid.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/actuator/pif_solenoid.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/communication/pif_transport.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_transport.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_uart.c</name>

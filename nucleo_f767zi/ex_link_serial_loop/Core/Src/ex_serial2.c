@@ -122,7 +122,7 @@ static void _evtDelay(void *p_issuer)
 BOOL exSerial2_Setup()
 {
     if (!pifLink_Init(&s_link, PIF_ID_AUTO, &g_timer_1ms, LINK_T_SINGLE, 0, c_link_question2)) return FALSE;
-    pifLink_AttachUart(&s_link, &g_serial2);
+    pifLink_AttachTransport(&s_link, &g_serial2.parent);
     s_link.evt_error = _evtLinkError;
 
     for (int i = 0; i < 2; i++) {
