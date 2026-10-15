@@ -91,6 +91,16 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/include/gps</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/gps</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/gpl/include/gps</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -101,9 +111,24 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/include/communication/pif_device_reg.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_device_reg.h</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/include/communication/pif_i2c.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_i2c.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/include/communication/pif_device_stream.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_device_stream.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/include/gps/pif_ubx_ddc_stream.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/gps/pif_ubx_ddc_stream.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/include/communication/pif_transport.h</name>
@@ -161,9 +186,24 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/source/communication/pif_device_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_device_reg.c</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/source/communication/pif_i2c.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_i2c.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/communication/pif_device_stream.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_device_stream.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/gps/pif_ubx_ddc_stream.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/gps/pif_ubx_ddc_stream.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/source/communication/pif_transport.c</name>

@@ -112,6 +112,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>pif/include/communication/pif_device_reg.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_device_reg.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/communication/pif_spi.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_spi.h</locationURI>
@@ -210,6 +215,11 @@
 			<name>pif/include/input/pif_tsc2046.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/input/pif_tsc2046.h</locationURI>
+		</link>
+		<link>
+			<name>pif/source/communication/pif_device_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_device_reg.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_spi.c</name>

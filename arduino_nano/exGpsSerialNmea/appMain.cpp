@@ -81,7 +81,7 @@ BOOL appSetup()
     pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, NULL);
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return FALSE;
-	pifGpsNmea_AttachUart(&s_gps_nmea, &g_uart_gps);
+	if (!pifGpsNmea_AttachTransport(&s_gps_nmea, &g_uart_gps.parent)) return FALSE;
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 

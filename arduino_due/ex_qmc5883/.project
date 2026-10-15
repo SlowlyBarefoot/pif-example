@@ -112,6 +112,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>pif/include/communication/pif_device_reg.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_device_reg.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/communication/pif_i2c.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/communication/pif_i2c.h</locationURI>
@@ -180,6 +185,11 @@
 			<name>pif/include/sensor/pif_qmc5883.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_qmc5883.h</locationURI>
+		</link>
+		<link>
+			<name>pif/source/communication/pif_device_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_device_reg.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_i2c.c</name>

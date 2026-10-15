@@ -1,5 +1,6 @@
 #include "linker.h"
 
+#include "gps/pif_ubx_ddc_stream.h"
 #include "gps/pif_gps_nmea.h"
 
 
@@ -9,6 +10,7 @@ PifTimerManager g_timer_1ms;
 
 int g_print_data = 0;
 
+static PifUbxDdcStream s_gps_i2c;
 static PifGpsNmea s_gps_nmea;
 
 static BOOL s_booting = FALSE;
@@ -121,8 +123,9 @@ BOOL appSetup()
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
+	if (!pifUbxDdcStream_Init(&s_gps_i2c, PIF_ID_AUTO, &g_i2c_port, 0x42, 128, 0, 250)) return FALSE;	// 0x42 : Ublox I2c addrress, 250ms
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return FALSE;
-	if (!pifGpsNmea_AttachI2c(&s_gps_nmea, &g_i2c_port, 0x42, NULL, 250, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 250ms
+	if (!pifGpsNmea_AttachTransport(&s_gps_nmea, &s_gps_i2c.stream.parent)) return FALSE;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	if (!pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText)) return FALSE;

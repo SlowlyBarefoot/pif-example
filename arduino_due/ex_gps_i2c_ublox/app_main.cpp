@@ -1,5 +1,6 @@
 #include "linker.h"
 
+#include "gps/pif_ubx_ddc_stream.h"
 #include "gps/pif_gps_ublox.h"
 
 
@@ -13,6 +14,7 @@ PifTimerManager g_timer_1ms;
 
 int g_print_data = 0;
 
+static PifUbxDdcStream s_gps_i2c;
 static PifGpsUblox s_gps_ublox;
 
 static BOOL s_booting = FALSE;
@@ -168,7 +170,7 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 			n++;
 			if (n < sizeof(kCfgMsgNmea) / sizeof(kCfgMsgNmea[0])) step++;
 			else {
-				pifTask_ChangePeriod(s_gps_ublox._p_task, 50);	// 50ms
+				pifTask_ChangePeriod(s_gps_i2c.stream._p_task, 50);	// 50ms
 				step = 0x20;
 			}
 			delay = 400;
@@ -228,7 +230,7 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 			break;
 
 		case 0x33:
-			pifTask_ChangePeriod(s_gps_ublox._p_task, 500);	// 500ms
+			pifTask_ChangePeriod(s_gps_i2c.stream._p_task, 500);	// 500ms
 			p_task->pause = TRUE;
 			s_booting = TRUE;
 			break;
@@ -361,11 +363,13 @@ BOOL appSetup()
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
-	if (!pifGpsUblox_AttachI2c(&s_gps_ublox, &g_i2c_port, 0x42, NULL, 500, TRUE, NULL)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
+	if (!pifUbxDdcStream_Init(&s_gps_i2c, PIF_ID_AUTO, &g_i2c_port, 0x42, 128, PIF_GPS_UBLOX_TX_SIZE, 500)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
+	s_gps_i2c._p_device->parent.timeout = 200;
 #ifdef USE_I2C_WIRE
-	s_gps_ublox._p_i2c_device->max_transfer_size = 32;
+	s_gps_i2c._p_device->parent.max_transfer_size = 32;
 #endif
+    if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
+	if (!pifGpsUblox_AttachTransport(&s_gps_ublox, &s_gps_i2c.stream.parent)) return FALSE;
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;

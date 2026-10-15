@@ -17,7 +17,7 @@ PifTimerManager g_timer_1ms;
  * @fn _probe
  * @brief Asks whether a device acknowledges an address, by a write with no data: only the slave
  *        address goes out, so nothing reaches a device as a register address or a command.
- * @details act_write is called directly rather than through pifI2cDevice_Write(), which counts
+ * @details act_write is called directly rather than through pifDeviceReg_Write(), which counts
  *          and logs a failed transfer as an error. Here a missing device is the normal answer.
  *          It needs a port that makes the transfer before it returns, as the Wire port does.
  * @param addr Address to probe.

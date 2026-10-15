@@ -61,7 +61,7 @@ static uint32_t _taskPmlcdI2c(PifTask *pstTask)
 BOOL appSetup()
 {
     if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27, NULL)) return FALSE;
-    s_pmlcd_i2c._p_i2c->max_transfer_size = 32;
+    s_pmlcd_i2c._p_device->max_transfer_size = 32;
     if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) return FALSE;
     if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) return FALSE;
 

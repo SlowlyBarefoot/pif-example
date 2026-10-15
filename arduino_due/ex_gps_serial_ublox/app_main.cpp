@@ -482,7 +482,7 @@ BOOL appSetup(uint32_t baurdate)
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
-	pifGpsUblox_AttachUart(&s_gps_ublox, &g_uart_gps);
+	if (!pifGpsUblox_AttachTransport(&s_gps_ublox, &g_uart_gps.parent)) return FALSE;
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;

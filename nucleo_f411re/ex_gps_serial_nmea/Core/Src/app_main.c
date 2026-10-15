@@ -118,7 +118,7 @@ BOOL appSetup()
     if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;	// 32bytes
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return FALSE;
-	pifGpsNmea_AttachUart(&s_gps_nmea, &g_uart_gps);
+	if (!pifGpsNmea_AttachTransport(&s_gps_nmea, &g_uart_gps.parent)) return FALSE;
 	if (!pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText)) return FALSE;
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
