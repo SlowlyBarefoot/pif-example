@@ -48,8 +48,8 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 static int _CmdFillRect(int argc, char *argv[])
 {
-	p_task->pause ^= 1;
-	pifLog_Printf(LT_NONE, "  File Rect=%u\n", !p_task->pause);
+	if (p_task->_pause) pifTask_Resume(p_task); else pifTask_Pause(p_task);
+	pifLog_Printf(LT_NONE, "  File Rect=%u\n", !p_task->_pause);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 

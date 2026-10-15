@@ -79,7 +79,7 @@ void setup()
 
     g_timer_switch = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!g_timer_switch) return;
-    pifTimer_AttachEvtFinish(g_timer_switch, evtSwitchAcquire, NULL);
+    pifTimer_AttachEvtFinish(g_timer_switch, evtSwitchAcquire, NULL, FALSE);
 
 	if (!appSetup()) return;
 

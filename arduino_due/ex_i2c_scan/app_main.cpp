@@ -59,7 +59,7 @@ static uint32_t _taskScan(PifTask* p_task)
 	else {
 		pifLog_Print(LT_INFO, "I2C Not found");
 	}
-	p_task->pause = TRUE;
+	pifTask_Pause(p_task);
 	return 0;
 }
 

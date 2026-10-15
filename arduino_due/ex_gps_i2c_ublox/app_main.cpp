@@ -231,7 +231,7 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 
 		case 0x33:
 			pifTask_ChangePeriod(s_gps_i2c.stream._p_task, 500);	// 500ms
-			p_task->pause = TRUE;
+			pifTask_Pause(p_task);
 			s_booting = TRUE;
 			break;
 		}

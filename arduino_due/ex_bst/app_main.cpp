@@ -231,7 +231,7 @@ static uint32_t _taskTest(PifTask *p_task)
 	else {
 		pifLog_Printf(LT_NONE, "\nResult: %s (error=%d, drop=%lu)\n", s_error ? "FAIL" : "PASS", s_error,
 				(unsigned long)pifLog_DropCount());
-		p_task->pause = TRUE;
+		pifTask_Pause(p_task);
 	}
 	s_step++;
 	return 0;

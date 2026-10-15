@@ -117,7 +117,7 @@ BOOL appSetup(AppActGenerate act_generate)
 
 	p_timer = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
 	if (!p_timer) return FALSE;
-	pifTimer_AttachEvtIntFinish(p_timer, _evtGenerate, NULL);
+	pifTimer_AttachEvtFinish(p_timer, _evtGenerate, NULL, TRUE);
 	if (!pifTimer_Start(p_timer, 1)) return FALSE;													// 1ms
 #else
 	(void)act_generate;

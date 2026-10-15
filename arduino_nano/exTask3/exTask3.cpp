@@ -32,8 +32,8 @@ static uint32_t _taskLedRedToggle(PifTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pstTask->pause = TRUE;
-			s_pstTask[1]->pause = FALSE;
+			pifTask_Pause(pstTask);
+			pifTask_Restart(s_pstTask[1]);
 		}
 
 		nCount = 99;
@@ -54,8 +54,8 @@ static uint32_t _taskLedYellowToggle(PifTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pstTask->pause = TRUE;
-			s_pstTask[2]->pause = FALSE;
+			pifTask_Pause(pstTask);
+			pifTask_Restart(s_pstTask[2]);
 		}
 
 		nCount = 99;
@@ -76,8 +76,8 @@ static uint32_t _taskLedGreenToggle(PifTask *pstTask)
 		nToggle++;
 		if (nToggle >= 10) {
 			nToggle = 0;
-			pstTask->pause = TRUE;
-			s_pstTask[0]->pause = FALSE;
+			pifTask_Pause(pstTask);
+			pifTask_Restart(s_pstTask[0]);
 		}
 
 		nCount = 99;

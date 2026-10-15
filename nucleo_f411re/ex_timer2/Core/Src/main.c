@@ -133,11 +133,11 @@ int main(void)
 
   g_timer_red = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
   if (!g_timer_red) return -1;
-  pifTimer_AttachEvtFinish(g_timer_red, evtLedRedToggle, NULL);
+  pifTimer_AttachEvtFinish(g_timer_red, evtLedRedToggle, NULL, FALSE);
 
   g_timer_yellow = pifTimerManager_Add(&g_timer_100us, TT_REPEAT);
   if (!g_timer_yellow) return -1;
-  pifTimer_AttachEvtFinish(g_timer_yellow, evtLedYellowToggle, NULL);
+  pifTimer_AttachEvtFinish(g_timer_yellow, evtLedYellowToggle, NULL, FALSE);
 
   if (!appSetup()) return -1;
 

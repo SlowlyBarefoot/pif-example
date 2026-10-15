@@ -91,7 +91,7 @@ BOOL appSetup()
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_link_test[i].p_delay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
 		if (!s_link_test[i].p_delay) return FALSE;
-		pifTimer_AttachEvtFinish(s_link_test[i].p_delay, _evtDelay, (void *)&c_link_request[i]);
+		pifTimer_AttachEvtFinish(s_link_test[i].p_delay, _evtDelay, (void *)&c_link_request[i], FALSE);
     }
 
     if (!pifLink_Init(&s_link, PIF_ID_AUTO, &g_timer_1ms, LINK_T_SINGLE, 0, c_link_question)) return FALSE;

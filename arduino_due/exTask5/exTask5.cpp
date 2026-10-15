@@ -41,7 +41,7 @@ static uint32_t _taskPeriod(PifTask *pstTask)
 
 	case 1:
 		pifTask_ChangeMode(s_task_change, TM_PERIOD, 1000);		// 1ms
-		s_task_change->pause = FALSE;
+		pifTask_Resume(s_task_change);
 		s_state = 0;
 		break;
 	}

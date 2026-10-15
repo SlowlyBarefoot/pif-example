@@ -128,7 +128,7 @@ BOOL appSetup()
     s_gy86._ms5611._p_device->max_transfer_size = 32;
 #endif
     s_gy86._mpu6050.temp_scale = 100;
-    s_gy86._ms5611._p_task->pause = FALSE;
+    pifTask_Resume(s_gy86._ms5611._p_task);
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskMpu60x0, NULL, TRUE)) return FALSE;	// 500ms
 

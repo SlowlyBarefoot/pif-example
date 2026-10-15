@@ -49,7 +49,7 @@ void setup()
 
     g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!g_timer_led) return;
-    pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL);
+    pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL, FALSE);
 
     if (!appSetup()) return;
 }

@@ -105,7 +105,7 @@ static uint32_t _taskTest(PifTask *p_task)
 	while (!s_num) {
 		if (s_test >= TEST_COUNT) {
 			pifLog_Printf(LT_NONE, "\nDone: test=%d, drop=%lu\n", s_test, (unsigned long)pifLog_DropCount());
-			p_task->pause = TRUE;
+			pifTask_Pause(p_task);
 			return 0;
 		}
 

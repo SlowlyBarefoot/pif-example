@@ -128,7 +128,7 @@ BOOL exSerial2_Setup()
     for (int i = 0; i < 2; i++) {
     	s_link_test[i].p_delay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
 		if (!s_link_test[i].p_delay) return FALSE;
-		pifTimer_AttachEvtFinish(s_link_test[i].p_delay, _evtDelay, (void *)&c_link_request2[i]);
+		pifTimer_AttachEvtFinish(s_link_test[i].p_delay, _evtDelay, (void *)&c_link_request2[i], FALSE);
     }
 
     return TRUE;

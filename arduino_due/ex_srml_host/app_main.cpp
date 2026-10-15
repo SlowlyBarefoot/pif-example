@@ -344,7 +344,7 @@ BOOL appSetup()
 	if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
 	pifLog_AttachEvent(_evtLogControlChar);
 
-	g_uart_printer._p_tx_task->pause = FALSE;
+	pifTask_Resume(g_uart_printer._p_tx_task);
 
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);

@@ -27,7 +27,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
 static uint32_t _taskPrintBuffer(PifTask *p_task)
 {
 	// The UART takes only part of the retained buffer at a time, so come back until it is empty.
-	if (!pifLog_PrintInBuffer()) p_task->pause = TRUE;
+	if (!pifLog_PrintInBuffer()) pifTask_Pause(p_task);
 	return 0;
 }
 
@@ -45,7 +45,7 @@ static void _evtLedToggle(void *pvIssuer)
 
 	if (count) count--;
 	else {
-	    s_task_print_buffer->pause = FALSE;
+	    pifTask_Resume(s_task_print_buffer);
 	    count = 19;
 	}
 }
@@ -86,7 +86,7 @@ void setup()
 
 	g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!g_timer_led) return;
-    pifTimer_AttachEvtFinish(g_timer_led, _evtLedToggle, NULL);
+    pifTimer_AttachEvtFinish(g_timer_led, _evtLedToggle, NULL, FALSE);
 
     if (!appSetup()) return;
 

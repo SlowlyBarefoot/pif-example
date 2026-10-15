@@ -126,7 +126,7 @@ static uint32_t _taskNmeaSetup(PifTask *p_task)
 			break;
 
 		case 0x40:
-			p_task->pause = TRUE;
+			pifTask_Pause(p_task);
 			s_booting = TRUE;
 			break;
 		}
@@ -348,7 +348,7 @@ static uint32_t _taskUbloxSetup(PifTask *p_task)
 			break;
 
 		case 0x63:
-			p_task->pause = TRUE;
+			pifTask_Pause(p_task);
 			s_booting = TRUE;
 			break;
 		}

@@ -36,7 +36,7 @@ BOOL appSetup()
 
 	p_timer = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!p_timer) return FALSE;
-    pifTimer_AttachEvtFinish(p_timer, _evtTimerPeriodFinish, &g_sensor);
+    pifTimer_AttachEvtFinish(p_timer, _evtTimerPeriodFinish, &g_sensor, FALSE);
 	if (!pifTimer_Start(p_timer, 500)) return FALSE;														// 500ms
 	return TRUE;
 }

@@ -45,7 +45,7 @@ static int _CmdFlowControl(int argc, char *argv[])
 
 static int _CmdSendData(int argc, char *argv[])
 {
-	p_task->pause = FALSE;
+	pifTask_Resume(p_task);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
@@ -76,7 +76,7 @@ static uint32_t _taskSendMessage(PifTask *p_task)
 	s_length = 0;
 	s_step++;
 	if (s_step == 100) {
-		p_task->pause = TRUE;
+		pifTask_Pause(p_task);
 		s_step = 0;
 	}
 	return 0;
@@ -100,7 +100,7 @@ BOOL appSetup()
 	if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }		// 32bytes
 	pifLog_AttachEvent(_evtLogControlChar);
 
-	g_uart_host._p_rx_task->pause = FALSE;
+	pifTask_Resume(g_uart_host._p_rx_task);
 
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }					// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);

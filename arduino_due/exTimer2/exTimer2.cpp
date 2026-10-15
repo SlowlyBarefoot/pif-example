@@ -83,12 +83,12 @@ void setup()
 
     pstTimer1ms = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
     if (!pstTimer1ms) return;
-    pifTimer_AttachEvtFinish(pstTimer1ms, evtLedRedToggle, NULL);
+    pifTimer_AttachEvtFinish(pstTimer1ms, evtLedRedToggle, NULL, FALSE);
     if (!pifTimer_Start(pstTimer1ms, 5)) return;											// 5 * 1ms = 5ms
 
     pstTimer100us = pifTimerManager_Add(&g_timer_100us, TT_REPEAT);
     if (!pstTimer100us) return;
-    pifTimer_AttachEvtFinish(pstTimer100us, evtLedYellowToggle, NULL);
+    pifTimer_AttachEvtFinish(pstTimer100us, evtLedYellowToggle, NULL, FALSE);
     if (!pifTimer_Start(pstTimer100us, 5)) return;											// 5 * 100us = 500us
 }
 

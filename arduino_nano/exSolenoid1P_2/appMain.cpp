@@ -36,7 +36,7 @@ BOOL appSetup()
 {
     s_stSolenoidTest.pstTimerItem = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
     if (!s_stSolenoidTest.pstTimerItem) return FALSE;
-    pifTimer_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _evtSolenoidFinish, &s_stSolenoidTest);
+    pifTimer_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _evtSolenoidFinish, &s_stSolenoidTest, FALSE);
     pifTimer_Start(s_stSolenoidTest.pstTimerItem, 1000);							// 1000ms
     return TRUE;
 }
