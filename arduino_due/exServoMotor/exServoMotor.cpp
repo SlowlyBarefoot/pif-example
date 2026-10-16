@@ -77,9 +77,7 @@ void setup()
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
 
-    g_pstPwm = pifTimerManager_Add(&g_timer_100us, TT_PWM);
-    if (!g_pstPwm) return;
-    g_pstPwm->act_pwm = actPulsePwm;
+    if (!pifPwmGen_Init(&g_pwm_gen, PIF_ID_AUTO, &g_timer_100us, actPulsePwm)) return;
 
 	if (!appSetup()) return;
 

@@ -4,7 +4,7 @@
 PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 PifTimerManager g_timer_100us;
-PifTimer *g_pstPwm = NULL;
+PifPwmGen g_pwm_gen;
 
 static BOOL s_bStart = FALSE;
 
@@ -17,12 +17,12 @@ static uint32_t _taskServoMotor(PifTask *pstTask)
 	(void)pstTask;
 
 	if (!s_bStart) {
-		pifTimer_Start(g_pstPwm, 200);		        // 200 * 100us / 1000 = 20ms
-		pifTimer_SetPwmDuty(g_pstPwm, duty);
+		pifPwmGen_SetDuty(&g_pwm_gen, duty);
+		pifPwmGen_Start(&g_pwm_gen, 200);				// 200 * 100us = 20ms
 		s_bStart = TRUE;
 	}
 
-	if (g_pstPwm->_step == TS_STOP) return 0;
+	if (!g_pwm_gen._running) return 0;
 
     if (dir) {
         duty -= 5;
@@ -36,7 +36,7 @@ static uint32_t _taskServoMotor(PifTask *pstTask)
         	dir = TRUE;
         }
     }
-    pifTimer_SetPwmDuty(g_pstPwm, duty);
+    pifPwmGen_SetDuty(&g_pwm_gen, duty);
     return 0;
 }
 

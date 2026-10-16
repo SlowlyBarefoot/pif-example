@@ -34,13 +34,13 @@
 
 //#define PIF_LOG_LINE_SIZE					80
 
+// -------- pifPwmGen ----------------------------
+
+//#define PIF_PWM_GEN_MAX_DUTY				1000
+
 // -------- pifTask ------------------------------
 
 //#define PIF_USE_TASK_STATISTICS
-
-// -------- pifTimer -----------------------------
-
-//#define PIF_PWM_MAX_DUTY					1000
 
 
 #endif  // PIF_CONF_H
