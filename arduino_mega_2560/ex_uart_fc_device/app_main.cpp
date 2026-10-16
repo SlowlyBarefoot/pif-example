@@ -56,7 +56,7 @@ static void _evtLogControlChar(char ch)
 	pifLog_Printf(LT_INFO, "Contorl Char = %x\n", ch);
 }
 
-static BOOL _evtUartParsing(void *p_client, PifActUartReceiveData act_receive_data)
+static BOOL _evtUartParsing(void *p_client, PifActTransportReceive act_receive_data)
 {
 	uint8_t data[2] = { 0, 0 };
 
@@ -65,7 +65,7 @@ static BOOL _evtUartParsing(void *p_client, PifActUartReceiveData act_receive_da
 	if (!s_count_down) return TRUE;
 	s_count_down = 0;
 
-	if ((*act_receive_data)(&g_uart_device, data, 1)) {
+	if ((*act_receive_data)(&g_uart_device.parent, data, 1)) {
 		pifLog_Print(LT_NONE, (char *)data);
 		return TRUE;
 	}
@@ -100,7 +100,7 @@ BOOL appSetup()
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }												// 500ms
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-	pifUart_AttachClient(&g_uart_device, NULL, _evtUartParsing, NULL);
+	pifTransport_AttachClient(&g_uart_device.parent, NULL, _evtUartParsing, NULL, NULL);
 
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 5000, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
 	return TRUE;

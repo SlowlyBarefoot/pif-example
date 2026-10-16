@@ -211,7 +211,7 @@ int main(void)
     if (!pifUart_AllocRxBuffer(&g_uart_modbus, 256)) { line = __LINE__; goto fail; }											// 256bytes
     if (!pifUart_AllocTxBuffer(&g_uart_modbus, 256)) { line = __LINE__; goto fail; }											// 256bytes
     g_uart_modbus.act_start_transfer = actModbusStartTransfer;
-    pifUart_AttachActDirection(&g_uart_modbus, actModbusDirection, UD_TX);
+    pifUart_AttachActDirection(&g_uart_modbus, actModbusDirection, UD_RX);
 
     HAL_UART_Receive_IT(&huart4, &s_modbus_rx, 1);
 

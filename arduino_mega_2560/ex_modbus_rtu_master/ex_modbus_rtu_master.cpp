@@ -121,7 +121,7 @@ void setup()
     g_uart_modbus.act_receive_data = actMasterReceiveData;
     g_uart_modbus.act_send_data = actMasterSendData;
     g_uart_modbus.act_get_tx_rate = actMasterGetTxRate;
-    pifUart_AttachActDirection(&g_uart_modbus, actMasterDirection, UD_TX);
+    pifUart_AttachActDirection(&g_uart_modbus, actMasterDirection, UD_RX);
 
 	if (!pifModbusRtuMaster_Init(&g_modbus_master, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
 
