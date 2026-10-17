@@ -24,7 +24,7 @@ static void _evtIbusReceive(PifRc* p_parent, uint16_t* p_channel, PifIssuerP p_i
 	(void)p_issuer;
 
 	for (i = 0; i < PIF_SPEKTRUM_CHANNEL_COUNT; i++) {
-		s_channel[i] = (p_channel[i] - 988) * s_spektrum._pos_factor;
+		s_channel[i] = (p_channel[i] - 988) << s_spektrum._pos_shift;
 	}
 	if (step) step--;
 	else {
