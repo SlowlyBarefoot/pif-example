@@ -20,18 +20,15 @@ static void _evtSensorThreshold(PifSensor* p_owner, SWITCH state, PifSensorValue
 BOOL appSetup()
 {
 #if USE_FILTER_AVERAGE
-    static PifNoiseFilterManager s_filter;
-#endif
-
-#if USE_FILTER_AVERAGE
-    if (!pifNoiseFilterManager_Init(&s_filter, 1)) return FALSE;
+    static PifNfInt32Average s_filter;
+    static int32_t s_filter_buffer[7];
 #endif
 
     if (!pifSensorThreshold_SetThreshold(&g_sensor, 300, 600)) return FALSE;
     if (!pifSensorThreshold_AttachTaskAcquire(&g_sensor, PIF_ID_AUTO, TM_PERIOD, 100000, TRUE)) return FALSE;	// 100ms
 #if USE_FILTER_AVERAGE
-    g_sensor.p_filter = pifNoiseFilterInt32_AddAverage(&s_filter, 7);
-    if (!g_sensor.p_filter) return FALSE;
+    if (!pifNoiseFilterInt32_InitAverage(&s_filter, s_filter_buffer, 7)) return FALSE;
+    if (!pifSensorThreshold_AttachFilter(&g_sensor, &s_filter.parent)) return FALSE;
 #endif
     pifSensor_AttachEvtChange(&g_sensor.parent, _evtSensorThreshold, NULL);
     return TRUE;

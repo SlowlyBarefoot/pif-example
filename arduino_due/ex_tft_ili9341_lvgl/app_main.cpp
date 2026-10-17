@@ -165,8 +165,8 @@ static void my_touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data
 
 BOOL appSetup()
 {
-    static PifNoiseFilterManager s_filter;
-    PifNoiseFilter* p_filter[2];
+    static PifNfInt16Average s_filter[2];
+    static int16_t s_filter_buffer[2][5];
     static lv_indev_drv_t indev_drv;
     lv_obj_t *my_rect;
     lv_obj_t *label;
@@ -178,13 +178,10 @@ BOOL appSetup()
 
     if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
 
-	if (!pifNoiseFilterManager_Init(&s_filter, 2)) { line = __LINE__; goto fail; }
-	p_filter[0] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);								// touch x
-	if (!p_filter[0]) { line = __LINE__; goto fail; }
-	p_filter[1] = pifNoiseFilterInt16_AddAverage(&s_filter, 5);								// touch y
-	if (!p_filter[1]) { line = __LINE__; goto fail; }
+	if (!pifNoiseFilterInt16_InitAverage(&s_filter[0], s_filter_buffer[0], 5)) { line = __LINE__; goto fail; }	// touch x
+	if (!pifNoiseFilterInt16_InitAverage(&s_filter[1], s_filter_buffer[1], 5)) { line = __LINE__; goto fail; }	// touch y
 
-	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, p_filter[0], p_filter[1])) { line = __LINE__; goto fail; }
+	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, &s_filter[0].parent, &s_filter[1].parent)) { line = __LINE__; goto fail; }
 	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) { line = __LINE__; goto fail; }
 
 	pifIli9341_SetRotation(&g_ili9341.parent, TLR_270_DEGREE);

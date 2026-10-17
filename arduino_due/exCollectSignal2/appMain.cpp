@@ -68,17 +68,15 @@ static void _fnSequenceStop(PifSequence *p_owner)
 
 BOOL appSetup()
 {
-	static PifNoiseFilterManager s_switch_filter;
+	static PifNfBit s_switch_filter[SEQUENCE_COUNT + 1];
 	int i;
-
-    if (!pifNoiseFilterManager_Init(&s_switch_filter, SEQUENCE_COUNT + 1)) return FALSE;
 
     if (!pifGpio_SetCsFlag(&g_gpio_rgb, GP_CSF_ALL_BIT)) return FALSE;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
 	    if (!pifSensorSwitch_AttachTaskAcquire(&g_test[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 5000, TRUE)) return FALSE;	// 5ms
-	    g_test[i].push_switch.p_filter = pifNoiseFilterBit_AddCount(&s_switch_filter, 7);								// 35ms
-	    if (!g_test[i].push_switch.p_filter) return FALSE;
+	    if (!pifNoiseFilterBit_InitCount(&s_switch_filter[i], 7)) return FALSE;								// 35ms
+	    if (!pifSensorSwitch_AttachFilter(&g_test[i].push_switch, &s_switch_filter[i].parent)) return FALSE;
 	    if (!pifSensorSwitch_SetCsFlag(&g_test[i].push_switch, SS_CSF_FILTER_BIT)) return FALSE;
 	    pifSensor_AttachEvtChange(&g_test[i].push_switch.parent, _evtPushSwitchChange, &g_test[i]);
 
@@ -87,8 +85,8 @@ BOOL appSetup()
     }
 
     if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch_collect, PIF_ID_AUTO, TM_PERIOD, 5000, TRUE)) return FALSE;		// 5ms
-    g_push_switch_collect.p_filter = pifNoiseFilterBit_AddCount(&s_switch_filter, 7);									// 35ms
-    if (!g_push_switch_collect.p_filter) return FALSE;
+    if (!pifNoiseFilterBit_InitCount(&s_switch_filter[SEQUENCE_COUNT], 7)) return FALSE;									// 35ms
+    if (!pifSensorSwitch_AttachFilter(&g_push_switch_collect, &s_switch_filter[SEQUENCE_COUNT].parent)) return FALSE;
     pifSensor_AttachEvtChange(&g_push_switch_collect.parent, _evtPushSwitchCollectChange, NULL);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																	// 500ms

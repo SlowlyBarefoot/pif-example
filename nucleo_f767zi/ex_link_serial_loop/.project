@@ -166,11 +166,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter_bit.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/include/filter/pif_noise_filter_manager.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter_manager.h</locationURI>
-		</link>
-		<link>
 			<name>Core/pif/include/protocol/pif_link.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/protocol/pif_link.h</locationURI>
@@ -244,11 +239,6 @@
 			<name>Core/pif/source/filter/pif_noise_filter_bit.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter_bit.c</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/source/filter/pif_noise_filter_manager.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter_manager.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/source/protocol/pif_protocol.c</name>

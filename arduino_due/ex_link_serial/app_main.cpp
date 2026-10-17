@@ -125,14 +125,13 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 BOOL appSetup()
 {
 	int i;
-	static PifNoiseFilterManager push_switch_filter;
+	static PifNfBit push_switch_filter[SWITCH_COUNT];
 
-    if (!pifNoiseFilterManager_Init(&push_switch_filter, SWITCH_COUNT)) return FALSE;
     for (i = 0; i < SWITCH_COUNT; i++) {
 	    if (!pifSensorSwitch_AttachTaskAcquire(&g_link_test[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
 		pifSensor_AttachEvtChange(&g_link_test[i].push_switch.parent, _evtPushSwitchChange, NULL);
-		g_link_test[i].push_switch.p_filter = pifNoiseFilterBit_AddCount(&push_switch_filter, 7);
-	    if (!g_link_test[i].push_switch.p_filter) return FALSE;
+		if (!pifNoiseFilterBit_InitCount(&push_switch_filter[i], 7)) return FALSE;
+		if (!pifSensorSwitch_AttachFilter(&g_link_test[i].push_switch, &push_switch_filter[i].parent)) return FALSE;
     	g_link_test[i].data_count = 0;
     }
 
