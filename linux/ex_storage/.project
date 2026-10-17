@@ -85,11 +85,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/core/pif_list.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_list.h</locationURI>
-		</link>
-		<link>
 			<name>pif/include/core/pif_obj_array.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_obj_array.h</locationURI>
@@ -100,14 +95,24 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/storage/pif_storage.h</name>
+			<name>pif/include/core/pif_task_manager.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/storage/pif_storage.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task_manager.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/storage/pif_storage_var.h</name>
+			<name>pif/include/core/pif_timer.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/storage/pif_storage_var.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif_timer_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/storage/pif_nvram.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/storage/pif_nvram.h</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_device_reg.c</name>
@@ -125,11 +130,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/core/pif_list.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_list.c</locationURI>
-		</link>
-		<link>
 			<name>pif/source/core/pif_obj_array.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_obj_array.c</locationURI>
@@ -140,14 +140,24 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/storage/pif_storage.c</name>
+			<name>pif/source/core/pif_task_manager.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/storage/pif_storage.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task_manager.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/storage/pif_storage_var.c</name>
+			<name>pif/source/core/pif_timer.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/storage/pif_storage_var.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_timer_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/storage/pif_nvram.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/storage/pif_nvram.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
