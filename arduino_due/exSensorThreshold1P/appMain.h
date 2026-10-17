@@ -4,10 +4,10 @@
 
 #include "core/pif_log.h"
 #include "core/pif_timer_manager.h"
-#include "sensor/pif_sensor_digital.h"
+#include "sensor/pif_sensor_threshold.h"
 
 
-extern PifSensorDigital g_sensor;
+extern PifSensorThreshold g_sensor;
 extern PifTimerManager g_timer_1ms;
 
 

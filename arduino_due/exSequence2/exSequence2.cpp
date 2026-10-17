@@ -44,7 +44,7 @@ static void actLedRGBState(PifId usPifId, uint32_t unState)
 	digitalWrite(s_sequence_test[1].pin_led, (unState >> 1) & 1);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor *p_owner)
+static int32_t actPushSwitchAcquire(PifSensor *p_owner)
 {
 	return !digitalRead(s_sequence_test[p_owner->_id - PIF_ID_SWITCH].pin_switch);
 }

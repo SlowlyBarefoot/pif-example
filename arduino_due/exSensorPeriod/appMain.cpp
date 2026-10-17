@@ -1,20 +1,20 @@
 #include "appMain.h"
 
-#include "filter/pif_noise_filter_int16.h"
+#include "filter/pif_noise_filter_int32.h"
 
 
 #define USE_FILTER_AVERAGE		1
 
 
-PifSensorDigital g_sensor;
+PifSensorThreshold g_sensor;
 PifTimerManager g_timer_1ms;
 
 
 static void _evtTimerPeriodFinish(PifIssuerP p_issuer)
 {
-    PifSensorDigital* p_owner = (PifSensorDigital*)p_issuer;
+    PifSensorThreshold* p_owner = (PifSensorThreshold*)p_issuer;
 
-	pifLog_Printf(LT_INFO, "Sensor: DC:%u L:%u", p_owner->parent._id, p_owner->__curr_level);
+	pifLog_Printf(LT_INFO, "Sensor: DC:%u L:%ld", p_owner->parent._id, (long)p_owner->_curr_level);
 }
 
 BOOL appSetup()
@@ -28,9 +28,9 @@ BOOL appSetup()
 	if (!pifNoiseFilterManager_Init(&s_filter, 1)) return FALSE;
 #endif
 
-    if (!pifSensorDigital_AttachTaskAcquire(&g_sensor, PIF_ID_AUTO, TM_PERIOD, 50000, TRUE)) return FALSE;	// 50ms
+    if (!pifSensorThreshold_AttachTaskAcquire(&g_sensor, PIF_ID_AUTO, TM_PERIOD, 50000, TRUE)) return FALSE;	// 50ms
 #if USE_FILTER_AVERAGE
-    g_sensor.p_filter = pifNoiseFilterInt16_AddAverage(&s_filter, 7);
+    g_sensor.p_filter = pifNoiseFilterInt32_AddAverage(&s_filter, 7);
 	if (!g_sensor.p_filter) return FALSE;
 #endif
 

@@ -33,7 +33,7 @@ static uint32_t taskLedToggle(PifTask *pstTask)
 	return 0;
 }
 
-static uint16_t actSensorAcquisition(PifSensor* p_owner)
+static int32_t actSensorAcquisition(PifSensor* p_owner)
 {
 	(void)p_owner;
 
@@ -72,7 +72,7 @@ void setup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 80)) return;											// 80bytes
 
-    if (!pifSensorDigital_Init(&g_sensor, PIF_ID_AUTO, actSensorAcquisition)) return;
+    if (!pifSensorThreshold_Init(&g_sensor, PIF_ID_AUTO, OFF, actSensorAcquisition)) return;
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return;	// 500ms
 

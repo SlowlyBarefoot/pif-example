@@ -16,7 +16,7 @@
 #define PIN_PHOTO_INTERRUPT_2	37
 #define PIN_PHOTO_INTERRUPT_3	39
 
-#define TASK_SIZE				12
+#define TASK_SIZE				10
 #define TIMER_1MS_SIZE			1
 #define TIMER_200US_SIZE		3
 
@@ -47,7 +47,7 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 	return i;
 }
 
-static uint16_t actPhotoInterruptAcquire(PifSensor* p_owner)
+static int32_t actPhotoInterruptAcquire(PifSensor* p_owner)
 {
 	switch (p_owner->_id) {
 	case PIF_ID_SWITCH:

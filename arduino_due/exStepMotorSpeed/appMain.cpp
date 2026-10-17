@@ -192,6 +192,17 @@ static uint32_t _taskInitPos(PifTask *pstTask)
 	return 0;
 }
 
+// One task polls every switch, instead of a task for each of them.
+static uint32_t _taskSwitch(PifTask *pstTask)
+{
+	(void)pstTask;
+
+	for (int i = 0; i < SWITCH_COUNT; i++) {
+		pifSensorSwitch_ProcessAcquire(&g_switch[i]);
+	}
+	return 0;
+}
+
 BOOL appSetup()
 {
 	PifTask* p_task;
@@ -203,9 +214,9 @@ BOOL appSetup()
     g_motor.parent.evt_error = _evtError;
     pifStepMotorSpeed_AddStages(&g_motor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 
-    for (int i = 0; i < SWITCH_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_switch[i], PIF_ID_AUTO, TM_PERIOD, 1000, TRUE)) return FALSE;	// 1ms
-    }
+    p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskSwitch, NULL, TRUE);							// 1ms
+    if (!p_task) return FALSE;
+    p_task->name = "Switch";
 
     p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskInitPos, NULL, TRUE);						// 10ms
     if (!p_task) return FALSE;

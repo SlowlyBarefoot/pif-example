@@ -34,7 +34,7 @@ static uint16_t actLogSendData(PifUart *pstOwner, uint8_t *pucBuffer, uint16_t u
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor* p_owner)
+static int32_t actPushSwitchAcquire(PifSensor* p_owner)
 {
 	(void)p_owner;
 

@@ -120,7 +120,7 @@ static void actLedLState(PifId pid_id, uint32_t state)
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, state & 1);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor* p_owner)
+static int32_t actPushSwitchAcquire(PifSensor* p_owner)
 {
 	static GPIO_TypeDef* usPortSwitch[SWITCH_COUNT] = { Switch1_GPIO_Port, Switch2_GPIO_Port };
 	static uint16_t usPinSwitch[SWITCH_COUNT] = { Switch1_Pin, Switch2_Pin };

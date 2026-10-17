@@ -35,7 +35,7 @@ static void actLedLState(PifId pid_id, uint32_t state)
 	digitalWrite(PIN_LED_L, state & 1);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor *p_owner)
+static int32_t actPushSwitchAcquire(PifSensor *p_owner)
 {
 	return !digitalRead(s_pin_switch[p_owner->_id - PIF_ID_SWITCH]);
 }

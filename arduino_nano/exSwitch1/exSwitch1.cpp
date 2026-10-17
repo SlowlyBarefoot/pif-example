@@ -32,14 +32,14 @@ static void actGpioLed(PifId usPifId, uint8_t ucState)
 	digitalWrite(PIN_LED_YELLOW, (ucState >> 1) & 1);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor* p_owner)
+static int32_t actPushSwitchAcquire(PifSensor* p_owner)
 {
 	(void)p_owner;
 
 	return !digitalRead(PIN_PUSH_SWITCH);
 }
 
-static uint16_t actTiltSwitchAcquire(PifSensor* p_owner)
+static int32_t actTiltSwitchAcquire(PifSensor* p_owner)
 {
 	(void)p_owner;
 

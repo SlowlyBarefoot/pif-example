@@ -49,12 +49,12 @@ static void actLedCollectState(PifId pif_id, uint32_t state)
 	digitalWrite(PIN_LED_BLUE, state & 1);
 }
 
-static uint16_t actPushSwitchAcquire(PifSensor *p_owner)
+static int32_t actPushSwitchAcquire(PifSensor *p_owner)
 {
 	return !digitalRead(s_sequence_test[p_owner->_id - PIF_ID_SWITCH].pin_switch);
 }
 
-static uint16_t actPushSwitchCollectAcquire(PifSensor *p_owner)
+static int32_t actPushSwitchCollectAcquire(PifSensor *p_owner)
 {
 	(void)p_owner;
 

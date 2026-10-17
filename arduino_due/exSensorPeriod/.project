@@ -167,9 +167,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/filter/pif_noise_filter_int16.h</name>
+			<name>pif/include/filter/pif_noise_filter_int32.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter_int16.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/filter/pif_noise_filter_int32.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/filter/pif_noise_filter_manager.h</name>
@@ -182,9 +182,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_sensor.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/sensor/pif_sensor_digital.h</name>
+			<name>pif/include/sensor/pif_sensor_threshold.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_sensor_digital.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_sensor_threshold.h</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_transport.c</name>
@@ -257,9 +257,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/filter/pif_noise_filter_int16.c</name>
+			<name>pif/source/filter/pif_noise_filter_int32.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter_int16.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/filter/pif_noise_filter_int32.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/filter/pif_noise_filter_manager.c</name>
@@ -272,9 +272,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_sensor.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/sensor/pif_sensor_digital.c</name>
+			<name>pif/source/sensor/pif_sensor_threshold.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_sensor_digital.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_sensor_threshold.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
