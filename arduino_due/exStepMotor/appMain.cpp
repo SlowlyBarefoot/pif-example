@@ -20,7 +20,7 @@ const PifLogCmdEntry c_psCmdTable[] = {
 
 typedef struct {
 	int nMode;
-	uint16_t usBreakTime;
+	uint16_t usBrakeTime;
 	uint32_t unStepCount;
 } ST_StepMotorTest;
 
@@ -35,7 +35,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 		pifLog_Printf(LT_NONE, "  P/S: %u\n", g_motor._current_pps);
 		pifLog_Printf(LT_NONE, "  R/M: %2f\n", pifStepMotor_GetRpm(&g_motor));
 		pifLog_Printf(LT_NONE, "  Step Count: %d\n", s_stStepMotorTest.unStepCount);
-		pifLog_Printf(LT_NONE, "  Break Time: %d\n", s_stStepMotorTest.usBreakTime);
+		pifLog_Printf(LT_NONE, "  Brake Time: %d\n", s_stStepMotorTest.usBrakeTime);
 		return PIF_LOG_CMD_NO_ERROR;
 	}
 	else if (argc > 1) {
@@ -81,7 +81,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 		else if (!strcmp(argv[0], "cbt")) {
 			int value = atoi(argv[1]);
 			if (value > 0) {
-				s_stStepMotorTest.usBreakTime = value;
+				s_stStepMotorTest.usBrakeTime = value;
 				return PIF_LOG_CMD_NO_ERROR;
 			}
 		}
@@ -100,7 +100,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 		}
 		else if (!strcmp(argv[0], "sp")) {
 			s_stStepMotorTest.nMode = 0;
-			pifStepMotor_BreakRelease(&g_motor, s_stStepMotorTest.usBreakTime);
+			pifStepMotor_BrakeRelease(&g_motor, s_stStepMotorTest.usBrakeTime);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[0], "rel")) {
@@ -115,7 +115,7 @@ static int CmdStepMotorTest(int argc, char *argv[])
 static void _evtStop(PifStepMotor *pstOwner)
 {
 	s_stStepMotorTest.nMode = 0;
-	pifStepMotor_BreakRelease(pstOwner, s_stStepMotorTest.usBreakTime);
+	pifStepMotor_BrakeRelease(pstOwner, s_stStepMotorTest.usBrakeTime);
 }
 
 BOOL appSetup()

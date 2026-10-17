@@ -43,7 +43,7 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 	return i;
 }
 
-static void actSetStep(uint16_t usPhase)
+static void actSetStep(PifStepMotor*, uint16_t usPhase)
 {
 	digitalWrite(PIN_STEP_MOTOR_1, usPhase & 1);
 	digitalWrite(PIN_STEP_MOTOR_2, (usPhase >> 1) & 1);

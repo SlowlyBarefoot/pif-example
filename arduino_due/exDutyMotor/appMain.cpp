@@ -51,11 +51,11 @@ static int CmdDutyMotorTest(int argc, char *argv[])
 	}
 	else if (argc > 0) {
 		if (!strcmp(argv[0], "stop")) {
-			pifDutyMotor_BreakRelease(&g_motor, 0);
+			pifDutyMotor_BrakeRelease(&g_motor, 0);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
-		else if (!strcmp(argv[0], "break")) {
-			pifDutyMotor_BreakRelease(&g_motor, 1000);
+		else if (!strcmp(argv[0], "brake")) {
+			pifDutyMotor_BrakeRelease(&g_motor, 1000);
 			return PIF_LOG_CMD_NO_ERROR;
 		}
 		else if (!strcmp(argv[0], "start")) {

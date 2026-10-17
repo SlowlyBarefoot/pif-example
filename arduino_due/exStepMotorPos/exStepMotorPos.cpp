@@ -62,7 +62,7 @@ static uint16_t actPhotoInterruptAcquire(PifSensor* p_owner)
 	return OFF;
 }
 
-static void actSetStep(uint16_t usPhase)
+static void actSetStep(PifStepMotor*, uint16_t usPhase)
 {
 	digitalWrite(PIN_STEP_MOTOR_1, usPhase & 1);
 	digitalWrite(PIN_STEP_MOTOR_2, (usPhase >> 1) & 1);

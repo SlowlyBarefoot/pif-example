@@ -36,13 +36,13 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 	return i;
 }
 
-static void actSetDuty(uint16_t usDuty)
+static void actSetDuty(PifDutyMotor*, uint16_t usDuty)
 {
 	analogWrite(PIN_L298N_ENB_PWM, usDuty);
 	pifLog_Printf(LT_INFO, "SetDuty(%d)", usDuty);
 }
 
-static void actSetDirection(uint8_t ucDir)
+static void actSetDirection(PifDutyMotor*, uint8_t ucDir)
 {
 	if (ucDir) {
 		digitalWrite(PIN_L298N_IN1, LOW);
@@ -55,7 +55,7 @@ static void actSetDirection(uint8_t ucDir)
 	pifLog_Printf(LT_INFO, "SetDirection(%d)", ucDir);
 }
 
-static void actOperateBreak(uint8_t ucState)
+static void actOperateBrake(PifDutyMotor*, uint8_t ucState)
 {
 	if (ucState) {
 		analogWrite(PIN_L298N_ENB_PWM, 255);
@@ -65,7 +65,7 @@ static void actOperateBreak(uint8_t ucState)
 	else {
 		analogWrite(PIN_L298N_ENB_PWM, 0);
 	}
-	pifLog_Printf(LT_INFO, "OperateBreak(%d)", ucState);
+	pifLog_Printf(LT_INFO, "OperateBrake(%d)", ucState);
 }
 
 static void actLedLState(PifId usPifId, uint32_t unState)
@@ -116,7 +116,7 @@ void setup()
     if (!pifDutyMotor_Init(&g_motor, PIF_ID_AUTO, &g_timer_1ms, 255)) return;
     g_motor.act_set_duty = actSetDuty;
     g_motor.act_set_direction = actSetDirection;
-    g_motor.act_operate_break = actOperateBreak;
+    g_motor.act_operate_brake = actOperateBrake;
 
 	if (!appSetup()) return;
 
