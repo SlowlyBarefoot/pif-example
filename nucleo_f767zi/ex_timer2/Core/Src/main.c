@@ -22,7 +22,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app_main.h"
+#include "app_port.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,9 +33,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				2
-#define TIMER_1MS_SIZE			1
-#define TIMER_100US_SIZE		1
 
 /* USER CODE END PD */
 
@@ -69,30 +67,6 @@ static void MX_TIM5_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static uint32_t micros()
-{
-    return htim5.Instance->CNT;
-}
-
-static void evtLedRedToggle(void *pvIssuer)
-{
-	static BOOL sw = OFF;
-
-	(void)pvIssuer;
-
-	HAL_GPIO_WritePin(GPIOB, LD1_Pin, sw);
-	sw ^= 1;
-}
-
-static void evtLedYellowToggle(void *pvIssuer)
-{
-	static BOOL sw = OFF;
-
-	(void)pvIssuer;
-
-	HAL_GPIO_WritePin(GPIOB, LD2_Pin, sw);
-	sw ^= 1;
-}
 
 /* USER CODE END 0 */
 
@@ -129,25 +103,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
-  HAL_TIM_IC_Start_IT(&htim5, TIM_CHANNEL_1);
-
-  pif_Init(micros);
-
-  if (!pifTaskManager_Init(TASK_SIZE, 2)) return -1;
-
-  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;		// 1000us
-
-  if (!pifTimerManager_Init(&g_timer_100us, PIF_ID_AUTO, 100, TIMER_100US_SIZE)) return -1;		// 100us
-
-  g_timer_red = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
-  if (!g_timer_red) return -1;
-  pifTimer_AttachEvtFinish(g_timer_red, evtLedRedToggle, NULL, FALSE);
-
-  g_timer_yellow = pifTimerManager_Add(&g_timer_100us, TT_REPEAT);
-  if (!g_timer_yellow) return -1;
-  pifTimer_AttachEvtFinish(g_timer_yellow, evtLedYellowToggle, NULL, FALSE);
-
+  if (!portSetup()) return -1;
   if (!appSetup()) return -1;
 
   /* USER CODE END 2 */

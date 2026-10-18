@@ -1,4 +1,4 @@
-#include "app_main.h"
+#include "app_port.h"
 
 #include "gps/pif_gps_ublox.h"
 
@@ -472,9 +472,9 @@ static int _cmdPollRequest(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-BOOL appSetup(uint32_t baurdate)
+BOOL appSetup()
 {
-	s_baudrate = baurdate;
+	s_baudrate = UART_GPS_SETUP_BAUDRATE;
 
     if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;								// 32bytes
 
@@ -493,5 +493,11 @@ BOOL appSetup(uint32_t baurdate)
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
 #endif
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***       ex_gps_serial_ublox        ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 }

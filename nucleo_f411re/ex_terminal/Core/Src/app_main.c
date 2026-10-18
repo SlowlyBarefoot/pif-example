@@ -1,6 +1,6 @@
-#include <stdlib.h>
+#include "app_port.h"
 
-#include "app_main.h"
+#include <stdlib.h>
 
 
 PifLed g_led_l;
@@ -65,5 +65,11 @@ BOOL appSetup()
     pifLog_AttachEvent(_evtLogControlChar);
 
 	if (!pifLed_AttachSBlink(&g_led_l, nPeriod)) return FALSE;
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***           ex_terminal            ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 }

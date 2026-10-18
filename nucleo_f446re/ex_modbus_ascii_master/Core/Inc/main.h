@@ -75,6 +75,10 @@ void Error_Handler(void);
 #define RS485_DIR_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+extern TIM_HandleTypeDef htim2;
+
+extern UART_HandleTypeDef huart4;
+extern UART_HandleTypeDef huart2;
 
 /* USER CODE END Private defines */
 

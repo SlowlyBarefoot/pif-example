@@ -73,6 +73,13 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+extern I2C_HandleTypeDef hi2c2;
+extern DMA_HandleTypeDef hdma_i2c2_rx;
+extern DMA_HandleTypeDef hdma_i2c2_tx;
+
+extern TIM_HandleTypeDef htim2;
+
+extern UART_HandleTypeDef huart2;
 
 /* USER CODE END Private defines */
 

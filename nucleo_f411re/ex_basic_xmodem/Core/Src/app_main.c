@@ -1,4 +1,4 @@
-#include "linker.h"
+#include "app_port.h"
 
 #include "interpreter/pif_basic.h"
 #include "protocol/pif_xmodem.h"
@@ -227,5 +227,11 @@ BOOL appSetup()
 
 	s_task = pifTaskManager_Add(PIF_ID_AUTO, TM_EXTERNAL, 0, _taskChangeUart, NULL, FALSE);
 	if (!s_task) return FALSE;
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***          ex_basic_xmodem         ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 }

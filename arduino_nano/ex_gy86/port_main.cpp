@@ -1,0 +1,149 @@
+#include "ex_gy86.h"
+#include "app_port.h"
+
+#include <MsTimer2.h>
+
+#ifdef USE_I2C_WIRE
+	#include <Wire.h>
+#else
+	#include "../i2c.h"
+#endif
+
+
+#define PIN_LED_L				13
+
+#define UART_LOG_BAUDRATE		115200
+
+
+#ifdef PIF_DEBUG
+
+static void actTaskYield()
+{
+	static BOOL state = FALSE;
+	digitalWrite(52, state);
+	state ^= 1;
+}
+
+#endif
+
+static uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size)
+{
+	(void)p_uart;
+
+    return Serial.write((char *)p_buffer, size);
+}
+
+static void actLedLState(PifId id, uint32_t state)
+{
+	(void)id;
+
+	digitalWrite(PIN_LED_L, state & 1);
+}
+
+static PifI2cReturn actI2cWrite(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, size_t size)
+{
+#ifdef USE_I2C_WIRE
+	int i;
+
+	Wire.beginTransmission(p_owner->addr);
+	if (isize > 0) {
+		for (i = isize - 1; i >= 0; i--) {
+			Wire.write((iaddr >> (i * 8)) & 0xFF);
+		}
+	}
+    for (i = 0; i < (int)size; i++) {
+    	Wire.write(p_data[i]);
+    }
+    if (Wire.endTransmission() != 0) {
+		pif_error = E_TRANSFER_FAILED;
+		return IR_ERROR;
+	}
+#else
+	if (!I2C_WriteAddr(p_owner->addr, iaddr, isize, p_data, size)) return IR_ERROR;
+#endif
+    return IR_COMPLETE;
+}
+
+static PifI2cReturn actI2cRead(PifI2cDevice *p_owner, uint32_t iaddr, uint8_t isize, uint8_t* p_data, size_t size)
+{
+#ifdef USE_I2C_WIRE
+	int i;
+	uint8_t count;
+
+	if (isize > 0) {
+		Wire.beginTransmission(p_owner->addr);
+		for (i = isize - 1; i >= 0; i--) {
+			Wire.write((iaddr >> (i * 8)) & 0xFF);
+		}
+	    if (Wire.endTransmission() != 0) {
+			pif_error = E_TRANSFER_FAILED;
+			return IR_ERROR;
+		}
+	}
+
+    count = Wire.requestFrom(p_owner->addr, (uint8_t)size);
+    if (count < size) {
+		pif_error = E_TRANSFER_FAILED;
+		return IR_ERROR;
+	}
+
+    for (i = 0; i < (int)size; i++) {
+    	p_data[i] = Wire.read();
+    }
+#else
+	if (!I2C_ReadAddr(p_owner->addr, iaddr, isize, p_data, size)) return IR_ERROR;
+#endif
+    return IR_COMPLETE;
+}
+
+static void sysTickHook()
+{
+	pif_sigTimer1ms();
+	pifTimerManager_sigTick(&g_timer_1ms);
+}
+
+BOOL portSetup()
+{
+	static PifUart s_uart_log;
+
+	pinMode(PIN_LED_L, OUTPUT);
+#ifdef PIF_DEBUG
+	pinMode(52, OUTPUT);
+#endif
+
+	MsTimer2::set(1, sysTickHook);
+	MsTimer2::start();
+
+	Serial.begin(UART_LOG_BAUDRATE);
+
+#ifdef USE_I2C_WIRE
+	Wire.begin();
+	Wire.setClock(400000);
+#else
+	I2C_Init(I2C_CLOCK_400KHz);
+#endif
+
+    pif_Init((PifActTimer1us)micros);
+
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
+
+#ifdef PIF_DEBUG
+	pif_act_task_yield = actTaskYield;
+#endif
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;	// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+    s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log, 80)) return FALSE;										// 80bytes
+
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
+
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3)) return FALSE;
+    g_i2c_port.act_read = actI2cRead;
+    g_i2c_port.act_write = actI2cWrite;
+    return TRUE;
+}

@@ -1,0 +1,36 @@
+#include "app_port.h"
+
+
+PifGpio g_gpio_l;
+PifGpio g_gpio_rg;
+PifGpio g_gpio_switch;
+
+
+static uint32_t _taskGpioTest(PifTask *pstTask)
+{
+	static SWITCH swLedL = OFF;
+	static uint8_t ucLedRG = 0;
+
+	(void)pstTask;
+
+	pifGpio_WriteAll(&g_gpio_l, swLedL);
+	swLedL ^= 1;
+
+	pifGpio_WriteAll(&g_gpio_rg, ucLedRG);
+	ucLedRG = (ucLedRG + 1) & 3;
+
+	pifLog_Printf(LT_INFO, "Sw:%u", pifGpio_ReadAll(&g_gpio_switch));
+	return 0;
+}
+
+BOOL appSetup()
+{
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskGpioTest, NULL, TRUE)) return FALSE;	// 500ms
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***              exGpio1             ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d\n", pifTaskManager_Count(), TASK_SIZE);
+    return TRUE;
+}

@@ -1,0 +1,39 @@
+#ifndef APP_PORT_H
+#define APP_PORT_H
+
+
+#include "core/pif_log.h"
+#include "core/pif_sequence.h"
+#include "core/pif_timer_manager.h"
+#include "display/pif_led.h"
+#include "sensor/pif_sensor_switch.h"
+
+
+#define TASK_SIZE				8
+#define TIMER_1MS_SIZE			1
+
+#define SEQUENCE_COUNT          2
+
+#define PIF_ID_LED				0x100
+#define PIF_ID_SEQUENCE			0x110
+#define PIF_ID_SWITCH			0x120
+
+
+typedef struct {
+	PifSensorSwitch push_switch;
+	PifSequence sequence;
+} SequenceTest;
+
+
+extern PifLed g_led_l;
+extern PifLed g_led_rgb;
+extern PifTimerManager g_timer_1ms;
+
+extern SequenceTest g_sequenceTest[SEQUENCE_COUNT];
+
+
+BOOL portSetup();
+BOOL appSetup();
+
+
+#endif	// APP_PORT_H

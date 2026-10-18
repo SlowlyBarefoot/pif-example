@@ -1,4 +1,5 @@
-#include "app_main.h"
+#include "app_port.h"
+#include "ex_serial2.h"
 
 
 PifUart g_serial2;

@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "appMain.h"
+#include "app_port.h"
 
 /* USER CODE END Includes */
 
@@ -33,8 +33,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				1
-#define TIMER_1MS_SIZE			1
 
 /* USER CODE END PD */
 
@@ -56,9 +54,9 @@ __attribute__((at(0x2007c000))) ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT
 __attribute__((at(0x2007c0a0))) ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
 
 #elif defined ( __GNUC__ ) /* GNU Compiler */
+
 ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT] __attribute__((section(".RxDecripSection"))); /* Ethernet Rx DMA Descriptors */
 ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT] __attribute__((section(".TxDecripSection")));   /* Ethernet Tx DMA Descriptors */
-
 #endif
 
 ETH_TxPacketConfig TxConfig;
@@ -88,15 +86,6 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static void evtLedToggle(void *pvIssuer)
-{
-	static BOOL sw = OFF;
-
-	(void)pvIssuer;
-
-	HAL_GPIO_WritePin(GPIOB, LD2_Pin, sw);
-	sw ^= 1;
-}
 
 /* USER CODE END 0 */
 
@@ -106,6 +95,7 @@ static void evtLedToggle(void *pvIssuer)
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -133,16 +123,7 @@ int main(void)
   MX_USB_OTG_FS_PCD_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  pif_Init(NULL);
-
-  if (!pifTaskManager_Init(TASK_SIZE, 1)) return -1;
-
-  if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return -1;	// 1000us
-
-  g_timer_led = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
-  if (!g_timer_led) return -1;
-  pifTimer_AttachEvtFinish(g_timer_led, evtLedToggle, NULL, FALSE);
-
+  if (!portSetup()) return -1;
   if (!appSetup()) return -1;
 
   /* USER CODE END 2 */
@@ -388,6 +369,9 @@ static void MX_USB_OTG_FS_PCD_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -429,6 +413,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
 
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -449,8 +436,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

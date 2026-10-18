@@ -1,0 +1,78 @@
+#include "exFnd4Sx2_SR2.h"
+#include "app_port.h"
+
+#include <MsTimer2.h>
+
+
+#define PIN_LED_L				13
+#define PIN_74HC595_DATA		5
+#define PIN_74HC595_LATCH		7
+#define PIN_74HC595_SHIFT		8
+
+#define UART_LOG_BAUDRATE		115200
+
+
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+{
+	(void)p_uart;
+
+    return Serial.write((char *)pucBuffer, usSize);
+}
+
+static void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit)
+{
+	digitalWrite(PIN_74HC595_LATCH, LOW);
+	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ~(1 << ucDigit));
+	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ucSegment);
+	digitalWrite(PIN_74HC595_LATCH, HIGH);
+}
+
+static uint32_t taskLedToggle(PifTask *pstTask)
+{
+	static BOOL swLed = LOW;
+
+	(void)pstTask;
+
+	digitalWrite(PIN_LED_L, swLed);
+	swLed ^= 1;
+	return 0;
+}
+
+static void sysTickHook()
+{
+	pif_sigTimer1ms();
+	pifTimerManager_sigTick(&g_timer_1ms);
+}
+
+BOOL portSetup()
+{
+	static PifUart s_uart_log;
+
+	pinMode(PIN_LED_L, OUTPUT);
+	pinMode(PIN_74HC595_DATA, OUTPUT);
+	pinMode(PIN_74HC595_LATCH, OUTPUT);
+	pinMode(PIN_74HC595_SHIFT, OUTPUT);
+
+	MsTimer2::set(1, sysTickHook);
+	MsTimer2::start();
+
+	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
+
+    pif_Init((PifActTimer1us)micros);
+
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
+
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;			// 1000us
+
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+	s_uart_log.act_send_data = actLogSendData;
+
+    pifLog_Init();
+	if (!pifLog_AttachUart(&s_uart_log, 80)) return FALSE;												// 80bytes
+
+    if (!pifFnd_Init(&g_fnd, PIF_ID_AUTO, 8, actFndDisplay)) return FALSE;
+
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return FALSE;	// 500ms
+	return TRUE;
+}

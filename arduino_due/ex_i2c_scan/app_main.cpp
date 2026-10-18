@@ -1,4 +1,4 @@
-#include "app_main.h"
+#include "app_port.h"
 
 
 // 0x00-0x07 and 0x78-0x7F are reserved addresses (general call, CBUS, HS mode master codes,
@@ -69,5 +69,11 @@ BOOL appSetup()
 
 	pifLog_Print(LT_INFO, "I2C Scan start");
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, SCAN_STEP_PERIOD, _taskScan, NULL, TRUE)) return FALSE;
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***           ex_i2c_scan            ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 }

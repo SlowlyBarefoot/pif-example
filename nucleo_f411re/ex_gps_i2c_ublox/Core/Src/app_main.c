@@ -1,4 +1,4 @@
-#include "linker.h"
+#include "app_port.h"
 
 #include "gps/pif_ubx_ddc_stream.h"
 #include "gps/pif_gps_ublox.h"
@@ -380,5 +380,11 @@ BOOL appSetup()
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
 #endif
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***         ex_gps_i2c_ublox         ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 }

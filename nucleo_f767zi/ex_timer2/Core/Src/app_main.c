@@ -1,9 +1,8 @@
-#include "app_main.h"
+#include "app_port.h"
 
 
 PifTimerManager g_timer_1ms;
 PifTimerManager g_timer_100us;
-
 PifTimer* g_timer_red;
 PifTimer* g_timer_yellow;
 

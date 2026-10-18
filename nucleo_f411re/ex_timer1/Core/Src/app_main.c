@@ -1,8 +1,7 @@
-#include "app_main.h"
+#include "app_port.h"
 
 
 PifTimerManager g_timer_1ms;
-
 PifTimer* g_timer_led;
 
 

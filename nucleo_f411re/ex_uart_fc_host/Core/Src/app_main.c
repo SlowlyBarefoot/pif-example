@@ -1,4 +1,4 @@
-#include "linker.h"
+#include "app_port.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -107,6 +107,12 @@ BOOL appSetup()
 
 	p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskSendMessage, NULL, FALSE);	// 3ms
 	if (!p_task) { line = __LINE__; goto fail; }
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***          ex_uart_fc_host         ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 
 fail:

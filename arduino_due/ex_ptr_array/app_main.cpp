@@ -1,4 +1,4 @@
-#include "app_main.h"
+#include "app_port.h"
 
 #include "core/pif_ptr_array.h"
 
@@ -129,5 +129,11 @@ BOOL appSetup()
 	list_print("Init", 0);
 
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, TEST_PERIOD, _taskTest, NULL, TRUE)) return FALSE;
+
+	pifLog_Print(LT_NONE,"\n\n****************************************\n");
+	pifLog_Print(LT_NONE,"***           ex_ptr_array           ***\n");
+	pifLog_Printf(LT_NONE,"***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE,"****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d\n", pifTaskManager_Count(), TASK_SIZE);
 	return TRUE;
 }

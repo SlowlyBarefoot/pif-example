@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "core/pif_task_manager.h"
+#include "app_port.h"
 
 /* USER CODE END Includes */
 
@@ -32,7 +32,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TASK_SIZE				1
 
 /* USER CODE END PD */
 
@@ -61,27 +60,6 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static uint32_t micros()
-{
-    return htim2.Instance->CNT;
-}
-
-static uint32_t _taskLedToggle(PifTask *pstTask)
-{
-	static int nCount = 0;
-	static BOOL sw = OFF;
-
-	(void)pstTask;
-
-    if (!nCount) {
-    	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, sw);
-		sw ^= 1;
-
-		nCount = 9999;
-    }
-    else nCount--;
-    return 0;
-}
 
 /* USER CODE END 0 */
 
@@ -116,13 +94,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
-
-  pif_Init(micros);
-
-  if (!pifTaskManager_Init(TASK_SIZE, 0)) return -1;
-
-  if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) return -1;	// 50us
+  if (!portSetup()) return -1;
 
   /* USER CODE END 2 */
 

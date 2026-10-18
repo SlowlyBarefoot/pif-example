@@ -1,4 +1,4 @@
-#include "linker.h"
+#include "app_port.h"
 
 #include "filter/pif_noise_filter_int16.h"
 
@@ -208,6 +208,13 @@ BOOL appSetup()
 {
     static PifNfInt16Average s_filter[2];
     static int16_t s_filter_buffer[2][5];
+#if LCD_TYPE == LCD_2_2_INCH_SPI
+	const char *lcd_name = "2.2 Inch LCD SPI";
+#elif LCD_TYPE == LCD_2_4_INCH
+	const char *lcd_name = "  2.4 Inch LCD  ";
+#elif LCD_TYPE == LCD_3_2_INCH
+	const char *lcd_name = "  3.2 Inch LCD  ";
+#endif
     int line;
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }					// 500ms
@@ -235,6 +242,13 @@ BOOL appSetup()
     p_task->name = "FillRect";
 
 	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, PIF_COLOR_BLACK);
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***          ex_tft_ili9341          ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Printf(LT_NONE, "***         %s         ***\n", lcd_name);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
 
 fail:

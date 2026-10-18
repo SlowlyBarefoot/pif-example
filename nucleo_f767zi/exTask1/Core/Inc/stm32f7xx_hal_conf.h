@@ -46,11 +46,13 @@
 /* #define HAL_DCMI_MODULE_ENABLED */
 /* #define HAL_DMA2D_MODULE_ENABLED */
 #define HAL_ETH_MODULE_ENABLED
+/* #define HAL_ETH_LEGACY_MODULE_ENABLED */
 /* #define HAL_NAND_MODULE_ENABLED */
 /* #define HAL_NOR_MODULE_ENABLED */
 /* #define HAL_SRAM_MODULE_ENABLED */
 /* #define HAL_SDRAM_MODULE_ENABLED */
 /* #define HAL_HASH_MODULE_ENABLED */
+/* #define HAL_I2C_MODULE_ENABLED */
 /* #define HAL_I2S_MODULE_ENABLED */
 /* #define HAL_IWDG_MODULE_ENABLED */
 /* #define HAL_LPTIM_MODULE_ENABLED */
@@ -83,7 +85,6 @@
 #define HAL_RCC_MODULE_ENABLED
 #define HAL_FLASH_MODULE_ENABLED
 #define HAL_PWR_MODULE_ENABLED
-#define HAL_I2C_MODULE_ENABLED
 #define HAL_CORTEX_MODULE_ENABLED
 
 /* ########################## HSE/HSI Values adaptation ##################### */
@@ -217,7 +218,7 @@
 /* Section 2: PHY configuration section */
 
 /* DP83848_PHY_ADDRESS Address*/
-#define DP83848_PHY_ADDRESS           0x01U
+#define DP83848_PHY_ADDRESS
 /* PHY Reset delay these values are based on a 1 ms Systick interrupt*/
 #define PHY_RESET_DELAY                 ((uint32_t)0x000000FFU)
 /* PHY Configuration delay */
@@ -247,10 +248,10 @@
 #define PHY_JABBER_DETECTION            ((uint16_t)0x0002U)  /*!< Jabber condition detected            */
 
 /* Section 4: Extended PHY Registers */
-#define PHY_SR                          ((uint16_t)0x10U)    /*!< PHY status register Offset                      */
+#define PHY_SR                          ((uint16_t))    /*!< PHY status register Offset                      */
 
-#define PHY_SPEED_STATUS                ((uint16_t)0x0002U)  /*!< PHY Speed mask                                  */
-#define PHY_DUPLEX_STATUS               ((uint16_t)0x0004U)  /*!< PHY Duplex mask                                 */
+#define PHY_SPEED_STATUS                ((uint16_t))  /*!< PHY Speed mask                                  */
+#define PHY_DUPLEX_STATUS               ((uint16_t))  /*!< PHY Duplex mask                                 */
 
 /* ################## SPI peripheral configuration ########################## */
 
@@ -321,6 +322,10 @@
 #ifdef HAL_ETH_MODULE_ENABLED
   #include "stm32f7xx_hal_eth.h"
 #endif /* HAL_ETH_MODULE_ENABLED */
+
+#ifdef HAL_ETH_LEGACY_MODULE_ENABLED
+  #include "stm32f7xx_hal_eth_legacy.h"
+#endif /* HAL_ETH_LEGACY_MODULE_ENABLED */
 
 #ifdef HAL_FLASH_MODULE_ENABLED
   #include "stm32f7xx_hal_flash.h"

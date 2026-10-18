@@ -124,6 +124,12 @@ void Error_Handler(void);
 #define LCD_D3_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+extern SPI_HandleTypeDef hspi2;
+
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
+
+extern UART_HandleTypeDef huart2;
 
 /* USER CODE END Private defines */
 

@@ -1,4 +1,4 @@
-#include "app_main.h"
+#include "app_port.h"
 
 
 PifBuzzer g_buzzer;
@@ -64,5 +64,11 @@ BOOL appSetup()
     g_buzzer.evt_finish = _evtBuzzerFinish;
 
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskBuzzer, NULL, TRUE)) return FALSE;		// 10ms
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***             ex_buzzer            ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 }

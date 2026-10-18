@@ -23,7 +23,7 @@
 #include "stm32f7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app_main.h"
+#include "app_port.h"
 
 /* USER CODE END Includes */
 

@@ -1,4 +1,4 @@
-#include "app_main.h"
+#include "app_port.h"
 
 
 PifPulse g_pulse;
@@ -29,5 +29,11 @@ BOOL appSetup()
     pifPulse_SetMeasureMode(&g_pulse, PULSE_PMM_PERIOD | PULSE_PMM_COUNT | PULSE_PMM_LOW_WIDTH | PULSE_PMM_HIGH_WIDTH);
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 20000, _taskPulse, NULL, TRUE)) return FALSE;		// 20ms
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***             ex_pulse             ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
 }

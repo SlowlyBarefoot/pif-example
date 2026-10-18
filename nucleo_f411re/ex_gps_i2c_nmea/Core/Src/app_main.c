@@ -1,4 +1,4 @@
-#include "linker.h"
+#include "app_port.h"
 
 #include "gps/pif_ubx_ddc_stream.h"
 #include "gps/pif_gps_nmea.h"
@@ -118,9 +118,9 @@ static int _cmdPrintData(int argc, char *argv[])
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;							// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;								// 32bytes
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifUbxDdcStream_Init(&s_gps_i2c, PIF_ID_AUTO, &g_i2c_port, 0x42, 128, 0, 250)) return FALSE;	// 0x42 : Ublox I2c addrress, 250ms
@@ -131,5 +131,11 @@ BOOL appSetup()
 	if (!pifGps_SetEventNmeaText(&s_gps_nmea._gps, _evtGpsNmeaText)) return FALSE;
 
 	s_booting = TRUE;
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***          ex_gps_i2c_nmea         ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 }

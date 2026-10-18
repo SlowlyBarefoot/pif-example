@@ -1,4 +1,4 @@
-#include "linker.h"
+#include "app_port.h"
 
 #include "filter/pif_noise_filter_int16.h"
 
@@ -220,6 +220,12 @@ BOOL appSetup()
     p_task = pifTaskManager_Add(TM_PERIOD, 5000, _taskLvglTimerHandler, NULL, TRUE);		// 5ms
     if (!p_task) { line = __LINE__; goto fail; }
     p_task->name = "LVGL";
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***       ex_tft_ili9341_lvgl        ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
 
 fail:

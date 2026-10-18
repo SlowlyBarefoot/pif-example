@@ -1,100 +1,12 @@
 // Do not remove the include below
-#include <MsTimer2.h>
-
 #include "exSequence2.h"
-#include "appMain.h"
-
-
-#define PIN_LED_L				13
-#define PIN_LED_RED				2
-#define PIN_LED_YELLOW			3
-
-#define PIN_PUSH_SWITCH_1		5
-#define PIN_PUSH_SWITCH_2		6
-
-#define UART_LOG_BAUDRATE		115200
-
-
-static struct {
-	uint8_t pin_switch;
-	uint8_t pin_led;
-} s_sequence_test[SEQUENCE_COUNT] = {
-		{ PIN_PUSH_SWITCH_1, PIN_LED_RED },
-		{ PIN_PUSH_SWITCH_2, PIN_LED_YELLOW }
-};
-
-
-static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
-{
-	(void)p_uart;
-
-    return Serial.write((char *)p_buffer, size);
-}
-
-static void actLedLState(PifId usPifId, uint32_t unState)
-{
-	(void)usPifId;
-
-	digitalWrite(PIN_LED_L, unState & 1);
-}
-
-static void actLedRGBState(PifId usPifId, uint32_t unState)
-{
-	(void)usPifId;
-
-	digitalWrite(s_sequence_test[0].pin_led, unState & 1);
-	digitalWrite(s_sequence_test[1].pin_led, (unState >> 1) & 1);
-}
-
-static int32_t actPushSwitchAcquire(PifSensor *p_owner)
-{
-	return !digitalRead(s_sequence_test[p_owner->_id - PIF_ID_SWITCH].pin_switch);
-}
-
-static void sysTickHook()
-{
-	pif_sigTimer1ms();
-	pifTimerManager_sigTick(&g_timer_1ms);
-}
+#include "app_port.h"
 
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	static PifUart s_uart_log;
-
-	pinMode(PIN_LED_L, OUTPUT);
-	pinMode(PIN_LED_RED, OUTPUT);
-	pinMode(PIN_LED_YELLOW, OUTPUT);
-	pinMode(PIN_PUSH_SWITCH_1, INPUT_PULLUP);
-	pinMode(PIN_PUSH_SWITCH_2, INPUT_PULLUP);
-
-	MsTimer2::set(1, sysTickHook);
-	MsTimer2::start();
-
-	Serial.begin(UART_LOG_BAUDRATE);
-
-	pif_Init((PifActTimer1us)micros);
-
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) return;
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return;		// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return;
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return;
-	s_uart_log.act_send_data = actLogSendData;
-
-    pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 80)) return;										// 80bytes
-
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return;
-
-    if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, SEQUENCE_COUNT, actLedRGBState)) return;
-
-    for (int i = 0; i < SEQUENCE_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&g_sequenceTest[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return;
-    }
-
-	if (!appSetup()) return;
+    if (!portSetup()) return;
+    appSetup();
 }
 
 // The loop function is called in an endless loop

@@ -5,9 +5,6 @@
 #include "communication/pif_uart.h"
 
 
-extern PifUart g_serial2;
-
-
 BOOL exSerial2_Setup();
 
 

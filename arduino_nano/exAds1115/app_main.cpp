@@ -1,0 +1,97 @@
+#include "app_port.h"
+
+#include "sensor/pif_ads1x1x.h"
+
+
+#define SINGLE_SHOT
+
+
+PifI2cPort g_i2c_port;
+PifLed g_led_l;
+PifTimerManager g_timer_1ms;
+
+static PifAds1x1x s_ads1x1x;
+
+static int channel = ADS1X1X_MUX_SINGLE_0;
+
+
+#ifdef SINGLE_SHOT
+
+static void _printSample(int16_t value)
+{
+	pifLog_Printf(LT_INFO, "ADC(%d): %u, Vol: %f", channel, (uint16_t)value, (uint16_t)value * s_ads1x1x.convert_voltage);
+	if (channel == ADS1X1X_MUX_SINGLE_3) channel = ADS1X1X_MUX_SINGLE_0; else channel++;
+}
+
+static void _evtAds1x1xRead(PifAds1x1x* p_owner, BOOL result, int16_t value)
+{
+	(void)p_owner;
+
+	if (result) _printSample(value);
+}
+
+#endif
+
+static uint32_t _taskAds1115(PifTask *pstTask)
+{
+	(void)pstTask;
+
+#ifdef SINGLE_SHOT
+	if (pifAds1x1x_StartMux(&s_ads1x1x, (PifAds1x1xMux)channel) == ADS1X1X_START_DONE) {
+		_printSample(s_ads1x1x._value);
+	}
+#else
+	uint16_t usData = pifAds1x1x_Read(&s_ads1x1x);
+	pifLog_Printf(LT_INFO, "ADC: %u, Vol: %f", usData, usData * s_ads1x1x.convert_voltage);
+#endif
+	return 0;
+}
+
+BOOL appSetup()
+{
+	uint16_t stConfig;
+
+    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR(0), NULL)) return FALSE;
+#ifdef USE_I2C_WIRE
+    s_ads1x1x._p_device->max_transfer_size = 32;
+#endif
+#ifdef SINGLE_SHOT
+    if (!pifAds1x1x_AttachTimer(&s_ads1x1x, &g_timer_1ms, _evtAds1x1xRead)) return FALSE;
+#endif
+
+    stConfig = s_ads1x1x._config;
+#if 1
+    SET_BIT_FILED(stConfig, ADS1X1X_MUX_MASK, channel);
+    SET_BIT_FILED(stConfig, ADS1X1X_PGA_MASK, ADS1X1X_PGA_FSR_6_144V);
+#ifdef SINGLE_SHOT
+    SET_BIT_FILED(stConfig, ADS1X1X_MODE_MASK, ADS1X1X_MODE_SINGLE_SHOT);
+#else
+    SET_BIT_FILED(stConfig, ADS1X1X_MODE_MASK, ADS1X1X_MODE_CONTINUOUS);
+#endif
+    SET_BIT_FILED(stConfig, ADS1X1X_DR_MASK, ADS1X1X_DR_16B_0128_SPS);
+    pifAds1x1x_SetConfig(&s_ads1x1x, stConfig);
+#else
+    pifAds1x1x_SetMux(&s_ads1x1x, ADS1X1X_MUX_SINGLE_3);
+    pifAds1x1x_SetGain(&s_ads1x1x, ADS1X1X_PGA_FSR_6_144V);
+#ifdef SINGLE_SHOT
+    pifAds1x1x_SetMode(&s_ads1x1x, ADS1X1X_MODE_SINGLE_SHOT);
+#else
+    pifAds1x1x_SetMode(&s_ads1x1x, ADS1X1X_MODE_CONTINUOUS);
+#endif
+    pifAds1x1x_SetDataRate(&s_ads1x1x, ADS1X1X_DR_16B_0128_SPS);
+#endif
+    pifAds1x1x_SetLoThreshVoltage(&s_ads1x1x, 1.0);
+    pifAds1x1x_SetHiThreshVoltage(&s_ads1x1x, 2.0);
+
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskAds1115, NULL, TRUE)) return FALSE;	// 1000ms
+
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
+    pifLed_SBlinkOn(&g_led_l, 1 << 0);
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***             exAds1115            ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
+    return TRUE;
+}

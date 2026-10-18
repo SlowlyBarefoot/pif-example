@@ -5,9 +5,6 @@
 #include "communication/pif_can.h"
 
 
-extern PifCan g_can1;
-
-
 BOOL exCan1_Setup();
 
 

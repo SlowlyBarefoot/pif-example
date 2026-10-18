@@ -73,6 +73,9 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+extern TIM_HandleTypeDef htim2;
+
+extern UART_HandleTypeDef huart2;
 
 /* USER CODE END Private defines */
 

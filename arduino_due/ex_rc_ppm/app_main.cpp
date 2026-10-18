@@ -1,4 +1,4 @@
-#include "app_main.h"
+#include "app_port.h"
 
 
 #define MAX_CHANNEL		8
@@ -59,5 +59,11 @@ BOOL appSetup()
     pifRc_AttachEvtReceive(&g_rc_ppm.parent, _evtRcPpmReceive, p_task);
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskFailsafe, NULL, TRUE)) return FALSE;	// 100ms
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***            ex_rc_ppm             ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
 }

@@ -6,42 +6,12 @@
 
 // Do not remove the include below
 #include "exTask1.h"
-
-#include "core/pif_task_manager.h"
-
-
-#define PIN_LED_L				13
-
-#define TASK_SIZE				1
-
-
-static uint32_t _taskLedToggle(PifTask *pstTask)
-{
-	static int nCount = 0;
-	static BOOL sw = LOW;
-
-	(void)pstTask;
-
-    if (!nCount) {
-    	digitalWrite(PIN_LED_L, sw);
-		sw ^= 1;
-
-		nCount = 999;
-    }
-    else nCount--;
-    return 0;
-}
+#include "app_port.h"
 
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	pinMode(PIN_LED_L, OUTPUT);
-
-	pif_Init((PifActTimer1us)micros);
-
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) return;
-
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) return;	// 50us
+	portSetup();
 }
 
 // The loop function is called in an endless loop

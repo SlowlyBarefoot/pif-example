@@ -1,4 +1,4 @@
-#include "app_main.h"
+#include "app_port.h"
 
 
 #define MAX_CHANNEL		6
@@ -43,5 +43,11 @@ BOOL appSetup()
     if (!pifRcPwm_Init(&g_rc_pwm, PIF_ID_AUTO, MAX_CHANNEL)) return FALSE;
     pifRcPwm_SetValidRange(&g_rc_pwm, PULSE_MIN, PULSE_MAX);
     pifRc_AttachEvtReceive(&g_rc_pwm.parent, _evtRcPwmReceive, p_task);
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***            ex_rc_pwm             ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
 }

@@ -1,4 +1,5 @@
-#include "app_main.h"
+#include "app_port.h"
+#include "ex_serial1.h"
 
 #include "filter/pif_noise_filter_bit.h"
 

@@ -34,7 +34,7 @@
  *   ?a			If the thousands separator is not ',', the company name is printed at the bottom of the receipt.
  */
 
-#include "linker.h"
+#include "app_port.h"
 
 #include "markup/pif_srml.h"
 
@@ -355,6 +355,12 @@ BOOL appSetup()
     strcpy(s_param.date, "2023-08-17 11:20:45");
 
 	if (!pifSrml_Init(&s_srml, _process_data, _process_loop, _process_if, _line_print)) { line = __LINE__; goto fail; }
+
+	pifLog_Print(LT_NONE, "\n\n****************************************\n");
+	pifLog_Print(LT_NONE, "***           ex_srml_host           ***\n");
+	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
+	pifLog_Print(LT_NONE, "****************************************\n");
+	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
 
 fail:
