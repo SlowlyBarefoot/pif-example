@@ -53,5 +53,6 @@ BOOL portSetup()
 
 fail:	
 	pifLog_Printf(LT_ERROR, "Error: %d Line=%d\n", pif_error, line);
+	pif_Exit();
 	return FALSE;
 }

@@ -38,9 +38,9 @@ BOOL appSetup()
 	PifTask* p_task;
 
 	p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_EXTERNAL, 0, _taskPrint, NULL, FALSE);
-    if (!p_task) return FALSE;
+    if (!p_task) goto fail;
 
-    if (!pifRcPwm_Init(&g_rc_pwm, PIF_ID_AUTO, MAX_CHANNEL)) return FALSE;
+    if (!pifRcPwm_Init(&g_rc_pwm, PIF_ID_AUTO, MAX_CHANNEL)) goto fail;
     pifRcPwm_SetValidRange(&g_rc_pwm, PULSE_MIN, PULSE_MAX);
     pifRc_AttachEvtReceive(&g_rc_pwm.parent, _evtRcPwmReceive, p_task);
 
@@ -50,4 +50,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

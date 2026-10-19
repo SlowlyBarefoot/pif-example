@@ -217,5 +217,6 @@ BOOL appSetup()
 
 fail:
 	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);
+	pif_Exit();
 	return FALSE;
 }

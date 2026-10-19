@@ -25,16 +25,16 @@ BOOL appSetup()
 #endif
     PifTimer* p_timer;
 
-    if (!pifSensorThreshold_AttachTaskAcquire(&g_sensor, PIF_ID_AUTO, TM_PERIOD, 50000, TRUE)) return FALSE;	// 50ms
+    if (!pifSensorThreshold_AttachTaskAcquire(&g_sensor, PIF_ID_AUTO, TM_PERIOD, 50000, TRUE)) goto fail;	// 50ms
 #if USE_FILTER_AVERAGE
-    if (!pifNoiseFilterInt32_InitAverage(&s_filter, s_filter_buffer, 7)) return FALSE;
-    if (!pifSensorThreshold_AttachFilter(&g_sensor, &s_filter.parent)) return FALSE;
+    if (!pifNoiseFilterInt32_InitAverage(&s_filter, s_filter_buffer, 7)) goto fail;
+    if (!pifSensorThreshold_AttachFilter(&g_sensor, &s_filter.parent)) goto fail;
 #endif
 
 	p_timer = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
-    if (!p_timer) return FALSE;
+    if (!p_timer) goto fail;
     pifTimer_AttachEvtFinish(p_timer, _evtTimerPeriodFinish, &g_sensor, FALSE);
-	if (!pifTimer_Start(p_timer, 500)) return FALSE;															// 500ms
+	if (!pifTimer_Start(p_timer, 500)) goto fail;															// 500ms
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***          exSensorPeriod          ***\n");
@@ -42,4 +42,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

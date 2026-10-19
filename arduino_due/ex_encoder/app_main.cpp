@@ -108,12 +108,12 @@ BOOL appSetup()
 	actGenerate(kPhase[0]);
 
 	p_timer = pifTimerManager_Add(&g_timer_1ms, TT_REPEAT);
-	if (!p_timer) return FALSE;
+	if (!p_timer) goto fail;
 	pifTimer_AttachEvtFinish(p_timer, _evtGenerate, NULL, TRUE);
-	if (!pifTimer_Start(p_timer, 1)) return FALSE;													// 1ms
+	if (!pifTimer_Start(p_timer, 1)) goto fail;													// 1ms
 #endif
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, LOG_PERIOD_US, _taskLog, NULL, TRUE)) return FALSE;
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, LOG_PERIOD_US, _taskLog, NULL, TRUE)) goto fail;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***            ex_encoder            ***\n");
@@ -121,4 +121,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

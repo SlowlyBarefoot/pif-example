@@ -92,14 +92,14 @@ BOOL appSetup()
 {
 	static PifXmodem s_xmodem;
 
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
+    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) goto fail;	// 10ms
 	pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, &s_xmodem);
 
-    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) return FALSE;
+    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) goto fail;
     pifXmodem_AttachTransport(&s_xmodem, &g_serial.parent);
     pifXmodem_AttachEvtRx(&s_xmodem, _evtXmodemRxReceive, NULL);
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;														// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -108,4 +108,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

@@ -241,9 +241,9 @@ BOOL appSetup()
 {
     pifLog_Print(LT_NONE, "S: size  H: root height  L: keys in order  T: key(small,big)\n");
 
-	if (!pifBst_Init(&s_bst, sizeof(ExData))) return FALSE;
+	if (!pifBst_Init(&s_bst, sizeof(ExData))) goto fail;
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, TEST_PERIOD, _taskTest, NULL, TRUE)) return FALSE;
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, TEST_PERIOD, _taskTest, NULL, TRUE)) goto fail;
 
 	pifLog_Print(LT_NONE,"\n\n****************************************\n");
 	pifLog_Print(LT_NONE,"***              ex_bst              ***\n");
@@ -251,4 +251,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE,"****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d\n", pifTaskManager_Count(), TASK_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

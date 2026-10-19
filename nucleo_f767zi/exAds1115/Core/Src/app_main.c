@@ -51,9 +51,9 @@ BOOL appSetup()
 {
 	uint16_t stConfig;
 
-    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR(0), NULL)) return FALSE;
+    if (!pifAds1x1x_Init(&s_ads1x1x, PIF_ID_AUTO, ADS1X1X_TYPE_1115, &g_i2c_port, ADS1X1X_I2C_ADDR(0), NULL)) goto fail;
 #ifdef SINGLE_SHOT
-    if (!pifAds1x1x_AttachTimer(&s_ads1x1x, &g_timer_1ms, _evtAds1x1xRead)) return FALSE;
+    if (!pifAds1x1x_AttachTimer(&s_ads1x1x, &g_timer_1ms, _evtAds1x1xRead)) goto fail;
 #endif
 
     stConfig = s_ads1x1x._config;
@@ -80,9 +80,9 @@ BOOL appSetup()
     pifAds1x1x_SetLoThreshVoltage(&s_ads1x1x, 1.0);
     pifAds1x1x_SetHiThreshVoltage(&s_ads1x1x, 2.0);
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskAds1115, NULL, TRUE)) return FALSE;	// 1000ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskAds1115, NULL, TRUE)) goto fail;	// 1000ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -91,4 +91,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

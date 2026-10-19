@@ -52,19 +52,23 @@ BOOL portSetup()
 
 	pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;		// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;		// 1000us
 
-	if (!pifUart_Init(&g_uart, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
-    if (!pifUart_AttachTxTask(&g_uart, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return FALSE;
-    if (!pifUart_AttachRxTask(&g_uart, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) return FALSE;	// 200ms
+	if (!pifUart_Init(&g_uart, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
+    if (!pifUart_AttachTxTask(&g_uart, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) goto fail;
+    if (!pifUart_AttachRxTask(&g_uart, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) goto fail;	// 200ms
 	g_uart.act_receive_data = actLogReceiveData;
 	g_uart.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&g_uart, 256)) return FALSE;												// 256bytes
+	if (!pifLog_AttachUart(&g_uart, 256)) goto fail;												// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return FALSE;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) goto fail;
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

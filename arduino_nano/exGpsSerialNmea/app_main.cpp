@@ -77,15 +77,15 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 
 BOOL appSetup()
 {
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10m
+    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) goto fail;	// 10m
     pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, NULL);
 
-	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) return FALSE;
-	if (!pifGpsNmea_AttachTransport(&s_gps_nmea, &g_uart_gps.parent)) return FALSE;
+	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) goto fail;
+	if (!pifGpsNmea_AttachTransport(&s_gps_nmea, &g_uart_gps.parent)) goto fail;
 	s_gps_nmea._gps.evt_nmea_receive = _evtGpsNmeaReceive;
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;														// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -94,4 +94,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

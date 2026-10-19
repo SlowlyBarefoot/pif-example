@@ -28,8 +28,12 @@ BOOL portSetup()
 
 	pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) return FALSE;	// 50us
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) goto fail;	// 50us
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

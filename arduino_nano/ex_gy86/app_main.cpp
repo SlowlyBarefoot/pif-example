@@ -121,7 +121,7 @@ BOOL appSetup()
     param.ms5611_osr = MS5611_OSR_4096;
     param.ms5611_read_period = 2000;																	// 2000ms
     param.ms5611_evt_read = _evtBaroRead;
-    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, &param, &s_imu_sensor)) return FALSE;
+    if (!pifGy86_Init(&s_gy86, PIF_ID_AUTO, &g_i2c_port, &param, &s_imu_sensor)) goto fail;
 #ifdef USE_I2C_WIRE
     s_gy86._mpu6050._p_device->max_transfer_size = 32;
     s_gy86._hmc5883._p_device->max_transfer_size = 32;
@@ -130,9 +130,9 @@ BOOL appSetup()
     s_gy86._mpu6050.temp_scale = 100;
     pifTask_Resume(s_gy86._ms5611._p_task);
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskMpu60x0, NULL, TRUE)) return FALSE;	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskMpu60x0, NULL, TRUE)) goto fail;	// 500ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -141,5 +141,9 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }
 

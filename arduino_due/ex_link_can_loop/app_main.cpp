@@ -9,10 +9,10 @@ PifTimerManager g_timer_1ms;
 
 BOOL appSetup()
 {
-    if (!exCan0_Setup()) return FALSE;
-    if (!exCan1_Setup()) return FALSE;
+    if (!exCan0_Setup()) goto fail;
+    if (!exCan1_Setup()) goto fail;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;		// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;		// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -21,5 +21,9 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }
 

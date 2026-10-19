@@ -150,12 +150,12 @@ static uint32_t _taskDotMatrixTest(PifTask* p_task)
 
 BOOL appSetup()
 {
-    if (!pifDotMatrix_SetPatternSize(&g_dot_matrix, 96)) return FALSE;
+    if (!pifDotMatrix_SetPatternSize(&g_dot_matrix, 96)) goto fail;
     for (int i = 0; i < 96; i++) {
-    	if (!pifDotMatrix_AddPattern(&g_dot_matrix, 8, 8, (uint8_t *)font8x8_basic[i])) return FALSE;
+    	if (!pifDotMatrix_AddPattern(&g_dot_matrix, 8, 8, (uint8_t *)font8x8_basic[i])) goto fail;
     }
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;		// 1000ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) goto fail;		// 1000ms
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***           exDotMatrixS           ***\n");
@@ -163,4 +163,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

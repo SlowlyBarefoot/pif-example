@@ -73,20 +73,24 @@ BOOL portSetup()
 
 	pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;		// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;		// 1000us
 
-	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) return FALSE;
-    if (!pifUart_AttachTxTask(&g_uart_modbus, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
-    if (!pifUart_AttachRxTask(&g_uart_modbus, PIF_ID_AUTO, TM_PERIOD, 5000, NULL)) return FALSE;	// 5ms
+	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) goto fail;
+    if (!pifUart_AttachTxTask(&g_uart_modbus, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
+    if (!pifUart_AttachRxTask(&g_uart_modbus, PIF_ID_AUTO, TM_PERIOD, 5000, NULL)) goto fail;	// 5ms
     g_uart_modbus.act_receive_data = actSlaveReceiveData;
     g_uart_modbus.act_send_data = actSlaveSendData;
     g_uart_modbus.act_get_tx_rate = actSlaveGetTxRate;
     pifUart_AttachActDirection(&g_uart_modbus, actSlaveDirection, UD_RX);
 
-	if (!pifModbusRtuSlave_Init(&g_modbus_slave, PIF_ID_AUTO, RTU_SERVER_ADDRESS)) return FALSE;
+	if (!pifModbusRtuSlave_Init(&g_modbus_slave, PIF_ID_AUTO, RTU_SERVER_ADDRESS)) goto fail;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) goto fail;
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

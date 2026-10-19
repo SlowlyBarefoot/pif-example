@@ -209,7 +209,7 @@ BOOL appSetup()
 {
 	PifTask* p_task;
 
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;										// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;										// 32bytes
 
     pifDutyMotorPos_AddStages(&g_motor, DUTY_MOTOR_STAGE_COUNT, s_stDutyMotorStages);
     g_motor.parent.evt_stable = _evtStable;
@@ -217,14 +217,14 @@ BOOL appSetup()
     g_motor.parent.evt_error = _evtError;
 
     p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskSwitch, NULL, TRUE);							// 1ms
-    if (!p_task) return FALSE;
+    if (!p_task) goto fail;
     p_task->name = "Switch";
 
     p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskInitPos, NULL, TRUE);						// 10ms
-    if (!p_task) return FALSE;
+    if (!p_task) goto fail;
     p_task->name = "InitPos";
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;														// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -233,4 +233,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

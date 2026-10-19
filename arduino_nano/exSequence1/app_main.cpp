@@ -65,9 +65,9 @@ static uint32_t _taskSequence(PifTask *p_task)
 
 BOOL appSetup()
 {
-    if (!pifSequence_Init(&s_sequence, PIF_ID_AUTO, &s_step)) return FALSE;
+    if (!pifSequence_Init(&s_sequence, PIF_ID_AUTO, &s_step)) goto fail;
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskSequence, &s_sequence, TRUE)) return FALSE;	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskSequence, &s_sequence, TRUE)) goto fail;	// 500ms
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***            exSequence1           ***\n");
@@ -77,4 +77,8 @@ BOOL appSetup()
 
     pifSequence_Start(&s_sequence, _fnSequence1);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

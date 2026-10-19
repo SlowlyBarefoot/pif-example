@@ -46,17 +46,17 @@ static uint32_t _taskSpektrum(PifTask *p_task)
 
 BOOL appSetup()
 {
-    if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) return FALSE;
+    if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) goto fail;
     pifRc_AttachEvtReceive(&s_ibus.parent, _evtIbusReceive, NULL);
     pifRcIbus_AttachUart(&s_ibus, &g_uart_ibus);
 
-//    if (!pifRcSpektrum_Init(&s_spektrum, PIF_ID_AUTO, PIF_SPEKTRUM_PROTOCOL_ID_22MS_2048_DSMS)) return FALSE;
-	if (!pifRcSpektrum_Init(&s_spektrum, PIF_ID_AUTO, PIF_SPEKTRUM_PROTOCOL_ID_22MS_1024_DSM2)) return FALSE;
+//    if (!pifRcSpektrum_Init(&s_spektrum, PIF_ID_AUTO, PIF_SPEKTRUM_PROTOCOL_ID_22MS_2048_DSMS)) goto fail;
+	if (!pifRcSpektrum_Init(&s_spektrum, PIF_ID_AUTO, PIF_SPEKTRUM_PROTOCOL_ID_22MS_1024_DSM2)) goto fail;
 	pifRcSpektrum_AttachUart(&s_spektrum, &g_uart_spektrum);
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSpektrum, &s_spektrum, TRUE)) return FALSE;	// 7.5ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSpektrum, &s_spektrum, TRUE)) goto fail;	// 7.5ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;													// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;													// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -65,5 +65,9 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }
 

@@ -75,20 +75,20 @@ BOOL portSetup()
 
 	pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;											// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;											// 256bytes
 
 	s_task_period = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskPeriod, NULL, TRUE);	// 500ms
-	if (!s_task_period) return FALSE;
+	if (!s_task_period) goto fail;
 
 	s_task_change = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskChange, NULL, TRUE);		// 1ms
-	if (!s_task_change) return FALSE;
+	if (!s_task_change) goto fail;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***              exTask5             ***\n");
@@ -100,4 +100,8 @@ BOOL portSetup()
 	pifTaskManager_PrintRatioTable();
 #endif
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

@@ -142,6 +142,7 @@ BOOL appSetup()
 
 fail:
 	pifLog_Printf(LT_ERROR, "E:%u L:%u\n", pif_error, line);
+	pif_Exit();
 	return FALSE;
 }
 

@@ -35,7 +35,7 @@ static void _evtSolenoidFinish(void *pvParam)
 BOOL appSetup()
 {
     s_stSolenoidTest.pstTimerItem = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
-    if (!s_stSolenoidTest.pstTimerItem) return FALSE;
+    if (!s_stSolenoidTest.pstTimerItem) goto fail;
     pifTimer_AttachEvtFinish(s_stSolenoidTest.pstTimerItem, _evtSolenoidFinish, &s_stSolenoidTest, FALSE);
     pifTimer_Start(s_stSolenoidTest.pstTimerItem, 1000);							// 1000ms
 
@@ -45,4 +45,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

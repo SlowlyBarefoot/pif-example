@@ -128,18 +128,18 @@ BOOL appSetup()
 	static PifNfBit push_switch_filter[SWITCH_COUNT];
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_link_test[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
+	    if (!pifSensorSwitch_AttachTaskAcquire(&g_link_test[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) goto fail;	// 10ms
 		pifSensor_AttachEvtChange(&g_link_test[i].push_switch.parent, _evtPushSwitchChange, NULL);
-		if (!pifNoiseFilterBit_InitCount(&push_switch_filter[i], 7)) return FALSE;
-		if (!pifSensorSwitch_AttachFilter(&g_link_test[i].push_switch, &push_switch_filter[i].parent)) return FALSE;
+		if (!pifNoiseFilterBit_InitCount(&push_switch_filter[i], 7)) goto fail;
+		if (!pifSensorSwitch_AttachFilter(&g_link_test[i].push_switch, &push_switch_filter[i].parent)) goto fail;
     	g_link_test[i].data_count = 0;
     }
 
-    if (!pifLink_Init(&s_link, PIF_ID_AUTO, &g_timer_1ms, LINK_T_SINGLE, 0, c_link_question)) return FALSE;
+    if (!pifLink_Init(&s_link, PIF_ID_AUTO, &g_timer_1ms, LINK_T_SINGLE, 0, c_link_question)) goto fail;
     pifLink_AttachTransport(&s_link, &g_serial.parent);
     s_link.evt_error = _evtLinkError;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																	// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;																	// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -148,4 +148,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

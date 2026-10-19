@@ -126,5 +126,6 @@ BOOL portSetup()
 
 fail:
 	pifLog_Printf(LT_INFO, "Initial failed. %d\n", line);
+	pif_Exit();
 	return FALSE;
 }

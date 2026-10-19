@@ -52,13 +52,13 @@ BOOL appSetup()
 	PifTask* p_task;
 
 	p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_EXTERNAL, 0, _taskPrint, NULL, FALSE);
-    if (!p_task) return FALSE;
+    if (!p_task) goto fail;
 
-    if (!pifRcPpm_Init(&g_rc_ppm, PIF_ID_AUTO, MAX_CHANNEL, 2700)) return FALSE;
+    if (!pifRcPpm_Init(&g_rc_ppm, PIF_ID_AUTO, MAX_CHANNEL, 2700)) goto fail;
     pifRcPpm_SetValidRange(&g_rc_ppm, PULSE_MIN, PULSE_MAX);
     pifRc_AttachEvtReceive(&g_rc_ppm.parent, _evtRcPpmReceive, p_task);
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskFailsafe, NULL, TRUE)) return FALSE;	// 100ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskFailsafe, NULL, TRUE)) goto fail;	// 100ms
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***            ex_rc_ppm             ***\n");
@@ -66,4 +66,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

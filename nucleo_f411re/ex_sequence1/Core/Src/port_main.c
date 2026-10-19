@@ -58,16 +58,20 @@ BOOL portSetup()
 
 	pif_Init(micros);
 
-	if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
+	if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return FALSE;
-	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartLog")) return FALSE;
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return FALSE;											// 128bytes
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) goto fail;
+	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartLog")) goto fail;
+	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) goto fail;											// 128bytes
 	s_uart_log.act_start_transfer = actLogStartTransfer;
 
 	pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;												// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return FALSE;	// 500ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

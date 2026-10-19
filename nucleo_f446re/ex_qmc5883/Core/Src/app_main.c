@@ -27,13 +27,13 @@ BOOL appSetup()
 {
     pifImuSensor_Init(&s_imu_sensor);
 
-    if (!pifQmc5883_Init(&s_qmc5883, PIF_ID_AUTO, &g_i2c_port, NULL, &s_imu_sensor)) return FALSE;
+    if (!pifQmc5883_Init(&s_qmc5883, PIF_ID_AUTO, &g_i2c_port, NULL, &s_imu_sensor)) goto fail;
 
     pifQmc5883_SetControl1(&s_qmc5883, QMC5883_MODE_CONTIMUOUS | QMC5883_ODR_200HZ | QMC5883_RNG_8G | QMC5883_OSR_512);
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskQmc5883, NULL, TRUE)) return FALSE;	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskQmc5883, NULL, TRUE)) goto fail;	// 500ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -42,4 +42,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

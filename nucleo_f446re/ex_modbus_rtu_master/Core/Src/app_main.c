@@ -322,5 +322,6 @@ BOOL appSetup()
 
 fail:
 	pifLog_Printf(LT_INFO, "App Setup failed. %d\n", line);
+	pif_Exit();
 	return FALSE;
 }

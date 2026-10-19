@@ -125,10 +125,10 @@ BOOL appSetup()
 {
 	pifLog_Print(LT_NONE, "\n         F: U   0     1     2     3     4     5     6     7     8     9\n");
 
-	if (!pifPtrArray_Init(&s_array, ARRAY_SIZE, NULL)) return FALSE;
+	if (!pifPtrArray_Init(&s_array, ARRAY_SIZE, NULL)) goto fail;
 	list_print("Init", 0);
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, TEST_PERIOD, _taskTest, NULL, TRUE)) return FALSE;
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, TEST_PERIOD, _taskTest, NULL, TRUE)) goto fail;
 
 	pifLog_Print(LT_NONE,"\n\n****************************************\n");
 	pifLog_Print(LT_NONE,"***           ex_ptr_array           ***\n");
@@ -136,4 +136,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE,"****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d\n", pifTaskManager_Count(), TASK_SIZE);
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

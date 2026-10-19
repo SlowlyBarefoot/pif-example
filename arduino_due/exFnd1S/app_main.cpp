@@ -48,7 +48,7 @@ BOOL appSetup()
 {
     pifFnd_SetUserChar(c_ucUserChar, 26);
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskFndTest, NULL, TRUE)) return FALSE;	// 1000ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskFndTest, NULL, TRUE)) goto fail;	// 1000ms
 
     pifFnd_Start(&g_fnd);
 
@@ -58,4 +58,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

@@ -61,10 +61,10 @@ static void _evtLogControlChar(char ch)
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;	// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;	// 32bytes
     pifLog_AttachEvent(_evtLogControlChar);
 
-	if (!pifLed_AttachSBlink(&g_led_l, nPeriod)) return FALSE;
+	if (!pifLed_AttachSBlink(&g_led_l, nPeriod)) goto fail;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***           ex_terminal            ***\n");
@@ -72,4 +72,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

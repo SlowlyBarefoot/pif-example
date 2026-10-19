@@ -358,27 +358,27 @@ static int _cmdPollRequest(int argc, char *argv[])
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;								// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;								// 32bytes
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-	if (!pifUbxDdcStream_Init(&s_gps_i2c, PIF_ID_AUTO, &g_i2c_port, 0x42, 128, PIF_GPS_UBLOX_TX_SIZE, 500)) return FALSE;	// 0x42 : Ublox I2c addrress, 500ms
+	if (!pifUbxDdcStream_Init(&s_gps_i2c, PIF_ID_AUTO, &g_i2c_port, 0x42, 128, PIF_GPS_UBLOX_TX_SIZE, 500)) goto fail;	// 0x42 : Ublox I2c addrress, 500ms
 	s_gps_i2c._p_device->parent.timeout = 200;
 #ifdef USE_I2C_WIRE
 	s_gps_i2c._p_device->parent.max_transfer_size = 32;
 #endif
-    if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) return FALSE;
-	if (!pifGpsUblox_AttachTransport(&s_gps_ublox, &s_gps_i2c.stream.parent)) return FALSE;
+    if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) goto fail;
+	if (!pifGpsUblox_AttachTransport(&s_gps_ublox, &s_gps_i2c.stream.parent)) goto fail;
 	s_gps_ublox._gps.evt_receive = _evtGpsReceive;
 #ifdef NMEA
 	s_gps_ublox._gps.evt_nmea_receive = _evtGpsNmeaReceive;
-	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) return FALSE;
+	if (!pifGps_SetEventNmeaText(&s_gps_ublox._gps, _evtGpsNmeaText)) goto fail;
 	s_booting = TRUE;
 #endif
 #ifdef UBX
 	s_gps_ublox.evt_ubx_receive = _evtGpsUbxReceive;
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) return FALSE;	// 100ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskUbloxSetup, NULL, TRUE)) goto fail;	// 100ms
 #endif
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -387,4 +387,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

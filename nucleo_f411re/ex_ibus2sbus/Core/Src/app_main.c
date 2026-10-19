@@ -46,16 +46,16 @@ static uint32_t _taskSbus(PifTask *p_task)
 
 BOOL appSetup()
 {
-    if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) return FALSE;
+    if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) goto fail;
     pifRc_AttachEvtReceive(&s_ibus.parent, _evtIbusReceive, NULL);
     pifRcIbus_AttachUart(&s_ibus, &g_uart_ibus);
 
-    if (!pifRcSbus_Init(&s_sbus, PIF_ID_AUTO)) return FALSE;
+    if (!pifRcSbus_Init(&s_sbus, PIF_ID_AUTO)) goto fail;
     pifRcSbus_AttachUart(&s_sbus, &g_uart_sbus);
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSbus, &s_sbus, TRUE)) return FALSE;	// 7.5ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSbus, &s_sbus, TRUE)) goto fail;	// 7.5ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;											// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -64,5 +64,9 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }
 

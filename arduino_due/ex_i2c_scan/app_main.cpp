@@ -65,10 +65,10 @@ static uint32_t _taskScan(PifTask* p_task)
 
 BOOL appSetup()
 {
-	if (!g_i2c_port.act_write) return FALSE;
+	if (!g_i2c_port.act_write) goto fail;
 
 	pifLog_Print(LT_INFO, "I2C Scan start");
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, SCAN_STEP_PERIOD, _taskScan, NULL, TRUE)) return FALSE;
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, SCAN_STEP_PERIOD, _taskScan, NULL, TRUE)) goto fail;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***           ex_i2c_scan            ***\n");
@@ -76,4 +76,8 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

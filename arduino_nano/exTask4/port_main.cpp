@@ -58,10 +58,14 @@ BOOL portSetup()
 
 	pif_Init((PifActTimer1us)micros);
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return FALSE;			// 500ms
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100, taskLedRedToggle, NULL, TRUE)) return FALSE;			// 100us
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 200, taskLedYellowToggle, NULL, TRUE)) return FALSE;		// 200us
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;			// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100, taskLedRedToggle, NULL, TRUE)) goto fail;			// 100us
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 200, taskLedYellowToggle, NULL, TRUE)) goto fail;		// 200us
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

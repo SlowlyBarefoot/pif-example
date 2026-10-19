@@ -90,14 +90,18 @@ BOOL appSetup()
 
     for (i = 0; i < SWITCH_COUNT; i++) {
     	s_link_test[i].p_delay = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
-		if (!s_link_test[i].p_delay) return FALSE;
+		if (!s_link_test[i].p_delay) goto fail;
 		pifTimer_AttachEvtFinish(s_link_test[i].p_delay, _evtDelay, (void *)&c_link_request[i], FALSE);
     }
 
-    if (!pifLink_Init(&s_link, PIF_ID_AUTO, &g_timer_1ms, LINK_T_SINGLE, 0, c_link_question)) return FALSE;
+    if (!pifLink_Init(&s_link, PIF_ID_AUTO, &g_timer_1ms, LINK_T_SINGLE, 0, c_link_question)) goto fail;
     pifLink_AttachTransport(&s_link, &g_serial.parent);
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;		// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;		// 500ms
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
+
+fail:
+	pif_Exit();
+	return FALSE;
 }

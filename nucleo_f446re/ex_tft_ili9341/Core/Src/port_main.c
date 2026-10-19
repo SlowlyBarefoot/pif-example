@@ -353,5 +353,6 @@ BOOL portSetup()
 
 fail:
 	pifLog_Printf(LT_INFO, "Port Setup failed. %d\n", line);
+	pif_Exit();
 	return FALSE;
 }
