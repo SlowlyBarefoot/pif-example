@@ -8,11 +8,11 @@
 	#define PIF_DEBUG
 #endif
 
-//#define PIF_INLINE
-#define PIF_INLINE                      	inline
-//#define PIF_INLINE                      	__inline
+//#define PIF_STATIC_INLINE			static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
+
+#define PIF_USE_PRINTF_FLOAT
 
 
 // -------- pifCollectSignal ---------------------
@@ -73,6 +73,11 @@
 // -------- pifTimer -----------------------------
 
 //#define PIF_PWM_MAX_DUTY					1000
+
+
+// -------- pifTouchScreen  ----------------------
+
+#define PIF_USE_TOUCH_CALIBRATION
 
 
 #endif  // PIF_CONF_H

@@ -2,21 +2,19 @@
 #define PIF_CONF_H
 
 
-// -------- pifCollectSignal ---------------------
-
-//#define PIF_COLLECT_SIGNAL
-
 // -------- pif Configuration --------------------
 
 #ifdef DEBUG
 	#define PIF_DEBUG
 #endif
 
-//#define PIF_INLINE
-#define PIF_INLINE                      	inline
-//#define PIF_INLINE                      	__inline
+//#define PIF_STATIC_INLINE			static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
+
+// -------- pifCollectSignal ---------------------
+
+//#define PIF_COLLECT_SIGNAL
 
 // -------- pifGpsNmea ---------------------------
 
@@ -43,6 +41,11 @@
 // -------- pifTimer -----------------------------
 
 //#define PIF_PWM_MAX_DUTY					1000
+
+
+// -------- pifUart	------------------------------
+
+#define PIF_USE_UART_FLOW_CONTROL
 
 
 #endif  // PIF_CONF_H

@@ -6,9 +6,7 @@
 
 //#define PIF_DEBUG
 
-#define PIF_INLINE
-//#define PIF_INLINE                      	inline
-//#define PIF_INLINE                      	__inline
+//#define PIF_STATIC_INLINE			static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
 

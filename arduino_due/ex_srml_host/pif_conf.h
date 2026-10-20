@@ -6,9 +6,7 @@
 
 //#define PIF_DEBUG
 
-//#define PIF_INLINE
-#define PIF_INLINE                      	inline
-//#define PIF_INLINE                      	__inline
+//#define PIF_STATIC_INLINE			static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
 
@@ -45,6 +43,11 @@
 // -------- pifTimer -----------------------------
 
 //#define PIF_PWM_MAX_DUTY					1000
+
+
+// -------- pifUart ------------------------------
+
+#define PIF_USE_UART_FLOW_CONTROL
 
 
 #endif  // PIF_CONF_H

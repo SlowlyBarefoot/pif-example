@@ -7,9 +7,7 @@
 
 //#define PIF_DEBUG
 
-//#define PIF_INLINE
-#define PIF_INLINE                      	inline
-//#define PIF_INLINE                      	__inline
+//#define PIF_STATIC_INLINE			static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
 
@@ -61,27 +59,27 @@
 
 //#define PIF_COLLECT_SIGNAL
 
-// With PIF_COLLECT_SIGNAL every module below records its signals. Defining a module's NO_ macro
-// leaves its channels, its Put calls and its SetCsFlag/ResetCsFlag out of the build.
-//#define PIF_COLLECT_SIGNAL_NO_BUZZER
-//#define PIF_COLLECT_SIGNAL_NO_DSHOT
-//#define PIF_COLLECT_SIGNAL_NO_DUTY_MOTOR
-//#define PIF_COLLECT_SIGNAL_NO_ENCODER
-//#define PIF_COLLECT_SIGNAL_NO_GPIO
-//#define PIF_COLLECT_SIGNAL_NO_HC_SR04
-//#define PIF_COLLECT_SIGNAL_NO_I2C
-//#define PIF_COLLECT_SIGNAL_NO_KEYPAD
-//#define PIF_COLLECT_SIGNAL_NO_MAX31855
-//#define PIF_COLLECT_SIGNAL_NO_MODBUS_ASCII_MASTER
-//#define PIF_COLLECT_SIGNAL_NO_MODBUS_RTU_MASTER
-//#define PIF_COLLECT_SIGNAL_NO_PID_CONTROL
-//#define PIF_COLLECT_SIGNAL_NO_PULSE
-//#define PIF_COLLECT_SIGNAL_NO_SENSOR_SWITCH
-//#define PIF_COLLECT_SIGNAL_NO_SENSOR_THRESHOLD
-//#define PIF_COLLECT_SIGNAL_NO_SEQUENCE
-//#define PIF_COLLECT_SIGNAL_NO_SOLENOID
-//#define PIF_COLLECT_SIGNAL_NO_STEP_MOTOR		// pifStepMotorPos and pifStepMotorSpeed too
-//#define PIF_COLLECT_SIGNAL_NO_UART
+// With PIF_COLLECT_SIGNAL the modules selected below record their signals: a module's macro puts its
+// channels, its Put calls and its SetCsFlag/ResetCsFlag in the build.
+//#define PIF_COLLECT_SIGNAL_BUZZER
+//#define PIF_COLLECT_SIGNAL_DSHOT
+//#define PIF_COLLECT_SIGNAL_DUTY_MOTOR
+//#define PIF_COLLECT_SIGNAL_ENCODER
+//#define PIF_COLLECT_SIGNAL_GPIO
+//#define PIF_COLLECT_SIGNAL_HC_SR04
+//#define PIF_COLLECT_SIGNAL_I2C
+//#define PIF_COLLECT_SIGNAL_KEYPAD
+//#define PIF_COLLECT_SIGNAL_MAX31855
+//#define PIF_COLLECT_SIGNAL_MODBUS_ASCII_MASTER
+//#define PIF_COLLECT_SIGNAL_MODBUS_RTU_MASTER
+//#define PIF_COLLECT_SIGNAL_PID_CONTROL
+//#define PIF_COLLECT_SIGNAL_PULSE
+//#define PIF_COLLECT_SIGNAL_SENSOR_SWITCH
+//#define PIF_COLLECT_SIGNAL_SENSOR_THRESHOLD
+//#define PIF_COLLECT_SIGNAL_SEQUENCE
+//#define PIF_COLLECT_SIGNAL_SOLENOID
+//#define PIF_COLLECT_SIGNAL_STEP_MOTOR		// pifStepMotorPos and pifStepMotorSpeed too
+//#define PIF_COLLECT_SIGNAL_UART
 
 
 // Characters of text a transfer task pass hands to pifLog at most, beyond the line it is on.

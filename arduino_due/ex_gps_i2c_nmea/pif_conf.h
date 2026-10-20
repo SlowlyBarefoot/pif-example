@@ -2,6 +2,12 @@
 #define PIF_CONF_H
 
 
+// -------- pif Configuration --------------------
+
+// Puts %f in pif_PrintFormat(), and with it pifLog_Printf(), along with the double arithmetic it needs. Without it
+// %f takes its argument and writes nothing.
+#define PIF_USE_PRINTF_FLOAT
+
 // -------- pifCollectSignal ---------------------
 
 //#define PIF_COLLECT_SIGNAL
@@ -10,9 +16,7 @@
 
 //#define PIF_DEBUG
 
-//#define PIF_INLINE
-#define PIF_INLINE                      	inline
-//#define PIF_INLINE                      	__inline
+//#define PIF_STATIC_INLINE			static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
 

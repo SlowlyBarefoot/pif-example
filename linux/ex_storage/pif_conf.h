@@ -6,9 +6,7 @@
 
 //#define PIF_DEBUG
 
-#define PIF_INLINE
-//#define PIF_INLINE                      	inline
-//#define PIF_INLINE                      	__inline
+//#define PIF_STATIC_INLINE			static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
 
@@ -50,6 +48,11 @@
 // pifModbus[Rtu/Ascii]Slave_Init에서 받은 타이머의 단위를 곱한 시간
 // 기본값은 300이고 타이머 단위가 1ms이기에 300 * 1ms = 300ms이다.
 //#define PIF_MODBUS_SLAVE_TIMEOUT  	    300
+
+
+// -------- pifNvram -----------------------------
+
+#define PIF_USE_NVRAM_RECORD
 
 
 // -------- pifSrml ------------------------------

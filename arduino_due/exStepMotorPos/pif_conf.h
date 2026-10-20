@@ -2,19 +2,17 @@
 #define PIF_CONF_H
 
 
-// -------- pifCollectSignal ---------------------
-
-//#define PIF_COLLECT_SIGNAL
-
 // -------- pif Configuration --------------------
 
 //#define PIF_DEBUG
 
-//#define PIF_INLINE
-#define PIF_INLINE                      	inline
-//#define PIF_INLINE                      	__inline
+//#define PIF_STATIC_INLINE			static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
+
+// -------- pifCollectSignal ---------------------
+
+//#define PIF_COLLECT_SIGNAL
 
 // -------- pifGpsNmea ---------------------------
 
@@ -33,6 +31,11 @@
 #define PIF_LOG_COMMAND
 
 //#define PIF_LOG_LINE_SIZE					80
+
+
+// -------- pifStepMotor -------------------------
+
+#define PIF_USE_STEP_MOTOR_2PHASE
 
 // -------- pifTask ------------------------------
 
