@@ -22,7 +22,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
 
 static uint32_t _taskPeriod(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -46,7 +46,7 @@ static uint32_t _taskPeriod(PifTask *pstTask)
 
 static uint32_t _taskChange(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -84,21 +84,11 @@ BOOL portSetup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;											// 256bytes
 
-	s_task_period = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskPeriod, NULL, TRUE);	// 500ms
+	s_task_period = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskPeriod, NULL, TRUE);	// 100ms
 	if (!s_task_period) goto fail;
 
 	s_task_change = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskChange, NULL, TRUE);		// 1ms
 	if (!s_task_change) goto fail;
-
-	pifLog_Print(LT_NONE, "\n\n****************************************\n");
-	pifLog_Print(LT_NONE, "***              exTask5             ***\n");
-	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
-	pifLog_Print(LT_NONE, "****************************************\n");
-	pifLog_Printf(LT_INFO, "Task=%d/%d\n", pifTaskManager_Count(), TASK_SIZE);
-
-#ifdef PIF_DEBUG
-	pifTaskManager_PrintRatioTable();
-#endif
 	return TRUE;
 
 fail:

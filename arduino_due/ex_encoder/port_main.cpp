@@ -17,7 +17,7 @@
 
 static uint32_t _taskLedToggle(PifTask* p_task)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)p_task;
 
@@ -35,8 +35,8 @@ static uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size
 
 void actGenerate(uint8_t state)
 {
-	digitalWrite(PIN_GEN_A, (state & ENCODER_PHASE_A) ? HIGH : LOW);
-	digitalWrite(PIN_GEN_B, (state & ENCODER_PHASE_B) ? HIGH : LOW);
+	digitalWrite(PIN_GEN_A, (state & ENCODER_PHASE_A) ? TRUE : FALSE);
+	digitalWrite(PIN_GEN_B, (state & ENCODER_PHASE_B) ? TRUE : FALSE);
 }
 
 static void _isrEncoder()

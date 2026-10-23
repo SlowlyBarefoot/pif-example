@@ -10,7 +10,7 @@
 static uint32_t _taskLedRedToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -27,7 +27,7 @@ static uint32_t _taskLedRedToggle(PifTask *pstTask)
 static uint32_t _taskLedYellowToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -44,7 +44,7 @@ static uint32_t _taskLedYellowToggle(PifTask *pstTask)
 static uint32_t _taskLedGreenToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 

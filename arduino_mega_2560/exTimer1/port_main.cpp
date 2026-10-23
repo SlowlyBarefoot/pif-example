@@ -16,7 +16,7 @@ static void sysTickHook()
 
 static void evtLedToggle(void *pvIssuer)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pvIssuer;
 

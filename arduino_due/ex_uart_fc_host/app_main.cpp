@@ -103,6 +103,7 @@ BOOL appSetup()
 	pifTask_Resume(g_uart_host._p_rx_task);
 
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }					// 500ms
+	g_led_l._p_task->name = "LedL";
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskSendMessage, NULL, FALSE);	// 3ms

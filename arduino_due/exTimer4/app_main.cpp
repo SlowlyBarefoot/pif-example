@@ -21,7 +21,7 @@ static void _evtLedRedToggle(void *pvIssuer)
 	if (count >= 10) {
 		count = 0;
 		pifTimer_Stop((PifTimer *)pvIssuer);
-		pifTimer_Start(s_pstTimer1msYellow, 500);	// 500 * 1ms = 0.5sec
+		pifTimer_Start(s_pstTimer1msYellow, 50);	// 50 * 1ms = 50ms
 	}
 }
 
@@ -37,7 +37,7 @@ static void _evtLedYellowToggle(void *pvIssuer)
 	if (count >= 10) {
 		count = 0;
 		pifTimer_Stop((PifTimer *)pvIssuer);
-		pifTimer_Start(s_pstTimer1msGreen, 1000);	// 1000 * 1ms = 1sec
+		pifTimer_Start(s_pstTimer1msGreen, 100);	// 100 * 1ms = 100ms
 	}
 }
 
@@ -53,7 +53,7 @@ static void _evtLedGreenToggle(void *pvIssuer)
 	if (count >= 10) {
 		count = 0;
 		pifTimer_Stop((PifTimer *)pvIssuer);
-		pifTimer_Start(s_pstTimer1msRed, 200);		// 200 * 1ms = 0.2sec
+		pifTimer_Start(s_pstTimer1msRed, 20);		// 20 * 1ms = 20ms
 	}
 }
 

@@ -133,15 +133,15 @@ static uint16_t actLogReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t siz
 
 static void actLcdReset()
 {
-	digitalWrite(PIN_LCD_RST, LOW);
+	digitalWrite(PIN_LCD_RST, FALSE);
 	delay(100);
-	digitalWrite(PIN_LCD_RST, HIGH);
+	digitalWrite(PIN_LCD_RST, TRUE);
 	delay(50);
 }
 
 static void actLcdChipSelect(SWITCH sw)
 {
-	digitalWrite(PIN_LCD_CS, sw ? LOW : HIGH);
+	digitalWrite(PIN_LCD_CS, sw ? FALSE : TRUE);
 }
 
 #if LCD_TYPE == LCD_2_2_INCH_SPI
@@ -157,7 +157,7 @@ static uint32_t _LcdReadBus()
 {
 	uint32_t t, d;
 
-	digitalWrite(PIN_LCD_RD, LOW);
+	digitalWrite(PIN_LCD_RD, FALSE);
 	delayMicroseconds(1);
 #if LCD_TYPE == LCD_2_4_INCH
 	t = PIOC->PIO_PDSR;
@@ -168,7 +168,7 @@ static uint32_t _LcdReadBus()
 	t = PIOC->PIO_PDSR;
 	d = ((t >> 2) & 0xFF) | ((t >> 4) & 0xFF00);
 #endif
-	digitalWrite(PIN_LCD_RD, HIGH);
+	digitalWrite(PIN_LCD_RD, TRUE);
 	return d;
 }
 
@@ -183,17 +183,17 @@ static void _LcdWritBus(uint32_t d)
 	PIO_Set(PIOC,    (((d) & 0x00FF) << 2) |  (((d) & 0xFF00) << 4));
 	PIO_Clear(PIOC, (((~d) & 0x00FF) << 2) | (((~d) & 0xFF00) << 4));
 #endif
-	digitalWrite(PIN_LCD_WR, LOW);
-	digitalWrite(PIN_LCD_WR, HIGH);
+	digitalWrite(PIN_LCD_WR, FALSE);
+	digitalWrite(PIN_LCD_WR, TRUE);
 }
 
 static void actLcdReadCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 {
-	digitalWrite(PIN_LCD_RS, LOW);
+	digitalWrite(PIN_LCD_RS, FALSE);
 	_LcdWritBus(cmd);
 
 	if (size) {
-		digitalWrite(PIN_LCD_RS, HIGH);
+		digitalWrite(PIN_LCD_RS, TRUE);
 #if LCD_TYPE == LCD_2_4_INCH
 		pmc_enable_periph_clk( ID_PIOC ); pmc_enable_periph_clk( ID_PIOB );
 		PIOC->PIO_PUDR |=  0x17E00000; PIOC->PIO_IFDR |=  0x17E00000; PIOC->PIO_ODR |=  0x17E00000; PIOC->PIO_PER |=  0x17E00000;
@@ -219,11 +219,11 @@ static void actLcdReadCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 
 static void actLcdWriteCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 {
-	digitalWrite(PIN_LCD_RS, LOW);
+	digitalWrite(PIN_LCD_RS, FALSE);
 	_LcdWritBus(cmd);
 
 	if (size) {
-		digitalWrite(PIN_LCD_RS, HIGH);
+		digitalWrite(PIN_LCD_RS, TRUE);
 		for (uint32_t i = 0; i < size; i++) {
 			_LcdWritBus(p_data[i]);
 		}
@@ -232,7 +232,7 @@ static void actLcdWriteCmd(PifTftLcdCmd cmd, uint32_t* p_data, uint32_t size)
 
 static void actLcdWriteData(uint32_t* p_data, uint32_t size)
 {
-	digitalWrite(PIN_LCD_RS, HIGH);
+	digitalWrite(PIN_LCD_RS, TRUE);
 	for (uint32_t i = 0; i < size; i++) {
 		_LcdWritBus(p_data[i]);
 	}
@@ -242,7 +242,7 @@ static void actLcdWriteRepeat(uint32_t* p_data, uint8_t size, uint32_t len)
 {
 	uint8_t p = 0;
 
-	digitalWrite(PIN_LCD_RS, HIGH);
+	digitalWrite(PIN_LCD_RS, TRUE);
 	for (uint32_t i = 0; i < size * len; i++) {
 		_LcdWritBus(p_data[p]);
 		p++;
@@ -256,24 +256,24 @@ static void actTouchPosition(PifTouchScreen* p_owner, int16_t* x, int16_t* y)
 {
 	(void)p_owner;
 
-	digitalWrite(PIN_TS_YM, LOW);
+	digitalWrite(PIN_TS_YM, FALSE);
 	pinMode(PIN_TS_YP, INPUT);
 	pinMode(PIN_TS_YM, INPUT);
 
-	digitalWrite(PIN_TS_XP, HIGH);
-	digitalWrite(PIN_TS_XM, LOW);
+	digitalWrite(PIN_TS_XP, TRUE);
+	digitalWrite(PIN_TS_XM, FALSE);
 
     *x = analogRead(PIN_TS_YP);
 
 	pinMode(PIN_TS_YP, OUTPUT);
 	pinMode(PIN_TS_YM, OUTPUT);
 
-	digitalWrite(PIN_TS_XM, LOW);
+	digitalWrite(PIN_TS_XM, FALSE);
 	pinMode(PIN_TS_XP, INPUT);
 	pinMode(PIN_TS_XM, INPUT);
 
-	digitalWrite(PIN_TS_YP, HIGH);
-    digitalWrite(PIN_TS_YM, LOW);
+	digitalWrite(PIN_TS_YP, TRUE);
+    digitalWrite(PIN_TS_YM, FALSE);
 
     *y = analogRead(PIN_TS_XP);
 
@@ -288,14 +288,14 @@ static BOOL actTouchPressure(PifTouchScreen* p_owner)
 	(void)p_owner;
 
 	// Set X+ to ground
-	digitalWrite(PIN_TS_XM, LOW);
+	digitalWrite(PIN_TS_XM, FALSE);
 
 	// Set Y- to VCC
-	digitalWrite(PIN_TS_YM, HIGH);
+	digitalWrite(PIN_TS_YM, TRUE);
 
 	// Hi-Z X- and Y+
-    digitalWrite(PIN_TS_XP, LOW);
-	digitalWrite(PIN_TS_YP, LOW);
+    digitalWrite(PIN_TS_XP, FALSE);
+	digitalWrite(PIN_TS_YP, FALSE);
     pinMode(PIN_TS_XP, INPUT);
 	pinMode(PIN_TS_YP, INPUT);
 
@@ -324,13 +324,13 @@ static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read
 
 	(void)p_owner;
 
-	digitalWrite(PIN_TS_CS, LOW);
-	digitalWrite(SS, LOW);
+	digitalWrite(PIN_TS_CS, FALSE);
+	digitalWrite(SS, FALSE);
 	for (i = 0; i < size; i++) {
 		p_read[i] = SPI.transfer(p_write[i]);
 	}
-	digitalWrite(SS, HIGH);
-	digitalWrite(PIN_TS_CS, HIGH);
+	digitalWrite(SS, TRUE);
+	digitalWrite(PIN_TS_CS, TRUE);
 }
 
 #endif
@@ -398,17 +398,17 @@ BOOL portSetup()
 
 	SPI.begin();
 //	SPI.setClockDivider(SPI_CLOCK_DIV16);
-	digitalWrite(SS, HIGH);
+	digitalWrite(SS, TRUE);
 
 	#endif
 
-	digitalWrite(PIN_LCD_RD, HIGH);
-	digitalWrite(PIN_LCD_WR, HIGH);
+	digitalWrite(PIN_LCD_RD, TRUE);
+	digitalWrite(PIN_LCD_WR, TRUE);
 #endif
 
-	digitalWrite(PIN_LCD_RS, HIGH);
-	digitalWrite(PIN_LCD_CS, HIGH);
-	digitalWrite(PIN_LCD_RST, HIGH);
+	digitalWrite(PIN_LCD_RS, TRUE);
+	digitalWrite(PIN_LCD_CS, TRUE);
+	digitalWrite(PIN_LCD_RST, TRUE);
 
 	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
 

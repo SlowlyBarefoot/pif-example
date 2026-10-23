@@ -156,7 +156,7 @@ static uint32_t _taskInitPos(PifTask *pstTask)
 
 	case 2:
 		if (!s_stDutyMotorTest.ucStage) {
-			if (g_switch[0].parent._curr_state == ON) {
+			if (g_switch[0].parent._curr_state == TRUE) {
 				pifLog_Printf(LT_INFO, "InitPos: Find");
 				s_stDutyMotorTest.ucInitPos = 0;
 			}
@@ -225,6 +225,7 @@ BOOL appSetup()
     p_task->name = "InitPos";
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

@@ -11,7 +11,7 @@ typedef struct {
 PifSolenoid g_solenoid;
 PifTimerManager g_timer_1ms;
 
-static ST_SolenoidTest s_stSolenoidTest = {	OFF, &g_solenoid, NULL };
+static ST_SolenoidTest s_stSolenoidTest = {	FALSE, &g_solenoid, NULL };
 
 
 static void _evtSolenoidFinish(void *pvParam)

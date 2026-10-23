@@ -66,6 +66,7 @@ static uint32_t _taskSequence(PifTask *p_task)
 BOOL appSetup()
 {
     if (!pifSequence_Init(&s_sequence, PIF_ID_AUTO, &s_step)) goto fail;
+    s_sequence._p_task->name = "Sequence";
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskSequence, &s_sequence, TRUE)) goto fail;	// 500ms
 

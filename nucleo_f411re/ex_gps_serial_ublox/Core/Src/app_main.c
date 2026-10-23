@@ -480,6 +480,7 @@ BOOL appSetup(uint32_t baurdate)
     if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;								// 32bytes
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifGpsUblox_Init(&s_gps_ublox, PIF_ID_AUTO)) goto fail;

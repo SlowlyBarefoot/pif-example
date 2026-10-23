@@ -347,6 +347,7 @@ BOOL appSetup()
 	pifTask_Resume(g_uart_printer._p_tx_task);
 
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
+	g_led_l._p_task->name = "LedL";
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
     strcpy(s_param.company, "Store-Lan");

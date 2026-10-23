@@ -8,7 +8,7 @@
 static uint32_t _taskLedToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -16,7 +16,7 @@ static uint32_t _taskLedToggle(PifTask *pstTask)
     	digitalWrite(PIN_LED_L, sw);
 		sw ^= 1;
 
-		nCount = 999;
+		nCount = 499;
     }
     else nCount--;
     return 0;
@@ -30,7 +30,7 @@ BOOL portSetup()
 
     if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) goto fail;	// 50us
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskLedToggle, NULL, TRUE)) goto fail;	// 1ms
 	return TRUE;
 
 fail:

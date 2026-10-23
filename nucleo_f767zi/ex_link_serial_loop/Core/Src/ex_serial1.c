@@ -123,11 +123,14 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 
 BOOL exSerial1_Setup()
 {
+	PifTask* p_task;
 	int i;
 	static PifNfBit push_switch_filter[SWITCH_COUNT];
 
     for (i = 0; i < SWITCH_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_link_test[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) return FALSE;	// 10ms
+	    p_task = pifSensorSwitch_AttachTaskAcquire(&g_link_test[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE);	// 10ms
+	    if (!p_task) return FALSE;
+	    p_task->name = "PushSw";
 		pifSensor_AttachEvtChange(&g_link_test[i].push_switch.parent, _evtPushSwitchChange, NULL);
 		if (!pifNoiseFilterBit_InitCount(&push_switch_filter[i], 7)) return FALSE;
 		if (!pifSensorSwitch_AttachFilter(&g_link_test[i].push_switch, &push_switch_filter[i].parent)) return FALSE;

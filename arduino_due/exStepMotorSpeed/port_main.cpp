@@ -52,7 +52,7 @@ static int32_t actPhotoInterruptAcquire(PifSensor* p_owner)
 	case PIF_ID_SWITCH + 2:
 		return digitalRead(PIN_PHOTO_INTERRUPT_3);
 	}
-	return OFF;
+	return FALSE;
 }
 
 static void actSetStep(PifStepMotor*, uint16_t usPhase)
@@ -122,6 +122,7 @@ BOOL portSetup()
 
     if (!pifStepMotorSpeed_Init(&g_motor, PIF_ID_AUTO, &g_timer_200us, STEP_MOTOR_RESOLUTION,
 			SMO_2P_4W_1S, 100)) goto fail;														// 100ms
+    g_motor.parent._p_task->name = "Motor";
     pifStepMotor_SetReductionGearRatio(&g_motor.parent, STEP_MOTOR_REDUCTION_GEAR_RATIO);
     g_motor.parent.act_set_step = actSetStep;
 

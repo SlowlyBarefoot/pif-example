@@ -11,7 +11,7 @@
 
 static uint32_t _taskLedToggle(PifTask* p_task)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)p_task;
 

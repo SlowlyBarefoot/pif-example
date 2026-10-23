@@ -17,7 +17,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -64,7 +64,7 @@ BOOL portSetup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
 
-    if (!pifSensorThreshold_Init(&g_sensor, PIF_ID_AUTO, OFF, actSensorAcquisition)) goto fail;
+    if (!pifSensorThreshold_Init(&g_sensor, PIF_ID_AUTO, FALSE, actSensorAcquisition)) goto fail;
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
 	return TRUE;

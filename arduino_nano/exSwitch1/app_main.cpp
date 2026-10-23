@@ -26,10 +26,16 @@ static void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValue
 
 BOOL appSetup()
 {
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE)) goto fail;	// 1ms
+	PifTask* p_task;
+
+    p_task = pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE);	// 1ms
+    if (!p_task) goto fail;
+    p_task->name = "PushSw";
     pifSensor_AttachEvtChange(&g_push_switch.parent, evtPushSwitchChange, NULL);
 
-	if (!pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE)) goto fail;	// 1ms
+	p_task = pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE);	// 1ms
+	if (!p_task) goto fail;
+	p_task->name = "TiltSw";
 	pifSensor_AttachEvtChange(&g_tilt_switch.parent, evtTiltSwitchChange, NULL);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

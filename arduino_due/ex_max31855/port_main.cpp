@@ -29,7 +29,7 @@ static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read
 
 	(void)p_owner;
 
-	digitalWrite(SS, LOW);
+	digitalWrite(SS, FALSE);
 	if (p_write) {
 		if (p_read) {
 			for (i = 0; i < size; i++) {
@@ -49,7 +49,7 @@ static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read
 			}
 		}
 	}
-	digitalWrite(SS, HIGH);
+	digitalWrite(SS, TRUE);
 }
 
 extern "C" {
@@ -69,7 +69,7 @@ BOOL portSetup()
 
 	SPI.begin();
 //	SPI.setClockDivider(SPI_CLOCK_DIV16);
-	digitalWrite(SS, HIGH);
+	digitalWrite(SS, TRUE);
 
 	Serial.begin(UART_LOG_BAUDRATE);
 

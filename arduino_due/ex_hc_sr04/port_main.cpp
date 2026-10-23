@@ -34,7 +34,7 @@ static void _isrUltrasonicEcho()
 
 static uint32_t taskLedToggle(PifTask* p_task)
 {
-	static BOOL swLed = OFF;
+	static BOOL swLed = FALSE;
 
 	(void)p_task;
 
@@ -77,7 +77,7 @@ BOOL portSetup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
 
-    if (!pifHcSr04_Init(&g_hcsr04, PIF_ID_AUTO)) goto fail;
+    if (!pifHcSr04_Init(&g_hcsr04, PIF_ID_AUTO, NULL)) goto fail;
 	g_hcsr04.act_trigger = actHcSr04Trigger;
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms

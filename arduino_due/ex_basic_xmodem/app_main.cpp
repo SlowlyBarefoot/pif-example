@@ -218,12 +218,14 @@ BOOL appSetup()
     if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;			// 32bytes
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;							// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
     if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) goto fail;
+    s_xmodem._p_task->name = "Xmodem";
     pifXmodem_AttachEvtRx(&s_xmodem, _evtXmodemRxReceive, _evtXmodemFinish);
 
-	pifBasic_Init(p_process, _evtComplete);
+	pifBasic_Init(p_process, _evtComplete, NULL);
 
 	s_task = pifTaskManager_Add(PIF_ID_AUTO, TM_EXTERNAL, 0, _taskChangeUart, NULL, TRUE);
 	if (!s_task) goto fail;

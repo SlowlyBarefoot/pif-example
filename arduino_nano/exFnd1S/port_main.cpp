@@ -28,8 +28,9 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
     return Serial.write((char *)pucBuffer, usSize);
 }
 
-static void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit)
+static void actFndDisplay(PifId id, uint8_t ucSegment, uint8_t ucDigit)
 {
+	(void)id;
 	(void)ucDigit;
 
 	for (int j = 0; j < 8; j++) {
@@ -39,7 +40,7 @@ static void actFndDisplay(uint8_t ucSegment, uint8_t ucDigit)
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL swLed = LOW;
+	static BOOL swLed = FALSE;
 
 	(void)pstTask;
 
@@ -82,7 +83,8 @@ BOOL portSetup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 80)) goto fail;												// 80bytes
 
-    if (!pifFnd_Init(&g_fnd, PIF_ID_AUTO, 1, actFndDisplay)) goto fail;
+    if (!pifFnd_Init(&g_fnd, PIF_ID_AUTO, 1, actFndDisplay, NULL)) goto fail;
+    g_fnd._p_task->name = "FND";
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
 	return TRUE;

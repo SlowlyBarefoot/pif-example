@@ -311,6 +311,7 @@ BOOL appSetup()
 	pifModbusRtuMaster_AttachUart(&g_modbus_master, &g_uart_modbus);
 
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
+	g_led_l._p_task->name = "LedL";
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

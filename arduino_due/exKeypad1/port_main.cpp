@@ -20,7 +20,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -35,7 +35,7 @@ static void actKeypadAcquire(uint16_t *pusState)
 
 	for (i = col = 0; col < COLS; col++) {
 		pinMode(colPins[col], OUTPUT);
-		digitalWrite(colPins[col], LOW);
+		digitalWrite(colPins[col], FALSE);
 		for (row = 0; row < ROWS; row++, i++) {
 			block = i / 16;
 			cell = i & 15;
@@ -46,7 +46,7 @@ static void actKeypadAcquire(uint16_t *pusState)
 				pusState[block] &= ~(1UL << cell);
 			}
 		}
-		digitalWrite(colPins[col], HIGH);
+		digitalWrite(colPins[col], TRUE);
 		pinMode(colPins[col],INPUT);
 	}
 }

@@ -10,7 +10,7 @@ static uint32_t micros()
 static uint32_t _taskLedToggle(PifTask *pstTask)
 {
 	static int nCount = 0;
-	static BOOL sw = OFF;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -18,7 +18,7 @@ static uint32_t _taskLedToggle(PifTask *pstTask)
     	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, sw);
 		sw ^= 1;
 
-		nCount = 9999;
+		nCount = 499;
     }
     else nCount--;
     return 0;
@@ -28,11 +28,11 @@ BOOL portSetup()
 {
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-	pif_Init(micros);
+	pif_Init((PifActTimer1us)micros);
 
 	if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) goto fail;	// 50us
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskLedToggle, NULL, TRUE)) goto fail;	// 1ms
 	return TRUE;
 
 fail:

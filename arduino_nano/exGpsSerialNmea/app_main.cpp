@@ -77,7 +77,11 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 
 BOOL appSetup()
 {
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) goto fail;	// 10m
+	PifTask* p_task;
+
+    p_task = pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE);	// 10m
+    if (!p_task) goto fail;
+    p_task->name = "PushSw";
     pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, NULL);
 
 	if (!pifGpsNmea_Init(&s_gps_nmea, PIF_ID_AUTO)) goto fail;
@@ -86,6 +90,7 @@ BOOL appSetup()
 	s_gps_nmea._gps.evt_receive = _evtGpsReceive;
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

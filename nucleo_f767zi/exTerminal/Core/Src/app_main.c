@@ -65,6 +65,7 @@ BOOL appSetup()
     pifLog_AttachEvent(_evtLogControlChar);
 
     if (!pifLed_AttachSBlink(&g_led_l, nPeriod)) goto fail;
+    g_led_l._p_task->name = "LedL";
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***            exTerminal            ***\n");

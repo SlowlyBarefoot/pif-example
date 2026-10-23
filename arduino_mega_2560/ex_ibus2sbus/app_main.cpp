@@ -56,6 +56,7 @@ BOOL appSetup()
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSbus, &s_sbus, TRUE)) goto fail;	// 7.5ms
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;											// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

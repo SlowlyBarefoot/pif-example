@@ -97,10 +97,12 @@ static uint32_t _taskLed(PifTask *p_task)
 BOOL appSetup()
 {
     if (!pifLed_AttachMBlink(&g_led_rgb, 100, 3, 1, 2, 3)) goto fail;							// 100ms
+    g_led_rgb._p_task->name = "LedRGB";
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 200000, _taskLed, NULL, TRUE)) goto fail;	// 200ms
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;											// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

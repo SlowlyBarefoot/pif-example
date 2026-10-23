@@ -28,7 +28,7 @@ static void timer_100us()
 
 void evtLedRedToggle(void *pvIssuer)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pvIssuer;
 
@@ -38,7 +38,7 @@ void evtLedRedToggle(void *pvIssuer)
 
 void evtLedYellowToggle(void *pvIssuer)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pvIssuer;
 

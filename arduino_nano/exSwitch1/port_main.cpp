@@ -44,7 +44,7 @@ static int32_t actTiltSwitchAcquire(PifSensor* p_owner)
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL swLed = LOW;
+	static BOOL swLed = FALSE;
 
 	(void)pstTask;
 
@@ -87,9 +87,9 @@ BOOL portSetup()
     if (!pifGpio_Init(&g_gpio, PIF_ID_AUTO, 1)) goto fail;
     pifGpio_AttachActOut(&g_gpio, actGpioLed);
 
-    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, actPushSwitchAcquire)) goto fail;
+    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, FALSE, actPushSwitchAcquire)) goto fail;
 
-	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF, actTiltSwitchAcquire)) goto fail;
+	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, FALSE, actTiltSwitchAcquire)) goto fail;
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
 	return TRUE;

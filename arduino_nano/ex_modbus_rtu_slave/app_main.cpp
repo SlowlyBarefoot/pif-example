@@ -45,6 +45,7 @@ BOOL appSetup()
 	pifModbusRtuSlave_AttachUart(&g_modbus_slave, &g_uart_modbus);
 
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;			// 500ms
+	g_led_l._p_task->name = "LedL";
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 	return TRUE;
 

@@ -54,6 +54,7 @@ BOOL portSetup()
 	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;										// 256bytes
 
     if (!pifBuzzer_Init(&g_buzzer, PIF_ID_AUTO, 10, actBuzzerAction)) goto fail;				// 10ms
+    g_buzzer._p_task->name = "Buzzer";
     return TRUE;
 
 fail:

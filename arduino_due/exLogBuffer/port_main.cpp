@@ -29,7 +29,7 @@ static uint32_t _taskPrintBuffer(PifTask *p_task)
 
 static void _evtLedToggle(void *pvIssuer)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 	static int count = 19;
 
 	(void)pvIssuer;

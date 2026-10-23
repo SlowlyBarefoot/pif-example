@@ -18,7 +18,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
 
 static void evtLedToggle(void *pvIssuer)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pvIssuer;
 

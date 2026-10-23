@@ -43,14 +43,14 @@ static uint32_t _taskLed(PifTask *pstTask)
 			break;
 
 		case 4:
-			pifLed_MBlinkOff(&g_led_rgb, 1 << 0, 0, OFF);
+			pifLed_MBlinkOff(&g_led_rgb, 1 << 0, 0, FALSE);
 			pifLed_MBlinkOn(&g_led_rgb, 1 << 1, 1);
 			usStep = 5;
 			usTimer = 6;
 			break;
 
 		case 5:
-			pifLed_MBlinkOff(&g_led_rgb, 1 << 1, 1, OFF);
+			pifLed_MBlinkOff(&g_led_rgb, 1 << 1, 1, FALSE);
 			pifLed_MBlinkOn(&g_led_rgb, 1 << 2, 2);
 			usStep = 6;
 			usTimer = 6;
@@ -66,7 +66,7 @@ static uint32_t _taskLed(PifTask *pstTask)
 		case 7:
 			pifLed_MBlinkOn(&g_led_rgb, 1 << 0, 0);
 			pifLed_MBlinkOn(&g_led_rgb, 1 << 1, 1);
-			pifLed_MBlinkOff(&g_led_rgb, 1 << 2, 2, OFF);
+			pifLed_MBlinkOff(&g_led_rgb, 1 << 2, 2, FALSE);
 			usStep = 8;
 			usTimer = 6;
 			break;
@@ -80,9 +80,9 @@ static uint32_t _taskLed(PifTask *pstTask)
 			break;
 
 		case 9:
-			pifLed_MBlinkOff(&g_led_rgb, 1 << 0, 0, OFF);
-			pifLed_MBlinkOff(&g_led_rgb, 1 << 1, 1, OFF);
-			pifLed_MBlinkOff(&g_led_rgb, 1 << 2, 2, OFF);
+			pifLed_MBlinkOff(&g_led_rgb, 1 << 0, 0, FALSE);
+			pifLed_MBlinkOff(&g_led_rgb, 1 << 1, 1, FALSE);
+			pifLed_MBlinkOff(&g_led_rgb, 1 << 2, 2, FALSE);
 			usStep = 0;
 			usTimer = 6;
 			break;
@@ -97,9 +97,11 @@ static uint32_t _taskLed(PifTask *pstTask)
 BOOL appSetup()
 {
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;											// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
     if (!pifLed_AttachMBlink(&g_led_rgb, 100, 3, 1, 2, 3)) goto fail;							// 100ms
+    g_led_rgb._p_task->name = "LedRGB";
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 200000, _taskLed, NULL, TRUE)) goto fail;	// 200ms
 

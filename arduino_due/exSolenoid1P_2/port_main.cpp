@@ -27,7 +27,7 @@ static void actSolenoidOrder(uint8_t index, SWITCH swOrder, PifSolenoidDir enDir
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -68,6 +68,7 @@ BOOL portSetup()
 	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
 
     if (!pifSolenoid_Init(&g_solenoid, PIF_ID_AUTO, 1, ST_1POINT, 0, actSolenoidOrder)) goto fail;
+    g_solenoid._p_task->name = "Solenoid";
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
 	return TRUE;

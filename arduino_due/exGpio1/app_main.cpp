@@ -8,7 +8,7 @@ PifGpio g_gpio_switch;
 
 static uint32_t _taskGpioTest(PifTask *pstTask)
 {
-	static SWITCH swLedL = OFF;
+	static SWITCH swLedL = FALSE;
 	static uint8_t ucLedRG = 0;
 
 	(void)pstTask;

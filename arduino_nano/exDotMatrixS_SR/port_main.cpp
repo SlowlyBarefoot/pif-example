@@ -21,15 +21,15 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usS
 
 static void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 {
-	digitalWrite(PIN_74HC595_LATCH, LOW);
+	digitalWrite(PIN_74HC595_LATCH, FALSE);
 	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, 1 << ucRow);
 	shiftOut(PIN_74HC595_DATA, PIN_74HC595_SHIFT, MSBFIRST, ~(*pucData));
-	digitalWrite(PIN_74HC595_LATCH, HIGH);
+	digitalWrite(PIN_74HC595_LATCH, TRUE);
 }
 
 static uint32_t taskLedToggle(PifTask* p_task)
 {
-	static BOOL led = LOW;
+	static BOOL led = FALSE;
 
 	(void)p_task;
 
@@ -72,6 +72,7 @@ BOOL portSetup()
 	if (!pifLog_AttachUart(&s_uart_log, 80)) goto fail;												// 80bytes
 
     if (!pifDotMatrix_Init(&g_dot_matrix, PIF_ID_AUTO, 8, 8, actDotMatrixDisplay)) goto fail;
+    g_dot_matrix._p_task->name = "DotMatrix";
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
 	return TRUE;

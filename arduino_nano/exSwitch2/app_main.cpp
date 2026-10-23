@@ -30,15 +30,22 @@ static void evtTiltSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValue
 
 BOOL appSetup()
 {
-    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, OFF, NULL)) goto fail;
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE)) goto fail;	// 1ms
+	PifTask* p_task;
+
+    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, FALSE, NULL)) goto fail;
+    p_task = pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE);	// 1ms
+    if (!p_task) goto fail;
+    p_task->name = "PushSw";
     pifSensor_AttachEvtChange(&g_push_switch.parent, evtPushSwitchChange, NULL);
 
-	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, OFF, NULL)) goto fail;
-	if (!pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE)) goto fail;	// 1ms
+	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, FALSE, NULL)) goto fail;
+	p_task = pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE);	// 1ms
+	if (!p_task) goto fail;
+	p_task->name = "TiltSw";
 	pifSensor_AttachEvtChange(&g_tilt_switch.parent, evtTiltSwitchChange, NULL);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
     pifTimer_Start(g_timer_switch, 20);												    						// 20ms

@@ -121,6 +121,7 @@ BOOL appSetup()
     if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;								// 32bytes
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	if (!pifUbxDdcStream_Init(&s_gps_i2c, PIF_ID_AUTO, &g_i2c_port, 0x42, 128, 0, 250)) goto fail;	// 0x42 : Ublox I2c addrress, 250ms

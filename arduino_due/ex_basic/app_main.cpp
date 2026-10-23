@@ -189,9 +189,10 @@ BOOL appSetup()
     if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;					// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    pifBasic_Init(p_process, _evtComplete);
+    pifBasic_Init(p_process, _evtComplete, NULL);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***             ex_basic             ***\n");

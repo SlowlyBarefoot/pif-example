@@ -41,12 +41,12 @@ static void actSetDuty(PifDutyMotor*, uint16_t usDuty)
 static void actSetDirection(PifDutyMotor*, uint8_t ucDir)
 {
 	if (ucDir) {
-		digitalWrite(PIN_L298N_IN1, LOW);
-		digitalWrite(PIN_L298N_IN2, HIGH);
+		digitalWrite(PIN_L298N_IN1, FALSE);
+		digitalWrite(PIN_L298N_IN2, TRUE);
 	}
 	else {
-		digitalWrite(PIN_L298N_IN1, HIGH);
-		digitalWrite(PIN_L298N_IN2, LOW);
+		digitalWrite(PIN_L298N_IN1, TRUE);
+		digitalWrite(PIN_L298N_IN2, FALSE);
 	}
 	pifLog_Printf(LT_INFO, "SetDirection(%d)", ucDir);
 }
@@ -55,8 +55,8 @@ static void actOperateBrake(PifDutyMotor*, uint8_t ucState)
 {
 	if (ucState) {
 		analogWrite(PIN_L298N_ENB_PWM, 255);
-		digitalWrite(PIN_L298N_IN1, LOW);
-		digitalWrite(PIN_L298N_IN2, LOW);
+		digitalWrite(PIN_L298N_IN1, FALSE);
+		digitalWrite(PIN_L298N_IN2, FALSE);
 	}
 	else {
 		analogWrite(PIN_L298N_ENB_PWM, 0);

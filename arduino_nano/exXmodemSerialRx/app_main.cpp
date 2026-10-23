@@ -22,15 +22,20 @@ static void _evtPushSwitchChange(PifSensor* p_owner, SWITCH state, PifSensorValu
 
 BOOL appSetup()
 {
+	PifTask* p_task;
 	static PifXmodem s_xmodem;
 
-    if (!pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) goto fail;	// 10ms
+    p_task = pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE);	// 10ms
+    if (!p_task) goto fail;
+    p_task->name = "PushSw";
     pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, &s_xmodem);
 
     if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) goto fail;
+    s_xmodem._p_task->name = "Xmodem";
     pifXmodem_AttachTransport(&s_xmodem, &g_serial.parent);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
     return TRUE;
 

@@ -11,7 +11,7 @@
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -22,24 +22,46 @@ static uint32_t taskLedToggle(PifTask *pstTask)
 
 static uint32_t taskLedRedToggle(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	uint32_t rtn = 0;
+	static int nCount = 0, nToggle = 0;
+	static BOOL sw = FALSE;
 
-	(void)pstTask;
+    if (!nCount) {
+    	digitalWrite(PIN_LED_RED, sw);
+		sw ^= 1;
 
-	digitalWrite(PIN_LED_RED, sw);
-	sw ^= 1;
-	return 0;
+		nToggle++;
+		if (nToggle >= 10) {
+			nToggle = 0;
+			rtn = pstTask->_default_period * 1000;
+		}
+
+		nCount = 99;
+    }
+    else nCount--;
+    return rtn;
 }
 
 static uint32_t taskLedYellowToggle(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	uint32_t rtn = 0;
+	static int nCount = 0, nToggle = 0;
+	static BOOL sw = FALSE;
 
-	(void)pstTask;
+    if (!nCount) {
+    	digitalWrite(PIN_LED_YELLOW, sw);
+		sw ^= 1;
 
-	digitalWrite(PIN_LED_YELLOW, sw);
-	sw ^= 1;
-	return 0;
+		nToggle++;
+		if (nToggle >= 10) {
+			nToggle = 0;
+			rtn = pstTask->_default_period * 1000;
+		}
+
+		nCount = 99;
+    }
+    else nCount--;
+    return rtn;
 }
 
 static void sysTickHook()

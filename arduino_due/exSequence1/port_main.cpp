@@ -16,7 +16,7 @@ static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 

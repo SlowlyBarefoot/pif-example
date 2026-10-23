@@ -24,13 +24,13 @@ static void actSolenoidOrder(uint8_t index, SWITCH swOrder, PifSolenoidDir enDir
 	if (swOrder) {
 		switch (enDir) {
 		case SD_LEFT:
-			digitalWrite(PIN_L298N_IN3, HIGH);
-			digitalWrite(PIN_L298N_IN4, LOW);
+			digitalWrite(PIN_L298N_IN3, TRUE);
+			digitalWrite(PIN_L298N_IN4, FALSE);
 			break;
 
 		case SD_RIGHT:
-			digitalWrite(PIN_L298N_IN3, LOW);
-			digitalWrite(PIN_L298N_IN4, HIGH);
+			digitalWrite(PIN_L298N_IN3, FALSE);
+			digitalWrite(PIN_L298N_IN4, TRUE);
 			break;
 
 		default:
@@ -46,7 +46,7 @@ static void actSolenoidOrder(uint8_t index, SWITCH swOrder, PifSolenoidDir enDir
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
 	(void)pstTask;
 
@@ -90,6 +90,7 @@ BOOL portSetup()
 
     if (!pifSolenoid_Init(&g_solenoid, PIF_ID_AUTO, 1,
     		ST_2POINT, 30, actSolenoidOrder)) goto fail;												// 30ms
+    g_solenoid._p_task->name = "Solenoid";
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
 	return TRUE;

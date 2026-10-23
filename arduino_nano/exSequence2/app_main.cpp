@@ -44,16 +44,21 @@ static void _fnSequenceStop(PifSequence *p_owner)
 
 BOOL appSetup()
 {
+	PifTask* p_task;
 	int i;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
-	    if (!pifSensorSwitch_AttachTaskAcquire(&g_sequenceTest[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE)) goto fail;	// 10ms
+	    p_task = pifSensorSwitch_AttachTaskAcquire(&g_sequenceTest[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE);	// 10ms
+	    if (!p_task) goto fail;
+	    p_task->name = "PushSw";
 		pifSensor_AttachEvtChange(&g_sequenceTest[i].push_switch.parent, _evtPushSwitchChange, &g_sequenceTest[i]);
 
 	    if (!pifSequence_Init(&g_sequenceTest[i].sequence, PIF_ID_SEQUENCE + i, &g_sequenceTest[i])) goto fail;
+	    g_sequenceTest[i].sequence._p_task->name = "Sequence";
     }
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;																			// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

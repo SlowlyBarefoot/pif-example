@@ -39,9 +39,9 @@ static void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 {
 	static int row = -1;
 
-	if (row >= 0) digitalWrite(c_ucPinDotMatrixRow[row], LOW);
+	if (row >= 0) digitalWrite(c_ucPinDotMatrixRow[row], FALSE);
 
-	digitalWrite(c_ucPinDotMatrixRow[ucRow], HIGH);
+	digitalWrite(c_ucPinDotMatrixRow[ucRow], TRUE);
 	for (int col = 0; col < 8; col++) {
 		digitalWrite(c_ucPinDotMatrixCol[col], !((*pucData >> col) & 1));
 	}
@@ -50,7 +50,7 @@ static void actDotMatrixDisplay(uint8_t ucRow, uint8_t *pucData)
 
 static uint32_t taskLedToggle(PifTask *pstTask)
 {
-	static BOOL swLed = LOW;
+	static BOOL swLed = FALSE;
 
 	(void)pstTask;
 
@@ -95,6 +95,7 @@ BOOL portSetup()
 	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
 
     if (!pifDotMatrix_Init(&g_dot_matrix, PIF_ID_AUTO, 8, 8, actDotMatrixDisplay)) goto fail;
+    g_dot_matrix._p_task->name = "DotMatrix";
 
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
 	return TRUE;

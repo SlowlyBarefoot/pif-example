@@ -45,6 +45,7 @@ BOOL appSetup()
     if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 700000, _taskServoMotor, NULL, TRUE)) goto fail;	// 1000ms
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
+    g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");

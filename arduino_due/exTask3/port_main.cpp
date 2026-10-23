@@ -13,7 +13,7 @@ static PifTask *s_pstTask[3];
 static uint32_t _taskLedRedToggle(PifTask *pstTask)
 {
 	static int nCount = 0, nToggle = 0;
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
     if (!nCount) {
     	digitalWrite(PIN_LED_RED, sw);
@@ -35,7 +35,7 @@ static uint32_t _taskLedRedToggle(PifTask *pstTask)
 static uint32_t _taskLedYellowToggle(PifTask *pstTask)
 {
 	static int nCount = 0, nToggle = 0;
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
     if (!nCount) {
     	digitalWrite(PIN_LED_YELLOW, sw);
@@ -57,7 +57,7 @@ static uint32_t _taskLedYellowToggle(PifTask *pstTask)
 static uint32_t _taskLedGreenToggle(PifTask *pstTask)
 {
 	static int nCount = 0, nToggle = 0;
-	static BOOL sw = LOW;
+	static BOOL sw = FALSE;
 
     if (!nCount) {
     	digitalWrite(PIN_LED_GREEN, sw);
