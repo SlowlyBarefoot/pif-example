@@ -128,37 +128,31 @@ BOOL portSetup()
 
 	Serial.begin(UART_LOG_BAUDRATE);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;				// 1000us
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;				// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
-    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, NULL)) goto fail;				// 200ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, NULL)) return FALSE;				// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;													// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;													// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) goto fail;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
 
-    if (!pifPulse_Init(&s_encoder, PIF_ID_AUTO)) goto fail;
+    if (!pifPulse_Init(&s_encoder, PIF_ID_AUTO)) return FALSE;
 
-    if (!pifDutyMotorSpeedEnc_Init(&g_motor, PIF_ID_AUTO, &g_timer_1ms, 255, 100, &s_encoder)) goto fail;// 100ms
+    if (!pifDutyMotorSpeedEnc_Init(&g_motor, PIF_ID_AUTO, &g_timer_1ms, 255, 100, &s_encoder)) return FALSE;// 100ms
     g_motor.parent._p_task->name = "Motor";
     g_motor.parent.act_set_duty = actSetDuty;
     g_motor.parent.act_set_direction = actSetDirection;
     g_motor.parent.act_operate_brake = actOperateBrake;
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&g_switch[i], PIF_ID_SWITCH + i, 0, actPhotoInterruptAcquire)) goto fail;
+		if (!pifSensorSwitch_Init(&g_switch[i], PIF_ID_SWITCH + i, 0, actPhotoInterruptAcquire)) return FALSE;
     }
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

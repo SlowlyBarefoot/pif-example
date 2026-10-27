@@ -215,31 +215,30 @@ BOOL appSetup()
 #elif LCD_TYPE == LCD_3_2_INCH
 	const char *lcd_name = "  3.2 Inch LCD  ";
 #endif
-    int line;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }					// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;					// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }		// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;		// 32bytes
 
-	if (!pifNoiseFilterInt16_InitAverage(&s_filter[0], s_filter_buffer[0], 5)) { line = __LINE__; goto fail; }	// touch x
-	if (!pifNoiseFilterInt16_InitAverage(&s_filter[1], s_filter_buffer[1], 5)) { line = __LINE__; goto fail; }	// touch y
+	if (!pifNoiseFilterInt16_InitAverage(&s_filter[0], s_filter_buffer[0], 5)) return FALSE;	// touch x
+	if (!pifNoiseFilterInt16_InitAverage(&s_filter[1], s_filter_buffer[1], 5)) return FALSE;	// touch y
 
 #if LCD_TYPE == LCD_2_4_INCH
     g_touch_screen.evt_touch_data = _evtTouchData;
-    if (!pifTouchScreen_AttachFilter(&g_touch_screen, &s_filter[0].parent, &s_filter[1].parent)) { line = __LINE__; goto fail; }
-    if (!pifTouchScreen_Start(&g_touch_screen, NULL)) { line = __LINE__; goto fail; }
+    if (!pifTouchScreen_AttachFilter(&g_touch_screen, &s_filter[0].parent, &s_filter[1].parent)) return FALSE;
+    if (!pifTouchScreen_Start(&g_touch_screen, NULL)) return FALSE;
 #elif LCD_TYPE == LCD_3_2_INCH
 	g_tsc2046.parent.evt_touch_data = _evtTouchData;
-	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, &s_filter[0].parent, &s_filter[1].parent)) { line = __LINE__; goto fail; }
-	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) { line = __LINE__; goto fail; }
+	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, &s_filter[0].parent, &s_filter[1].parent)) return FALSE;
+	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) return FALSE;
 #endif
 
 	pifIli9341_SetRotation(&g_ili9341.parent, TLR_0_DEGREE);
 
     p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 2000000, _taskFillScreen, NULL, FALSE);	// 2000ms
-    if (!p_task) { line = __LINE__; goto fail; }
+    if (!p_task) return FALSE;
     p_task->name = "FillRect";
 
 	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, PIF_COLOR_BLACK);
@@ -251,9 +250,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

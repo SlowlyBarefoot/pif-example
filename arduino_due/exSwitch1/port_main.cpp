@@ -71,28 +71,22 @@ BOOL portSetup()
 
 	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
 
-    pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
 	s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;												// 256bytes
 
-    if (!pifGpio_Init(&g_gpio, PIF_ID_AUTO, 1)) goto fail;
+    if (!pifGpio_Init(&g_gpio, PIF_ID_AUTO, 1)) return FALSE;
     pifGpio_AttachActOut(&g_gpio, actGpioLed);
 
-    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, FALSE, actPushSwitchAcquire)) goto fail;
+    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, FALSE, actPushSwitchAcquire)) return FALSE;
 
-	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, FALSE, actTiltSwitchAcquire)) goto fail;
+	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, FALSE, actTiltSwitchAcquire)) return FALSE;
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) goto fail;	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, taskLedToggle, NULL, TRUE)) return FALSE;	// 500ms
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

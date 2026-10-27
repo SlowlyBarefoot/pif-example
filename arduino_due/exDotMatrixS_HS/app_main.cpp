@@ -151,7 +151,7 @@ BOOL appSetup()
 	static uint8_t ucPattern[5 * 8];
 	int n;
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) goto fail;	// 1000ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskDotMatrixTest, NULL, TRUE)) return FALSE;	// 1000ms
 
 	n = 0;
 	for (int k = 0; k < 8; k++) {
@@ -162,8 +162,8 @@ BOOL appSetup()
 	}
 
 	g_dot_matrix.evt_shift_finish = _evtDotMatrixShiftFinish;
-    if (!pifDotMatrix_SetPatternSize(&g_dot_matrix, 1)) goto fail;
-   	if (!pifDotMatrix_AddPattern(&g_dot_matrix, 5 * 8, 8, ucPattern)) goto fail;
+    if (!pifDotMatrix_SetPatternSize(&g_dot_matrix, 1)) return FALSE;
+   	if (!pifDotMatrix_AddPattern(&g_dot_matrix, 5 * 8, 8, ucPattern)) return FALSE;
 
 	pifDotMatrix_Start(&g_dot_matrix);
 
@@ -173,8 +173,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

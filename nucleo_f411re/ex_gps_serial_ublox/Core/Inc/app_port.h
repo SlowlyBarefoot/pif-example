@@ -10,6 +10,8 @@
 #define TASK_SIZE				9
 #define TIMER_1MS_SIZE			1
 
+#define UART_GPS_SETUP_BAUDRATE	57600		// The baudrate the GPS is switched to by appSetup()
+
 
 extern PifLed g_led_l;
 extern PifTimerManager g_timer_1ms;
@@ -18,8 +20,9 @@ extern PifUart g_uart_gps;
 extern int g_print_data;
 
 
+uint32_t actMicros();
 BOOL portSetup();
-BOOL appSetup(uint32_t baurdate);
+BOOL appSetup();
 
 
 #endif	// APP_PORT_H

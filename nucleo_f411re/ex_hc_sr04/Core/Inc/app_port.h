@@ -15,6 +15,7 @@ extern PifHcSr04 g_hcsr04;
 extern PifTimerManager g_timer_1ms;
 
 
+uint32_t actMicros();
 BOOL portSetup();
 BOOL appSetup();
 

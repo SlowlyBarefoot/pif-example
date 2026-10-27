@@ -103,8 +103,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-  if (!portSetup()) return -1;
-  if (!appSetup()) return -1;
+	if (!pif_Init(actMicros, portSetup, appSetup)) return -1;
 
   /* USER CODE END 2 */
 

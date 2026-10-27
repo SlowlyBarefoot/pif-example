@@ -46,16 +46,16 @@ static uint32_t _taskSumd(PifTask *p_task)
 
 BOOL appSetup()
 {
-    if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) goto fail;
+    if (!pifRcIbus_Init(&s_ibus, PIF_ID_AUTO)) return FALSE;
     pifRc_AttachEvtReceive(&s_ibus.parent, _evtIbusReceive, NULL);
     pifRcIbus_AttachUart(&s_ibus, &g_uart_ibus);
 
-    if (!pifRcSumd_Init(&s_sumd, PIF_ID_AUTO)) goto fail;
+    if (!pifRcSumd_Init(&s_sumd, PIF_ID_AUTO)) return FALSE;
     pifRcSumd_AttachUart(&s_sumd, &g_uart_sumd);
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSumd, &s_sumd, TRUE)) goto fail;	// 7.5ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 7500, _taskSumd, &s_sumd, TRUE)) return FALSE;	// 7.5ms
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;											// 500ms
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
 	g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -65,9 +65,5 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }
 

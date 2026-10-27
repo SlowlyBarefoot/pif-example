@@ -53,21 +53,16 @@ BOOL portSetup()
 
 	Serial.begin(UART_SERIAL_BAUDRATE);
 
-    pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;		// 1000us
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;		// 1000us
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) goto fail;
-
-	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) goto fail;
-    if (!pifUart_AttachTask(&g_serial, TM_PERIOD, 1000, NULL)) goto fail;						// 1ms
+	if (!pifUart_Init(&g_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&g_serial, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+    if (!pifUart_AttachRxTask(&g_serial, PIF_ID_AUTO, TM_PERIOD, 200000, NULL)) return FALSE;		// 200ms
     g_serial.act_receive_data = actSerialReceiveData;
     g_serial.act_send_data = actSerialSendData;
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

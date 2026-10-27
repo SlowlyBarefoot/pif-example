@@ -25,13 +25,13 @@ BOOL appSetup()
     static int32_t s_filter_buffer[7];
 #endif
 
-    if (!pifSensorThreshold_SetThreshold(&g_sensor, 200, 200)) goto fail;
+    if (!pifSensorThreshold_SetThreshold(&g_sensor, 200, 200)) return FALSE;
     p_task = pifSensorThreshold_AttachTaskAcquire(&g_sensor, PIF_ID_AUTO, TM_PERIOD, 100000, TRUE);	// 100ms
-    if (!p_task) goto fail;
+    if (!p_task) return FALSE;
     p_task->name = "Sensor";
 #if USE_FILTER_AVERAGE
-    if (!pifNoiseFilterInt32_InitAverage(&s_filter, s_filter_buffer, 7)) goto fail;
-    if (!pifSensorThreshold_AttachFilter(&g_sensor, &s_filter.parent)) goto fail;
+    if (!pifNoiseFilterInt32_InitAverage(&s_filter, s_filter_buffer, 7)) return FALSE;
+    if (!pifSensorThreshold_AttachFilter(&g_sensor, &s_filter.parent)) return FALSE;
 #endif
 	pifSensor_AttachEvtChange(&g_sensor.parent, _evtSensorThreshold, NULL);
 
@@ -41,8 +41,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

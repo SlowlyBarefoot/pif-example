@@ -96,14 +96,14 @@ static uint32_t _taskLed(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;											// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;											// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifLed_AttachMBlink(&g_led_rgb, 100, 3, 1, 2, 3)) goto fail;							// 100ms
+    if (!pifLed_AttachMBlink(&g_led_rgb, 100, 3, 1, 2, 3)) return FALSE;							// 100ms
     g_led_rgb._p_task->name = "LedRGB";
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 200000, _taskLed, NULL, TRUE)) goto fail;	// 200ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 200000, _taskLed, NULL, TRUE)) return FALSE;	// 200ms
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***              exLed1              ***\n");
@@ -111,8 +111,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

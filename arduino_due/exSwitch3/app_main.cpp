@@ -39,30 +39,30 @@ BOOL appSetup()
 	static PifNfBit s_switch_filter[2];
 #endif
 
-    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, FALSE, NULL)) goto fail;
+    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, FALSE, NULL)) return FALSE;
 	p_task = pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 100000, TRUE);	// 100ms
-	if (!p_task) goto fail;
+	if (!p_task) return FALSE;
 	p_task->name = "PushSw";
     pifSensor_AttachEvtChange(&g_push_switch.parent, _evtPushSwitchChange, NULL);
 
-    if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, FALSE, NULL)) goto fail;
+    if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, FALSE, NULL)) return FALSE;
     p_task = pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, PIF_ID_AUTO, TM_PERIOD, 100000, TRUE);	// 100ms
-    if (!p_task) goto fail;
+    if (!p_task) return FALSE;
     p_task->name = "TiltSw";
 	pifSensor_AttachEvtChange(&g_tilt_switch.parent, _evtTiltSwitchChange, NULL);
 
 #if USE_FILTER
-	if (!pifNoiseFilterBit_InitCount(&s_switch_filter[0], 5)) goto fail;
-	if (!pifSensorSwitch_AttachFilter(&g_push_switch, &s_switch_filter[0].parent)) goto fail;
-    if (!pifNoiseFilterBit_InitContinue(&s_switch_filter[1], 5)) goto fail;
-    if (!pifSensorSwitch_AttachFilter(&g_tilt_switch, &s_switch_filter[1].parent)) goto fail;
+	if (!pifNoiseFilterBit_InitCount(&s_switch_filter[0], 5)) return FALSE;
+	if (!pifSensorSwitch_AttachFilter(&g_push_switch, &s_switch_filter[0].parent)) return FALSE;
+    if (!pifNoiseFilterBit_InitContinue(&s_switch_filter[1], 5)) return FALSE;
+    if (!pifSensorSwitch_AttachFilter(&g_tilt_switch, &s_switch_filter[1].parent)) return FALSE;
 #endif
 
-    if (!pifLed_AttachSBlink(&g_led, 500)) goto fail;														// 500ms
+    if (!pifLed_AttachSBlink(&g_led, 500)) return FALSE;														// 500ms
     g_led._p_task->name = "Led";
     pifLed_SBlinkOn(&g_led, 1 << 0);
 
-	if (!pifTimer_Start(g_timer_switch, 20)) goto fail;														// 20ms
+	if (!pifTimer_Start(g_timer_switch, 20)) return FALSE;														// 20ms
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***             exSwitch3            ***\n");
@@ -70,8 +70,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
     pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

@@ -29,12 +29,12 @@ BOOL appSetup()
 	PifTask* p_task;
 
     p_task = pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE);	// 1ms
-    if (!p_task) goto fail;
+    if (!p_task) return FALSE;
     p_task->name = "PushSw";
     pifSensor_AttachEvtChange(&g_push_switch.parent, evtPushSwitchChange, NULL);
 
 	p_task = pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE);	// 1ms
-	if (!p_task) goto fail;
+	if (!p_task) return FALSE;
 	p_task->name = "TiltSw";
 	pifSensor_AttachEvtChange(&g_tilt_switch.parent, evtTiltSwitchChange, NULL);
 
@@ -44,8 +44,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d\n", pifTaskManager_Count(), TASK_SIZE);
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

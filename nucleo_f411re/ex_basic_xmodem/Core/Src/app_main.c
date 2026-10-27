@@ -215,20 +215,20 @@ static void _evtComplete(PifBasic* p_owner)
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;	// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;	// 32bytes
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;					// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;					// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) goto fail;
+    if (!pifXmodem_Init(&s_xmodem, PIF_ID_AUTO, XT_CRC)) return FALSE;
     s_xmodem._p_task->name = "Xmodem";
     pifXmodem_AttachEvtRx(&s_xmodem, _evtXmodemRxReceive, _evtXmodemFinish);
 
 	pifBasic_Init(p_process, _evtComplete, NULL);
 
 	s_task = pifTaskManager_Add(PIF_ID_AUTO, TM_EXTERNAL, 0, _taskChangeUart, NULL, FALSE);
-	if (!s_task) goto fail;
+	if (!s_task) return FALSE;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***          ex_basic_xmodem         ***\n");
@@ -236,8 +236,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

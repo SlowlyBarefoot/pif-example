@@ -22,37 +22,17 @@ extern "C" {
 
 BOOL portSetup()
 {
-	int line;
 	static PifUart s_uart_log;
 
 	Serial.begin(UART_LOG_BAUDRATE);
 
-    pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) {
-		line = __LINE__;
-		goto fail;
-	}
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) {
-		line = __LINE__;
-		goto fail;
-	}
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 1024)) {								// 1024bytes
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifLog_AttachUart(&s_uart_log, 1024)) return FALSE;								// 1024bytes
 	return TRUE;
-
-fail:	
-	pifLog_Printf(LT_ERROR, "Error: %d Line=%d\n", pif_error, line);
-	pif_Exit();
-	return FALSE;
 }

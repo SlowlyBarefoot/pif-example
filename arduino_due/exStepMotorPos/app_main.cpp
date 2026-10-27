@@ -291,7 +291,7 @@ BOOL appSetup()
 {
 	PifTask* p_task;
 
-	if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;										// 32bytes
+	if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;										// 32bytes
 
     g_motor.parent.evt_stable = _evtStable;
     g_motor.parent.evt_stop = _evtStop;
@@ -299,18 +299,18 @@ BOOL appSetup()
     pifStepMotorPos_AddStages(&g_motor, STEP_MOTOR_STAGE_COUNT, s_stStepMotorStages);
 
     p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskSwitch, NULL, TRUE);							// 1ms
-    if (!p_task) goto fail;
+    if (!p_task) return FALSE;
     p_task->name = "Switch";
 
     p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskInitPos, NULL, TRUE);						// 10ms
-    if (!p_task) goto fail;
+    if (!p_task) return FALSE;
     p_task->name = "InitPos";
 
     p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, _taskRepeat, NULL, TRUE);						// 10ms
-    if (!p_task) goto fail;
+    if (!p_task) return FALSE;
     p_task->name = "Repeat";
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;														// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -321,8 +321,4 @@ BOOL appSetup()
     pifLog_Printf(LT_INFO, "Task=%d/%d Timer1ms=%d/%d Timer200us=%d/%d\n", pifTaskManager_Count(), TASK_SIZE,
     		pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE, pifTimerManager_Count(&g_timer_200us), TIMER_200US_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

@@ -142,7 +142,6 @@ extern "C" {
 
 BOOL portSetup()
 {
-	int line;
 	static PifUart s_uart_log;
 
 	pinMode(PIN_LED_L, OUTPUT);
@@ -151,66 +150,26 @@ BOOL portSetup()
 
 	Serial.begin(UART_LOG_BAUDRATE);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) {
-		line = __LINE__;
-		goto fail;
-	}
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;				// 1000us
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) {				// 1000us
-		line = __LINE__;
-		goto fail;
-	}
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) {
-		line = __LINE__;
-		goto fail;
-	}
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) {
-		line = __LINE__;
-		goto fail;
-	}
-    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 1000, "UartRxLog")) {				// 1ms
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return FALSE;
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 1000, "UartRxLog")) return FALSE;				// 1ms
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) {
-		line = __LINE__;
-		goto fail;
-	}
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
 
     for (int i = 0; i < SWITCH_COUNT; i++) {
-	    if (!pifSensorSwitch_Init(&g_link_test[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) {
-			line = __LINE__;
-			goto fail;
-		}
+	    if (!pifSensorSwitch_Init(&g_link_test[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return FALSE;
     }
 
-	if (!setupCan(&g_can0, evtCan0Receive, "CanRx0", "CanTx0")) {
-		line = __LINE__;
-		goto fail;
-	}
-	if (!setupCan(&g_can1, evtCan1Receive, "CanRx1", "CanTx1")) {
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, taskCanBusState, NULL, TRUE)) {				// 10ms
-		line = __LINE__;
-		goto fail;
-	}
+	if (!setupCan(&g_can0, evtCan0Receive, "CanRx0", "CanTx0")) return FALSE;
+	if (!setupCan(&g_can1, evtCan1Receive, "CanRx1", "CanTx1")) return FALSE;
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 10000, taskCanBusState, NULL, TRUE)) return FALSE;				// 10ms
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_ERROR, "Error: %d Line=%d\n", pif_error, line);
-	pif_Exit();
-	return FALSE;
 }

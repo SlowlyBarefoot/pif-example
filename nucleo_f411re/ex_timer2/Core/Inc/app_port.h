@@ -16,6 +16,7 @@ extern PifTimer* g_timer_red;
 extern PifTimer* g_timer_yellow;
 
 
+uint32_t actMicros();
 BOOL portSetup();
 BOOL appSetup();
 

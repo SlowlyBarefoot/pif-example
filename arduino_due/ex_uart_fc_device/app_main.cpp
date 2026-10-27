@@ -92,18 +92,16 @@ const PifLogCmdEntry c_cmd_table[] = {
 
 BOOL appSetup()
 {
-    int line;
-
-    if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }									// 32bytes
+    if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) return FALSE;									// 32bytes
     pifLog_AttachEvent(_evtLogControlChar);
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }												// 500ms
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
 	g_led_l._p_task->name = "LedL";
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
 	pifTransport_AttachClient(&g_uart_device.parent, NULL, _evtUartParsing, NULL, NULL);
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 5000, _taskSlowProcess, NULL, TRUE)) { line = __LINE__; goto fail; }	// 5ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 5000, _taskSlowProcess, NULL, TRUE)) return FALSE;	// 5ms
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***        ex_uart_fc_device         ***\n");
@@ -111,9 +109,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

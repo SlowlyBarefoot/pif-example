@@ -26,14 +26,8 @@ BOOL portSetup()
 {
 	pinMode(PIN_LED_L, OUTPUT);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
-
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskLedToggle, NULL, TRUE)) goto fail;	// 1ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskLedToggle, NULL, TRUE)) return FALSE;	// 1ms
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

@@ -171,19 +171,18 @@ BOOL appSetup()
     lv_obj_t *my_rect;
     lv_obj_t *label;
     char LVGL_Arduino[30];
-    int line;
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;				// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;	// 32bytes
 
-	if (!pifNoiseFilterInt16_InitAverage(&s_filter[0], s_filter_buffer[0], 5)) { line = __LINE__; goto fail; }	// touch x
-	if (!pifNoiseFilterInt16_InitAverage(&s_filter[1], s_filter_buffer[1], 5)) { line = __LINE__; goto fail; }	// touch y
+	if (!pifNoiseFilterInt16_InitAverage(&s_filter[0], s_filter_buffer[0], 5)) return FALSE;	// touch x
+	if (!pifNoiseFilterInt16_InitAverage(&s_filter[1], s_filter_buffer[1], 5)) return FALSE;	// touch y
 
-	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, &s_filter[0].parent, &s_filter[1].parent)) { line = __LINE__; goto fail; }
-	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) { line = __LINE__; goto fail; }
+	if (!pifTouchScreen_AttachFilter(&g_tsc2046.parent, &s_filter[0].parent, &s_filter[1].parent)) return FALSE;
+	if (!pifTouchScreen_Start(&g_tsc2046.parent, NULL)) return FALSE;
 
 	pifIli9341_SetRotation(&g_ili9341.parent, TLR_270_DEGREE);
 
@@ -219,7 +218,7 @@ BOOL appSetup()
     lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 
     p_task = pifTaskManager_Add(TM_PERIOD, 5000, _taskLvglTimerHandler, NULL, TRUE);		// 5ms
-    if (!p_task) { line = __LINE__; goto fail; }
+    if (!p_task) return FALSE;
     p_task->name = "LVGL";
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
@@ -228,9 +227,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

@@ -24,7 +24,7 @@ static uint16_t s_usSerial1Tx;
 static uint16_t s_usSerial2Tx;
 
 
-static uint32_t micros()
+uint32_t actMicros()
 {
     return htim2.Instance->CNT;
 }
@@ -174,119 +174,56 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 BOOL portSetup()
 {
-	int line;
-
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-	pif_Init(micros);
+	if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-	if (!pifTaskManager_Init(TASK_SIZE, 1)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;	// 1000us
 
-	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) {	// 1000us
-		line = __LINE__;
-		goto fail;
-	}
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart3.Init.BaudRate)) {
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) {			// 1ms
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart3.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD, 1000, "UartLog")) return FALSE;			// 1ms
+	if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return FALSE;
 	s_uart_log.act_start_transfer = actLogStartTransfer;
 
 	HAL_UART_Receive_IT(&huart3, &s_ucLogRx, 1);
 
 	pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifLog_AttachUart(&s_uart_log)) return FALSE;
 
-	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
 
 	for (int i = 0; i < SWITCH_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&g_link_test[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) {
-			line = __LINE__;
-			goto fail;
-		}
+		if (!pifSensorSwitch_Init(&g_link_test[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return FALSE;
 	}
 
-	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO, huart4.Init.BaudRate)) {
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifUart_AttachTask(&g_serial1, TM_PERIOD, 1000, "UartSerial1")) {		// 1ms
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifUart_AllocRxBuffer(&g_serial1, 64, 10)) {								// 10%
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifUart_AllocTxBuffer(&g_serial1, 64)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifUart_Init(&g_serial1, PIF_ID_AUTO, huart4.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachTask(&g_serial1, TM_PERIOD, 1000, "UartSerial1")) return FALSE;		// 1ms
+	if (!pifUart_AllocRxBuffer(&g_serial1, 64, 10)) return FALSE;								// 10%
+	if (!pifUart_AllocTxBuffer(&g_serial1, 64)) return FALSE;
 	g_serial1.act_start_transfer = actUart1StartTransfer;
 
 #ifdef USE_INTERRUPT
 	HAL_UART_Receive_IT(&huart4, s_ucSerial1Buffer, UART_FRAME_SIZE);
 #endif
 #ifdef USE_DMA
-	if (!pifUart_SetFrameSize(&g_serial1, UART_FRAME_SIZE)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifUart_SetFrameSize(&g_serial1, UART_FRAME_SIZE)) return FALSE;
 
 	HAL_UART_Receive_DMA(&huart4, s_ucSerial1Buffer, UART_FRAME_SIZE);
 #endif
 
-	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO, huart5.Init.BaudRate)) {
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifUart_AttachTask(&g_serial2, TM_PERIOD, 1000, "UartSerial2")) {		// 1ms
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifUart_AllocRxBuffer(&g_serial2, 64, 10)) {								// 10%
-		line = __LINE__;
-		goto fail;
-	}
-	if (!pifUart_AllocTxBuffer(&g_serial2, 64)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifUart_Init(&g_serial2, PIF_ID_AUTO, huart5.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachTask(&g_serial2, TM_PERIOD, 1000, "UartSerial2")) return FALSE;		// 1ms
+	if (!pifUart_AllocRxBuffer(&g_serial2, 64, 10)) return FALSE;								// 10%
+	if (!pifUart_AllocTxBuffer(&g_serial2, 64)) return FALSE;
 	g_serial2.act_start_transfer = actUart2StartTransfer;
 
 #ifdef USE_INTERRUPT
 	HAL_UART_Receive_IT(&huart5, s_ucSerial1Buffer, UART_FRAME_SIZE);
 #endif
 #ifdef USE_DMA
-	if (!pifUart_SetFrameSize(&g_serial2, UART_FRAME_SIZE)) {
-		line = __LINE__;
-		goto fail;
-	}
+	if (!pifUart_SetFrameSize(&g_serial2, UART_FRAME_SIZE)) return FALSE;
 
 	HAL_UART_Receive_DMA(&huart5, s_ucSerial2Buffer, UART_FRAME_SIZE);
 #endif
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Port Setup failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

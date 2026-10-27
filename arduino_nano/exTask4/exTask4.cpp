@@ -5,7 +5,7 @@
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	portSetup();
+	pif_Init((PifActTimer1us)micros, portSetup, NULL);
 }
 
 // The loop function is called in an endless loop

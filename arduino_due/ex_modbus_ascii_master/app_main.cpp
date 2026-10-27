@@ -336,17 +336,15 @@ const PifLogCmdEntry c_cmd_table[] = {
 
 BOOL appSetup()
 {
-	int line;
-
-	if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
+	if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) return FALSE;	// 32bytes
 	pifLog_AttachEvent(_evtLogControlChar);
 
 	pifModbusAsciiMaster_AttachUart(&g_modbus_master, &g_uart_modbus);
 
 	// Carries each request to its end and prints what came back.
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskResult, NULL, TRUE)) { line = __LINE__; goto fail; }	// 1ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskResult, NULL, TRUE)) return FALSE;	// 1ms
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;				// 500ms
 	g_led_l._p_task->name = "LedL";
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -356,9 +354,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

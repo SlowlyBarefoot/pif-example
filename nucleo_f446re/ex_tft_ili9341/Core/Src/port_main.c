@@ -65,7 +65,7 @@ static uint16_t s_log_tx;
 static uint8_t s_log_rx;
 
 
-static uint32_t micros()
+uint32_t actMicros()
 {
     return htim2.Instance->CNT;
 }
@@ -304,8 +304,6 @@ static void actTransfer(PifSpiDevice *p_owner, uint8_t* p_write, uint8_t* p_read
 
 BOOL portSetup()
 {
-	int line;
-
 #if LCD_TYPE == LCD_3_2_INCH
 	HAL_GPIO_WritePin(T_CS_GPIO_Port, T_CS_Pin, ON);
 #endif
@@ -313,46 +311,39 @@ BOOL portSetup()
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 
-	pif_Init(micros);
+	if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-	if (!pifTaskManager_Init(TASK_SIZE, 1)) { line = __LINE__; goto fail; }
+	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;				// 1000us
 
-	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }				// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) { line = __LINE__; goto fail; }
-	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) { line = __LINE__; goto fail; }
-	if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }	// 200ms
-	if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) { line = __LINE__; goto fail; }											// 64bytes
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) { line = __LINE__; goto fail; }											// 128bytes
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return FALSE;
+	if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) return FALSE;	// 200ms
+	if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return FALSE;											// 64bytes
+	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return FALSE;											// 128bytes
 	s_uart_log.act_start_transfer = actLogStartTransfer;
 
 	HAL_UART_Receive_IT(&huart2, &s_log_rx, 1);
 
 	pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }												// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;												// 256bytes
 
-	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) { line = __LINE__; goto fail; }								// 2EA
+	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return FALSE;								// 2EA
 
 #if LCD_TYPE == LCD_2_2_INCH_SPI
-	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }
+	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) return FALSE;
 	g_ili9341.parent.act_backlight = actLcdBackLight;
 
-	if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, NULL, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+	if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, NULL, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) return FALSE;
 #elif LCD_TYPE == LCD_3_2_INCH
-	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) { line = __LINE__; goto fail; }
+	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) return FALSE;
 	g_ili9341.parent.act_backlight = actLcdBackLight;
 
-	if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) { line = __LINE__; goto fail; }
+	if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1, 16)) return FALSE;
 	g_spi_port.act_transfer = actTransfer;
 
-	if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, NULL, actPen)) { line = __LINE__; goto fail; }
-	if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+	if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, NULL, actPen)) return FALSE;
+	if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) return FALSE;
 #endif
 	pifIli9341_Setup(&g_ili9341, lcd_setup, lcd_rotation);
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Port Setup failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

@@ -113,22 +113,22 @@ BOOL appSetup()
 {
     pifImuSensor_Init(&s_imu_sensor);
 
-	if (!pifMpu6500I2c_Detect(&g_i2c_port, MPU6500_I2C_ADDR(0), NULL)) goto fail;
+	if (!pifMpu6500I2c_Detect(&g_i2c_port, MPU6500_I2C_ADDR(0), NULL)) return FALSE;
 
-	if (!pifBmp280I2c_Detect(&g_i2c_port, BMP280_I2C_ADDR(0), NULL)) goto fail;
+	if (!pifBmp280I2c_Detect(&g_i2c_port, BMP280_I2C_ADDR(0), NULL)) return FALSE;
 
-	if (!pifMpu6500I2c_Init(&s_mpu6500, PIF_ID_AUTO, &g_i2c_port, MPU6500_I2C_ADDR(0), NULL, &s_imu_sensor)) goto fail;
+	if (!pifMpu6500I2c_Init(&s_mpu6500, PIF_ID_AUTO, &g_i2c_port, MPU6500_I2C_ADDR(0), NULL, &s_imu_sensor)) return FALSE;
 
-	if (!pifBmp280I2c_Init(&s_bmp280, PIF_ID_AUTO, &g_i2c_port, BMP280_I2C_ADDR(0), NULL)) goto fail;
+	if (!pifBmp280I2c_Init(&s_bmp280, PIF_ID_AUTO, &g_i2c_port, BMP280_I2C_ADDR(0), NULL)) return FALSE;
 
 	pifBmp280_SetOverSamplingRate(&s_bmp280, BMP280_OSRS_P_X16, BMP280_OSRS_T_X2);
 #ifdef USE_BARO_TASK
-	if (!pifBmp280_AttachTaskForReading(&s_bmp280, PIF_ID_AUTO, 2000, &_evtBaroRead, TRUE, NULL)) goto fail;	// 2sec
+	if (!pifBmp280_AttachTaskForReading(&s_bmp280, PIF_ID_AUTO, 2000, &_evtBaroRead, TRUE, NULL)) return FALSE;	// 2sec
 #endif
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskMpu6500, NULL, TRUE)) goto fail;		// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskMpu6500, NULL, TRUE)) return FALSE;		// 500ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;													// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;													// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -138,9 +138,5 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }
 

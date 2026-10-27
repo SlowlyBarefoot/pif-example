@@ -10,8 +10,7 @@
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	if (!portSetup()) return;
-	appSetup();
+	pif_Init((PifActTimer1us)micros, portSetup, appSetup);
 }
 
 // The loop function is called in an endless loop

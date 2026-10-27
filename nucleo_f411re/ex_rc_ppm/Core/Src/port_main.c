@@ -7,7 +7,7 @@ static PifUart s_uart_log;
 static uint16_t s_usLogTx;
 
 
-static uint32_t micros()
+uint32_t actMicros()
 {
     return htim2.Instance->CNT;
 }
@@ -54,31 +54,25 @@ static uint32_t _taskLedToggle(PifTask* p_task)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	pifRcPpm_sigTick(&g_rc_ppm, micros());
+	pifRcPpm_sigTick(&g_rc_ppm, actMicros());
 }
 
 BOOL portSetup()
 {
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-	pif_Init(micros);
+	if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-	if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
+	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;			// 1000us
 
-	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) goto fail;
-	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) goto fail;											// 64bytes
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+	if (!pifUart_AllocTxBuffer(&s_uart_log, 64)) return FALSE;											// 64bytes
 	s_uart_log.act_start_transfer = actLogStartTransfer;
 
 	pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;												// 256bytes
 
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskLedToggle, NULL, TRUE)) goto fail;	// 100ms
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskLedToggle, NULL, TRUE)) return FALSE;	// 100ms
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

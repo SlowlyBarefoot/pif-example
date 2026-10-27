@@ -8,6 +8,7 @@
 #define TASK_SIZE				1
 
 
+uint32_t actMicros();
 BOOL portSetup();
 
 

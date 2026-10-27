@@ -10,7 +10,7 @@ static uint16_t s_usLogTx;
 static uint8_t s_gps_rx;
 
 
-static uint32_t micros()
+uint32_t actMicros()
 {
     return htim2.Instance->CNT;
 }
@@ -96,36 +96,30 @@ BOOL portSetup()
 {
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-	pif_Init(micros);
+	if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-	if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
-
-	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;			// 1000us
+	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;			// 1000us
 
 	pif_act_gpio_write = _actGpioWrite;
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) goto fail;
-	if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) goto fail;	// 200ms
-	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) goto fail;
-	if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) goto fail;											// 64 bytes
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) goto fail;											// 256 bytes
+	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) return FALSE;	// 200ms
+	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return FALSE;
+	if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return FALSE;											// 64 bytes
+	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return FALSE;											// 256 bytes
 	s_uart_log.act_start_transfer = actLogStartTransfer;
 
 	HAL_UART_Receive_IT(&huart2, &s_ucLogRx, 1);
 
 	pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 512)) goto fail;												// 512bytes
+	if (!pifLog_AttachUart(&s_uart_log, 512)) return FALSE;												// 512bytes
 
-	if (!pifUart_Init(&g_uart_gps, PIF_ID_USER(1), huart6.Init.BaudRate)) goto fail;
-	if (!pifUart_AttachRxTask(&g_uart_gps, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxGPS")) goto fail;	// 200ms
-	if (!pifUart_AllocRxBuffer(&g_uart_gps, 128)) goto fail;											// 256 bytes
+	if (!pifUart_Init(&g_uart_gps, PIF_ID_USER(1), huart6.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachRxTask(&g_uart_gps, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxGPS")) return FALSE;	// 200ms
+	if (!pifUart_AllocRxBuffer(&g_uart_gps, 128)) return FALSE;											// 256 bytes
 
 	HAL_UART_Receive_IT(&huart6, &s_gps_rx, 1);
 
-	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) goto fail;
+	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return FALSE;
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

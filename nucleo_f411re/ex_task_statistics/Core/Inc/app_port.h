@@ -13,6 +13,7 @@
 // Drives a pin while the realtime task runs, to watch its jitter on a scope.
 void actRealtimeSignal(BOOL state);
 
+uint32_t actMicros();
 BOOL portSetup();
 BOOL appSetup();
 

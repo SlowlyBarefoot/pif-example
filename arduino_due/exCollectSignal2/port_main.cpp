@@ -87,36 +87,30 @@ BOOL portSetup()
 
 	Serial.begin(UART_LOG_BAUDRATE);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;			// 1000us
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 1024)) goto fail;											// 1024bytes
+	if (!pifLog_AttachUart(&s_uart_log, 1024)) return FALSE;											// 1024bytes
 
-	if (!pifCollectSignal_InitHeap("example", 0x1000)) goto fail;
+	if (!pifCollectSignal_InitHeap("example", 0x1000)) return FALSE;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) goto fail;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
 
-    if (!pifGpio_Init(&g_gpio_rgb, PIF_ID_AUTO, SEQUENCE_COUNT)) goto fail;
+    if (!pifGpio_Init(&g_gpio_rgb, PIF_ID_AUTO, SEQUENCE_COUNT)) return FALSE;
     pifGpio_AttachActOut(&g_gpio_rgb, actGpioRGBState);
 
-    if (!pifLed_Init(&g_led_collect, PIF_ID_AUTO, 1, actLedCollectState)) goto fail;
+    if (!pifLed_Init(&g_led_collect, PIF_ID_AUTO, 1, actLedCollectState)) return FALSE;
 
     for (int i = 0; i < SEQUENCE_COUNT; i++) {
-		if (!pifSensorSwitch_Init(&g_test[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) goto fail;
+		if (!pifSensorSwitch_Init(&g_test[i].push_switch, PIF_ID_SWITCH + i, 0, actPushSwitchAcquire)) return FALSE;
     }
 
-	if (!pifSensorSwitch_Init(&g_push_switch_collect, PIF_ID_AUTO, 0, actPushSwitchCollectAcquire)) goto fail;
+	if (!pifSensorSwitch_Init(&g_push_switch_collect, PIF_ID_AUTO, 0, actPushSwitchCollectAcquire)) return FALSE;
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

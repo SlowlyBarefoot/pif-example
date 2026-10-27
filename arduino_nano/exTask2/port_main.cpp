@@ -64,16 +64,10 @@ BOOL portSetup()
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_LED_GREEN, OUTPUT);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
-
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500, _taskLedRedToggle, NULL, TRUE)) goto fail;		// 500us
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 2000, _taskLedYellowToggle, NULL, TRUE)) goto fail;	// 2ms
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskLedGreenToggle, NULL, TRUE)) goto fail;	// 1ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500, _taskLedRedToggle, NULL, TRUE)) return FALSE;		// 500us
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 2000, _taskLedYellowToggle, NULL, TRUE)) return FALSE;	// 2ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskLedGreenToggle, NULL, TRUE)) return FALSE;	// 1ms
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

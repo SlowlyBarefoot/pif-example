@@ -57,22 +57,16 @@ BOOL portSetup()
 
 	Serial.begin(UART_LOG_BAUDRATE);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
-    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 50000, NULL)) goto fail;	// 50ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 50000, NULL)) return FALSE;	// 50ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
 	// The table of the task command goes out at once, more than the 256 bytes the other examples keep.
-	if (!pifLog_AttachUart(&s_uart_log, 1024)) goto fail;										// 1024bytes
+	if (!pifLog_AttachUart(&s_uart_log, 1024)) return FALSE;										// 1024bytes
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

@@ -16,6 +16,7 @@ extern PifTimerManager g_timer_1ms;
 extern PifUart g_uart_device;
 
 
+uint32_t actMicros();
 BOOL portSetup();
 BOOL appSetup();
 

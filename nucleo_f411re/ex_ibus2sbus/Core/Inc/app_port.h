@@ -18,6 +18,7 @@ extern PifUart g_uart_ibus;
 extern PifUart g_uart_sbus;
 
 
+uint32_t actMicros();
 BOOL portSetup();
 BOOL appSetup();
 

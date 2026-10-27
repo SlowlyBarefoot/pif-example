@@ -120,12 +120,12 @@ static void _evtStop(PifStepMotor *pstOwner)
 
 BOOL appSetup()
 {
-    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) goto fail;	// 32bytes
+    if (!pifLog_UseCommand(32, c_psCmdTable, "\nDebug> ")) return FALSE;	// 32bytes
 
 	g_motor.evt_stop = _evtStop;
 	pifStepMotor_SetPps(&g_motor, 200);
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;					// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;					// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -136,8 +136,4 @@ BOOL appSetup()
     pifLog_Printf(LT_INFO, "Task=%d/%d Timer1ms=%d/%d Timer200us=%d/%d\n", pifTaskManager_Count(), TASK_SIZE,
     		pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE, pifTimerManager_Count(&g_timer_200us), TIMER_200US_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

@@ -39,12 +39,12 @@
 		<link>
 			<name>core/core</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.6/cores/arduino</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.8/cores/arduino</locationURI>
 		</link>
 		<link>
 			<name>core/variant</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.6/variants/eightanaloginputs</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.8.8/variants/eightanaloginputs</locationURI>
 		</link>
 		<link>
 			<name>libraries/MsTimer2</name>
@@ -132,9 +132,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/core/pif_task_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_task_manager.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/core/pif_timer.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer.h</locationURI>
+		</link>
+		<link>
+			<name>pif/include/core/pif_timer_manager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/display/pif_led.h</name>
@@ -177,9 +187,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task.c</locationURI>
 		</link>
 		<link>
+			<name>pif/source/core/pif_task_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task_manager.c</locationURI>
+		</link>
+		<link>
 			<name>pif/source/core/pif_timer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/core/pif_timer_manager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/display/pif_led.c</name>
@@ -187,9 +207,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/protocol/pif_protocol.c</name>
+			<name>pif/source/protocol/pif_link.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/protocol/pif_protocol.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/protocol/pif_link.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -25,12 +25,8 @@ static uint32_t _taskGpioTest(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskGpioTest, NULL, TRUE)) goto fail;	// 500ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500000, _taskGpioTest, NULL, TRUE)) return FALSE;	// 500ms
 
 	pifLog_Printf(LT_INFO, "Task=%d/%d\n", pifTaskManager_Count(), TASK_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

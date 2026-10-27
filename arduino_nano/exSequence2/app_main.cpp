@@ -49,15 +49,15 @@ BOOL appSetup()
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
 	    p_task = pifSensorSwitch_AttachTaskAcquire(&g_sequenceTest[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 10000, TRUE);	// 10ms
-	    if (!p_task) goto fail;
+	    if (!p_task) return FALSE;
 	    p_task->name = "PushSw";
 		pifSensor_AttachEvtChange(&g_sequenceTest[i].push_switch.parent, _evtPushSwitchChange, &g_sequenceTest[i]);
 
-	    if (!pifSequence_Init(&g_sequenceTest[i].sequence, PIF_ID_SEQUENCE + i, &g_sequenceTest[i])) goto fail;
+	    if (!pifSequence_Init(&g_sequenceTest[i].sequence, PIF_ID_SEQUENCE + i, &g_sequenceTest[i])) return FALSE;
 	    g_sequenceTest[i].sequence._p_task->name = "Sequence";
     }
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;																			// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;																			// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -67,8 +67,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

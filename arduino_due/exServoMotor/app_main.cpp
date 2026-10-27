@@ -42,9 +42,9 @@ static uint32_t _taskServoMotor(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 700000, _taskServoMotor, NULL, TRUE)) goto fail;	// 1000ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 700000, _taskServoMotor, NULL, TRUE)) return FALSE;	// 1000ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -55,8 +55,4 @@ BOOL appSetup()
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer1ms=%d/%d Timer100us=%d/%d\n", pifTaskManager_Count(), TASK_SIZE,
 			pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE, pifTimerManager_Count(&g_timer_100us), TIMER_100US_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

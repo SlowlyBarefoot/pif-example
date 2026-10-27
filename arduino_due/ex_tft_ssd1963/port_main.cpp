@@ -206,7 +206,6 @@ extern "C" {
 BOOL portSetup()
 {
 	static PifUart s_uart_log;
-	int line;
 
 	pinMode(PIN_LED_L, OUTPUT);
 
@@ -238,36 +237,29 @@ BOOL portSetup()
 
 	Serial.begin(UART_LOG_BAUDRATE);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) { line = __LINE__; goto fail; }
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;		// 1000us
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, NULL)) { line = __LINE__; goto fail; }	// 200ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, NULL)) return FALSE;	// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
 	s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;										// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) { line = __LINE__; goto fail; }						// 2EA
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return FALSE;						// 2EA
 
-    if (!pifSsd1963_Init(&g_ssd1963, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+    if (!pifSsd1963_Init(&g_ssd1963, PIF_ID_AUTO)) return FALSE;
     g_ssd1963.parent.act_backlight = actLcdBackLight;
 
-    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1)) { line = __LINE__; goto fail; }
+    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1)) return FALSE;
     g_spi_port.act_transfer = actTransfer;
 
-    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ssd1963.parent, 3761, 229, 3899, 420, &g_spi_port, NULL, actPen)) { line = __LINE__; goto fail; }
-    if (!pifSsd1963_AttachActParallel(&g_ssd1963, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
-    if (!pifSsd1963_Setup(&g_ssd1963, lcd_setup, NULL)) { line = __LINE__; goto fail; }
+    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ssd1963.parent, 3761, 229, 3899, 420, &g_spi_port, NULL, actPen)) return FALSE;
+    if (!pifSsd1963_AttachActParallel(&g_ssd1963, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) return FALSE;
+    if (!pifSsd1963_Setup(&g_ssd1963, lcd_setup, NULL)) return FALSE;
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Initial failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

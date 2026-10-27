@@ -33,12 +33,12 @@ static void _evtKeypadDoublePressed(char cChar)
 
 BOOL appSetup()
 {
-    if (!pifKeypad_SetKeymap(&g_keypad, ROWS * COLS, c_cKeys)) goto fail;
+    if (!pifKeypad_SetKeymap(&g_keypad, ROWS * COLS, c_cKeys)) return FALSE;
 	g_keypad.evt_pressed = _evtKeypadPressed;
     g_keypad.evt_released = _evtKeypadReleased;
     g_keypad.evt_long_pressed = _evtKeypadLongPressed;
     g_keypad.evt_double_pressed = _evtKeypadDoublePressed;
-    if (!pifKeypad_Start(&g_keypad, NULL)) goto fail;
+    if (!pifKeypad_Start(&g_keypad, NULL)) return FALSE;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***            exKeypad1             ***\n");
@@ -46,8 +46,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d\n", pifTaskManager_Count(), TASK_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

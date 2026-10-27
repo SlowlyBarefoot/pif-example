@@ -384,7 +384,6 @@ static void sysTickHook()
 BOOL portSetup()
 {
 	static PifUart s_uart_log;
-	int line;
 
 	pinMode(PIN_LED_L, OUTPUT);
 
@@ -443,49 +442,42 @@ BOOL portSetup()
 
 	Serial.begin(UART_LOG_BAUDRATE); //Doesn't matter speed
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) { line = __LINE__; goto fail; }
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;		// 1000us
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }		// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, NULL)) { line = __LINE__; goto fail; }	// 200ms
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) { line = __LINE__; goto fail; }
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, NULL)) return FALSE;	// 200ms
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
 	s_uart_log.act_send_data = actLogSendData;
     s_uart_log.act_receive_data = actLogReceiveData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }										// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;										// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) { line = __LINE__; goto fail; }						// 2EA
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return FALSE;						// 2EA
 
 #if LCD_TYPE == LCD_2_2_INCH_SPI
-	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }
+	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) return FALSE;
     g_ili9341.parent.act_backlight = actLcdBackLight;
 
-    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, NULL, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, NULL, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) return FALSE;
 #elif LCD_TYPE == LCD_2_4_INCH
-	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) { line = __LINE__; goto fail; }
+	if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_8BIT_I)) return FALSE;
 
-	if (!pifTouchScreen_Init(&g_touch_screen, PIF_ID_AUTO, &g_ili9341.parent, 136, 907, 139, 942)) { line = __LINE__; goto fail; }
-	if (!pifTouchScreen_AttachAction(&g_touch_screen, actTouchPosition, actTouchPressure)) { line = __LINE__; goto fail; }
-    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+	if (!pifTouchScreen_Init(&g_touch_screen, PIF_ID_AUTO, &g_ili9341.parent, 136, 907, 139, 942)) return FALSE;
+	if (!pifTouchScreen_AttachAction(&g_touch_screen, actTouchPosition, actTouchPressure)) return FALSE;
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) return FALSE;
 #elif LCD_TYPE == LCD_3_2_INCH
-    if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) { line = __LINE__; goto fail; }
+    if (!pifIli9341_Init(&g_ili9341, PIF_ID_AUTO, ILI9341_IF_MCU_16BIT_I)) return FALSE;
     g_ili9341.parent.act_backlight = actLcdBackLight;
 
-    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1)) { line = __LINE__; goto fail; }
+    if (!pifSpiPort_Init(&g_spi_port, PIF_ID_AUTO, 1)) return FALSE;
     g_spi_port.act_transfer = actTransfer;
 
-    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, NULL, actPen)) { line = __LINE__; goto fail; }
-    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) { line = __LINE__; goto fail; }
+    if (!pifTsc2046_Init(&g_tsc2046, PIF_ID_AUTO, &g_ili9341.parent, 3761, 229, 3899, 420, &g_spi_port, NULL, actPen)) return FALSE;
+    if (!pifIli9341_AttachActParallel(&g_ili9341, actLcdReset, actLcdChipSelect, actLcdReadCmd, actLcdWriteCmd, actLcdWriteData, actLcdWriteRepeat)) return FALSE;
 #endif
     pifIli9341_Setup(&g_ili9341, lcd_setup, lcd_rotation);
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Initial failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

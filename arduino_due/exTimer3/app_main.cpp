@@ -39,20 +39,16 @@ static void _evtLedGreenToggle(void *pvIssuer)
 BOOL appSetup()
 {
     s_pstTimer1msRed = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
-    if (!s_pstTimer1msRed) goto fail;
+    if (!s_pstTimer1msRed) return FALSE;
     pifTimer_AttachEvtFinish(s_pstTimer1msRed, _evtLedRedToggle, NULL, FALSE);
     pifTimer_Start(s_pstTimer1msRed, 200);								    // 200ms
 
     s_pstTimer1msYellow = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
-    if (!s_pstTimer1msYellow) goto fail;
+    if (!s_pstTimer1msYellow) return FALSE;
     pifTimer_AttachEvtFinish(s_pstTimer1msYellow, _evtLedYellowToggle, NULL, FALSE);
 
     s_pstTimer1msGreen = pifTimerManager_Add(&g_timer_1ms, TT_ONCE);
-    if (!s_pstTimer1msGreen) goto fail;
+    if (!s_pstTimer1msGreen) return FALSE;
     pifTimer_AttachEvtFinish(s_pstTimer1msGreen, _evtLedGreenToggle, NULL, FALSE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

@@ -180,7 +180,7 @@ const PifLogCmdEntry c_cmd_table[] = {
 
 BOOL appSetup()
 {
-    int i, line;
+    int i;
 
     for (i = 0; i < COILS_ADDR_MAX / 8; i++) {
     	server_discrete_inputs[i] = COILS_ADDR_MAX / 8 - i;
@@ -191,7 +191,7 @@ BOOL appSetup()
     	server_input_registers[i] = REGS_ADDR_MAX - i;
     }
 
-    if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) { line = __LINE__; goto fail; }	// 32bytes
+    if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) return FALSE;	// 32bytes
     pifLog_AttachEvent(_evtLogControlChar);
 
 	pifModbusSlave_AttachDiscreteInput(&g_modbus_slave.parent, server_discrete_inputs, COILS_ADDR_MAX,
@@ -205,7 +205,7 @@ BOOL appSetup()
 
 	pifModbusAsciiSlave_AttachUart(&g_modbus_slave, &g_uart_modbus);
 
-	if (!pifLed_AttachSBlink(&g_led_l, 500)) { line = __LINE__; goto fail; }				// 500ms
+	if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;				// 500ms
 	g_led_l._p_task->name = "LedL";
 	pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -215,9 +215,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Setup failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

@@ -85,8 +85,6 @@ static void sysTickHook()
 //The setup function is called once at startup of the sketch
 BOOL portSetup()
 {
-	int line;
-
 	pinMode(PIN_DIRECTION, OUTPUT);
 	pinMode(PIN_LED_L, OUTPUT);
 
@@ -96,36 +94,29 @@ BOOL portSetup()
 	Serial.begin(UART_LOG_BAUDRATE);
 	Serial1.begin(UART_MODBUS_BAUDRATE);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) { line = __LINE__; goto fail; }
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;					// 1000us
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) { line = __LINE__; goto fail; }					// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) { line = __LINE__; goto fail; }		// 200ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return FALSE;
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) return FALSE;		// 200ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) { line = __LINE__; goto fail; }													// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;													// 256bytes
 
-	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachTxTask(&g_uart_modbus, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxModbus")) { line = __LINE__; goto fail; }
-    if (!pifUart_AttachRxTask(&g_uart_modbus, PIF_ID_AUTO, TM_PERIOD, 5000, "UartRxModbus")) { line = __LINE__; goto fail; }	// 5ms
+	if (!pifUart_Init(&g_uart_modbus, PIF_ID_AUTO, UART_MODBUS_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&g_uart_modbus, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxModbus")) return FALSE;
+    if (!pifUart_AttachRxTask(&g_uart_modbus, PIF_ID_AUTO, TM_PERIOD, 5000, "UartRxModbus")) return FALSE;	// 5ms
     g_uart_modbus.act_receive_data = actModbusReceiveData;
     g_uart_modbus.act_send_data = actModbusSendData;
     g_uart_modbus.act_get_tx_rate = actModbusGetTxRate;
     pifUart_AttachActDirection(&g_uart_modbus, actModbusDirection, UD_RX);
 
-	if (!pifModbusAsciiMaster_Init(&g_modbus_master, PIF_ID_AUTO)) { line = __LINE__; goto fail; }
+	if (!pifModbusAsciiMaster_Init(&g_modbus_master, PIF_ID_AUTO)) return FALSE;
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) { line = __LINE__; goto fail; }
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
 	return TRUE;
-
-fail:
-	pifLog_Printf(LT_INFO, "Initial failed. %d\n", line);
-	pif_Exit();
-	return FALSE;
 }

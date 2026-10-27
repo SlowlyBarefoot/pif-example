@@ -2,7 +2,7 @@
 #include "app_port.h"
 
 
-static uint32_t micros()
+uint32_t actMicros()
 {
     return htim2.Instance->CNT;
 }
@@ -28,14 +28,8 @@ BOOL portSetup()
 {
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-	pif_Init(micros);
+	if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
 
-	if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
-
-	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) goto fail;	// 50us
+	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 50, _taskLedToggle, NULL, TRUE)) return FALSE;	// 50us
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

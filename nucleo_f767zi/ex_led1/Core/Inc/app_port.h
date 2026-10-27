@@ -16,6 +16,7 @@ extern PifLed g_led_rgb;
 extern PifTimerManager g_timer1ms;
 
 
+uint32_t actMicros();
 BOOL portSetup();
 BOOL appSetup();
 

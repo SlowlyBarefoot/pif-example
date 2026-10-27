@@ -60,14 +60,14 @@ static uint32_t _taskPmlcdI2c(PifTask *pstTask)
 
 BOOL appSetup()
 {
-    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27, NULL)) goto fail;
+    if (!pifPmlcdI2c_Init(&s_pmlcd_i2c, PIF_ID_AUTO, &g_i2c_port, 0x27, NULL)) return FALSE;
     s_pmlcd_i2c._p_device->max_transfer_size = 32;
-    if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) goto fail;
-    if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) goto fail;
+    if (!pifPmlcdI2c_Begin(&s_pmlcd_i2c, 2, PIF_PMLCD_DS_5x8)) return FALSE;
+    if (!pifPmlcdI2c_Backlight(&s_pmlcd_i2c)) return FALSE;
 
-    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskPmlcdI2c, NULL, TRUE)) goto fail;	// 1000ms
+    if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000000, _taskPmlcdI2c, NULL, TRUE)) return FALSE;	// 1000ms
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;												// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -77,8 +77,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

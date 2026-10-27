@@ -60,23 +60,17 @@ BOOL portSetup()
 
 	Serial.begin(UART_LOG_BAUDRATE);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
-    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 50000, NULL)) goto fail;	// 50ms
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
+    if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 50000, NULL)) return FALSE;	// 50ms
     s_uart_log.act_receive_data = actLogReceiveData;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
 	// The banner and the CSV headers go out at once. The table of the task command, near 1KB, loses
 	// the lines past what the 8KB leaves room for.
-	if (!pifLog_AttachUart(&s_uart_log, 512)) goto fail;										// 512bytes
+	if (!pifLog_AttachUart(&s_uart_log, 512)) return FALSE;										// 512bytes
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

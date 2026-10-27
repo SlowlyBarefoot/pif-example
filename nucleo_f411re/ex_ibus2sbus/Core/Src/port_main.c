@@ -9,7 +9,7 @@ static uint8_t s_ibus_rx;
 static uint16_t s_sbus_tx;
 
 
-static uint32_t micros()
+uint32_t actMicros()
 {
     return htim2.Instance->CNT;
 }
@@ -105,37 +105,31 @@ BOOL portSetup()
 {
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-	pif_Init(micros);
+	if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-	if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
-
-	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;			// 1000us
+	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;			// 1000us
 
 	pif_act_gpio_write = _actGpioWrite;
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) goto fail;
-	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartLog")) goto fail;
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) goto fail;											// 128bytes
+	if (!pifUart_Init(&s_uart_log, PIF_ID_USER(0), huart2.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartLog")) return FALSE;
+	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return FALSE;											// 128bytes
 	s_uart_log.act_start_transfer = actLogStartTransfer;
 
 	pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;												// 256bytes
 
-	if (!pifUart_Init(&g_uart_ibus, PIF_ID_USER(1), huart6.Init.BaudRate)) goto fail;
-	if (!pifUart_AttachRxTask(&g_uart_ibus, PIF_ID_AUTO, TM_PERIOD, 3000, "UartIbus")) goto fail;	// 3ms
-	if (!pifUart_AllocRxBuffer(&g_uart_ibus, 64)) goto fail;											// 64bytes
+	if (!pifUart_Init(&g_uart_ibus, PIF_ID_USER(1), huart6.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachRxTask(&g_uart_ibus, PIF_ID_AUTO, TM_PERIOD, 3000, "UartIbus")) return FALSE;	// 3ms
+	if (!pifUart_AllocRxBuffer(&g_uart_ibus, 64)) return FALSE;											// 64bytes
 
 	HAL_UART_Receive_IT(&huart6, &s_ibus_rx, 1);
 
-	if (!pifUart_Init(&g_uart_sbus, PIF_ID_USER(2), huart1.Init.BaudRate)) goto fail;
-	if (!pifUart_AttachTxTask(&g_uart_sbus, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartSbus")) goto fail;
-	if (!pifUart_AllocTxBuffer(&g_uart_sbus, 64)) goto fail;											// 64bytes
+	if (!pifUart_Init(&g_uart_sbus, PIF_ID_USER(2), huart1.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachTxTask(&g_uart_sbus, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartSbus")) return FALSE;
+	if (!pifUart_AllocTxBuffer(&g_uart_sbus, 64)) return FALSE;											// 64bytes
 	g_uart_sbus.act_start_transfer = actSbusStartTransfer;
 
-	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) goto fail;
+	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return FALSE;
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

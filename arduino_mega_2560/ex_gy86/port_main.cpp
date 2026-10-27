@@ -123,31 +123,25 @@ BOOL portSetup()
 	I2C_Init(I2C_CLOCK_400KHz);
 #endif
 
-    pif_Init((PifActTimer1us)micros);
-
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
 #ifdef PIF_DEBUG
 	pif_act_task_yield = actTaskYield;
 #endif
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;	// 1000us
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;	// 1000us
 
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) goto fail;
-    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) goto fail;
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
+    if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, NULL)) return FALSE;
     s_uart_log.act_send_data = actLogSendData;
 
     pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;										// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;										// 256bytes
 
-    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) goto fail;
+    if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
 
-    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3)) goto fail;
+    if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 3)) return FALSE;
     g_i2c_port.act_read = actI2cRead;
     g_i2c_port.act_write = actI2cWrite;
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

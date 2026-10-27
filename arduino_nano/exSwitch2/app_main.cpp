@@ -32,19 +32,19 @@ BOOL appSetup()
 {
 	PifTask* p_task;
 
-    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, FALSE, NULL)) goto fail;
+    if (!pifSensorSwitch_Init(&g_push_switch, PIF_ID_AUTO, FALSE, NULL)) return FALSE;
     p_task = pifSensorSwitch_AttachTaskAcquire(&g_push_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE);	// 1ms
-    if (!p_task) goto fail;
+    if (!p_task) return FALSE;
     p_task->name = "PushSw";
     pifSensor_AttachEvtChange(&g_push_switch.parent, evtPushSwitchChange, NULL);
 
-	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, FALSE, NULL)) goto fail;
+	if (!pifSensorSwitch_Init(&g_tilt_switch, PIF_ID_AUTO, FALSE, NULL)) return FALSE;
 	p_task = pifSensorSwitch_AttachTaskAcquire(&g_tilt_switch, PIF_ID_AUTO, TM_PERIOD, 1000, TRUE);	// 1ms
-	if (!p_task) goto fail;
+	if (!p_task) return FALSE;
 	p_task->name = "TiltSw";
 	pifSensor_AttachEvtChange(&g_tilt_switch.parent, evtTiltSwitchChange, NULL);
 
-    if (!pifLed_AttachSBlink(&g_led_l, 500)) goto fail;														// 500ms
+    if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;														// 500ms
     g_led_l._p_task->name = "LedL";
     pifLed_SBlinkOn(&g_led_l, 1 << 0);
 
@@ -56,8 +56,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
     pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

@@ -31,16 +31,10 @@ BOOL portSetup()
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_LED_GREEN, OUTPUT);
 
-	pif_Init((PifActTimer1us)micros);
+    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
+    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;		// 1000us
 
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;		// 1000us
-
-    if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, 3, actLedRGBState)) goto fail;
+    if (!pifLed_Init(&g_led_rgb, PIF_ID_AUTO, 3, actLedRGBState)) return FALSE;
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

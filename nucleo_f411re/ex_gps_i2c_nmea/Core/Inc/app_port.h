@@ -19,6 +19,7 @@ extern PifTimerManager g_timer_1ms;
 extern int g_print_data;
 
 
+uint32_t actMicros();
 BOOL portSetup();
 BOOL appSetup();
 

@@ -82,21 +82,15 @@ BOOL portSetup()
 	pinMode(PIN_LED_YELLOW, OUTPUT);
 	pinMode(PIN_LED_GREEN, OUTPUT);
 
-	pif_Init((PifActTimer1us)micros);
-
-    if (!pifTaskManager_Init(TASK_SIZE, 0)) goto fail;
+    if (!pifTaskManager_Init(TASK_SIZE, 0)) return FALSE;
 
     s_pstTask[0] = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 200, _taskLedRedToggle, NULL, TRUE);		// 200us
-    if (!s_pstTask[0]) goto fail;
+    if (!s_pstTask[0]) return FALSE;
 
     s_pstTask[1] = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 1000, _taskLedYellowToggle, NULL, FALSE);	// 1ms
-    if (!s_pstTask[1]) goto fail;
+    if (!s_pstTask[1]) return FALSE;
 
     s_pstTask[2] = pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 500, _taskLedGreenToggle, NULL, FALSE);	// 500us
-    if (!s_pstTask[2]) goto fail;
+    if (!s_pstTask[2]) return FALSE;
     return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

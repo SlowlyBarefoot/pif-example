@@ -1,6 +1,6 @@
 Config.Release.board.BOARD.ID=nano
-Config.Release.board.BOARD.MENU.cpu=atmega328
-Config.Release.board.BOARD.TXT=C:\Sloeber\arduinoPlugin\packages\arduino\hardware\avr\1.8.6\boards.txt
+Config.Release.board.BOARD.MENU.cpu=getMenuItemIDFromMenuItemName did not find menu item with name "" for menu ID "cpu" and for boardID "nano"!
+Config.Release.board.BOARD.TXT=C:\Sloeber\arduinoPlugin\packages\arduino\hardware\avr\1.8.8\boards.txt
 Config.Release.board.PROGRAMMER.NAME=
 Config.Release.board.UPLOAD.PORT=COM5
 Config.Release.compile.sloeber.extra.all=

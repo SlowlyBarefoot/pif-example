@@ -8,7 +8,7 @@ static uint8_t s_log_rx;
 static uint16_t s_log_tx;
 
 
-static uint32_t micros()
+uint32_t actMicros()
 {
     return htim2.Instance->CNT;
 }
@@ -87,32 +87,26 @@ BOOL portSetup()
 {
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 
-	pif_Init(micros);
+	if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
 
-	if (!pifTaskManager_Init(TASK_SIZE, 1)) goto fail;
+	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) return FALSE;			// 1000us
 
-	if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_1MS_SIZE)) goto fail;			// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) goto fail;
-	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) goto fail;
-	if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) goto fail;	// 200ms
-	if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) goto fail;											// 64bytes
-	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) goto fail;											// 128bytes
+	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, huart2.Init.BaudRate)) return FALSE;
+	if (!pifUart_AttachTxTask(&s_uart_log, PIF_ID_AUTO, TM_EXTERNAL, 0, "UartTxLog")) return FALSE;
+	if (!pifUart_AttachRxTask(&s_uart_log, PIF_ID_AUTO, TM_PERIOD, 200000, "UartRxLog")) return FALSE;	// 200ms
+	if (!pifUart_AllocRxBuffer(&s_uart_log, 64)) return FALSE;											// 64bytes
+	if (!pifUart_AllocTxBuffer(&s_uart_log, 128)) return FALSE;											// 128bytes
 	s_uart_log.act_start_transfer = actLogStartTransfer;
 
 	HAL_UART_Receive_IT(&huart2, &s_log_rx, 1);
 
 	pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log, 256)) goto fail;												// 256bytes
+	if (!pifLog_AttachUart(&s_uart_log, 256)) return FALSE;												// 256bytes
 
-	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) goto fail;
+	if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 2, actLedLState)) return FALSE;
 
-	if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1)) goto fail;
+	if (!pifI2cPort_Init(&g_i2c_port, PIF_ID_AUTO, 1)) return FALSE;
 	g_i2c_port.act_read = actI2cRead;
 	g_i2c_port.act_write = actI2cWrite;
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }

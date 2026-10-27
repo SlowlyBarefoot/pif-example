@@ -17,6 +17,7 @@ extern PifI2cPort g_i2c_port;
 extern PifTimerManager g_timer_1ms;
 
 
+uint32_t actMicros();
 BOOL portSetup();
 BOOL appSetup();
 

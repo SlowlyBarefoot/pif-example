@@ -37,9 +37,9 @@ BOOL appSetup()
 	PifTask* p_task;
 
 	p_task = pifTaskManager_Add(PIF_ID_AUTO, TM_EXTERNAL, 0, _taskPulse, NULL, FALSE);
-    if (!p_task) goto fail;
+    if (!p_task) return FALSE;
 
-    if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) goto fail;
+    if (!pifPulse_Init(&g_pulse, PIF_ID_AUTO)) return FALSE;
     pifPulse_SetMeasureMode(&g_pulse, PULSE_PMM_PERIOD | PULSE_PMM_COUNT | PULSE_PMM_LOW_WIDTH | PULSE_PMM_HIGH_WIDTH);
     pifPulse_AttachEvtEdge(&g_pulse, _evtPulseEdge, p_task);
 
@@ -49,8 +49,4 @@ BOOL appSetup()
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);
 	return TRUE;
-
-fail:
-	pif_Exit();
-	return FALSE;
 }
