@@ -67,7 +67,7 @@ BOOL appSetup()
 	static PifNfBit s_switch_filter[SEQUENCE_COUNT + 1];
 	int i;
 
-    if (!pifGpio_SetCsFlag(&g_gpio_rgb, GP_CSF_ALL_BIT)) return FALSE;
+    if (!pifGpio_SetCsFlag(&g_gpio_rgb, PIF_CS_INDEX_ALL, GP_CSF_ALL_BIT)) return FALSE;
 
     for (i = 0; i < SEQUENCE_COUNT; i++) {
 	    p_task = pifSensorSwitch_AttachTaskAcquire(&g_test[i].push_switch, PIF_ID_AUTO, TM_PERIOD, 5000, TRUE);	// 5ms
@@ -75,7 +75,7 @@ BOOL appSetup()
 	    p_task->name = "PushSw";
 	    if (!pifNoiseFilterBit_InitCount(&s_switch_filter[i], 7)) return FALSE;
 	    if (!pifSensorSwitch_AttachFilter(&g_test[i].push_switch, &s_switch_filter[i].parent)) return FALSE;
-	    if (!pifSensorSwitch_SetCsFlag(&g_test[i].push_switch, SS_CSF_RAW_BIT)) return FALSE;
+	    if (!pifSensorSwitch_SetCsFlag(&g_test[i].push_switch, PIF_CS_INDEX_ALL, SS_CSF_RAW_BIT)) return FALSE;
 	    pifSensor_AttachEvtChange(&g_test[i].push_switch.parent, _evtPushSwitchChange, &g_test[i]);
 
 	    if (!pifSequence_Init(&g_test[i].sequence, PIF_ID_SEQUENCE + i, &g_test[i])) return FALSE;

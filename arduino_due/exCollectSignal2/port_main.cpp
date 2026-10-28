@@ -98,7 +98,7 @@ BOOL portSetup()
     pifLog_Init();
 	if (!pifLog_AttachUart(&s_uart_log, 1024)) return FALSE;											// 1024bytes
 
-	if (!pifCollectSignal_InitHeap("example", 0x1000)) return FALSE;
+	if (!pifCollectSignal_InitHeap("example", NULL, 0, 0x1000)) return FALSE;
 
     if (!pifLed_Init(&g_led_l, PIF_ID_AUTO, 1, actLedLState)) return FALSE;
 
