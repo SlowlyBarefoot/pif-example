@@ -8,24 +8,28 @@
 	#define PIF_DEBUG
 #endif
 
-//#define PIF_STATIC_INLINE			static inline
+//#define PIF_STATIC_INLINE					static inline
 
 //#define PIF_WEAK							__attribute__ ((weak))
+
 
 // -------- pifCollectSignal ---------------------
 
 //#define PIF_COLLECT_SIGNAL
+
 
 // -------- pifGpsNmea ---------------------------
 
 //#define PIF_GPS_NMEA_VALUE_SIZE			32
 //#define PIF_GPS_NMEA_TEXT_SIZE			64
 
+
 // -------- pifKeypad ----------------------------
 
 //#define PIF_KEYPAD_DEFAULT_HOLD_TIME		100
 //#define PIF_KEYPAD_DEFAULT_LONG_TIME		1000
 //#define PIF_KEYPAD_DEFAULT_DOUBLE_TIME	300
+
 
 // -------- pifLog -------------------------------
 
@@ -34,9 +38,11 @@
 
 //#define PIF_LOG_LINE_SIZE					80
 
+
 // -------- pifTask ------------------------------
 
 //#define PIF_USE_TASK_STATISTICS
+
 
 // -------- pifTimer -----------------------------
 
@@ -46,6 +52,9 @@
 // -------- pifUart	------------------------------
 
 #define PIF_USE_UART_FLOW_CONTROL
+
+// Puts in evt_tap of PifUart: the "tap" command prints what the device UART received and sent.
+#define PIF_USE_COMM_TAP
 
 
 #endif  // PIF_CONF_H

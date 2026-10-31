@@ -1,6 +1,7 @@
 #include "app_port.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 
 PifLed g_led_l;
@@ -80,12 +81,62 @@ static uint32_t _taskSlowProcess(PifTask *p_task)
     return 0;
 }
 
+#ifdef PIF_USE_COMM_TAP
+
+#define TAP_LAST_SIZE			16
+
+// What the tap of the UART saw for each PifTapDir: TD_RX, TD_TX and TD_RX_LOST.
+// Each direction is written from one context only, so the tap needs no lock.
+static struct {
+	uint32_t count;
+	uint8_t last[TAP_LAST_SIZE];		// The last bytes, a ring
+	uint8_t pos;
+} s_tap[3];
+
+// It may be called from an interrupt, so it only counts and keeps the last bytes.
+static void _evtUartTap(PifUart *p_uart, PifTapDir dir, const uint8_t *p_data, uint16_t length)
+{
+	(void)p_uart;
+
+	s_tap[dir].count += length;
+	while (length--) {
+		s_tap[dir].last[s_tap[dir].pos] = *p_data++;
+		s_tap[dir].pos = (s_tap[dir].pos + 1) % TAP_LAST_SIZE;
+	}
+}
+
+static int _CmdTap(int argc, char *argv[])
+{
+	const char *name[] = { "Rx", "Tx", "RxLost" };
+	uint32_t i, j, n;
+
+	if (argc > 0) {
+		if (strcmp(argv[0], "clear")) return PIF_LOG_CMD_INVALID_ARG;
+		memset(s_tap, 0, sizeof(s_tap));
+		return PIF_LOG_CMD_NO_ERROR;
+	}
+	for (i = 0; i < 3; i++) {
+		pifLog_Printf(LT_NONE, "  %s=%lu:", name[i], (unsigned long)s_tap[i].count);
+		n = s_tap[i].count < TAP_LAST_SIZE ? s_tap[i].count : TAP_LAST_SIZE;
+		for (j = TAP_LAST_SIZE - n; j < TAP_LAST_SIZE; j++) {
+			pifLog_Printf(LT_NONE, " %2X", s_tap[i].last[(s_tap[i].pos + j) % TAP_LAST_SIZE]);
+		}
+		pifLog_Print(LT_NONE, "\n");
+	}
+	return PIF_LOG_CMD_NO_ERROR;
+}
+
+#endif
+
 const PifLogCmdEntry c_cmd_table[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
 	{ "version", pifLog_CmdPrintVersion, "Print version", NULL },
 	{ "task", pifLog_CmdPrintTask, "Print task", NULL },
 	{ "status", pifLog_CmdSetStatus, "Set and print status", NULL },
-	{ "fc", _CmdFlowControl, "Set and print flow control", NULL },
+	{ "fc", _CmdFlowControl, "Set and print flow control", "[no | sw | hw]" },
+#ifdef PIF_USE_COMM_TAP
+	{ "tap", _CmdTap, "Print the tapped bytes, or clear them", "[clear]" },
+#endif
 
 	{ NULL, NULL, NULL, NULL }
 };
@@ -94,6 +145,10 @@ BOOL appSetup()
 {
     if (!pifLog_UseCommand(32, c_cmd_table, "\nDebug> ")) return FALSE;									// 32bytes
     pifLog_AttachEvent(_evtLogControlChar);
+
+#ifdef PIF_USE_COMM_TAP
+	g_uart_device.evt_tap = _evtUartTap;
+#endif
 
 	if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;												// 500ms
 	g_led_l._p_task->name = "LedL";
