@@ -1,142 +1,29 @@
-#include <fcntl.h>
-#include <signal.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/time.h>
-#include <termios.h>
-#include <time.h>
-#include <unistd.h>
-
-#include "appMain.h"
-#include "timer.h"
+/**
+ * Xmodem으로 random data 1000 bytes를 serial port에 보낸다. 받는 쪽이 보내는 'C'로 전송을 시작한다.
+ * Serial port는 /dev/ttyACM1~9, /dev/ttyUSB0~9 중 처음 열리는 것을 쓴다.
+ *
+ * Sends 1000 bytes of random data to a serial port by Xmodem. The transfer starts with the 'C' of the receiver.
+ * The serial port is the first of /dev/ttyACM1~9 and /dev/ttyUSB0~9 that opens.
+ */
+#include "host.h"
+#include "app_port.h"
 
 
-#define TASK_SIZE				3
-#define TIMER_MS_SIZE			2
-
-#define UART_LOG_BAUDRATE		115200
-#define UART_SERIAL_BAUDRATE	115200
-
-
-static int s_fd;
-
-
-uint16_t actLogSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
+int main()
 {
-	(void)p_uart;
+	pif_act_irq_disable = hostIrqDisable;
+	pif_act_irq_restore = hostIrqRestore;
 
-    return fwrite((char *)pucBuffer, 1, usSize, stdout);
-}
+	if (!hostInit(portTick1ms)) return 1;
 
-uint16_t actSerialSendData(PifUart *p_uart, uint8_t *pucBuffer, uint16_t usSize)
-{
-    return write(s_fd, pucBuffer, usSize);
-}
-
-uint16_t actSerialReceiveData(PifUart *p_uart, uint8_t *p_data, uint16_t size)
-{
-	int rtn;
-
-	rtn = read(s_fd, p_data, size);
-	if (rtn == -1) return FALSE;
-	if (p_data[0] == 'C') printf("C");
-	return size;
-}
-
-static void _TimerHandler()
-{
-    pif_sigTimer1ms();
-
-	pifTimerManager_sigTick(&g_timer_1ms);
-}
-
-int main(int argc, char **argv)
-{
-	int i;
-    struct termios newtio;
-    char port[16];
-    static PifUart s_uart_log;
-
-    if (start_timer(1, &_TimerHandler)) {     // 1ms
-        printf("\nstart_timer error\n");
-        return(1);
-    }
-
-    for (i = 1; i < 10; i++) {
-    	sprintf(port, "/dev/ttyACM%d", i);
-		s_fd = open( port, O_RDWR | O_NOCTTY );
-		if (s_fd >= 0) break;
-    }
-	if (s_fd < 0) {
-	    for (i = 0; i < 10; i++) {
-	    	sprintf(port, "/dev/ttyUSB%d", i);
-			s_fd = open( port, O_RDWR | O_NOCTTY );
-			if (s_fd >= 0) break;
-	    }
-	}
-	if (s_fd < 0) {
-		fprintf(stderr, "All port open failed.\n");
-		exit(-1);
-	}
-	else {
-		printf("%s port opened.\n", port);
+	if (pif_Init(hostMicros, portSetup, appSetup)) {
+		while (hostIsRunning()) {
+			pifTaskManager_Loop();
+			hostYield();
+		}
+		pif_Exit();
 	}
 
-    memset( &newtio, 0, sizeof(newtio) );
-
-    newtio.c_cflag = B115200;
-    newtio.c_cflag |= CS8;
-    newtio.c_cflag |= CLOCAL;
-    newtio.c_cflag |= CREAD;
-    newtio.c_iflag = IGNPAR;
- //   newtio.c_iflag = ICRNL;
-    newtio.c_oflag = 0;
-    newtio.c_lflag = 0;
-    newtio.c_cc[VTIME] = 0;
-    newtio.c_cc[VMIN] = 0;
-
-    tcflush(s_fd, TCIFLUSH);
-    tcsetattr(s_fd, TCSANOW, &newtio);
-
-    pif_Init(NULL);
-
-    if (!pifTaskManager_Init(TASK_SIZE, 1)) return FALSE;
-
-    if (!pifTimerManager_Init(&g_timer_1ms, PIF_ID_AUTO, 1000, TIMER_MS_SIZE)) return FALSE;	// 1000us
-
-	if (!pifUart_Init(&s_uart_log, PIF_ID_AUTO, UART_LOG_BAUDRATE)) return FALSE;
-    if (!pifUart_AttachTask(&s_uart_log, TM_PERIOD_MS, 1, "UartLog")) return FALSE;		// 1ms
-	s_uart_log.act_send_data = actLogSendData;
-
-    pifLog_Init();
-	if (!pifLog_AttachUart(&s_uart_log)) return FALSE;
-
-	if (!pifUart_Init(&s_serial, PIF_ID_AUTO, UART_SERIAL_BAUDRATE)) return FALSE;
-    if (!pifUart_AttachTask(&s_serial, TM_PERIOD_MS, 1, "UartSerial")) return FALSE;		// 1ms
-	s_serial.act_receive_data = actSerialReceiveData;
-	s_serial.act_send_data = actSerialSendData;
-
-    if (!appInit()) goto fail;
-
-	pifLog_Print(LT_NONE, "\n\n****************************************\n");
-	pifLog_Print(LT_NONE, "***         exXmodemSerialTx         ***\n");
-	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
-	pifLog_Print(LT_NONE, "****************************************\n");
-	pifLog_Printf(LT_INFO, "Task=%d/%d Pulse=%d/%\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_MS_SIZE);
-
-    while (1) {
-    	pifTaskManager_Loop();
-    }
-
-fail:
-	appExit();
-	pifTimerManager_Clear(&g_timer_1ms);
-	pifUart_Clear(&s_serial);
-	pifUart_Clear(&s_uart_log);
-    pifLog_Clear();
-    pif_Exit();
-
-    stop_timer();
-
+	hostExit();
 	return pif_error;
 }

@@ -3,3 +3,7 @@ makefile
 *.d
 *.mk
 *.o
+
+# The shared build rules of the examples, not output of the Eclipse build.
+!/host.mk
+/*/build/

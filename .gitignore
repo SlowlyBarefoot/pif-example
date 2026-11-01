@@ -12,6 +12,8 @@ makefile
 *.elf
 *.list
 *.mk
+!/windows/host.mk
+/windows/*/build/
 *.map
 *.o
 *.su
