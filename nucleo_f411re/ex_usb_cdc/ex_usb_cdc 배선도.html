@@ -1,0 +1,226 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ex_usb_cdc 배선도</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column; two drawings (board locator, header close-up) then the wire table and checks. */
+:root {
+  --bg: #f6f7f5;
+  --panel: #ffffff;
+  --fg: #1d2421;
+  --muted: #5f6b66;
+  --line: #d5dbd7;
+  --pcb: #e9efe9;
+  --pcb-edge: #9fb2a6;
+  --pin: #b9a46a;
+  --hl: #0f7a5c;
+  --hl-soft: #d6efe5;
+  --wire-edge: #1d2421;
+  --wire-white: #ffffff;
+  --wire-green: #1f9d55;
+  --wire-black: #2a2a2a;
+  --wire-red: #d0453b;
+  --warn: #9a5a00;
+  --warn-soft: #fff1d6;
+  --f-body: "IBM Plex Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121614; --panel: #1a201d; --fg: #e4ebe7; --muted: #9aa8a1; --line: #2e3833;
+  --pcb: #1f2a24; --pcb-edge: #4d6457; --pin: #c9b47a; --hl: #4fd1a5; --hl-soft: #173a2e;
+  --wire-edge: #e4ebe7; --wire-white: #f4f4f4; --wire-green: #3cc274; --wire-black: #3a3a3a; --wire-red: #ff6b60;
+  --warn: #ffbf5e; --warn-soft: #3a2c12; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121614; --panel: #1a201d; --fg: #e4ebe7; --muted: #9aa8a1; --line: #2e3833;
+  --pcb: #1f2a24; --pcb-edge: #4d6457; --pin: #c9b47a; --hl: #4fd1a5; --hl-soft: #173a2e;
+  --wire-edge: #e4ebe7; --wire-white: #f4f4f4; --wire-green: #3cc274; --wire-black: #3a3a3a; --wire-red: #ff6b60;
+  --warn: #ffbf5e; --warn-soft: #3a2c12; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 48px; }
+main { max-width: 880px; margin: 0 auto; display: grid; gap: 28px; }
+h1 { font-size: 1.6rem; margin: 0; text-wrap: balance; }
+h2 { font-size: 1.1rem; margin: 0 0 10px; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lead { color: var(--muted); }
+code, .mono { font-family: var(--f-mono); font-size: .92em; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 720px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0; }
+figcaption { font-size: .85rem; color: var(--muted); margin-top: 8px; }
+.scroll { overflow-x: auto; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+svg .muted { fill: var(--muted); }
+svg .hl { fill: var(--hl); font-weight: 600; }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .78rem; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+td.mono { white-space: nowrap; }
+.sw { display: inline-block; width: 22px; height: 8px; border-radius: 4px; border: 1.5px solid var(--wire-edge); vertical-align: middle; margin-right: 6px; }
+ol, ul { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; max-width: 70ch; }
+.note { background: var(--warn-soft); color: var(--fg); border-radius: 8px; padding: 12px 14px; }
+.note strong { color: var(--warn); }
+</style>
+
+<main>
+  <header style="display:grid;gap:6px">
+    <h1>Nucleo-F411RE USB CDC 배선</h1>
+    <p class="lead">보드에는 USB 사용자 커넥터가 없어서, USB 브레이크아웃(또는 자른 USB 케이블)을 morpho 헤더 <b>CN10</b>에 선 3개로 연결합니다. 보드 전원과 디버그는 지금처럼 ST-LINK USB로 받습니다.</p>
+  </header>
+
+  <section class="grid2">
+    <figure>
+      <svg viewBox="0 0 260 420" role="img" aria-label="보드 윗면에서 본 CN10 위치">
+        <rect x="30" y="20" width="200" height="385" rx="8" fill="var(--pcb)" stroke="var(--pcb-edge)" stroke-width="2"/>
+        <!-- ST-LINK part -->
+        <rect x="104" y="8" width="52" height="24" rx="3" fill="var(--panel)" stroke="var(--pcb-edge)" stroke-width="2"/>
+        <text x="130" y="48" text-anchor="middle" font-size="10" class="muted">CN1 ST-LINK USB</text>
+        <line x1="30" y1="110" x2="230" y2="110" stroke="var(--pcb-edge)" stroke-dasharray="4 4"/>
+        <text x="130" y="80" text-anchor="middle" font-size="11" class="muted">ST-LINK</text>
+        <!-- MCU -->
+        <rect x="100" y="230" width="60" height="60" rx="3" fill="var(--panel)" stroke="var(--pcb-edge)" stroke-width="1.5"/>
+        <text x="130" y="264" text-anchor="middle" font-size="9" class="muted">F411RE</text>
+        <!-- Arduino headers (inner) -->
+        <rect x="70" y="140" width="9" height="220" fill="none" stroke="var(--pcb-edge)" stroke-dasharray="2 3"/>
+        <rect x="181" y="140" width="9" height="220" fill="none" stroke="var(--pcb-edge)" stroke-dasharray="2 3"/>
+        <!-- CN7 -->
+        <g fill="var(--pin)">
+          <rect x="40" y="132" width="22" height="232" rx="2" fill="none" stroke="var(--pcb-edge)"/>
+        </g>
+        <text x="51" y="126" text-anchor="middle" font-size="10" class="muted">CN7</text>
+        <!-- CN10 -->
+        <rect x="198" y="132" width="22" height="232" rx="2" fill="var(--hl-soft)" stroke="var(--hl)" stroke-width="2"/>
+        <rect x="196" y="180" width="26" height="66" rx="3" fill="none" stroke="var(--hl)" stroke-width="2.5"/>
+        <text x="209" y="126" text-anchor="middle" font-size="11" class="hl">CN10</text>
+        <text x="130" y="200" text-anchor="middle" font-size="10" class="hl">이 부분 →</text>
+        <text x="130" y="214" text-anchor="middle" font-size="10" class="muted">(위에서 5–10번째 줄)</text>
+        <text x="130" y="390" text-anchor="middle" font-size="10" class="muted">B1 / B2 버튼 쪽</text>
+      </svg>
+      <figcaption>윗면, ST-LINK USB가 위로 오게 놓은 모습. CN10은 오른쪽 가장자리의 2열 핀 헤더입니다.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="scroll">
+      <svg viewBox="0 0 640 420" style="min-width:520px" role="img" aria-label="CN10 핀 1-20 확대와 USB 브레이크아웃 연결">
+        <text x="20" y="16" font-size="11" class="muted">CN10 확대 (1번 핀이 맨 위, ST-LINK 쪽)</text>
+        <text x="160" y="36" text-anchor="middle" font-size="10" class="muted">안쪽 열</text>
+        <text x="200" y="36" text-anchor="middle" font-size="10" class="muted">바깥 열</text>
+        <rect x="145" y="42" width="70" height="356" rx="4" fill="var(--pcb)" stroke="var(--pcb-edge)"/>
+        <g id="pins"></g>
+
+        <!-- USB breakout -->
+        <rect x="500" y="130" width="120" height="210" rx="6" fill="var(--panel)" stroke="var(--pcb-edge)" stroke-width="2"/>
+        <rect x="586" y="200" width="40" height="70" rx="4" fill="var(--pcb)" stroke="var(--pcb-edge)" stroke-width="2"/>
+        <text x="606" y="290" text-anchor="middle" font-size="9" class="muted">USB</text>
+        <text x="560" y="122" text-anchor="middle" font-size="11" class="muted">USB 브레이크아웃</text>
+        <g font-size="12">
+          <circle cx="512" cy="160" r="5" fill="var(--pin)"/><text x="524" y="164">VBUS</text>
+          <circle cx="512" cy="200" r="5" fill="var(--pin)"/><text x="524" y="204" class="hl">D−</text>
+          <circle cx="512" cy="240" r="5" fill="var(--pin)"/><text x="524" y="244" class="hl">D+</text>
+          <circle cx="512" cy="280" r="5" fill="var(--pin)"/><text x="524" y="284" class="muted">ID</text>
+          <circle cx="512" cy="320" r="5" fill="var(--pin)"/><text x="524" y="324" class="hl">GND</text>
+        </g>
+
+        <!-- wires: outline then color -->
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- GND: pin 20 (row 10) -->
+          <polyline points="200,382 470,382 470,320 512,320" stroke="var(--wire-edge)" stroke-width="7"/>
+          <polyline points="200,382 470,382 470,320 512,320" stroke="var(--wire-black)" stroke-width="4"/>
+          <!-- D+: pin 12 (row 6) -->
+          <polyline points="200,238 420,238 420,240 512,240" stroke="var(--wire-edge)" stroke-width="7"/>
+          <polyline points="200,238 420,238 420,240 512,240" stroke="var(--wire-green)" stroke-width="4"/>
+          <!-- D-: pin 14 (row 7) -->
+          <polyline points="200,274 445,274 445,200 512,200" stroke="var(--wire-edge)" stroke-width="7"/>
+          <polyline points="200,274 445,274 445,200 512,200" stroke="var(--wire-white)" stroke-width="4"/>
+          <!-- VBUS: not connected -->
+          <line x1="512" y1="160" x2="470" y2="160" stroke="var(--wire-red)" stroke-width="3" stroke-dasharray="5 4"/>
+        </g>
+        <text x="462" y="164" text-anchor="end" font-size="11" fill="var(--wire-red)" style="fill:var(--wire-red)">연결 안 함 ✕</text>
+
+        <!-- tags on wires -->
+        <g font-size="11">
+          <rect x="250" y="228" width="128" height="20" rx="10" fill="var(--hl-soft)" stroke="var(--hl)"/>
+          <text x="314" y="242" text-anchor="middle" class="hl">PA12 · 12번 → D+</text>
+          <rect x="250" y="264" width="128" height="20" rx="10" fill="var(--hl-soft)" stroke="var(--hl)"/>
+          <text x="314" y="278" text-anchor="middle" class="hl">PA11 · 14번 → D−</text>
+          <rect x="250" y="372" width="128" height="20" rx="10" fill="var(--hl-soft)" stroke="var(--hl)"/>
+          <text x="314" y="386" text-anchor="middle" class="hl">GND · 20번 → GND</text>
+        </g>
+      </svg>
+      </div>
+      <figcaption>핀 옆의 숫자는 CN10 핀 번호입니다. 홀수 번호는 안쪽 열, 짝수 번호는 바깥 열에 있습니다. 왼쪽 신호 이름은 안쪽 열 핀입니다. GND는 안쪽 열 9번을 써도 됩니다.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>연결표</h2>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>USB 쪽</th><th>F411RE</th><th>CN10 핀</th><th>자른 케이블이면 보통</th></tr></thead>
+      <tbody>
+        <tr><td><b>D+</b></td><td class="mono">PA12</td><td class="mono">12 (바깥 열, 위에서 6번째)</td><td><span class="sw" style="background:var(--wire-green)"></span>초록</td></tr>
+        <tr><td><b>D−</b></td><td class="mono">PA11</td><td class="mono">14 (바깥 열, 위에서 7번째)</td><td><span class="sw" style="background:var(--wire-white)"></span>흰색</td></tr>
+        <tr><td><b>GND</b></td><td class="mono">GND</td><td class="mono">20 (바깥 열) 또는 9 (안쪽 열)</td><td><span class="sw" style="background:var(--wire-black)"></span>검정</td></tr>
+        <tr><td>VBUS</td><td>연결 안 함</td><td>–</td><td><span class="sw" style="background:var(--wire-red)"></span>빨강 (절연해 둠)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>찾는 요령</h2>
+    <ul>
+      <li>CN10 안쪽 열 11번 핀이 <code>PA5</code>(초록 LED LD2, Arduino D13)입니다. 그 바로 바깥쪽 옆이 <b>12번 PA12</b>, 한 칸 아래 바깥쪽이 <b>14번 PA11</b>입니다.</li>
+      <li>바깥 열의 위에서 4번째 핀(8번)은 <code>U5V</code>이고, 5번째(10번)는 비어 있습니다. 5V 핀에 USB 선을 꽂지 않도록 조심하세요.</li>
+      <li>보드 실크 인쇄의 핀 이름(PA11, PA12)이나 UM1724 매뉴얼의 핀 배치 그림으로 한 번 더 확인하세요.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>연결하고 테스트하기</h2>
+    <ol>
+      <li>ST-LINK USB(CN1)를 PC에 꽂고 펌웨어를 씁니다. 전원과 디버그는 이 케이블로 받습니다.</li>
+      <li>보드를 켠 상태에서 브레이크아웃 쪽 USB를 PC에 꽂습니다. USB 케이블이 2개가 됩니다.</li>
+      <li>장치 관리자에 <b>USB 직렬 장치 (COMx)</b>가 생깁니다. Windows 10 이상은 드라이버가 필요 없습니다.</li>
+      <li>그 COM 포트를 터미널(Tera Term, PuTTY 등)로 열고 <code>help</code>를 입력합니다. 속도는 아무 값이나 됩니다.</li>
+    </ol>
+  </section>
+
+  <section class="note">
+    <ul>
+      <li><strong>DTR</strong>: 터미널이 포트를 열 때 DTR을 켜야 로그가 나옵니다. Tera Term과 PuTTY는 켭니다. 일부 시리얼 모니터는 DTR 켜기 옵션을 따로 켜야 합니다.</li>
+      <li><strong>선 길이</strong>: D+와 D−는 10–15 cm 이내로 짧게, 두 선을 나란히 둡니다.</li>
+      <li><strong>USB-C 브레이크아웃</strong>: CC 핀에 5.1 kΩ 저항이 있어야 C-to-C 케이블로 PC가 장치를 알아봅니다. 저항이 없으면 USB-A to C 케이블을 쓰세요.</li>
+      <li><strong>인식이 안 되면</strong>: D+와 D−가 바뀌었는지, GND가 연결됐는지 먼저 봅니다. 그다음 보드의 SB16/SB50(ST-LINK MCO → PH0, 기본값 ON)이 그대로인지 확인합니다. 이 예제는 그 8 MHz 클럭으로 USB 48 MHz를 만듭니다.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function () {
+  // CN10 pins 1-20 of Nucleo-F411RE (UM1724): odd = inner column, even = outer column.
+  var inner = ["PC9","PB8","PB9","AVDD","GND","PA5","PA6","PA7","PB6","PC7"];
+  var outer = ["PC8","PC6","PC5","U5V","NC","PA12","PA11","PB12","NC","GND"];
+  var hlPins = { 12: 1, 14: 1, 20: 1 };
+  var ns = "http://www.w3.org/2000/svg", g = document.getElementById("pins");
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(ns, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    g.appendChild(e);
+    return e;
+  }
+  for (var r = 0; r < 10; r++) {
+    var y = 58 + r * 36;
+    var pi = r * 2 + 1, po = r * 2 + 2;
+    el("rect", { x: 154, y: y - 6, width: 12, height: 12, fill: "var(--pin)" });
+    el("rect", { x: 194, y: y - 6, width: 12, height: 12, fill: hlPins[po] ? "var(--hl)" : "var(--pin)" });
+    el("text", { x: 138, y: y + 4, "text-anchor": "end", "font-size": 12, "class": inner[r] === "PA5" ? "" : "muted" },
+       inner[r] + "  " + pi);
+    if (!hlPins[po]) el("text", { x: 222, y: y + 4, "font-size": 12, "class": "muted" }, po + "  " + outer[r]);
+  }
+})();
+</script>
+
+</body></html>
