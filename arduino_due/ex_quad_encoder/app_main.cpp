@@ -4,13 +4,13 @@
 #define LOG_PERIOD_US			500000UL		// 500ms
 
 
-PifEncoder g_encoder;
+PifQuadEncoder g_encoder;
 PifTimerManager g_timer_1ms;
 
 #if USE_GENERATOR
 
 // A leading B, so that the encoder counts up.
-static const uint8_t kPhase[4] = { 0, ENCODER_PHASE_A, ENCODER_PHASE_A | ENCODER_PHASE_B, ENCODER_PHASE_B };
+static const uint8_t kPhase[4] = { 0, QUAD_ENCODER_PHASE_A, QUAD_ENCODER_PHASE_A | QUAD_ENCODER_PHASE_B, QUAD_ENCODER_PHASE_B };
 
 // Each stage steps every `interval` ms in `direction` for `duration` ms.
 static const struct {
@@ -59,24 +59,24 @@ static void _evtGenerate(PifIssuerP p_issuer)
 
 #endif	// USE_GENERATOR
 
-static const char* _resultName(PifEncoderResult result)
+static const char *_resultName(PifQuadEncoderResult result)
 {
 	switch (result) {
-	case ENCODER_R_OK:		return "OK";
-	case ENCODER_R_NO_DATA:	return "NO_DATA";
-	case ENCODER_R_TIMEOUT:	return "TIMEOUT";
+	case QUAD_ENCODER_R_OK:		return "OK";
+	case QUAD_ENCODER_R_NO_DATA:	return "NO_DATA";
+	case QUAD_ENCODER_R_TIMEOUT:	return "TIMEOUT";
 	}
 	return "?";
 }
 
-static uint32_t _taskLog(PifTask* p_task)
+static uint32_t _taskLog(PifTask *p_task)
 {
-	PifEncoderResult result;
+	PifQuadEncoderResult result;
 	float speed;
 
 	(void)p_task;
 
-	result = pifEncoder_ReadSpeed(&g_encoder, &speed);
+	result = pifQuadEncoder_ReadSpeed(&g_encoder, &speed);
 
 #if USE_GENERATOR
 	int32_t expect_speed = 0;
@@ -90,12 +90,12 @@ static uint32_t _taskLog(PifTask* p_task)
 	// Rounded down like the encoder, so that Pos follows Gen in every resolution. Err must stay 0.
 	int32_t gen_pos = gen_raw >= 0 ? gen_raw / div : -((-gen_raw - 1) / div) - 1;
 	pifLog_Printf(LT_INFO, "S%u Gen:%ld Pos:%ld Dir:%d Spd:%1f(%ld) %s Err:%lu",
-			stage, gen_pos, pifEncoder_GetPosition(&g_encoder), pifEncoder_GetDirection(&g_encoder),
-			(double)speed, expect_speed, _resultName(result), pifEncoder_GetErrorCount(&g_encoder));
+			stage, gen_pos, pifQuadEncoder_GetPosition(&g_encoder), pifQuadEncoder_GetDirection(&g_encoder),
+			(double)speed, expect_speed, _resultName(result), pifQuadEncoder_GetErrorCount(&g_encoder));
 #else
 	pifLog_Printf(LT_INFO, "Pos:%ld Dir:%d Spd:%1f %s Err:%lu",
-			pifEncoder_GetPosition(&g_encoder), pifEncoder_GetDirection(&g_encoder),
-			(double)speed, _resultName(result), pifEncoder_GetErrorCount(&g_encoder));
+			pifQuadEncoder_GetPosition(&g_encoder), pifQuadEncoder_GetDirection(&g_encoder),
+			(double)speed, _resultName(result), pifQuadEncoder_GetErrorCount(&g_encoder));
 #endif
     return 0;
 }
@@ -103,7 +103,7 @@ static uint32_t _taskLog(PifTask* p_task)
 BOOL appSetup()
 {
 #if USE_GENERATOR
-	PifTimer* p_timer;
+	PifTimer *p_timer;
 
 	actGenerate(kPhase[0]);
 
@@ -116,7 +116,7 @@ BOOL appSetup()
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, LOG_PERIOD_US, _taskLog, NULL, TRUE)) return FALSE;
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
-	pifLog_Print(LT_NONE, "***            ex_encoder            ***\n");
+	pifLog_Print(LT_NONE, "***         ex_quad_encoder          ***\n");
 	pifLog_Printf(LT_NONE, "***       %s %s       ***\n", __DATE__, __TIME__);
 	pifLog_Print(LT_NONE, "****************************************\n");
 	pifLog_Printf(LT_INFO, "Task=%d/%d Timer=%d/%d\n", pifTaskManager_Count(), TASK_SIZE, pifTimerManager_Count(&g_timer_1ms), TIMER_1MS_SIZE);

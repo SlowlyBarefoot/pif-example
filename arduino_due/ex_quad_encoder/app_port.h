@@ -4,7 +4,7 @@
 
 #include "core/pif_log.h"
 #include "core/pif_timer_manager.h"
-#include "sensor/pif_encoder.h"
+#include "sensor/pif_quad_encoder.h"
 
 
 #define TASK_SIZE				4
@@ -13,11 +13,11 @@
 // 1: drive the encoder input from the quadrature generator, 0: read a real encoder.
 #define USE_GENERATOR			1
 
-#define ENCODER_RESOLUTION		ENCODER_RES_X4
+#define ENCODER_RESOLUTION		QUAD_ENCODER_RES_X4
 #define ENCODER_TIMEOUT_US		500000UL		// The speed reads as stopped after 0.5s without a step
 
 
-extern PifEncoder g_encoder;
+extern PifQuadEncoder g_encoder;
 extern PifTimerManager g_timer_1ms;
 
 

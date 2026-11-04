@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ex_encoder</name>
+	<name>ex_quad_encoder</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -147,9 +147,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/sensor/pif_encoder.h</name>
+			<name>pif/include/sensor/pif_quad_encoder.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_encoder.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_quad_encoder.h</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_transport.c</name>
@@ -212,9 +212,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/sensor/pif_encoder.c</name>
+			<name>pif/source/sensor/pif_quad_encoder.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_encoder.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_quad_encoder.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

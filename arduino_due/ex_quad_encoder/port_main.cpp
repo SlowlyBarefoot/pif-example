@@ -1,4 +1,4 @@
-#include "ex_encoder.h"
+#include "ex_quad_encoder.h"
 #include "app_port.h"
 
 
@@ -15,7 +15,7 @@
 #define UART_LOG_BAUDRATE		115200
 
 
-static uint32_t _taskLedToggle(PifTask* p_task)
+static uint32_t _taskLedToggle(PifTask *p_task)
 {
 	static BOOL sw = FALSE;
 
@@ -26,7 +26,7 @@ static uint32_t _taskLedToggle(PifTask* p_task)
     return 0;
 }
 
-static uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size)
+static uint16_t actLogSendData(PifUart *p_uart, uint8_t *p_buffer, uint16_t size)
 {
 	(void)p_uart;
 
@@ -35,15 +35,15 @@ static uint16_t actLogSendData(PifUart* p_uart, uint8_t* p_buffer, uint16_t size
 
 void actGenerate(uint8_t state)
 {
-	digitalWrite(PIN_GEN_A, (state & ENCODER_PHASE_A) ? TRUE : FALSE);
-	digitalWrite(PIN_GEN_B, (state & ENCODER_PHASE_B) ? TRUE : FALSE);
+	digitalWrite(PIN_GEN_A, (state & QUAD_ENCODER_PHASE_A) ? TRUE : FALSE);
+	digitalWrite(PIN_GEN_B, (state & QUAD_ENCODER_PHASE_B) ? TRUE : FALSE);
 }
 
 static void _isrEncoder()
 {
-	uint8_t state = (digitalRead(PIN_ENCODER_A) ? ENCODER_PHASE_A : 0) | (digitalRead(PIN_ENCODER_B) ? ENCODER_PHASE_B : 0);
+	uint8_t state = (digitalRead(PIN_ENCODER_A) ? QUAD_ENCODER_PHASE_A : 0) | (digitalRead(PIN_ENCODER_B) ? QUAD_ENCODER_PHASE_B : 0);
 
-	pifEncoder_sigState(&g_encoder, state, micros());
+	pifQuadEncoder_sigState(&g_encoder, state, micros());
 }
 
 extern "C" {
@@ -82,8 +82,8 @@ BOOL portSetup()
 
 	if (!pifTaskManager_Add(PIF_ID_AUTO, TM_PERIOD, 100000, _taskLedToggle, NULL, TRUE)) return FALSE;	// 100ms
 
-	if (!pifEncoder_Init(&g_encoder, PIF_ID_AUTO, ENCODER_RESOLUTION)) return FALSE;
-	pifEncoder_SetTimeout(&g_encoder, ENCODER_TIMEOUT_US);
+	if (!pifQuadEncoder_Init(&g_encoder, PIF_ID_AUTO, ENCODER_RESOLUTION)) return FALSE;
+	pifQuadEncoder_SetTimeout(&g_encoder, ENCODER_TIMEOUT_US);
 
 	// The first state only sets where the encoder stands. Every edge of either phase after it is a step.
 	delayMicroseconds(10);

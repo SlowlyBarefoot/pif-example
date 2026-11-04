@@ -18,9 +18,9 @@
 
 //#define PIF_COLLECT_SIGNAL
 
-// -------- pifEncoder ---------------------------
+// -------- pifQuadEncoder -----------------------
 
-//#define PIF_ENCODER_DATA_SIZE				8
+//#define PIF_QUAD_ENCODER_DATA_SIZE		8
 
 // -------- pifGpsNmea ---------------------------
 

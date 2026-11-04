@@ -1,5 +1,5 @@
 // Do not remove the include below
-#include "ex_encoder.h"
+#include "ex_quad_encoder.h"
 #include "app_port.h"
 
 //The setup function is called once at startup of the sketch
