@@ -1,8 +1,8 @@
 #include "app_port.h"
 
-#include "sensor/pif_bmp280_i2c.h"
-#include "sensor/pif_mpu6500_i2c.h"
-#include "sensor/pif_imu_sensor.h"
+#include "sensor/baro/pif_bmp280_i2c.h"
+#include "sensor/imu/pif_mpu6500_i2c.h"
+#include "sensor/imu/pif_imu_sensor.h"
 
 #include <math.h>
 

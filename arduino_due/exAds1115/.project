@@ -177,9 +177,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/sensor/pif_ads1x1x.h</name>
+			<name>pif/include/sensor/adc/pif_ads1x1x.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_ads1x1x.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/adc/pif_ads1x1x.h</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_device_reg.c</name>
@@ -247,9 +247,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/sensor/pif_ads1x1x.c</name>
+			<name>pif/source/sensor/adc/pif_ads1x1x.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_ads1x1x.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/adc/pif_ads1x1x.c</locationURI>
+		</link>
+		<link>
+			<name>pif/include/sensor/adc</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/source/sensor/adc</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

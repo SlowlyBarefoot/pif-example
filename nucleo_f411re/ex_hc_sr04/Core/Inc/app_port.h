@@ -4,7 +4,7 @@
 
 #include "core/pif_log.h"
 #include "core/pif_timer_manager.h"
-#include "sensor/pif_hc_sr04.h"
+#include "sensor/range/pif_hc_sr04.h"
 
 
 #define TASK_SIZE				5

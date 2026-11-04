@@ -3,7 +3,7 @@
 
 
 #include "core/pif_log.h"
-#include "core/pif_pwm_gen.h"
+#include "control/pif_pwm_gen.h"
 #include "core/pif_timer_manager.h"
 #include "display/pif_led.h"
 

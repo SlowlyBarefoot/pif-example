@@ -56,12 +56,22 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/include/monitor</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/source/communication</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/source/core</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/monitor</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -79,11 +89,6 @@
 			<name>Core/pif/include/core/pif.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/include/core/pif_collect_signal.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_collect_signal.h</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/include/core/pif_dlist.h</name>
@@ -131,6 +136,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
+			<name>Core/pif/include/monitor/pif_collect_signal.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/monitor/pif_collect_signal.h</locationURI>
+		</link>
+		<link>
 			<name>Core/pif/source/communication/pif_transport.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/communication/pif_transport.c</locationURI>
@@ -144,11 +154,6 @@
 			<name>Core/pif/source/core/pif.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/source/core/pif_collect_signal.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_collect_signal.c</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/source/core/pif_dlist.c</name>
@@ -194,6 +199,11 @@
 			<name>Core/pif/source/core/pif_timer_manager.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/monitor/pif_collect_signal.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/monitor/pif_collect_signal.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

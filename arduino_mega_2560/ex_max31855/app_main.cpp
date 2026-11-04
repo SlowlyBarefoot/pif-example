@@ -1,6 +1,6 @@
 #include "app_port.h"
 
-#include "sensor/pif_max31855.h"
+#include "sensor/temp/pif_max31855.h"
 
 
 PifLed g_led_l;

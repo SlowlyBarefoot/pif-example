@@ -1,7 +1,7 @@
 #include "app_port.h"
 
-#include "sensor/pif_imu_sensor.h"
-#include "sensor/pif_gy86.h"
+#include "sensor/imu/pif_imu_sensor.h"
+#include "sensor/imu/pif_gy86.h"
 
 #include <math.h>
 

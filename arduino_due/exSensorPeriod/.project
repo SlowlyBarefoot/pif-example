@@ -112,9 +112,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/core/pif_collect_signal.h</name>
+			<name>pif/include/monitor/pif_collect_signal.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_collect_signal.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/monitor/pif_collect_signal.h</locationURI>
 		</link>
 		<link>
 			<name>pif/include/core/pif_dlist.h</name>
@@ -197,9 +197,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/core/pif_collect_signal.c</name>
+			<name>pif/source/monitor/pif_collect_signal.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_collect_signal.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/monitor/pif_collect_signal.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core/pif_dlist.c</name>
@@ -265,6 +265,16 @@
 			<name>pif/source/sensor/pif_sensor_threshold.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_sensor_threshold.c</locationURI>
+		</link>
+		<link>
+			<name>pif/include/monitor</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/source/monitor</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

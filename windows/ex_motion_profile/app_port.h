@@ -3,7 +3,7 @@
 
 
 #include "core/pif_log.h"
-#include "core/pif_motion_profile.h"
+#include "control/pif_motion_profile.h"
 #include "core/pif_timer_manager.h"
 
 

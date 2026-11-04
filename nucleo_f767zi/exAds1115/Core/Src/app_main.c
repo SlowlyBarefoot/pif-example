@@ -1,6 +1,6 @@
 #include "app_port.h"
 
-#include "sensor/pif_ads1x1x.h"
+#include "sensor/adc/pif_ads1x1x.h"
 
 
 #define SINGLE_SHOT

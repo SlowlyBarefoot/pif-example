@@ -82,11 +82,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/include/protocol</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>pif/include/sensor</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -108,11 +103,6 @@
 		</link>
 		<link>
 			<name>pif/source/filter</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/source/protocol</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>

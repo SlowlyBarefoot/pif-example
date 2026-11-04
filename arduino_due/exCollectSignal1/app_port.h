@@ -3,7 +3,7 @@
 
 
 #include "core/pif.h"
-#include "core/pif_collect_signal.h"
+#include "monitor/pif_collect_signal.h"
 #include "core/pif_gpio.h"
 #include "core/pif_log.h"
 #include "core/pif_sequence.h"

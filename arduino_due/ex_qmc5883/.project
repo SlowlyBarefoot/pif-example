@@ -177,14 +177,14 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/sensor/pif_imu_sensor.h</name>
+			<name>pif/include/sensor/imu/pif_imu_sensor.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_imu_sensor.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/imu/pif_imu_sensor.h</locationURI>
 		</link>
 		<link>
-			<name>pif/include/sensor/pif_qmc5883.h</name>
+			<name>pif/include/sensor/mag/pif_qmc5883.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_qmc5883.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/mag/pif_qmc5883.h</locationURI>
 		</link>
 		<link>
 			<name>pif/source/communication/pif_device_reg.c</name>
@@ -252,14 +252,34 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/sensor/pif_imu_sensor.c</name>
+			<name>pif/source/sensor/imu/pif_imu_sensor.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_imu_sensor.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/imu/pif_imu_sensor.c</locationURI>
 		</link>
 		<link>
-			<name>pif/source/sensor/pif_qmc5883.c</name>
+			<name>pif/source/sensor/mag/pif_qmc5883.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_qmc5883.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/mag/pif_qmc5883.c</locationURI>
+		</link>
+		<link>
+			<name>pif/include/sensor/imu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/include/sensor/mag</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/source/sensor/imu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>pif/source/sensor/mag</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

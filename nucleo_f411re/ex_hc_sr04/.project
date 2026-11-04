@@ -126,9 +126,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/include/sensor/pif_hc_sr04.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_hc_sr04.h</locationURI>
+			<name>Core/pif/include/sensor/range</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/source/communication/pif_transport.c</name>
@@ -181,9 +181,19 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_hc_sr04.c</name>
+			<name>Core/pif/source/sensor/range</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/include/sensor/range/pif_hc_sr04.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_hc_sr04.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/range/pif_hc_sr04.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/range/pif_hc_sr04.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/range/pif_hc_sr04.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

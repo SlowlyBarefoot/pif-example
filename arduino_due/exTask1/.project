@@ -47,11 +47,6 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x</locationURI>
 		</link>
 		<link>
-			<name>pif/.git</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>pif/.gitignore</name>
 			<type>1</type>
 			<locationURI>PARENT-1-ECLIPSE_HOME/github/pif/.gitignore</locationURI>
@@ -77,57 +72,12 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/.git/hooks</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/info</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/logs</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/objects</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/refs</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>pif/include/core</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>pif/source/core</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/logs/refs</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/objects/pack</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/refs/heads</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/refs/remotes</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -170,16 +120,6 @@
 			<name>pif/source/core/pif_task_manager.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_task_manager.c</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/logs/refs/heads</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/.git/logs/refs/remotes</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

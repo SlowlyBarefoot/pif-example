@@ -152,29 +152,14 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/include/sensor/pif_bmp280.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_bmp280.h</locationURI>
+			<name>Core/pif/include/sensor/baro</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/include/sensor/pif_bmp280_i2c.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_bmp280_i2c.h</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/include/sensor/pif_imu_sensor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_imu_sensor.h</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/include/sensor/pif_mpu6500.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_mpu6500.h</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/include/sensor/pif_mpu6500_i2c.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_mpu6500_i2c.h</locationURI>
+			<name>Core/pif/include/sensor/imu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/include/sensor/pif_sensor_event.h</name>
@@ -247,29 +232,64 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_bmp280.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_bmp280.c</locationURI>
+			<name>Core/pif/source/sensor/baro</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_bmp280_i2c.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_bmp280_i2c.c</locationURI>
+			<name>Core/pif/source/sensor/imu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_imu_sensor.c</name>
+			<name>Core/pif/include/sensor/baro/pif_bmp280.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_imu_sensor.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/baro/pif_bmp280.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_mpu6500.c</name>
+			<name>Core/pif/include/sensor/baro/pif_bmp280_i2c.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_mpu6500.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/baro/pif_bmp280_i2c.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_mpu6500_i2c.c</name>
+			<name>Core/pif/include/sensor/imu/pif_imu_sensor.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_mpu6500_i2c.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/imu/pif_imu_sensor.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/include/sensor/imu/pif_mpu6500.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/imu/pif_mpu6500.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/include/sensor/imu/pif_mpu6500_i2c.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/imu/pif_mpu6500_i2c.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/baro/pif_bmp280.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/baro/pif_bmp280.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/baro/pif_bmp280_i2c.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/baro/pif_bmp280_i2c.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/imu/pif_imu_sensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/imu/pif_imu_sensor.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/imu/pif_mpu6500.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/imu/pif_mpu6500.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/imu/pif_mpu6500_i2c.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/imu/pif_mpu6500_i2c.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

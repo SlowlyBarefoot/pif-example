@@ -77,11 +77,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>pif/include/protocol</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>pif/include/rc</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -98,11 +93,6 @@
 		</link>
 		<link>
 			<name>pif/source/display</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>pif/source/protocol</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>

@@ -176,19 +176,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/include/sensor/pif_imu_sensor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_imu_sensor.h</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/include/sensor/pif_mpu60x0.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_mpu60x0.h</locationURI>
-		</link>
-		<link>
-			<name>Core/pif/include/sensor/pif_mpu60x0_i2c.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/pif_mpu60x0_i2c.h</locationURI>
+			<name>Core/pif/include/sensor/imu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>Core/pif/source/communication/pif_device_reg.c</name>
@@ -256,49 +246,99 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_led.c</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_imu_sensor.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_imu_sensor.c</locationURI>
+			<name>Core/pif/source/sensor/imu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_mpu60x0.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_mpu60x0.c</locationURI>
+			<name>Core/pif/gpl/include/sensor/baro</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/source/sensor/pif_mpu60x0_i2c.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/pif_mpu60x0_i2c.c</locationURI>
+			<name>Core/pif/gpl/include/sensor/imu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/gpl/include/sensor/pif_gy86.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/sensor/pif_gy86.h</locationURI>
+			<name>Core/pif/gpl/include/sensor/mag</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/gpl/include/sensor/pif_hmc5883.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/sensor/pif_hmc5883.h</locationURI>
+			<name>Core/pif/gpl/source/sensor/baro</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/gpl/include/sensor/pif_ms5611.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/sensor/pif_ms5611.h</locationURI>
+			<name>Core/pif/gpl/source/sensor/imu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/gpl/source/sensor/pif_gy86.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/sensor/pif_gy86.c</locationURI>
+			<name>Core/pif/gpl/source/sensor/mag</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/gpl/source/sensor/pif_hmc5883.c</name>
+			<name>Core/pif/include/sensor/imu/pif_imu_sensor.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/sensor/pif_hmc5883.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/imu/pif_imu_sensor.h</locationURI>
 		</link>
 		<link>
-			<name>Core/pif/gpl/source/sensor/pif_ms5611.c</name>
+			<name>Core/pif/include/sensor/imu/pif_mpu60x0.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/sensor/pif_ms5611.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/imu/pif_mpu60x0.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/include/sensor/imu/pif_mpu60x0_i2c.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/sensor/imu/pif_mpu60x0_i2c.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/imu/pif_imu_sensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/imu/pif_imu_sensor.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/imu/pif_mpu60x0.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/imu/pif_mpu60x0.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/source/sensor/imu/pif_mpu60x0_i2c.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/sensor/imu/pif_mpu60x0_i2c.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/include/sensor/baro/pif_ms5611.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/sensor/baro/pif_ms5611.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/include/sensor/imu/pif_gy86.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/sensor/imu/pif_gy86.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/include/sensor/mag/pif_hmc5883.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/include/sensor/mag/pif_hmc5883.h</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/source/sensor/baro/pif_ms5611.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/sensor/baro/pif_ms5611.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/source/sensor/imu/pif_gy86.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/sensor/imu/pif_gy86.c</locationURI>
+		</link>
+		<link>
+			<name>Core/pif/gpl/source/sensor/mag/pif_hmc5883.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/gpl/source/sensor/mag/pif_hmc5883.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
