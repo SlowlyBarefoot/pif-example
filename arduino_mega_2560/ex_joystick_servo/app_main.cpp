@@ -115,19 +115,22 @@ static void _evtJoystickDirection(PifJoystick *p_owner, uint8_t direction)
 	pifLog_Printf(LT_INFO, "Direction %s", text);
 }
 
-static int _cmdStatus(int argc, char *argv[])
+static int _cmdStatus(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	(void)argc;
 	(void)argv;
+	(void)p_entry;
 
 	_printStatus();
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdMonitor(int argc, char *argv[])
+static int _cmdMonitor(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	BOOL on;
 	long period;
+
+	(void)p_entry;
 
 	if (argc < 1) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseOnOff(argv[0], &on)) return PIF_LOG_CMD_INVALID_ARG;
@@ -141,10 +144,11 @@ static int _cmdMonitor(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdCenter(int argc, char *argv[])
+static int _cmdCenter(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	(void)argc;
 	(void)argv;
+	(void)p_entry;
 
 	if (!pifJoystick_CalibrateCenter(&g_joystick)) {
 		pifLog_Print(LT_ERROR, "Center not taken: leave the stick at rest");
@@ -154,10 +158,12 @@ static int _cmdCenter(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdInvert(int argc, char *argv[])
+static int _cmdInvert(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	PifJoystickAxis axis;
 	BOOL on;
+
+	(void)p_entry;
 
 	if (argc < 2) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!strcmp(argv[0], "x")) axis = JA_X;
@@ -169,9 +175,11 @@ static int _cmdInvert(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdDeadZone(int argc, char *argv[])
+static int _cmdDeadZone(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	long value;
+
+	(void)p_entry;
 
 	if (argc < 1) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseNumber(argv[0], 0, PIF_JOYSTICK_RANGE - 1, &value)) return PIF_LOG_CMD_INVALID_ARG;

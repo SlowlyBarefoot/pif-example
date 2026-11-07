@@ -121,10 +121,12 @@ static BOOL _setDateTime(const PifDateTime *p_datetime)
 	return pif_SetDateTime(p_datetime);
 }
 
-static int _cmdTime(int argc, char *argv[])
+static int _cmdTime(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	PifDateTime datetime;
 	uint16_t date[3], time[2];
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		_show();
@@ -147,8 +149,10 @@ static int _cmdTime(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdShow(int argc, char *argv[])
+static int _cmdShow(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (argc == 0) return PIF_LOG_CMD_TOO_FEW_ARGS;
 
 	if (!strcmp(argv[0], "on")) {

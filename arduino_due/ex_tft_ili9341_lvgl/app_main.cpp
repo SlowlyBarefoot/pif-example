@@ -20,9 +20,9 @@ static lv_disp_t *p_disp;
 static lv_disp_draw_buf_t draw_buf;
 static lv_color_t buf[ ILI9341_HEIGHT * ILI9341_WIDTH / 10 ];
 
-static int _CmdBackLight(int argc, char *argv[]);
-static int _CmdTouchCalibration(int argc, char *argv[]);
-static int _CmdExample(int argc, char *argv[]);
+static int _CmdBackLight(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _CmdTouchCalibration(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _CmdExample(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -72,8 +72,10 @@ static void lv_example_btn_1(void)
     lv_obj_center(label);
 }
 
-static int _CmdBackLight(int argc, char *argv[])
+static int _CmdBackLight(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  BackLight=%u\n", backlight);
 		return PIF_LOG_CMD_NO_ERROR;
@@ -108,8 +110,10 @@ static void _evtTouchCalibration(PifTouchScreen* p_owner, BOOL result)
 	}
 }
 
-static int _CmdTouchCalibration(int argc, char *argv[])
+static int _CmdTouchCalibration(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	// The touch task carries the calibration on from here and reports it through the callback.
 	if (!pifTouchScreen_StartCalibration(&g_tsc2046.parent, _evtTouchCalibration)) {
 		pifLog_Printf(LT_INFO, "Touch calibration is failure");
@@ -117,8 +121,10 @@ static int _CmdTouchCalibration(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _CmdExample(int argc, char *argv[])
+static int _CmdExample(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	pifLog_Printf(LT_INFO, "Example:1");
     lv_example_btn_1();
 	return PIF_LOG_CMD_NO_ERROR;

@@ -105,9 +105,11 @@ static void _evtLogControlChar(char ch)
 	pifLog_Printf(LT_INFO, "Contorl Char = %x\n", ch);
 }
 
-static int _CmdDumpDiscreteInputs(int argc, char *argv[])
+static int _CmdDumpDiscreteInputs(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i;
+
+	(void)p_entry;
 
 	pifLog_Printf(LT_NONE, "Coils: size=%d", COILS_ADDR_MAX);
     for (i = 0; i < COILS_ADDR_MAX; i++) {
@@ -120,9 +122,11 @@ static int _CmdDumpDiscreteInputs(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _CmdDumpCoils(int argc, char *argv[])
+static int _CmdDumpCoils(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i;
+
+	(void)p_entry;
 
 	pifLog_Printf(LT_NONE, "Coils: size=%d", COILS_ADDR_MAX);
     for (i = 0; i < COILS_ADDR_MAX; i++) {
@@ -135,9 +139,11 @@ static int _CmdDumpCoils(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _CmdDumpHoldingRegisters(int argc, char *argv[])
+static int _CmdDumpHoldingRegisters(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i;
+
+	(void)p_entry;
 
 	pifLog_Printf(LT_NONE, "Registers: size=%d", REGS_ADDR_MAX);
     for (i = 0; i < REGS_ADDR_MAX; i++) {
@@ -150,9 +156,11 @@ static int _CmdDumpHoldingRegisters(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _CmdDumpInputRegisters(int argc, char *argv[])
+static int _CmdDumpInputRegisters(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i;
+
+	(void)p_entry;
 
 	pifLog_Printf(LT_NONE, "Registers: size=%d", REGS_ADDR_MAX);
     for (i = 0; i < REGS_ADDR_MAX; i++) {

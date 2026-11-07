@@ -9,7 +9,7 @@ PifTimerManager g_timer_1ms;
 static BOOL bBlink = FALSE;
 static int nPeriod = 500;
 
-static int _CmdBlinkControl(int argc, char *argv[]);
+static int _CmdBlinkControl(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -22,8 +22,10 @@ const PifLogCmdEntry c_psCmdTable[] = {
 };
 
 
-static int _CmdBlinkControl(int argc, char *argv[])
+static int _CmdBlinkControl(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Blink=%u\n", bBlink);
 		return PIF_LOG_CMD_NO_ERROR;

@@ -18,10 +18,10 @@ PifUart g_uart;
 static PifTask* s_task;
 static PifXmodem s_xmodem;
 
-static int _cmdBasicDownload(int argc, char* argv[]);
-static int _cmdBasicPrint(int argc, char* argv[]);
-static int _cmdBasicHex(int argc, char* argv[]);
-static int _cmdBasicExecute(int argc, char* argv[]);
+static int _cmdBasicDownload(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _cmdBasicPrint(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _cmdBasicHex(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _cmdBasicExecute(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -68,17 +68,21 @@ static int _basicProcess2(int count, int* p_params)
 	return p_params[0] + 2;
 }
 
-static int _cmdBasicDownload(int argc, char* argv[])
+static int _cmdBasicDownload(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	s_change_uart = CHANGE_UART_LOG_TO_XMODEM;
 	pifTask_SetTrigger(s_task, 0);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdBasicPrint(int argc, char* argv[])
+static int _cmdBasicPrint(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	char buf[66], *p_basic;
 	int len = s_basic_length;
+
+	(void)p_entry;
 
 	pifLog_Printf(LT_INFO, "Basic Length = %d", len);
 	if (len > 0) {
@@ -107,10 +111,12 @@ static int _cmdBasicPrint(int argc, char* argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdBasicHex(int argc, char* argv[])
+static int _cmdBasicHex(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	char *p_basic;
 	int len = s_basic_length, ptr, i;
+
+	(void)p_entry;
 
 	pifLog_Printf(LT_INFO, "Basic Length = %d", len);
 	if (len > 0) {
@@ -143,8 +149,10 @@ static int _cmdBasicHex(int argc, char* argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdBasicExecute(int argc, char* argv[])
+static int _cmdBasicExecute(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	pifBasic_Execute(s_basic, 32);		// 32 :  Count of opcodes processed at one time
 	return PIF_LOG_CMD_NO_ERROR;
 }

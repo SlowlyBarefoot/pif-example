@@ -10,7 +10,7 @@ PifUart g_uart_gps;
 static int s_print_data = 1;
 static PifGpsNmea s_gps_nmea;
 
-static int _cmdPrintData(int argc, char *argv[]);
+static int _cmdPrintData(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -35,8 +35,10 @@ static void _evtGpsNmeaText(PifGpsNmeaTxt *pstTxt)
 	pifLog_Printf(LT_NONE, "%s] %s\n", acType[pstTxt->type], pstTxt->text);
 }
 
-static int _cmdPrintData(int argc, char *argv[])
+static int _cmdPrintData(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Print Data: %d\n", s_print_data);
 		return PIF_LOG_CMD_NO_ERROR;

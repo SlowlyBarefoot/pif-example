@@ -136,10 +136,12 @@ static void _stopDemo()
 	s_demo = FALSE;
 }
 
-static int _cmdAngle(int argc, char *argv[])
+static int _cmdAngle(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
 	int16_t angle;
+
+	(void)p_entry;
 
 	if (argc < 2) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseIndex(argv[0], &index) || !_parseAngle(argv[1], &angle)) return PIF_LOG_CMD_INVALID_ARG;
@@ -150,11 +152,13 @@ static int _cmdAngle(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdMove(int argc, char *argv[])
+static int _cmdMove(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
 	int16_t angle;
 	long time;
+
+	(void)p_entry;
 
 	if (argc < 3) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseIndex(argv[0], &index) || !_parseAngle(argv[1], &angle) || !_parseNumber(argv[2], 0, 65535, &time)) {
@@ -166,11 +170,13 @@ static int _cmdMove(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdSpeed(int argc, char *argv[])
+static int _cmdSpeed(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
 	int16_t angle;
 	long speed;
+
+	(void)p_entry;
 
 	if (argc < 3) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseIndex(argv[0], &index) || !_parseAngle(argv[1], &angle) || !_parseNumber(argv[2], 1, 65535, &speed)) {
@@ -182,11 +188,13 @@ static int _cmdSpeed(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdSync(int argc, char *argv[])
+static int _cmdSync(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int16_t angles[SERVO_COUNT];
 	long time;
 	uint8_t i;
+
+	(void)p_entry;
 
 	if (argc < 1 + SERVO_COUNT) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseNumber(argv[0], 0, 65535, &time)) return PIF_LOG_CMD_INVALID_ARG;
@@ -200,10 +208,12 @@ static int _cmdSync(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdPulse(int argc, char *argv[])
+static int _cmdPulse(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
 	long pulse;
+
+	(void)p_entry;
 
 	if (argc < 2) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseIndex(argv[0], &index) || !_parseNumber(argv[1], SERVO_PULSE_MIN, SERVO_PULSE_MAX, &pulse)) {
@@ -216,9 +226,11 @@ static int _cmdPulse(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdStop(int argc, char *argv[])
+static int _cmdStop(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
+
+	(void)p_entry;
 
 	if (argc < 1) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseIndex(argv[0], &index)) return PIF_LOG_CMD_INVALID_ARG;
@@ -229,9 +241,11 @@ static int _cmdStop(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdDetach(int argc, char *argv[])
+static int _cmdDetach(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
+
+	(void)p_entry;
 
 	if (argc < 1) return PIF_LOG_CMD_TOO_FEW_ARGS;
 
@@ -245,10 +259,12 @@ static int _cmdDetach(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdTrim(int argc, char *argv[])
+static int _cmdTrim(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
 	long trim;
+
+	(void)p_entry;
 
 	if (argc < 2) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseIndex(argv[0], &index) || !_parseNumber(argv[1], -300, 300, &trim)) return PIF_LOG_CMD_INVALID_ARG;
@@ -258,12 +274,14 @@ static int _cmdTrim(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdRange(int argc, char *argv[])
+static int _cmdRange(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	const PifServoChannel *p_channel;
 	uint8_t index;
 	long min_pulse, max_pulse;
 	int16_t min_angle, max_angle;
+
+	(void)p_entry;
 
 	if (argc < 3) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseIndex(argv[0], &index) || !_parseNumber(argv[1], SERVO_PULSE_MIN, SERVO_PULSE_MAX, &min_pulse) ||
@@ -280,10 +298,12 @@ static int _cmdRange(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdReverse(int argc, char *argv[])
+static int _cmdReverse(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
 	BOOL on;
+
+	(void)p_entry;
 
 	if (argc < 2) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseIndex(argv[0], &index) || !_parseOnOff(argv[1], &on)) return PIF_LOG_CMD_INVALID_ARG;
@@ -293,10 +313,12 @@ static int _cmdReverse(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdEase(int argc, char *argv[])
+static int _cmdEase(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t index;
 	BOOL on;
+
+	(void)p_entry;
 
 	if (argc < 2) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseOnOff(argv[1], &on)) return PIF_LOG_CMD_INVALID_ARG;
@@ -310,9 +332,11 @@ static int _cmdEase(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdDemo(int argc, char *argv[])
+static int _cmdDemo(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	BOOL on;
+
+	(void)p_entry;
 
 	if (argc < 1) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	if (!_parseOnOff(argv[0], &on)) return PIF_LOG_CMD_INVALID_ARG;
@@ -329,9 +353,11 @@ static int _cmdDemo(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _cmdStatus(int argc, char *argv[])
+static int _cmdStatus(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t i;
+
+	(void)p_entry;
 
 	(void)argc;
 	(void)argv;

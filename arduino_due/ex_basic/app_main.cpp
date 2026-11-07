@@ -6,7 +6,7 @@
 PifLed g_led_l;
 PifTimerManager g_timer_1ms;
 
-static int _cmdBasicExecute(int argc, char* argv[]);
+static int _cmdBasicExecute(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -154,9 +154,11 @@ static int _basicProcess2(int count, int* p_params)
 	return p_params[0] + 2;
 }
 
-static int _cmdBasicExecute(int argc, char* argv[])
+static int _cmdBasicExecute(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int n;
+
+	(void)p_entry;
 
 	if (argc == 1) {
 		n = atoi(argv[0]) - 1;

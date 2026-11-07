@@ -19,13 +19,13 @@ static uint8_t backlight = 50;
 
 static PifTask* p_task = NULL;
 
-static int _CmdFillRect(int argc, char *argv[]);
-static int _CmdRotation(int argc, char *argv[]);
-static int _CmdBackLight(int argc, char *argv[]);
+static int _CmdFillRect(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _CmdRotation(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _CmdBackLight(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 #if LCD_TYPE != LCD_2_2_INCH_SPI
-	static int _CmdTouchCalibration(int argc, char *argv[]);
-	static int _CmdClear(int argc, char *argv[]);
-	static int _CmdDraw(int argc, char *argv[]);
+	static int _CmdTouchCalibration(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+	static int _CmdClear(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+	static int _CmdDraw(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 #endif
 
 const PifLogCmdEntry c_psCmdTable[] = {
@@ -46,15 +46,19 @@ const PifLogCmdEntry c_psCmdTable[] = {
 };
 
 
-static int _CmdFillRect(int argc, char *argv[])
+static int _CmdFillRect(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (p_task->_pause) pifTask_Resume(p_task); else pifTask_Pause(p_task);
 	pifLog_Printf(LT_NONE, "  File Rect=%u\n", !p_task->_pause);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _CmdRotation(int argc, char *argv[])
+static int _CmdRotation(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Rotation=%u\n", rotation);
 		return PIF_LOG_CMD_NO_ERROR;
@@ -72,8 +76,10 @@ static int _CmdRotation(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdBackLight(int argc, char *argv[])
+static int _CmdBackLight(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  BackLight=%u\n", backlight);
 		return PIF_LOG_CMD_NO_ERROR;
@@ -93,8 +99,10 @@ static int _CmdBackLight(int argc, char *argv[])
 
 #if LCD_TYPE != LCD_2_2_INCH_SPI
 
-static int _CmdTouchCalibration(int argc, char *argv[])
+static int _CmdTouchCalibration(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 #if LCD_TYPE == LCD_3_2_INCH
 	if (pifTouchScreen_Calibration(&g_tsc2046.parent)) {
 		pifLog_Printf(LT_INFO, "Touch calibration is success");
@@ -106,14 +114,18 @@ static int _CmdTouchCalibration(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _CmdClear(int argc, char *argv[])
+static int _CmdClear(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	pifIli9341_DrawFillRect(&g_ili9341.parent, 0, 0, g_ili9341.parent._width - 1, g_ili9341.parent._height - 1, PIF_COLOR_BLACK);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _CmdDraw(int argc, char *argv[])
+static int _CmdDraw(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	draw ^= 1;
 	pifLog_Printf(LT_NONE, "  Draw=%u\n", draw);
 	return PIF_LOG_CMD_NO_ERROR;

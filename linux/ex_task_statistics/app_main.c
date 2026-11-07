@@ -55,9 +55,9 @@ static uint32_t s_sequence = 0;			// Complete backups in the ring
 static uint32_t s_skip_count = 0;		// Backups not kept because a dump was reading the ring
 static Dump s_dump;
 
-static int _cmdVcd(int argc, char *argv[]);
-static int _cmdStart(int argc, char *argv[]);
-static int _cmdStop(int argc, char *argv[]);
+static int _cmdVcd(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _cmdStart(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _cmdStop(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 static const PifLogCmdEntry c_cmd_table[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -288,12 +288,13 @@ static uint32_t _taskDump(PifTask *p_task)
 	return 0;
 }
 
-static int _cmdVcd(int argc, char *argv[])
+static int _cmdVcd(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint16_t room;
 
 	(void)argc;
 	(void)argv;
+	(void)p_entry;
 
 	if (s_dump.active) return PIF_LOG_CMD_USER_ERROR;
 	if (!s_sequence) {
@@ -319,10 +320,11 @@ static int _cmdVcd(int argc, char *argv[])
 }
 
 // Starts a new collection, so the VCD file holds only the backups taken since.
-static int _cmdStart(int argc, char *argv[])
+static int _cmdStart(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	(void)argc;
 	(void)argv;
+	(void)p_entry;
 
 	// The dump reads the ring from first_sequence, which a new collection would move.
 	if (s_dump.active) return PIF_LOG_CMD_USER_ERROR;
@@ -340,10 +342,11 @@ static int _cmdStart(int argc, char *argv[])
 }
 
 // The backups taken so far are kept for the VCD file. One the steps were filling is left out of it.
-static int _cmdStop(int argc, char *argv[])
+static int _cmdStop(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	(void)argc;
 	(void)argv;
+	(void)p_entry;
 
 	pifTask_Pause(s_task_backup);
 	return PIF_LOG_CMD_NO_ERROR;

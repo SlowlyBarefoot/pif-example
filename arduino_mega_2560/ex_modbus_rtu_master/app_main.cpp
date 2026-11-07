@@ -22,9 +22,11 @@ static void _evtLogControlChar(char ch)
 	pifLog_Printf(LT_INFO, "Contorl Char = %x", ch);
 }
 
-static int _CmdReadCoils(int argc, char *argv[])
+static int _CmdReadCoils(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i, slave, addr, qty;
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "rc slave addr qty\n");
@@ -52,9 +54,11 @@ static int _CmdReadCoils(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdReadDiscreteInputs(int argc, char *argv[])
+static int _CmdReadDiscreteInputs(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i, slave, addr, qty;
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "rdi slave ddr qty\n");
@@ -82,10 +86,12 @@ static int _CmdReadDiscreteInputs(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdReadHoldingRegs(int argc, char *argv[])
+static int _CmdReadHoldingRegs(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i, slave, addr, qty;
 	uint16_t r_regs[REGS_ADDR_MAX];
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "rhr slave addr qty\n");
@@ -112,10 +118,12 @@ static int _CmdReadHoldingRegs(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdReadInputRegs(int argc, char *argv[])
+static int _CmdReadInputRegs(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i, slave, addr, qty;
 	uint16_t r_regs[REGS_ADDR_MAX];
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "rir slave addr qty\n");
@@ -142,10 +150,12 @@ static int _CmdReadInputRegs(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdWriteSingleCoil(int argc, char *argv[])
+static int _CmdWriteSingleCoil(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int slave, addr;
 	BOOL value;
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "wsc slave addr value\n");
@@ -163,9 +173,11 @@ static int _CmdWriteSingleCoil(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdWriteSingleReg(int argc, char *argv[])
+static int _CmdWriteSingleReg(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint16_t slave, addr, value;
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "wsr slave addr value\n");
@@ -183,9 +195,11 @@ static int _CmdWriteSingleReg(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdWriteMultipleCoils(int argc, char *argv[])
+static int _CmdWriteMultipleCoils(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i, slave, addr, qty;
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "wmc slave addr qty\n");
@@ -213,10 +227,12 @@ static int _CmdWriteMultipleCoils(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdWriteMultipleRegs(int argc, char *argv[])
+static int _CmdWriteMultipleRegs(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i, slave, addr, qty;
 	uint16_t w_regs[REGS_ADDR_MAX];
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "wmr slave addr qty\n");
@@ -244,11 +260,13 @@ static int _CmdWriteMultipleRegs(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdReadWriteMultipleRegs(int argc, char *argv[])
+static int _CmdReadWriteMultipleRegs(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int i, slave, r_addr, w_addr, qty;
 	uint16_t r_regs[REGS_ADDR_MAX];
 	uint16_t w_regs[REGS_ADDR_MAX];
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "rwmr slave r_addr w_addr qty\n");

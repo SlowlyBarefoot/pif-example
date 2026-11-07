@@ -6,8 +6,8 @@
 PifLed g_led_l;
 PifUsbCdc g_cdc;
 
-static int _CmdBlinkControl(int argc, char *argv[]);
-static int _CmdCdc(int argc, char *argv[]);
+static int _CmdBlinkControl(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _CmdCdc(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -20,9 +20,11 @@ const PifLogCmdEntry c_psCmdTable[] = {
 };
 
 
-static int _CmdBlinkControl(int argc, char *argv[])
+static int _CmdBlinkControl(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	int period;
+
+	(void)p_entry;
 
 	if (argc == 0) return PIF_LOG_CMD_TOO_FEW_ARGS;
 	switch (argv[0][0]) {
@@ -44,10 +46,11 @@ static int _CmdBlinkControl(int argc, char *argv[])
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
-static int _CmdCdc(int argc, char *argv[])
+static int _CmdCdc(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	(void)argc;
 	(void)argv;
+	(void)p_entry;
 
 	pifLog_Printf(LT_NONE, "  Open=%u TX=%u bytes waiting, %lu dropped while closed\n", pifUsbCdc_IsOpen(&g_cdc),
 			pifUart_GetFillSizeOfTxBuffer(&g_cdc.parent), g_cdc._tx_dropped);

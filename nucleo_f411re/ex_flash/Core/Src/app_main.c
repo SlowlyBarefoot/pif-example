@@ -7,8 +7,8 @@ PifTimerManager g_timer_1ms;
 PifTimer* g_timer_led;
 
 
-static int _CmdWrite(int argc, char *argv[]);
-static int _CmdRead(int argc, char *argv[]);
+static int _CmdWrite(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _CmdRead(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 		{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -22,11 +22,13 @@ const PifLogCmdEntry c_psCmdTable[] = {
 };
 
 
-static int _CmdWrite(int argc, char *argv[])
+static int _CmdWrite(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t value;
 	uint8_t* p_buffer;
 	uint16_t id, size;
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Print(LT_INFO, "write [id] [size] [value]");
@@ -63,10 +65,12 @@ static int _CmdWrite(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdRead(int argc, char *argv[])
+static int _CmdRead(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	uint8_t* p_buffer;
 	uint16_t i, id, size;
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Print(LT_INFO, "read [id] [size]");

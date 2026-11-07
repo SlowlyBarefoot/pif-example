@@ -19,8 +19,8 @@ static uint32_t s_baudrate;
 static BOOL s_booting = FALSE;
 static BOOL s_requesting = FALSE;
 
-static int _cmdPrintData(int argc, char *argv[]);
-static int _cmdPollRequest(int argc, char *argv[]);
+static int _cmdPrintData(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
+static int _cmdPollRequest(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry);
 
 const PifLogCmdEntry c_psCmdTable[] = {
 	{ "help", pifLog_CmdHelp, "This command", NULL },
@@ -397,8 +397,10 @@ static void _evtGpsReceive(PifGps *p_owner)
 	pifLog_Printf(LT_NONE, "\n");
 }
 
-static int _cmdPrintData(int argc, char *argv[])
+static int _cmdPrintData(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Print Data: %d\n", g_print_data);
 		return PIF_LOG_CMD_NO_ERROR;
@@ -440,8 +442,10 @@ static int _cmdPrintData(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _cmdPollRequest(int argc, char *argv[])
+static int _cmdPollRequest(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	if (argc > 1) {
 		pifGpsUblox_CheckRequest(&s_gps_ublox);		// Settles a previous request that is already over
 		if (strcmp(argv[0], "GBQ") == 0) {

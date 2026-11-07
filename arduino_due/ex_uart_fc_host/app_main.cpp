@@ -18,9 +18,11 @@ static void _evtUartTxFlowState(void *p_client, SWITCH state)
 	pifLog_Printf(LT_INFO, "Tx Flow State=%d", state);
 }
 
-static int _CmdFlowControl(int argc, char *argv[])
+static int _CmdFlowControl(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	const char *name[] = { "None", "", "Software", "Hardware", "Software", "Hardware" };
+
+	(void)p_entry;
 
 	if (argc == 0) {
 		pifLog_Printf(LT_NONE, "  Flow Control=%s\n", name[g_uart_host._flow_control]);
@@ -44,8 +46,10 @@ static int _CmdFlowControl(int argc, char *argv[])
 	return PIF_LOG_CMD_TOO_FEW_ARGS;
 }
 
-static int _CmdSendData(int argc, char *argv[])
+static int _CmdSendData(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	(void)p_entry;
+
 	pifTask_Resume(p_task);
 	return PIF_LOG_CMD_NO_ERROR;
 }
@@ -107,10 +111,12 @@ static void _evtUartTap(PifUart *p_uart, PifTapDir dir, const uint8_t *p_data, u
 	}
 }
 
-static int _CmdTap(int argc, char *argv[])
+static int _CmdTap(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
 	const char *name[] = { "Rx", "Tx", "RxLost" };
 	uint32_t i, j, n;
+
+	(void)p_entry;
 
 	if (argc > 0) {
 		if (strcmp(argv[0], "clear")) return PIF_LOG_CMD_INVALID_ARG;
