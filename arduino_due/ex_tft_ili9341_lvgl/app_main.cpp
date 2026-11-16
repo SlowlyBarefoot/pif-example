@@ -141,7 +141,9 @@ static uint32_t _taskLvglTimerHandler(PifTask *p_task)
 /* Display flushing */
 static void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color)
 {
-    pifIli9341_DrawArea(&g_ili9341.parent, area->x1, area->y1, area->x2, area->y2, (PifColor*)&color->full);
+    PifGraphics *p_gfx = pifIli9341_Graphics(&g_ili9341);
+
+    pifIli9341_DrawArea(p_gfx, area->x1, area->y1, area->x2, area->y2, (PifColor*)&color->full);
 
     lv_disp_flush_ready(disp);
 }

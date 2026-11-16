@@ -91,9 +91,11 @@ static int _CmdTouchCalibration(int argc, char *argv[], const struct StPifLogCmd
 
 static int _CmdClear(int argc, char *argv[], const struct StPifLogCmdEntry *p_entry)
 {
+	PifGraphics *p_gfx = pifSsd1963_Graphics(&g_ssd1963);
+
 	(void)p_entry;
 
-	pifSsd1963_DrawFillRect(&g_ssd1963.parent, 0, 0, g_ssd1963.parent._width - 1, g_ssd1963.parent._height - 1, PIF_COLOR_BLACK);
+	pifGraphics_DrawFillRect(p_gfx, 0, 0, p_gfx->_width - 1, p_gfx->_height - 1, PIF_COLOR_BLACK);
 	return PIF_LOG_CMD_NO_ERROR;
 }
 
@@ -109,32 +111,33 @@ static int _CmdDraw(int argc, char *argv[], const struct StPifLogCmdEntry *p_ent
 static uint32_t _taskFillScreen(PifTask *pstTask)
 {
 	static int step = 0;
+	PifGraphics *p_gfx = pifSsd1963_Graphics(&g_ssd1963);
 
 	(void)pstTask;
 
 	switch (step) {
 	case 0:
-		pifSsd1963_DrawFillRect(&g_ssd1963.parent, 5, 10, g_ssd1963.parent._width - 14, g_ssd1963.parent._height - 19, PIF_COLOR_RED);
+		pifGraphics_DrawFillRect(p_gfx, 5, 10, p_gfx->_width - 14, p_gfx->_height - 19, PIF_COLOR_RED);
 		step++;
 		break;
 
 	case 1:
-		pifSsd1963_DrawFillRect(&g_ssd1963.parent, 10, 20, g_ssd1963.parent._width - 29, g_ssd1963.parent._height - 39, PIF_COLOR_GREEN);
+		pifGraphics_DrawFillRect(p_gfx, 10, 20, p_gfx->_width - 29, p_gfx->_height - 39, PIF_COLOR_GREEN);
 		step++;
 		break;
 
 	case 2:
-		pifSsd1963_DrawFillRect(&g_ssd1963.parent, 15, 30, g_ssd1963.parent._width - 44, g_ssd1963.parent._height - 59, PIF_COLOR_BLUE);
+		pifGraphics_DrawFillRect(p_gfx, 15, 30, p_gfx->_width - 44, p_gfx->_height - 59, PIF_COLOR_BLUE);
 		step++;
 		break;
 
 	case 3:
-		pifSsd1963_DrawFillRect(&g_ssd1963.parent, 20, 40, g_ssd1963.parent._width - 59, g_ssd1963.parent._height - 79, PIF_COLOR_WHITE);
+		pifGraphics_DrawFillRect(p_gfx, 20, 40, p_gfx->_width - 59, p_gfx->_height - 79, PIF_COLOR_WHITE);
 		step++;
 		break;
 
 	case 4:
-		pifSsd1963_DrawFillRect(&g_ssd1963.parent, 0, 0, g_ssd1963.parent._width - 1, g_ssd1963.parent._height - 1, PIF_COLOR_BLACK);
+		pifGraphics_DrawFillRect(p_gfx, 0, 0, p_gfx->_width - 1, p_gfx->_height - 1, PIF_COLOR_BLACK);
 		step = 0;
 		break;
 	}
@@ -145,9 +148,10 @@ static uint32_t _taskFillScreen(PifTask *pstTask)
 static void _evtTouchData(int16_t x, int16_t y)
 {
     static int time = 0;
+    PifGraphics *p_gfx = pifSsd1963_Graphics(&g_ssd1963);
 
     if (draw) {
-		pifSsd1963_DrawPixel(&g_ssd1963.parent, x, y, PIF_COLOR_WHITE);
+		pifGraphics_DrawPixel(p_gfx, x, y, PIF_COLOR_WHITE);
 	}
 
     if (time) time--;
@@ -161,6 +165,7 @@ BOOL appSetup()
 {
     static PifNfInt16Average s_filter[2];
     static int16_t s_filter_buffer[2][5];
+    PifGraphics *p_gfx = pifSsd1963_Graphics(&g_ssd1963);
 
     if (!pifLed_AttachSBlink(&g_led_l, 500)) return FALSE;					// 500ms
     g_led_l._p_task->name = "LedL";
@@ -179,7 +184,7 @@ BOOL appSetup()
     if (!p_task) return FALSE;
     p_task->name = "FillRect";
 
-	pifSsd1963_DrawFillRect(&g_ssd1963.parent, 0, 0, g_ssd1963.parent._width - 1, g_ssd1963.parent._height - 1, PIF_COLOR_WHITE);
+	pifGraphics_DrawFillRect(p_gfx, 0, 0, p_gfx->_width - 1, p_gfx->_height - 1, PIF_COLOR_WHITE);
 
 	pifLog_Print(LT_NONE, "\n\n****************************************\n");
 	pifLog_Print(LT_NONE, "***          ex_tft_ssd1963          ***\n");
