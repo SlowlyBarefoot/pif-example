@@ -177,6 +177,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/core/pif_timer_manager.h</locationURI>
 		</link>
 		<link>
+			<name>pif/include/display/pif_graphics.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_graphics.h</locationURI>
+		</link>
+		<link>
 			<name>pif/include/display/pif_led.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/include/display/pif_led.h</locationURI>
@@ -275,6 +280,11 @@
 			<name>pif/source/core/pif_timer_manager.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/pif/source/core/pif_timer_manager.c</locationURI>
+		</link>
+		<link>
+			<name>pif/source/display/pif_graphics.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/pif/source/display/pif_graphics.c</locationURI>
 		</link>
 		<link>
 			<name>pif/source/display/pif_led.c</name>
